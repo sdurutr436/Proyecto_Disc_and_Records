@@ -1,0 +1,50 @@
+/* --- Variables de colores de fondo --- */
+
+/* Modo light */
+$color-fondo-light: #FBFAF2;
+$color-fondo-light-secundario: #F1E8CD;
+
+/* Modo oscuro */
+$color-fondo-oscuro: #015F72 opacity 0.75;
+$color-fondo-oscuro-secundario: #D8C793;
+
+/* --- Variables de colores de texto --- */
+$color-letra-blanca: #FBFAF2;
+$color-letra-oscura: #01131B;
+$color-letra-desactivado: #01131B, opacity 0.5;
+
+/* Modo light */
+$color-letra-principal-light: #001111;
+
+/* Modo oscuro */
+$color-letra-principal-dark: #FBFAF2;
+
+/* --- Variables de colores principales --- */
+
+/* Modo light */
+$color-primario-light: #ED9C05;
+$color-secundario-light: #CA6703;
+$color-contraste-light: #BB3F03;
+$color-acentuado-light: #9D2227;
+
+/* Modo oscuro */
+$color-primario-dark: #93CFBB;
+$color-secundario-dark: #015F72;
+$color-contraste-dark: #013946;
+$color-acentuado-dark: #012630;
+
+/* --- Variables de colores de estado y apoyo --- */
+$color-error: #E04A4A;
+$color-advertencia-light: #FFC047;
+$color-advertencia-dark: #FEF84A;
+$color-exito: #AAD661;
+$color-informacion: #329DAB;
+
+/* --- Variables de escala tipográfica --- */
+
+// Familias tipográficas
+$fuente-principal: 'Space Grotesk', sans-serif;
+$fuente-secundaria: 'Monoton';
+
+// Tamaños de fuente
+$fuente-h1: 
