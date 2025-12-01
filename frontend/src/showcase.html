@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Showcase - Discs & Records</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========================================
+       VARIABLES CSS (traducidas de SCSS)
+       ======================================== */
+    :root {
+      /* Colores de fondo */
+      --color-fondo-light: #FBFAF2;
+      --color-fondo-light-secundario: #E7D8AB;
+      --color-fondo-oscuro: #01131B;
+      --color-fondo-oscuro-secundario: #013946;
+
+      /* Colores de texto */
+      --color-letra-blanca: #FBFAF2;
+      --color-letra-oscura: #01131B;
+      --color-letra-desactivado: rgba(1, 19, 27, 0.5);
+
+      /* Paleta 70s - Modo light */
+      --color-primario-light: #ED9C05;
+      --color-secundario-light: #CA6703;
+      --color-contraste-light: #BB3F03;
+      --color-acentuado-light: #9D2227;
+
+      /* Paleta 70s - Modo oscuro */
+      --color-primario-dark: #93CFBB;
+      --color-secundario-dark: #0A9295;
+      --color-contraste-dark: #015F72;
+      --color-acentuado-dark: #01131B;
+
+      /* Colores de estado */
+      --color-error: #E04A4A;
+      --color-advertencia-light: #FFC047;
+      --color-advertencia-dark: #FEF84A;
+      --color-exito: #AAD661;
+      --color-informacion: #0A9295;
+
+      /* Tipografía */
+      --fuente-principal: 'Space Grotesk', sans-serif;
+      --fuente-secundaria: 'Monoton', cursive;
+
+      /* Espaciado */
+      --espaciado-xs: 0.5rem;
+      --espaciado-s: 1rem;
+      --espaciado-m: 2rem;
+      --espaciado-l: 3rem;
+    }
+
+    /* ========================================
+       RESET Y BASE
+       ======================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--fuente-principal);
+      background-color: var(--color-fondo-light);
+      color: var(--color-letra-oscura);
+      line-height: 1.6;
+    }
+
+    /* ========================================
+       HEADER CON FRANJAS 70s
+       ======================================== */
+    .header-70s {
+      background: linear-gradient(
+        to bottom,
+        #93CFBB 0%, #93CFBB 16.66%,
+        #0A9295 16.66%, #0A9295 33.33%,
+        #ED9C05 33.33%, #ED9C05 50%,
+        #CA6703 50%, #CA6703 66.66%,
+        #BB3F03 66.66%, #BB3F03 83.33%,
+        #9D2227 83.33%, #9D2227 100%
+      );
+      padding: var(--espaciado-m);
+      text-align: center;
+    }
+
+    .logo {
+      font-family: var(--fuente-secundaria);
+      font-size: 3rem;
+      color: var(--color-letra-oscura);
+      background: var(--color-fondo-light);
+      display: inline-block;
+      padding: var(--espaciado-s) var(--espaciado-m);
+      border-radius: 50%;
+      border: 4px solid var(--color-letra-oscura);
+    }
+
+    /* ========================================
+       CONTENEDOR PRINCIPAL
+       ======================================== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--espaciado-m);
+    }
+
+    .section {
+      margin-bottom: var(--espaciado-l);
+      padding: var(--espaciado-m);
+      background: var(--color-fondo-light);
+      border: 3px solid var(--color-letra-oscura);
+    }
+
+    .section-title {
+      font-size: 2.625rem;
+      margin-bottom: var(--espaciado-m);
+      padding-bottom: var(--espaciado-xs);
+      border-bottom: 3px solid var(--color-primario-light);
+    }
+
+    .component-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--espaciado-s);
+      margin-bottom: var(--espaciado-m);
+      align-items: center;
+    }
+
+    .label {
+      font-size: 0.875rem;
+      color: var(--color-letra-desactivado);
+      margin-bottom: var(--espaciado-xs);
+      display: block;
+    }
+
+    /* ========================================
+       BOTONES NEOBRUTALISTAS
+       ======================================== */
+    .btn {
+      font-family: var(--fuente-principal);
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border: 3px solid var(--color-letra-oscura);
+      cursor: pointer;
+      transition: all 0.1s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Sombras brutales base */
+    .btn-brutal {
+      background: var(--color-fondo-light);
+      color: var(--color-letra-oscura);
+      box-shadow: 4px 4px 0px var(--color-letra-oscura);
+    }
+    .btn-brutal:hover {
+      box-shadow: 2px 2px 0px var(--color-letra-oscura);
+      transform: translate(2px, 2px);
+    }
+    .btn-brutal:active {
+      box-shadow: 0px 0px 0px var(--color-letra-oscura);
+      transform: translate(4px, 4px);
+    }
+
+    /* Botón primario - Naranja dorado */
+    .btn-primario {
+      background: var(--color-primario-light);
+      color: var(--color-letra-oscura);
+      box-shadow: 4px 4px 0px var(--color-letra-oscura);
+    }
+    .btn-primario:hover {
+      box-shadow: 2px 2px 0px var(--color-letra-oscura);
+      transform: translate(2px, 2px);
+    }
+
+    /* Botón secundario - Naranja quemado */
+    .btn-secundario {
+      background: var(--color-secundario-light);
+      color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-oscura);
+    }
+
+    /* Botón contraste - Naranja rojizo */
+    .btn-contraste {
+      background: var(--color-contraste-light);
+      color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-oscura);
+    }
+
+    /* Botón acentuado - Rojo vino */
+    .btn-acentuado {
+      background: var(--color-acentuado-light);
+      color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-oscura);
+    }
+
+    /* Sombra vinilo multicapa */
+    .btn-vinilo {
+      background: var(--color-primario-light);
+      color: var(--color-letra-oscura);
+      box-shadow: 
+        2px 2px 0px var(--color-acentuado-light),
+        4px 4px 0px var(--color-contraste-light),
+        6px 6px 0px var(--color-secundario-light);
+    }
+    .btn-vinilo:hover {
+      box-shadow: 
+        1px 1px 0px var(--color-acentuado-light),
+        2px 2px 0px var(--color-contraste-light),
+        3px 3px 0px var(--color-secundario-light);
+      transform: translate(3px, 3px);
+    }
+
+    /* Botones con sombra de color */
+    .btn-sunset {
+      background: var(--color-fondo-light);
+      color: var(--color-letra-oscura);
+      box-shadow: 4px 4px 0px var(--color-contraste-light);
+    }
+
+    /* Botón deshabilitado */
+    .btn-disabled {
+      background: var(--color-fondo-light-secundario);
+      color: var(--color-letra-desactivado);
+      box-shadow: 4px 4px 0px rgba(1, 19, 27, 0.2);
+      cursor: not-allowed;
+    }
+
+    /* ========================================
+       INPUTS NEOBRUTALISTAS
+       ======================================== */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--espaciado-xs);
+    }
+
+    .input {
+      font-family: var(--fuente-principal);
+      font-size: 1rem;
+      padding: 0.75rem 1rem;
+      border: 3px solid var(--color-letra-oscura);
+      background: var(--color-fondo-light);
+      box-shadow: 4px 4px 0px var(--color-letra-oscura);
+      outline: none;
+      transition: all 0.1s ease;
+    }
+    .input:focus {
+      box-shadow: 2px 2px 0px var(--color-primario-light);
+      border-color: var(--color-primario-light);
+    }
+    .input::placeholder {
+      color: var(--color-letra-desactivado);
+    }
+
+    .input-error {
+      border-color: var(--color-error);
+      box-shadow: 4px 4px 0px var(--color-error);
+    }
+
+    .input-success {
+      border-color: var(--color-exito);
+      box-shadow: 4px 4px 0px var(--color-exito);
+    }
+
+    /* Textarea */
+    .textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    /* ========================================
+       SELECT NEOBRUTALISTA
+       ======================================== */
+    .select {
+      font-family: var(--fuente-principal);
+      font-size: 1rem;
+      padding: 0.75rem 2.5rem 0.75rem 1rem;
+      border: 3px solid var(--color-letra-oscura);
+      background: var(--color-fondo-light);
+      box-shadow: 4px 4px 0px var(--color-letra-oscura);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2301131B' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.5rem center;
+      background-size: 1.5rem;
+    }
+    .select:focus {
+      outline: none;
+      border-color: var(--color-primario-light);
+      box-shadow: 4px 4px 0px var(--color-primario-light);
+    }
+
+    /* ========================================
+       CHECKBOX Y RADIO
+       ======================================== */
+    .checkbox-group,
+    .radio-group {
+      display: flex;
+      align-items: center;
+      gap: var(--espaciado-xs);
+      cursor: pointer;
+    }
+
+    .checkbox,
+    .radio {
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--color-letra-oscura);
+      background: var(--color-fondo-light);
+      cursor: pointer;
+      appearance: none;
+      position: relative;
+    }
+
+    .checkbox {
+      box-shadow: 2px 2px 0px var(--color-letra-oscura);
+    }
+
+    .radio {
+      border-radius: 50%;
+      box-shadow: 2px 2px 0px var(--color-letra-oscura);
+    }
+
+    .checkbox:checked {
+      background: var(--color-primario-light);
+    }
+    .checkbox:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: bold;
+      color: var(--color-letra-oscura);
+    }
+
+    .radio:checked {
+      background: var(--color-primario-light);
+    }
+    .radio:checked::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background: var(--color-letra-oscura);
+      border-radius: 50%;
+    }
+
+    /* ========================================
+       CARDS
+       ======================================== */
+    .card {
+      background: var(--color-fondo-light);
+      border: 3px solid var(--color-letra-oscura);
+      padding: var(--espaciado-s);
+      box-shadow: 6px 6px 0px var(--color-letra-oscura);
+      max-width: 300px;
+    }
+
+    .card-vinilo {
+      box-shadow: 
+        2px 2px 0px var(--color-acentuado-light),
+        4px 4px 0px var(--color-contraste-light),
+        6px 6px 0px var(--color-secundario-light),
+        8px 8px 0px var(--color-primario-light);
+    }
+
+    .card-img {
+      width: 100%;
+      height: 150px;
+      background: var(--color-fondo-light-secundario);
+      border: 2px solid var(--color-letra-oscura);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: var(--espaciado-s) 0 var(--espaciado-xs);
+    }
+
+    .card-text {
+      color: var(--color-letra-desactivado);
+      font-size: 0.875rem;
+    }
+
+    /* ========================================
+       BADGES / TAGS
+       ======================================== */
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      border: 2px solid var(--color-letra-oscura);
+      box-shadow: 2px 2px 0px var(--color-letra-oscura);
+    }
+
+    .badge-primario { background: var(--color-primario-light); }
+    .badge-secundario { background: var(--color-secundario-light); color: var(--color-letra-blanca); }
+    .badge-contraste { background: var(--color-contraste-light); color: var(--color-letra-blanca); }
+    .badge-acentuado { background: var(--color-acentuado-light); color: var(--color-letra-blanca); }
+
+    /* ========================================
+       ALERTAS CON NEON
+       ======================================== */
+    .alert {
+      padding: var(--espaciado-s);
+      border: 3px solid;
+      font-weight: 500;
+    }
+
+    .alert-error {
+      background: rgba(224, 74, 74, 0.1);
+      border-color: var(--color-error);
+      color: var(--color-error);
+      box-shadow: 0px 0px 10px var(--color-error), 0px 0px 20px rgba(224, 74, 74, 0.3);
+    }
+
+    .alert-warning {
+      background: rgba(255, 192, 71, 0.1);
+      border-color: var(--color-advertencia-light);
+      color: #8B6914;
+      box-shadow: 0px 0px 10px var(--color-advertencia-light), 0px 0px 20px rgba(255, 192, 71, 0.3);
+    }
+
+    .alert-success {
+      background: rgba(170, 214, 97, 0.1);
+      border-color: var(--color-exito);
+      color: #5A7A1E;
+      box-shadow: 0px 0px 10px var(--color-exito), 0px 0px 20px rgba(170, 214, 97, 0.3);
+    }
+
+    .alert-info {
+      background: rgba(10, 146, 149, 0.1);
+      border-color: var(--color-informacion);
+      color: var(--color-informacion);
+      box-shadow: 0px 0px 10px var(--color-informacion), 0px 0px 20px rgba(10, 146, 149, 0.3);
+    }
+
+    /* ========================================
+       PALETA DE COLORES VISUAL
+       ======================================== */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: var(--espaciado-s);
+    }
+
+    .color-swatch {
+      aspect-ratio: 1;
+      border: 3px solid var(--color-letra-oscura);
+      box-shadow: 4px 4px 0px var(--color-letra-oscura);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .color-swatch span {
+      background: var(--color-fondo-light);
+      padding: 0.25rem 0.5rem;
+      font-size: 0.625rem;
+      font-weight: 600;
+      border-top: 2px solid var(--color-letra-oscura);
+    }
+
+    /* ========================================
+       SECCIÓN DARK MODE
+       ======================================== */
+    .dark-section {
+      background: var(--color-fondo-oscuro);
+      color: var(--color-letra-blanca);
+      border-color: var(--color-primario-dark);
+    }
+
+    .dark-section .section-title {
+      border-bottom-color: var(--color-primario-dark);
+    }
+
+    .btn-dark-primario {
+      background: var(--color-primario-dark);
+      color: var(--color-letra-oscura);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+    }
+
+    .btn-dark-secundario {
+      background: var(--color-secundario-dark);
+      color: var(--color-letra-blanca);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+    }
+
+    .btn-dark-ocean {
+      background: var(--color-fondo-oscuro-secundario);
+      color: var(--color-letra-blanca);
+      border-color: var(--color-primario-dark);
+      box-shadow: 
+        2px 2px 0px var(--color-secundario-dark),
+        4px 4px 0px var(--color-primario-dark);
+    }
+
+    /* ========================================
+       TIPOGRAFÍA
+       ======================================== */
+    .typography-section h1 {
+      font-size: 4.25rem;
+      line-height: 4.5rem;
+      margin-bottom: var(--espaciado-s);
+    }
+    .typography-section h2 {
+      font-size: 2.625rem;
+      line-height: 3rem;
+      margin-bottom: var(--espaciado-s);
+    }
+    .typography-section h3 {
+      font-size: 1.625rem;
+      line-height: 2rem;
+      margin-bottom: var(--espaciado-s);
+    }
+    .typography-section h4 {
+      font-size: 1rem;
+      line-height: 1.5rem;
+      margin-bottom: var(--espaciado-s);
+    }
+    .typography-section p {
+      margin-bottom: var(--espaciado-s);
+    }
+    .text-small { font-size: 0.875rem; }
+    .text-xs { font-size: 0.75rem; }
+    .text-monoton { font-family: var(--fuente-secundaria); }
+
+    /* ========================================
+       NAVEGACIÓN
+       ======================================== */
+    .nav {
+      display: flex;
+      gap: 0;
+      border: 3px solid var(--color-letra-oscura);
+      box-shadow: 4px 4px 0px var(--color-letra-oscura);
+      background: var(--color-fondo-light);
+      width: fit-content;
+    }
+
+    .nav-item {
+      padding: 0.75rem 1.5rem;
+      border-right: 3px solid var(--color-letra-oscura);
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.1s;
+    }
+    .nav-item:last-child {
+      border-right: none;
+    }
+    .nav-item:hover {
+      background: var(--color-fondo-light-secundario);
+    }
+    .nav-item.active {
+      background: var(--color-primario-light);
+    }
+
+    /* ========================================
+       TOGGLE SWITCH
+       ======================================== */
+    .toggle {
+      width: 60px;
+      height: 30px;
+      background: var(--color-fondo-light-secundario);
+      border: 3px solid var(--color-letra-oscura);
+      box-shadow: 2px 2px 0px var(--color-letra-oscura);
+      border-radius: 0;
+      cursor: pointer;
+      position: relative;
+      appearance: none;
+    }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--color-fondo-light);
+      border: 2px solid var(--color-letra-oscura);
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+    }
+    .toggle:checked {
+      background: var(--color-primario-light);
+    }
+    .toggle:checked::after {
+      transform: translateX(30px);
+    }
+
+    /* ========================================
+       DARK MODE GLOBAL
+       ======================================== */
+    body.dark-mode {
+      background-color: var(--color-fondo-oscuro);
+      color: var(--color-letra-blanca);
+    }
+
+    body.dark-mode .section {
+      background: var(--color-fondo-oscuro);
+      border-color: var(--color-primario-dark);
+    }
+
+    body.dark-mode .section-title {
+      border-bottom-color: var(--color-primario-dark);
+    }
+
+    body.dark-mode .label {
+      color: rgba(251, 250, 242, 0.6);
+    }
+
+    /* Botones en dark mode */
+    body.dark-mode .btn-brutal {
+      background: var(--color-fondo-oscuro-secundario);
+      color: var(--color-letra-blanca);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .btn-primario {
+      background: var(--color-primario-dark);
+      color: var(--color-letra-oscura);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .btn-secundario {
+      background: var(--color-secundario-dark);
+      color: var(--color-letra-blanca);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .btn-contraste {
+      background: var(--color-contraste-dark);
+      color: var(--color-letra-blanca);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .btn-acentuado {
+      background: var(--color-acentuado-dark);
+      color: var(--color-letra-blanca);
+      border-color: var(--color-primario-dark);
+      box-shadow: 4px 4px 0px var(--color-primario-dark);
+    }
+
+    body.dark-mode .btn-vinilo {
+      background: var(--color-primario-dark);
+      color: var(--color-letra-oscura);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 
+        2px 2px 0px var(--color-acentuado-dark),
+        4px 4px 0px var(--color-contraste-dark),
+        6px 6px 0px var(--color-secundario-dark);
+    }
+
+    body.dark-mode .btn-sunset {
+      background: var(--color-fondo-oscuro-secundario);
+      color: var(--color-letra-blanca);
+      border-color: var(--color-primario-dark);
+      box-shadow: 4px 4px 0px var(--color-secundario-dark);
+    }
+
+    body.dark-mode .btn-disabled {
+      background: var(--color-fondo-oscuro-secundario);
+      color: rgba(251, 250, 242, 0.4);
+      border-color: rgba(251, 250, 242, 0.3);
+      box-shadow: 4px 4px 0px rgba(251, 250, 242, 0.2);
+    }
+
+    /* Inputs en dark mode */
+    body.dark-mode .input {
+      background: var(--color-fondo-oscuro-secundario);
+      color: var(--color-letra-blanca);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .input::placeholder {
+      color: rgba(251, 250, 242, 0.5);
+    }
+
+    body.dark-mode .input:focus {
+      border-color: var(--color-primario-dark);
+      box-shadow: 2px 2px 0px var(--color-primario-dark);
+    }
+
+    /* Select en dark mode */
+    body.dark-mode .select {
+      background-color: var(--color-fondo-oscuro-secundario);
+      color: var(--color-letra-blanca);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FBFAF2' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    }
+
+    body.dark-mode .select:focus {
+      border-color: var(--color-primario-dark);
+      box-shadow: 4px 4px 0px var(--color-primario-dark);
+    }
+
+    /* Checkbox y Radio en dark mode */
+    body.dark-mode .checkbox,
+    body.dark-mode .radio {
+      background: var(--color-fondo-oscuro-secundario);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 2px 2px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .checkbox:checked,
+    body.dark-mode .radio:checked {
+      background: var(--color-primario-dark);
+    }
+
+    body.dark-mode .checkbox:checked::after {
+      color: var(--color-letra-oscura);
+    }
+
+    body.dark-mode .radio:checked::after {
+      background: var(--color-letra-oscura);
+    }
+
+    /* Toggle en dark mode */
+    body.dark-mode .toggle {
+      background: var(--color-fondo-oscuro-secundario);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 2px 2px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .toggle::after {
+      background: var(--color-letra-blanca);
+      border-color: var(--color-fondo-oscuro);
+    }
+
+    body.dark-mode .toggle:checked {
+      background: var(--color-primario-dark);
+    }
+
+    /* Nav en dark mode */
+    body.dark-mode .nav {
+      background: var(--color-fondo-oscuro);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .nav-item {
+      border-color: var(--color-letra-blanca);
+    }
+
+    body.dark-mode .nav-item:hover {
+      background: var(--color-fondo-oscuro-secundario);
+    }
+
+    body.dark-mode .nav-item.active {
+      background: var(--color-primario-dark);
+      color: var(--color-letra-oscura);
+    }
+
+    /* Badges en dark mode */
+    body.dark-mode .badge {
+      border-color: var(--color-letra-blanca);
+      box-shadow: 2px 2px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .badge-primario {
+      background: var(--color-primario-dark);
+      color: var(--color-letra-oscura);
+    }
+
+    body.dark-mode .badge-secundario {
+      background: var(--color-secundario-dark);
+      color: var(--color-letra-blanca);
+    }
+
+    body.dark-mode .badge-contraste {
+      background: var(--color-contraste-dark);
+      color: var(--color-letra-blanca);
+    }
+
+    body.dark-mode .badge-acentuado {
+      background: var(--color-acentuado-dark);
+      color: var(--color-letra-blanca);
+      border-color: var(--color-primario-dark);
+    }
+
+    /* Progress en dark mode */
+    body.dark-mode .progress {
+      background: var(--color-fondo-oscuro-secundario);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .progress-bar {
+      background: var(--color-primario-dark);
+    }
+
+    body.dark-mode .progress-bar-gradient {
+      background: linear-gradient(90deg, 
+        var(--color-primario-dark) 0%, 
+        var(--color-secundario-dark) 50%, 
+        var(--color-contraste-dark) 100%
+      );
+    }
+
+    /* Cards en dark mode */
+    body.dark-mode .card {
+      background: var(--color-fondo-oscuro);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 6px 6px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .card-vinilo {
+      box-shadow: 
+        2px 2px 0px var(--color-acentuado-dark),
+        4px 4px 0px var(--color-contraste-dark),
+        6px 6px 0px var(--color-secundario-dark),
+        8px 8px 0px var(--color-primario-dark);
+    }
+
+    body.dark-mode .card-img {
+      background: var(--color-fondo-oscuro-secundario);
+      border-color: var(--color-letra-blanca);
+    }
+
+    body.dark-mode .card-text {
+      color: rgba(251, 250, 242, 0.6);
+    }
+
+    /* Color swatches en dark mode */
+    body.dark-mode .color-swatch {
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+    }
+
+    /* Theme toggle button */
+    .theme-toggle-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .theme-toggle-btn {
+      font-family: var(--fuente-principal);
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border: 3px solid var(--color-letra-oscura);
+      cursor: pointer;
+      background: var(--color-primario-light);
+      color: var(--color-letra-oscura);
+      box-shadow: 4px 4px 0px var(--color-letra-oscura);
+      transition: all 0.1s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      box-shadow: 2px 2px 0px var(--color-letra-oscura);
+      transform: translate(2px, 2px);
+    }
+
+    body.dark-mode .theme-toggle-btn {
+      background: var(--color-primario-dark);
+      color: var(--color-letra-oscura);
+      border-color: var(--color-letra-blanca);
+      box-shadow: 4px 4px 0px var(--color-letra-blanca);
+    }
+
+    body.dark-mode .theme-toggle-btn:hover {
+      box-shadow: 2px 2px 0px var(--color-letra-blanca);
+    }
+
+    /* ========================================
+       PROGRESS BAR
+       ======================================== */
+    .progress {
+      height: 24px;
+      background: var(--color-fondo-light-secundario);
+      border: 3px solid var(--color-letra-oscura);
+      box-shadow: 4px 4px 0px var(--color-letra-oscura);
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--color-primario-light);
+      transition: width 0.3s;
+    }
+    .progress-bar-gradient {
+      background: linear-gradient(90deg, 
+        var(--color-primario-light) 0%, 
+        var(--color-secundario-light) 50%, 
+        var(--color-contraste-light) 100%
+      );
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botón flotante para cambiar tema -->
+  <div class="theme-toggle-container">
+    <button class="theme-toggle-btn" onclick="toggleTheme()">
+      <span id="theme-icon">🌙</span> Modo Oscuro
+    </button>
+  </div>
+
+  <!-- Header con franjas 70s -->
+  <header class="header-70s">
+    <div class="logo">D&R</div>
+  </header>
+
+  <div class="container">
+
+    <!-- Paleta de colores -->
+    <section class="section">
+      <h2 class="section-title">🎨 Paleta de Colores</h2>
+      
+      <span class="label">Modo Light (Cálidos)</span>
+      <div class="color-grid" style="margin-bottom: var(--espaciado-m);">
+        <div class="color-swatch" style="background: #ED9C05;"><span>Primario #ED9C05</span></div>
+        <div class="color-swatch" style="background: #CA6703;"><span>Secundario #CA6703</span></div>
+        <div class="color-swatch" style="background: #BB3F03;"><span>Contraste #BB3F03</span></div>
+        <div class="color-swatch" style="background: #9D2227;"><span>Acentuado #9D2227</span></div>
+      </div>
+
+      <span class="label">Modo Dark (Fríos)</span>
+      <div class="color-grid" style="margin-bottom: var(--espaciado-m);">
+        <div class="color-swatch" style="background: #93CFBB;"><span>Primario #93CFBB</span></div>
+        <div class="color-swatch" style="background: #0A9295;"><span>Secundario #0A9295</span></div>
+        <div class="color-swatch" style="background: #015F72;"><span>Contraste #015F72</span></div>
+        <div class="color-swatch" style="background: #01131B;"><span style="color: white; background: #01131B;">Acentuado #01131B</span></div>
+      </div>
+
+      <span class="label">Estados</span>
+      <div class="color-grid">
+        <div class="color-swatch" style="background: #E04A4A;"><span>Error #E04A4A</span></div>
+        <div class="color-swatch" style="background: #FFC047;"><span>Advertencia #FFC047</span></div>
+        <div class="color-swatch" style="background: #AAD661;"><span>Éxito #AAD661</span></div>
+        <div class="color-swatch" style="background: #0A9295;"><span>Info #0A9295</span></div>
+      </div>
+    </section>
+
+    <!-- Tipografía -->
+    <section class="section typography-section">
+      <h2 class="section-title">📝 Tipografía</h2>
+      
+      <h1>Heading 1 - Space Grotesk</h1>
+      <h2>Heading 2 - Subtítulo principal</h2>
+      <h3>Heading 3 - Sección</h3>
+      <h4>Heading 4 - Subsección</h4>
+      <p>Párrafo normal - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
+      <p class="text-small">Texto pequeño S - Para descripciones secundarias</p>
+      <p class="text-xs">Texto pequeño XS - Para leyendas y notas</p>
+      <p class="text-monoton" style="font-size: 2rem;">MONOTON - Para logos</p>
+    </section>
+
+    <!-- Botones -->
+    <section class="section">
+      <h2 class="section-title">🔘 Botones Neobrutalistas</h2>
+      
+      <span class="label">Botones base</span>
+      <div class="component-row">
+        <button class="btn btn-brutal">Brutal Base</button>
+        <button class="btn btn-primario">Primario</button>
+        <button class="btn btn-secundario">Secundario</button>
+        <button class="btn btn-contraste">Contraste</button>
+        <button class="btn btn-acentuado">Acentuado</button>
+      </div>
+
+      <span class="label">Sombras especiales 70s</span>
+      <div class="component-row">
+        <button class="btn btn-vinilo">Efecto Vinilo</button>
+        <button class="btn btn-sunset">Sombra Sunset</button>
+        <button class="btn btn-disabled" disabled>Deshabilitado</button>
+      </div>
+    </section>
+
+    <!-- Inputs -->
+    <section class="section">
+      <h2 class="section-title">📝 Inputs</h2>
+      
+      <div class="component-row">
+        <div class="input-group" style="flex: 1; max-width: 300px;">
+          <label class="label">Input normal</label>
+          <input type="text" class="input" placeholder="Una canción, un álbum...">
+        </div>
+        
+        <div class="input-group" style="flex: 1; max-width: 300px;">
+          <label class="label">Input con error</label>
+          <input type="text" class="input input-error" value="Texto inválido">
+        </div>
+        
+        <div class="input-group" style="flex: 1; max-width: 300px;">
+          <label class="label">Input válido</label>
+          <input type="text" class="input input-success" value="Correcto!">
+        </div>
+      </div>
+
+      <div class="component-row">
+        <div class="input-group" style="flex: 1; max-width: 400px;">
+          <label class="label">Textarea</label>
+          <textarea class="input textarea" placeholder="Escribe una reseña..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Selects y controles -->
+    <section class="section">
+      <h2 class="section-title">🎛️ Controles de Selección</h2>
+      
+      <div class="component-row">
+        <div class="input-group">
+          <label class="label">Select</label>
+          <select class="select">
+            <option>Selecciona un género</option>
+            <option>Rock</option>
+            <option>Jazz</option>
+            <option>Disco</option>
+            <option>Funk</option>
+          </select>
+        </div>
+      </div>
+
+      <span class="label">Checkboxes</span>
+      <div class="component-row">
+        <label class="checkbox-group">
+          <input type="checkbox" class="checkbox" checked>
+          <span>Rock</span>
+        </label>
+        <label class="checkbox-group">
+          <input type="checkbox" class="checkbox">
+          <span>Jazz</span>
+        </label>
+        <label class="checkbox-group">
+          <input type="checkbox" class="checkbox">
+          <span>Disco</span>
+        </label>
+      </div>
+
+      <span class="label">Radio buttons</span>
+      <div class="component-row">
+        <label class="radio-group">
+          <input type="radio" name="rating" class="radio" checked>
+          <span>5 estrellas</span>
+        </label>
+        <label class="radio-group">
+          <input type="radio" name="rating" class="radio">
+          <span>4 estrellas</span>
+        </label>
+        <label class="radio-group">
+          <input type="radio" name="rating" class="radio">
+          <span>3 estrellas</span>
+        </label>
+      </div>
+
+      <span class="label">Toggle switch</span>
+      <div class="component-row">
+        <label class="checkbox-group">
+          <input type="checkbox" class="toggle">
+          <span>Modo oscuro</span>
+        </label>
+        <label class="checkbox-group">
+          <input type="checkbox" class="toggle" checked>
+          <span>Notificaciones</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Navegación -->
+    <section class="section">
+      <h2 class="section-title">🧭 Navegación</h2>
+      
+      <nav class="nav">
+        <div class="nav-item active">Inicio</div>
+        <div class="nav-item">Álbumes</div>
+        <div class="nav-item">Canciones</div>
+        <div class="nav-item">Artistas</div>
+        <div class="nav-item">Mi perfil</div>
+      </nav>
+    </section>
+
+    <!-- Badges -->
+    <section class="section">
+      <h2 class="section-title">🏷️ Badges / Tags</h2>
+      
+      <div class="component-row">
+        <span class="badge badge-primario">Rock</span>
+        <span class="badge badge-secundario">Jazz</span>
+        <span class="badge badge-contraste">Disco</span>
+        <span class="badge badge-acentuado">Funk</span>
+      </div>
+    </section>
+
+    <!-- Progress bars -->
+    <section class="section">
+      <h2 class="section-title">📊 Progress Bars</h2>
+      
+      <span class="label">Progreso simple (60%)</span>
+      <div class="progress" style="margin-bottom: var(--espaciado-s);">
+        <div class="progress-bar" style="width: 60%;"></div>
+      </div>
+      
+      <span class="label">Progreso gradiente 70s (80%)</span>
+      <div class="progress">
+        <div class="progress-bar progress-bar-gradient" style="width: 80%;"></div>
+      </div>
+    </section>
+
+    <!-- Alertas con Neon -->
+    <section class="section">
+      <h2 class="section-title">⚡ Alertas con Efecto Neon</h2>
+      
+      <div style="display: flex; flex-direction: column; gap: var(--espaciado-s);">
+        <div class="alert alert-error">
+          ❌ Error: No se pudo guardar la canción en tu colección.
+        </div>
+        <div class="alert alert-warning">
+          ⚠️ Advertencia: Este álbum ya está en tu lista de deseos.
+        </div>
+        <div class="alert alert-success">
+          ✅ Éxito: Tu reseña ha sido publicada correctamente.
+        </div>
+        <div class="alert alert-info">
+          ℹ️ Info: Nuevo álbum disponible de tu artista favorito.
+        </div>
+      </div>
+    </section>
+
+    <!-- Cards -->
+    <section class="section">
+      <h2 class="section-title">🃏 Cards</h2>
+      
+      <div class="component-row" style="align-items: flex-start;">
+        <div class="card">
+          <div class="card-img">💿</div>
+          <h3 class="card-title">Rumours</h3>
+          <p class="card-text">Fleetwood Mac • 1977</p>
+          <div style="margin-top: var(--espaciado-s);">
+            <span class="badge badge-primario">Rock</span>
+          </div>
+        </div>
+        
+        <div class="card card-vinilo">
+          <div class="card-img">🎵</div>
+          <h3 class="card-title">Thriller</h3>
+          <p class="card-text">Michael Jackson • 1982</p>
+          <div style="margin-top: var(--espaciado-s);">
+            <span class="badge badge-contraste">Pop</span>
+            <span class="badge badge-acentuado">Disco</span>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-img">🎸</div>
+          <h3 class="card-title">Dark Side of the Moon</h3>
+          <p class="card-text">Pink Floyd • 1973</p>
+          <div style="margin-top: var(--espaciado-s);">
+            <span class="badge badge-secundario">Progressive</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dark Mode -->
+    <section class="section dark-section">
+      <h2 class="section-title">🌙 Modo Oscuro</h2>
+      
+      <span class="label" style="color: rgba(251, 250, 242, 0.6);">Botones dark</span>
+      <div class="component-row">
+        <button class="btn btn-dark-primario">Primario Dark</button>
+        <button class="btn btn-dark-secundario">Secundario Dark</button>
+        <button class="btn btn-dark-ocean">Ocean Effect</button>
+      </div>
+
+      <span class="label" style="color: rgba(251, 250, 242, 0.6); margin-top: var(--espaciado-s); display: block;">Paleta fría</span>
+      <div class="color-grid">
+        <div class="color-swatch" style="background: #93CFBB; border-color: white;"><span>Menta</span></div>
+        <div class="color-swatch" style="background: #0A9295; border-color: white;"><span style="color: white; background: #0A9295;">Teal</span></div>
+        <div class="color-swatch" style="background: #015F72; border-color: white;"><span style="color: white; background: #015F72;">Profundo</span></div>
+        <div class="color-swatch" style="background: #013946; border-color: white;"><span style="color: white; background: #013946;">Noche</span></div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer con franjas invertidas -->
+  <footer class="header-70s" style="transform: scaleY(-1); padding: var(--espaciado-s);">
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const btn = document.querySelector('.theme-toggle-btn');
+      const icon = document.getElementById('theme-icon');
+      
+      body.classList.toggle('dark-mode');
+      
+      if (body.classList.contains('dark-mode')) {
+        btn.innerHTML = '<span id="theme-icon">☀️</span> Modo Claro';
+      } else {
+        btn.innerHTML = '<span id="theme-icon">🌙</span> Modo Oscuro';
+      }
+    }
+  </script>
+
+</body>
+</html>

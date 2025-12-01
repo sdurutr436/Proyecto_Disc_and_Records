@@ -2,43 +2,51 @@
 
 /* Modo light */
 $color-fondo-light: #FBFAF2;
-$color-fondo-light-secundario: #F1E8CD;
+$color-fondo-light-secundario: #E7D8AB;  // Beige crema 70s
 
 /* Modo oscuro */
-$color-fondo-oscuro: #015F72 opacity 0.75;
-$color-fondo-oscuro-secundario: #D8C793;
+$color-fondo-oscuro: #01131B;  // Azul noche profundo
+$color-fondo-oscuro-secundario: #013946;
 
 /* --- Variables de colores de texto --- */
 $color-letra-blanca: #FBFAF2;
 $color-letra-oscura: #01131B;
-$color-letra-desactivado: #01131B, opacity 0.5;
+$color-letra-desactivado: rgba(1, 19, 27, 0.5);
 
 /* Modo light */
-$color-letra-principal-light: #001111;
+$color-letra-principal-light: #01131B;
 
 /* Modo oscuro */
 $color-letra-principal-dark: #FBFAF2;
 
 /* --- Variables de colores principales --- */
 
-/* Modo light */
-$color-primario-light: #ED9C05;
-$color-secundario-light: #CA6703;
-$color-contraste-light: #BB3F03;
-$color-acentuado-light: #9D2227;
+/* Paleta 70s - Modo light (cálidos: naranjas y tierras) */
+$color-primario-light: #ED9C05;    // Naranja dorado - acción principal
+$color-secundario-light: #CA6703;  // Naranja quemado
+$color-contraste-light: #BB3F03;   // Naranja rojizo
+$color-acentuado-light: #9D2227;   // Rojo vino/burdeos
 
-/* Modo oscuro */
-$color-primario-dark: #93CFBB;
-$color-secundario-dark: #015F72;
-$color-contraste-dark: #013946;
-$color-acentuado-dark: #012630;
+/* Paleta 70s - Modo oscuro (fríos: teales y verdes) */
+$color-primario-dark: #93CFBB;     // Verde menta
+$color-secundario-dark: #0A9295;   // Teal vibrante
+$color-contraste-dark: #015F72;    // Teal profundo
+$color-acentuado-dark: #01131B;    // Azul noche
+
+/* Colores de las franjas arcoíris 70s (para gradientes y decoración) */
+$color-franja-1: #93CFBB;  // Verde menta (arriba)
+$color-franja-2: #0A9295;  // Teal
+$color-franja-3: #ED9C05;  // Naranja dorado
+$color-franja-4: #CA6703;  // Naranja quemado
+$color-franja-5: #BB3F03;  // Naranja rojizo
+$color-franja-6: #9D2227;  // Rojo vino (abajo)
 
 /* --- Variables de colores de estado y apoyo --- */
 $color-error: #E04A4A;
 $color-advertencia-light: #FFC047;
 $color-advertencia-dark: #FEF84A;
 $color-exito: #AAD661;
-$color-informacion: #329DAB;
+$color-informacion: #0A9295;  // Teal de la paleta 70s
 
 /* --- Variables de escala tipográfica --- */
 
@@ -97,4 +105,101 @@ $breakpoint-ultra-wide: 1600px;
 
 /* --- Variables de sombras --- */
 
-$sombra-
+/* ========================================
+   SOMBRAS NEOBRUTALISTAS + RETRO 70s
+   ======================================== */
+
+/* Sombras neobrutalistas base (sólidas, sin blur) */
+$sombra-brutal-xs: 2px 2px 0px $color-letra-oscura;
+$sombra-brutal-s: 4px 4px 0px $color-letra-oscura;
+$sombra-brutal-m: 6px 6px 0px $color-letra-oscura;
+$sombra-brutal-l: 8px 8px 0px $color-letra-oscura;
+
+/* Sombras "disco de vinilo" - efecto 3D retro con múltiples capas */
+$sombra-vinilo-s: 
+  2px 2px 0px $color-acentuado-light,
+  4px 4px 0px $color-contraste-light;
+$sombra-vinilo-m: 
+  2px 2px 0px $color-acentuado-light,
+  4px 4px 0px $color-contraste-light,
+  6px 6px 0px $color-secundario-light;
+$sombra-vinilo-l: 
+  2px 2px 0px $color-acentuado-light,
+  4px 4px 0px $color-contraste-light,
+  6px 6px 0px $color-secundario-light,
+  8px 8px 0px $color-primario-light;
+
+/* Sombras "sunset" - degradado cálido 70s para botones principales */
+$sombra-sunset-s: 3px 3px 0px $color-secundario-light;
+$sombra-sunset-m: 4px 4px 0px $color-contraste-light;
+$sombra-sunset-l: 5px 5px 0px $color-acentuado-light;
+
+/* Sombras "ocean" - degradado frío para modo dark */
+$sombra-ocean-s: 3px 3px 0px $color-secundario-dark;
+$sombra-ocean-m: 4px 4px 0px $color-contraste-dark;
+$sombra-ocean-l: 5px 5px 0px $color-acentuado-dark;
+
+/* Sombras neobrutalistas con colores de la paleta */
+$sombra-brutal-primario-light: 4px 4px 0px $color-primario-light;
+$sombra-brutal-secundario-light: 4px 4px 0px $color-secundario-light;
+$sombra-brutal-contraste-light: 4px 4px 0px $color-contraste-light;
+$sombra-brutal-acentuado-light: 4px 4px 0px $color-acentuado-light;
+
+$sombra-brutal-primario-dark: 4px 4px 0px $color-primario-dark;
+$sombra-brutal-secundario-dark: 4px 4px 0px $color-secundario-dark;
+$sombra-brutal-contraste-dark: 4px 4px 0px $color-contraste-dark;
+$sombra-brutal-acentuado-dark: 4px 4px 0px $color-acentuado-dark;
+
+/* Sombras de interacción (hover/active) */
+$sombra-brutal-hover: 2px 2px 0px $color-letra-oscura;
+$sombra-brutal-active: 0px 0px 0px $color-letra-oscura;
+
+/* Sombras retro suaves - para cards y elementos flotantes */
+$sombra-retro-suave: 4px 4px 0px rgba(1, 19, 27, 0.15);
+$sombra-retro-media: 6px 6px 0px rgba(1, 19, 27, 0.2);
+
+/* ========================================
+   SOMBRAS NEON (ESTADOS Y APOYO)
+   Inspiradas en luces de discoteca 70s
+   ======================================== */
+
+/* Sombras neon de error - rojo alarma */
+$sombra-neon-error: 0px 0px 10px $color-error, 0px 0px 20px $color-error;
+$sombra-neon-error-suave: 0px 0px 8px rgba(224, 74, 74, 0.5);
+$sombra-neon-error-intensa: 0px 0px 15px $color-error, 0px 0px 30px $color-error, 0px 0px 45px rgba(224, 74, 74, 0.3);
+
+/* Sombras neon de advertencia (light) - amarillo disco */
+$sombra-neon-advertencia-light: 0px 0px 10px $color-advertencia-light, 0px 0px 20px $color-advertencia-light;
+$sombra-neon-advertencia-light-suave: 0px 0px 8px rgba(255, 192, 71, 0.5);
+
+/* Sombras neon de advertencia (dark) - amarillo neón */
+$sombra-neon-advertencia-dark: 0px 0px 10px $color-advertencia-dark, 0px 0px 20px $color-advertencia-dark;
+$sombra-neon-advertencia-dark-suave: 0px 0px 8px rgba(254, 248, 74, 0.5);
+
+/* Sombras neon de éxito - verde lima disco */
+$sombra-neon-exito: 0px 0px 10px $color-exito, 0px 0px 20px $color-exito;
+$sombra-neon-exito-suave: 0px 0px 8px rgba(170, 214, 97, 0.5);
+$sombra-neon-exito-intensa: 0px 0px 15px $color-exito, 0px 0px 30px $color-exito, 0px 0px 45px rgba(170, 214, 97, 0.3);
+
+/* Sombras neon de información - teal 70s */
+$sombra-neon-informacion: 0px 0px 10px $color-informacion, 0px 0px 20px $color-informacion;
+$sombra-neon-informacion-suave: 0px 0px 8px rgba(10, 146, 149, 0.5);
+$sombra-neon-informacion-intensa: 0px 0px 15px $color-informacion, 0px 0px 30px $color-informacion, 0px 0px 45px rgba(10, 146, 149, 0.3);
+
+/* Sombras neon naranja 70s - para destacados especiales */
+$sombra-neon-naranja: 0px 0px 10px $color-primario-light, 0px 0px 20px $color-primario-light;
+$sombra-neon-naranja-intensa: 0px 0px 15px $color-primario-light, 0px 0px 30px $color-secundario-light, 0px 0px 45px $color-contraste-light;
+
+/* Sombra para efecto "disco ball" / pulso animado */
+$sombra-neon-pulso: 0px 0px 5px currentColor, 0px 0px 10px currentColor;
+
+/* ========================================
+   VARIABLES DE BORDES (complemento neobrutalist)
+   ======================================== */
+$borde-brutal-thin: 2px solid $color-letra-oscura;
+$borde-brutal-medium: 3px solid $color-letra-oscura;
+$borde-brutal-thick: 4px solid $color-letra-oscura;
+
+/* Bordes con colores de la paleta */
+$borde-primario-light: 3px solid $color-primario-light;
+$borde-primario-dark: 3px solid $color-primario-dark;
