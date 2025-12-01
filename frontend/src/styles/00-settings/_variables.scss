@@ -46,5 +46,38 @@ $color-informacion: #329DAB;
 $fuente-principal: 'Space Grotesk', sans-serif;
 $fuente-secundaria: 'Monoton';
 
-// Tamaños de fuente
-$fuente-h1: 
+// Tamaños de fuente y altura de linea:
+
+// Fuente h1
+$tamanio-fuente-h1: 4.25rem;
+$altura-linea-h1: 4.5rem;
+
+// Fuente h2
+$tamanio-fuente-h2: 2.625rem;
+$altura-linea-h2: 3rem;
+
+// Fuente h3
+$tamanio-fuente-h3: 1.625rem;
+$altura-linea-h3: 3rem;
+
+// Fuente h4
+$tamanio-fuente-h4: 1rem;
+$altura-linea-h4: 3rem;
+
+// Parrafo
+$tamanio-fuente-parrafo: 1rem;
+$altura-linea-parrafo: 1.5rem;
+
+// Texto pequeño S
+$tamanio-fuente-texto-pequeno-s: 0.875rem;
+$altura-linea-texto-pequeno-s: 1.5rem;
+
+// Texto pequeño XS
+$tamanio-fuente-texto-pequeno-xs: 0.75rem;
+$altura-linea-texto-pequeno-xs: 1rem;
+
+// Texto leyenda
+$tamanio-fuente-leyenda: 0.75rem italic;
+$altura-linea-leyenda: 1rem;
+
+/* --- 
