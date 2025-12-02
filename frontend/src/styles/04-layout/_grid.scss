@@ -1,7 +1,11 @@
+@use '../00-settings/_variables' as vars;
+
+/* Sistema de Grid básico: mezcla de CSS Grid y Flexbox */
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  gap: vars.$espaciado-m;
   width: 100%;
   min-height: 100px;
   max-width: 1200px;
@@ -11,12 +15,11 @@
 .grid--wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: vars.$espaciado-m;
 }
 
 .grid__item {
   min-width: 200px;
-  max-width: 1fr;
   min-height: 100px;
   max-height: 400px;
 }

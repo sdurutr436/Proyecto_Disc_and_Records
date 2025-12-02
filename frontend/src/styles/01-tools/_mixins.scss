@@ -1,4 +1,5 @@
 @use '../00-settings/_variables' as vars;
+
 // Mixin para tipografía usando variables
 @mixin font-size-line($tipo) {
   font-size: vars.$tamanio-fuente-#{$tipo};
@@ -29,4 +30,11 @@
   } @else if $breakpoint == 'ultra-wide' {
     @media (max-width: vars.$breakpoint-ultra-wide) { @content; }
   }
+}
+
+// Mixin para alertas accesibles en modo oscuro
+// Usa el color primario dark (menta #93CFBB) como fondo para mejorar contraste
+@mixin alert-accesible-dark {
+  background-color: vars.$color-primario-dark;
+  color: vars.$color-letra-oscura;
 }
