@@ -51,6 +51,16 @@
       --espaciado-s: 1rem;
       --espaciado-m: 2rem;
       --espaciado-l: 3rem;
+
+      /* Border Radius */
+      --radio-ninguno: 0px;
+      --radio-xs: 3px;
+      --radio-s: 5px;
+      --radio-m: 8px;
+      --radio-l: 12px;
+      --radio-xl: 16px;
+      --radio-redondo: 50%;
+      --radio-pildora: 9999px;
     }
 
     /* ========================================
@@ -111,6 +121,7 @@
       padding: var(--espaciado-m);
       background: var(--color-fondo-light);
       border: 3px solid var(--color-letra-oscura);
+      border-radius: var(--radio-s);
     }
 
     .section-title {
@@ -144,6 +155,7 @@
       font-weight: 600;
       padding: 0.75rem 1.5rem;
       border: 3px solid var(--color-letra-oscura);
+      border-radius: var(--radio-s);
       cursor: pointer;
       transition: all 0.1s ease;
       text-transform: uppercase;
@@ -243,6 +255,7 @@
       font-size: 1rem;
       padding: 0.75rem 1rem;
       border: 3px solid var(--color-letra-oscura);
+      border-radius: var(--radio-s);
       background: var(--color-fondo-light);
       box-shadow: 4px 4px 0px var(--color-letra-oscura);
       outline: none;
@@ -280,6 +293,7 @@
       font-size: 1rem;
       padding: 0.75rem 2.5rem 0.75rem 1rem;
       border: 3px solid var(--color-letra-oscura);
+      border-radius: var(--radio-s);
       background: var(--color-fondo-light);
       box-shadow: 4px 4px 0px var(--color-letra-oscura);
       cursor: pointer;
@@ -319,6 +333,7 @@
 
     .checkbox {
       box-shadow: 2px 2px 0px var(--color-letra-oscura);
+      border-radius: var(--radio-xs);
     }
 
     .radio {
@@ -360,6 +375,7 @@
     .card {
       background: var(--color-fondo-light);
       border: 3px solid var(--color-letra-oscura);
+      border-radius: var(--radio-s);
       padding: var(--espaciado-s);
       box-shadow: 6px 6px 0px var(--color-letra-oscura);
       max-width: 300px;
@@ -378,6 +394,7 @@
       height: 150px;
       background: var(--color-fondo-light-secundario);
       border: 2px solid var(--color-letra-oscura);
+      border-radius: var(--radio-xs);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -405,6 +422,7 @@
       font-weight: 600;
       text-transform: uppercase;
       border: 2px solid var(--color-letra-oscura);
+      border-radius: var(--radio-xs);
       box-shadow: 2px 2px 0px var(--color-letra-oscura);
     }
 
@@ -419,6 +437,7 @@
     .alert {
       padding: var(--espaciado-s);
       border: 3px solid;
+      border-radius: var(--radio-s);
       font-weight: 500;
     }
 
@@ -462,10 +481,12 @@
     .color-swatch {
       aspect-ratio: 1;
       border: 3px solid var(--color-letra-oscura);
+      border-radius: var(--radio-s);
       box-shadow: 4px 4px 0px var(--color-letra-oscura);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
+      overflow: hidden;
     }
 
     .color-swatch span {
@@ -549,9 +570,11 @@
       display: flex;
       gap: 0;
       border: 3px solid var(--color-letra-oscura);
+      border-radius: var(--radio-s);
       box-shadow: 4px 4px 0px var(--color-letra-oscura);
       background: var(--color-fondo-light);
       width: fit-content;
+      overflow: hidden;
     }
 
     .nav-item {
@@ -580,7 +603,7 @@
       background: var(--color-fondo-light-secundario);
       border: 3px solid var(--color-letra-oscura);
       box-shadow: 2px 2px 0px var(--color-letra-oscura);
-      border-radius: 0;
+      border-radius: var(--radio-s);
       cursor: pointer;
       position: relative;
       appearance: none;
@@ -592,6 +615,7 @@
       height: 20px;
       background: var(--color-fondo-light);
       border: 2px solid var(--color-letra-oscura);
+      border-radius: var(--radio-xs);
       top: 2px;
       left: 2px;
       transition: transform 0.2s;
@@ -862,6 +886,7 @@
       font-weight: 600;
       padding: 0.75rem 1.5rem;
       border: 3px solid var(--color-letra-oscura);
+      border-radius: var(--radio-s);
       cursor: pointer;
       background: var(--color-primario-light);
       color: var(--color-letra-oscura);
@@ -892,11 +917,14 @@
       height: 24px;
       background: var(--color-fondo-light-secundario);
       border: 3px solid var(--color-letra-oscura);
+      border-radius: var(--radio-s);
       box-shadow: 4px 4px 0px var(--color-letra-oscura);
+      overflow: hidden;
     }
     .progress-bar {
       height: 100%;
       background: var(--color-primario-light);
+      border-radius: var(--radio-xs);
       transition: width 0.3s;
     }
     .progress-bar-gradient {

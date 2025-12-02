@@ -203,3 +203,15 @@ $borde-brutal-thick: 4px solid $color-letra-oscura;
 /* Bordes con colores de la paleta */
 $borde-primario-light: 3px solid $color-primario-light;
 $borde-primario-dark: 3px solid $color-primario-dark;
+
+/* ========================================
+   VARIABLES DE BORDER RADIUS
+   ======================================== */
+$radio-ninguno: 0px;
+$radio-xs: 3px;
+$radio-s: 5px;          // Radio principal - sutil pero visible
+$radio-m: 8px;
+$radio-l: 12px;
+$radio-xl: 16px;
+$radio-redondo: 50%;    // Para elementos circulares
+$radio-pildora: 9999px; // Para botones tipo píldora
