@@ -1,0 +1,32 @@
+@use '../00-settings/_variables' as vars;
+// Mixin para tipografía usando variables
+@mixin font-size-line($tipo) {
+  font-size: vars.$tamanio-fuente-#{$tipo};
+  line-height: vars.$altura-linea-#{$tipo};
+}
+
+// Mixin para modo oscuro/claro usando variables
+@mixin theme-colors($modo: 'light') {
+  @if $modo == 'light' {
+    background-color: vars.$color-fondo-light;
+    color: vars.$color-letra-principal-light;
+  } @else if $modo == 'dark' {
+    background-color: vars.$color-fondo-oscuro;
+    color: vars.$color-letra-principal-dark;
+  }
+}
+
+// Mixin para media queries usando breakpoints
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'mobile' {
+    @media (max-width: vars.$breakpoint-mobile) { @content; }
+  } @else if $breakpoint == 'tablet' {
+    @media (max-width: vars.$breakpoint-tablet) { @content; }
+  } @else if $breakpoint == 'desktop' {
+    @media (max-width: vars.$breakpoint-desktop) { @content; }
+  } @else if $breakpoint == 'large-desktop' {
+    @media (max-width: vars.$breakpoint-large-desktop) { @content; }
+  } @else if $breakpoint == 'ultra-wide' {
+    @media (max-width: vars.$breakpoint-ultra-wide) { @content; }
+  }
+}
