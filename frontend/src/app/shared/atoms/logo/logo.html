@@ -1,0 +1,17 @@
+<a 
+  [routerLink]="linkTo" 
+  class="logo"
+  [class.logo--small]="size === 'small'"
+  [class.logo--large]="size === 'large'"
+  [attr.aria-label]="altText">
+  <!-- TODO: Reemplazar con <img> cuando el logo esté disponible -->
+  <span class="logo__text" aria-hidden="true">
+    @if (showFullText) {
+      <span>Discs</span>
+      <span>&</span>
+      <span>Records</span>
+    } @else {
+      <span>D&R</span>
+    }
+  </span>
+</a>

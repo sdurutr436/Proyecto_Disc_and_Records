@@ -1,0 +1,15 @@
+<nav class="nav-bar" [class.nav-bar--full]="fullWidth" aria-label="Navegación principal">
+  <ul class="nav-bar__list" role="menubar">
+    @for (item of items; track item.route) {
+      <li role="none">
+        <a 
+          [routerLink]="item.route" 
+          routerLinkActive="nav-bar__item--active"
+          class="nav-bar__item" 
+          role="menuitem">
+          {{ item.label }}
+        </a>
+      </li>
+    }
+  </ul>
+</nav>

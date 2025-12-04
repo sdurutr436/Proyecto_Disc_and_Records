@@ -1,0 +1,60 @@
+@use '../../../../styles/00-settings/variables' as *;
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+
+  &:focus {
+    outline: 2px solid $color-primario-light;
+    outline-offset: 4px;
+  }
+}
+
+.logo__text {
+  font-family: $fuente-secundaria;
+  font-size: 1.5rem;
+  color: $color-letra-oscura;
+  background-color: $color-fondo-light;
+  padding: $espaciado-s;
+  border: $borde-brutal-thick;
+  border-radius: $radio-redondo;
+  box-shadow: $sombra-brutal-s;
+  text-align: center;
+  line-height: 1.1;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    display: block;
+  }
+}
+
+// --- Tamaños ---
+.logo--small {
+  .logo__text {
+    font-size: 1rem;
+    padding: $espaciado-xs;
+    width: 70px;
+    height: 70px;
+  }
+}
+
+.logo--large {
+  .logo__text {
+    font-size: 2rem;
+    padding: $espaciado-m;
+    width: 140px;
+    height: 140px;
+  }
+}

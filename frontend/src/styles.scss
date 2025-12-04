@@ -1,1 +1,116 @@
-/* You can add global styles to this file, and also import other style files */
+@use 'styles/00-settings/variables' as *;
+
+/* ========================================
+   RESET Y ESTILOS BASE
+   ======================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: $fuente-principal;
+  font-size: $tamanio-fuente-parrafo;
+  line-height: $altura-linea-parrafo;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   VARIABLES CSS PARA MODO LIGHT/DARK
+   ======================================== */
+
+:root {
+  /* Modo light por defecto */
+  --color-fondo: #{$color-fondo-light};
+  --color-fondo-secundario: #{$color-fondo-light-secundario};
+  --color-texto: #{$color-letra-principal-light};
+  --color-primario: #{$color-primario-light};
+  --color-secundario: #{$color-secundario-light};
+  --color-contraste: #{$color-contraste-light};
+  --color-acentuado: #{$color-acentuado-light};
+  --sombra-brutal: #{$sombra-brutal-m};
+  --borde-brutal: #{$borde-brutal-medium};
+}
+
+[data-theme="dark"] {
+  --color-fondo: #{$color-fondo-oscuro};
+  --color-fondo-secundario: #{$color-fondo-oscuro-secundario};
+  --color-texto: #{$color-letra-principal-dark};
+  --color-primario: #{$color-primario-dark};
+  --color-secundario: #{$color-secundario-dark};
+  --color-contraste: #{$color-contraste-dark};
+  --color-acentuado: #{$color-acentuado-dark};
+}
+
+/* ========================================
+   TIPOGRAFÍA
+   ======================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $fuente-principal;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+h1 {
+  font-size: $tamanio-fuente-h1;
+  line-height: $altura-linea-h1;
+}
+
+h2 {
+  font-size: $tamanio-fuente-h2;
+  line-height: $altura-linea-h2;
+}
+
+h3 {
+  font-size: $tamanio-fuente-h3;
+  line-height: $altura-linea-h3;
+}
+
+h4 {
+  font-size: $tamanio-fuente-h4;
+  line-height: $altura-linea-h4;
+}
+
+p {
+  margin-bottom: $espaciado-s;
+}
+
+a {
+  color: var(--color-primario);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--color-secundario);
+  }
+}
+
+/* ========================================
+   UTILIDADES
+   ======================================== */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

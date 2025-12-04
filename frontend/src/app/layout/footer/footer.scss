@@ -1,0 +1,58 @@
+@use '../../../styles/00-settings/variables' as *;
+
+.footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+}
+
+.footer__top-bar {
+  background-color: $color-fondo-light;
+  padding: $espaciado-s;
+  display: flex;
+  justify-content: center;
+  border-top: $borde-brutal-medium;
+}
+
+.footer__content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $espaciado-m $espaciado-s;
+  min-height: 150px;
+  overflow: hidden;
+}
+
+.footer__stripes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  
+  background: linear-gradient(
+    315deg,
+    $color-franja-1 0%,
+    $color-franja-1 10%,
+    $color-franja-2 10%,
+    $color-franja-2 22%,
+    $color-franja-3 22%,
+    $color-franja-3 40%,
+    $color-franja-4 40%,
+    $color-franja-4 58%,
+    $color-franja-5 58%,
+    $color-franja-5 76%,
+    $color-franja-6 76%,
+    $color-franja-6 100%
+  );
+}
+
+.footer__logo-link {
+  position: relative;
+  z-index: 1;
+  text-decoration: none;
+}

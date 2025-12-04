@@ -1,0 +1,141 @@
+@use '../../../../styles/00-settings/variables' as *;
+
+// --- Botón base ---
+.btn {
+  font-family: $fuente-principal;
+  font-size: $tamanio-fuente-parrafo;
+  font-weight: 600;
+  padding: $espaciado-xs $espaciado-s;
+  border: $borde-brutal-medium;
+  border-radius: $radio-s;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $espaciado-xs;
+
+  &:hover {
+    transform: translate(2px, 2px);
+  }
+
+  &:active {
+    transform: translate(4px, 4px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    transform: none;
+  }
+}
+
+// --- Variantes ---
+.btn--primario {
+  background-color: $color-primario-light;
+  color: $color-letra-oscura;
+  box-shadow: $sombra-brutal-s;
+
+  &:hover:not(:disabled) {
+    box-shadow: $sombra-brutal-hover;
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: $sombra-brutal-active;
+  }
+}
+
+.btn--secundario {
+  background-color: $color-secundario-light;
+  color: $color-letra-blanca;
+  box-shadow: $sombra-brutal-s;
+
+  &:hover:not(:disabled) {
+    box-shadow: $sombra-brutal-hover;
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: $sombra-brutal-active;
+  }
+}
+
+.btn--contraste {
+  background-color: $color-contraste-light;
+  color: $color-letra-blanca;
+  box-shadow: $sombra-brutal-s;
+
+  &:hover:not(:disabled) {
+    box-shadow: $sombra-brutal-hover;
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: $sombra-brutal-active;
+  }
+}
+
+.btn--acentuado {
+  background-color: $color-acentuado-light;
+  color: $color-letra-blanca;
+  box-shadow: $sombra-brutal-s;
+
+  &:hover:not(:disabled) {
+    box-shadow: $sombra-brutal-hover;
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: $sombra-brutal-active;
+  }
+}
+
+.btn--outline {
+  background-color: transparent;
+  color: $color-letra-oscura;
+  box-shadow: $sombra-brutal-s;
+
+  &:hover:not(:disabled) {
+    background-color: $color-fondo-light-secundario;
+    box-shadow: $sombra-brutal-hover;
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: $sombra-brutal-active;
+  }
+}
+
+.btn--vinilo {
+  background-color: $color-primario-light;
+  color: $color-letra-oscura;
+  box-shadow: $sombra-vinilo-m;
+
+  &:hover:not(:disabled) {
+    box-shadow: $sombra-vinilo-s;
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: none;
+  }
+}
+
+// --- Tamaños ---
+.btn--small {
+  font-size: $tamanio-fuente-texto-pequeno-s;
+  padding: calc($espaciado-xs / 2) $espaciado-xs;
+}
+
+.btn--medium {
+  font-size: $tamanio-fuente-parrafo;
+  padding: $espaciado-xs $espaciado-s;
+}
+
+.btn--large {
+  font-size: $tamanio-fuente-h4;
+  padding: $espaciado-s $espaciado-m;
+}
+
+// --- Full width ---
+.btn--full {
+  width: 100%;
+}
