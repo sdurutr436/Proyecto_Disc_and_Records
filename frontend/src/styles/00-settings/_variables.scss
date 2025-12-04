@@ -215,3 +215,15 @@ $radio-l: 12px;
 $radio-xl: 16px;
 $radio-redondo: 50%;    // Para elementos circulares
 $radio-pildora: 9999px; // Para botones tipo píldora
+
+/* ========================================
+   VARIABLES DE TRANSICIONES
+   ======================================== */
+$transicion-rapida: 150ms ease-in-out;   // Cambios rápidos (hover, focus)
+$transicion-base: 300ms ease-in-out;     // Transiciones estándar
+$transicion-lenta: 500ms ease-in-out;    // Transiciones complejas (modales, acordeones)
+$transicion-muy-lenta: 700ms ease-in-out; // Animaciones decorativas
+
+/* Funciones de timing específicas */
+$ease-brutal: cubic-bezier(0.25, 0.46, 0.45, 0.94);  // Transición "snappy" para neobrutalismo
+$ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); // Efecto rebote retro

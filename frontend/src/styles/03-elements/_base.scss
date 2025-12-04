@@ -1,0 +1,266 @@
+@use '../00-settings/_variables' as vars;
+
+/* ========================================
+   ESTILOS BASE DE ELEMENTOS HTML
+   Sin clases - aplicados directamente a tags
+   ======================================== */
+
+/* --- Tipografía base --- */
+html {
+  font-size: 16px; // Base para rem
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-parrafo;
+  line-height: vars.$altura-linea-parrafo;
+  color: vars.$color-letra-oscura;
+  background-color: vars.$color-fondo-light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Encabezados --- */
+h1 {
+  font-size: vars.$tamanio-fuente-h1;
+  line-height: vars.$altura-linea-h1;
+  font-weight: 700;
+  margin-bottom: vars.$espaciado-m;
+}
+
+h2 {
+  font-size: vars.$tamanio-fuente-h2;
+  line-height: vars.$altura-linea-h2;
+  font-weight: 600;
+  margin-bottom: vars.$espaciado-s;
+}
+
+h3 {
+  font-size: vars.$tamanio-fuente-h3;
+  line-height: vars.$altura-linea-h3;
+  font-weight: 600;
+  margin-bottom: vars.$espaciado-s;
+}
+
+h4, h5, h6 {
+  font-size: vars.$tamanio-fuente-h4;
+  line-height: vars.$altura-linea-h4;
+  font-weight: 500;
+  margin-bottom: vars.$espaciado-xs;
+}
+
+/* --- Párrafos y texto --- */
+p {
+  margin-bottom: vars.$espaciado-s;
+}
+
+small {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  line-height: vars.$altura-linea-texto-pequeno-s;
+}
+
+strong, b {
+  font-weight: 600;
+}
+
+em, i {
+  font-style: italic;
+}
+
+/* --- Enlaces --- */
+a {
+  color: vars.$color-primario-light;
+  text-decoration: none;
+  transition: color vars.$transicion-rapida;
+  
+  &:hover {
+    color: vars.$color-secundario-light;
+    text-decoration: underline;
+  }
+  
+  &:focus-visible {
+    outline: 3px solid vars.$color-primario-light;
+    outline-offset: 2px;
+  }
+}
+
+/* --- Botones base --- */
+button {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-parrafo;
+  font-weight: 600;
+  cursor: pointer;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-s;
+  padding: vars.$espaciado-xs vars.$espaciado-s;
+  background-color: vars.$color-primario-light;
+  color: vars.$color-letra-oscura;
+  box-shadow: vars.$sombra-brutal-s;
+  transition: all vars.$transicion-rapida;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  
+  &:hover {
+    box-shadow: vars.$sombra-brutal-hover;
+    transform: translate(2px, 2px);
+  }
+  
+  &:active {
+    box-shadow: vars.$sombra-brutal-active;
+    transform: translate(4px, 4px);
+  }
+  
+  &:focus-visible {
+    outline: 3px solid vars.$color-contraste-light;
+    outline-offset: 2px;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+/* --- Inputs y formularios --- */
+input, textarea, select {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-parrafo;
+  padding: vars.$espaciado-xs vars.$espaciado-s;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-s;
+  background-color: vars.$color-fondo-light;
+  color: vars.$color-letra-oscura;
+  box-shadow: vars.$sombra-brutal-s;
+  transition: all vars.$transicion-rapida;
+  width: 100%;
+  
+  &::placeholder {
+    color: vars.$color-letra-desactivado;
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: vars.$color-primario-light;
+    box-shadow: vars.$sombra-brutal-primario-light;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: vars.$color-fondo-light-secundario;
+  }
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* --- Listas --- */
+ul, ol {
+  margin-bottom: vars.$espaciado-s;
+  padding-left: vars.$espaciado-m;
+}
+
+li {
+  margin-bottom: vars.$espaciado-xs;
+}
+
+/* --- Imágenes --- */
+img {
+  border-radius: vars.$radio-s;
+}
+
+figure {
+  margin-bottom: vars.$espaciado-m;
+}
+
+figcaption {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  color: vars.$color-letra-desactivado;
+  margin-top: vars.$espaciado-xs;
+}
+
+/* --- Separadores --- */
+hr {
+  border: none;
+  border-top: vars.$borde-brutal-thin;
+  margin: vars.$espaciado-l 0;
+}
+
+/* --- Citas --- */
+blockquote {
+  border-left: 4px solid vars.$color-primario-light;
+  padding-left: vars.$espaciado-s;
+  margin: vars.$espaciado-m 0;
+  font-style: italic;
+  color: vars.$color-letra-desactivado;
+}
+
+/* --- Código --- */
+code {
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  background-color: vars.$color-fondo-light-secundario;
+  padding: 0.15em 0.4em;
+  border-radius: vars.$radio-xs;
+  border: 1px solid vars.$color-letra-desactivado;
+}
+
+pre {
+  background-color: vars.$color-letra-oscura;
+  color: vars.$color-letra-blanca;
+  padding: vars.$espaciado-s;
+  border-radius: vars.$radio-s;
+  border: vars.$borde-brutal-medium;
+  box-shadow: vars.$sombra-brutal-s;
+  overflow-x: auto;
+  
+  code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+  }
+}
+
+/* --- Tablas --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: vars.$espaciado-m;
+  border: vars.$borde-brutal-medium;
+  box-shadow: vars.$sombra-brutal-s;
+}
+
+th, td {
+  padding: vars.$espaciado-xs vars.$espaciado-s;
+  text-align: left;
+  border-bottom: vars.$borde-brutal-thin;
+}
+
+th {
+  background-color: vars.$color-primario-light;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+tr:nth-child(even) {
+  background-color: vars.$color-fondo-light-secundario;
+}
+
+/* --- Focus visible global (accesibilidad) --- */
+:focus-visible {
+  outline: 3px solid vars.$color-primario-light;
+  outline-offset: 2px;
+}
+
+/* --- Selección de texto --- */
+::selection {
+  background-color: vars.$color-primario-light;
+  color: vars.$color-letra-oscura;
+}

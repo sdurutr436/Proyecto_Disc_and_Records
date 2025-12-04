@@ -12,8 +12,8 @@
 // 3. GENERIC - Reset, normalización
 @use '02-generic/_reset';
 
-// 4. ELEMENTS - Estilos base para elementos HTML (pendiente)
-// @use '03-elements/_base';
+// 4. ELEMENTS - Estilos base para elementos HTML
+@use '03-elements/_base';
 
 // 5. LAYOUT - Estructuras de página, grid
 @use '04-layout/_grid';
