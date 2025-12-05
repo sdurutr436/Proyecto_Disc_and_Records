@@ -1,0 +1,96 @@
+<form class="login-form" (submit)="onSubmit($event)" method="post" novalidate>
+  <!-- Fieldset para agrupar campos de autenticación -->
+  <fieldset class="login-form__fieldset">
+    <legend class="login-form__legend">Inicia sesión en tu cuenta</legend>
+    
+    <!-- Campo de correo electrónico -->
+    <div class="login-form__field">
+      <label for="login-email" class="login-form__label">
+        Correo electrónico
+        <span class="login-form__required" aria-label="Campo requerido">*</span>
+      </label>
+      <input
+        id="login-email"
+        type="email"
+        name="email"
+        placeholder="tu@email.com"
+        required
+        [value]="email()"
+        (input)="onEmailChange($event)"
+        class="login-form__input"
+        [class.login-form__input--error]="emailError()"
+        [attr.aria-invalid]="emailError()"
+        [attr.aria-describedby]="emailError() ? 'email-error' : 'email-help'"
+        autocomplete="email" />
+      
+      <!-- Mensaje de error -->
+      <span 
+        *ngIf="emailError()" 
+        id="email-error"
+        class="login-form__error"
+        role="alert">
+        {{ emailErrorMessage() }}
+      </span>
+      
+      <!-- Texto de ayuda -->
+      <span 
+        *ngIf="!emailError()" 
+        id="email-help"
+        class="login-form__help">
+        Introduce el correo con el que te registraste
+      </span>
+    </div>
+    
+    <!-- Campo de contraseña -->
+    <div class="login-form__field">
+      <label for="login-password" class="login-form__label">
+        Contraseña
+        <span class="login-form__required" aria-label="Campo requerido">*</span>
+      </label>
+      <input
+        id="login-password"
+        type="password"
+        name="password"
+        placeholder="••••••••"
+        required
+        [value]="password()"
+        (input)="onPasswordChange($event)"
+        class="login-form__input"
+        [class.login-form__input--error]="passwordError()"
+        [attr.aria-invalid]="passwordError()"
+        [attr.aria-describedby]="passwordError() ? 'password-error' : 'password-help'"
+        autocomplete="current-password" />
+      
+      <!-- Mensaje de error -->
+      <span 
+        *ngIf="passwordError()" 
+        id="password-error"
+        class="login-form__error"
+        role="alert">
+        {{ passwordErrorMessage() }}
+      </span>
+      
+      <!-- Texto de ayuda -->
+      <span 
+        *ngIf="!passwordError()" 
+        id="password-help"
+        class="login-form__help">
+        Mínimo 8 caracteres
+      </span>
+    </div>
+  </fieldset>
+  
+  <!-- Botón de submit -->
+  <button 
+    type="submit" 
+    class="login-form__submit"
+    [disabled]="isSubmitting()"
+    [attr.aria-busy]="isSubmitting()">
+    {{ isSubmitting() ? 'INICIANDO SESIÓN...' : 'INICIAR SESIÓN' }}
+  </button>
+  
+  <!-- Link de recuperación de contraseña -->
+  <div class="login-form__footer">
+    <a href="#" class="login-form__link">¿Olvidaste tu contraseña?</a>
+  </div>
+</form>
