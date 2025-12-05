@@ -1,0 +1,45 @@
+<div class="form-input-wrapper">
+  <!-- Label con asociación al input mediante 'for' -->
+  <label 
+    [for]="inputId" 
+    class="form-input__label"
+    [class.form-input__label--required]="required">
+    {{ label }}
+    <span class="form-input__required-indicator" *ngIf="required" aria-label="Campo requerido">*</span>
+  </label>
+  
+  <!-- Input con todos los atributos necesarios -->
+  <input 
+    [id]="inputId"
+    [type]="type"
+    [name]="name"
+    [placeholder]="placeholder"
+    [required]="required"
+    [disabled]="disabled"
+    [value]="currentValue()"
+    (input)="onInputChange($event)"
+    class="form-input__field"
+    [class.form-input__field--error]="hasError"
+    [class.form-input__field--success]="hasSuccess"
+    [class.form-input__field--disabled]="disabled"
+    [attr.aria-describedby]="(helpText || errorMessage) ? inputId + '-description' : null"
+    [attr.aria-invalid]="hasError"
+    [attr.aria-required]="required" />
+  
+  <!-- Mensaje de error (solo se muestra si hay error) -->
+  <span 
+    *ngIf="hasError && errorMessage" 
+    [id]="inputId + '-description'"
+    class="form-input__error"
+    role="alert">
+    {{ errorMessage }}
+  </span>
+  
+  <!-- Texto de ayuda (solo se muestra si no hay error) -->
+  <span 
+    *ngIf="!hasError && helpText" 
+    [id]="inputId + '-description'"
+    class="form-input__help">
+    {{ helpText }}
+  </span>
+</div>

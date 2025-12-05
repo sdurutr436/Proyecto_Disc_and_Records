@@ -1,0 +1,110 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+.form-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-xs;
+  width: 100%;
+}
+
+/* --- Label --- */
+.form-input__label {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  font-weight: 500;
+  color: vars.$color-letra-oscura;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.form-input__label--required {
+  font-weight: 600;
+}
+
+.form-input__required-indicator {
+  color: vars.$color-error;
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+/* --- Input Field --- */
+.form-input__field {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-parrafo;
+  padding: vars.$espaciado-xs vars.$espaciado-s;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-s;
+  background-color: vars.$color-fondo-light;
+  color: vars.$color-letra-oscura;
+  box-shadow: vars.$sombra-brutal-s;
+  transition: all vars.$transicion-rapida;
+  width: 100%;
+  outline: none;
+  
+  &::placeholder {
+    color: vars.$color-letra-desactivado;
+  }
+  
+  &:focus {
+    border-color: vars.$color-primario-light;
+    box-shadow: vars.$sombra-brutal-primario-light;
+  }
+  
+  &:hover:not(:disabled) {
+    box-shadow: vars.$sombra-brutal-hover;
+    transform: translate(2px, 2px);
+  }
+}
+
+/* --- Estados del Input --- */
+.form-input__field--error {
+  border-color: vars.$color-error;
+  box-shadow: 4px 4px 0px vars.$color-error;
+  
+  &:focus {
+    box-shadow: 4px 4px 0px vars.$color-error;
+  }
+}
+
+.form-input__field--success {
+  border-color: vars.$color-exito;
+  box-shadow: 4px 4px 0px vars.$color-exito;
+  
+  &:focus {
+    box-shadow: 4px 4px 0px vars.$color-exito;
+  }
+}
+
+.form-input__field--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: vars.$color-fondo-light-secundario;
+  
+  &:hover {
+    box-shadow: vars.$sombra-brutal-s;
+    transform: none;
+  }
+}
+
+/* --- Mensaje de Error --- */
+.form-input__error {
+  font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  color: vars.$color-error;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  
+  &::before {
+    content: '⚠';
+    font-size: 1rem;
+  }
+}
+
+/* --- Texto de Ayuda --- */
+.form-input__help {
+  font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  color: vars.$color-letra-desactivado;
+  font-style: italic;
+}

@@ -2,7 +2,7 @@
 
 > **Proyecto:** Discs & Records  
 > **Fase:** 1 - Fundamentos y Arquitectura CSS  
-> **Entrega:** 18 de diciembre de 2024  
+> **Entrega:** 18 de diciembre de 2025  
 > **Showcase desplegado:** https://styles-disc-n-records-showcase.netlify.app/showcase.html
 
 ---
