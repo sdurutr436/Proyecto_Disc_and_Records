@@ -24,25 +24,25 @@ Por eso decidí **volver al concepto inicial** de diseño "blocky", pero ahora c
 
 Lo importante es que este cambio estético **no altera la estructura funcional** que ya tenía definida: la posición de los botones, los tipos de cards, los carruseles y la navegación se mantienen exactamente igual. Solo evoluciona el aspecto visual hacia esa estética retro-brutal que mejor representa la identidad de "Discs & Records".
 
-![Showcase paleta de colores nueva](./img/showcase-paleta-colores-light.png)
+![Showcase paleta de colores nueva](./img-fase1/showcase-paleta-colores-light.png)
 
-![Showcase paleta de colores nueva: frios](./img/showcase-modo-oscuro-light.png)
+![Showcase paleta de colores nueva: frios](./img-fase1/showcase-modo-oscuro-light.png)
 
-![Showcase tipografía](./img/showcase-tipografia-light.png)
+![Showcase tipografía](./img-fase1/showcase-tipografia-light.png)
 
-![Showcase botones](./img/showcase-botones-neobrutalistas-light.png)
+![Showcase botones](./img-fase1/showcase-botones-neobrutalistas-light.png)
 
-![Showcase Inputs](./img/showcase-inputs-light.png)
+![Showcase Inputs](./img-fase1/showcase-inputs-light.png)
 
-![Showcase controles de seleccion](./img/showcase-controles-seleccion-light.png)
+![Showcase controles de seleccion](./img-fase1/showcase-controles-seleccion-light.png)
 
-![Showcase navegación](./img/showcase-navegacion-light.png)
+![Showcase navegación](./img-fase1/showcase-navegacion-light.png)
 
-![Showcase badges](./img/showcase-badges-tags-light.png)
+![Showcase badges](./img-fase1/showcase-badges-tags-light.png)
 
-![Showcase barra de progreso](./img/showcase-progress-bars-light.png)
+![Showcase barra de progreso](./img-fase1/showcase-progress-bars-light.png)
 
-![Showcase alertas neon](./img/showcase-alertas-neon-light.png)
+![Showcase alertas neon](./img-fase1/showcase-alertas-neon-light.png)
 
 ---
 
@@ -60,7 +60,7 @@ La jerarquía visual se establece mediante una escala tipográfica bien definida
 
 - **Nivel 5 - Elementos de apoyo:** *Labels* como "Busca lo que más te guste" y controles del carrusel (flechas) usan tamaños menores para no competir con el contenido principal.
 
-![Principio 1: Jerarquía - Vista general con niveles señalados](img/pagina_principal-vistazo_jeraraquia.png)
+![Principio 1: Jerarquía - Vista general con niveles señalados](img-fase1/pagina_principal-vistazo_jeraraquia.png)
 
 ---
 
@@ -78,9 +78,9 @@ El contraste se aplica de múltiples formas para diferenciar elementos y mejorar
 
 - **Contraste neobrutalista:** Los bordes negros sólidos (3px) contra fondos de colores vivos crean una separación visual muy marcada, característica del estilo.
 
-![Principio 2: Contraste - Modo claro](img/pagina_principal-vistazo_jeraraquia.png)
+![Principio 2: Contraste - Modo claro](img-fase1/pagina_principal-vistazo_jeraraquia.png)
 
-![Principio 2: Contraste - Modo oscuro](img/pagina_principal-vistazo_modo_oscuro.png)
+![Principio 2: Contraste - Modo oscuro](img-fase1/pagina_principal-vistazo_modo_oscuro.png)
 
 ---
 
@@ -98,7 +98,7 @@ La estrategia de alineación combina múltiples técnicas según el contexto de 
 
 - **Tabs centrados:** Los botones "Reseñas", "Álbumes" y "Canciones" se agrupan y centran sobre el grid de contenido.
 
-![Principio 3: Alineación - Página de perfil](img/perfil_usuario-alineacion.png)
+![Principio 3: Alineación - Página de perfil](img-fase1/perfil_usuario-alineacion.png)
 
 **En elementos globales:**
 
@@ -108,7 +108,7 @@ La estrategia de alineación combina múltiples técnicas según el contexto de 
 
 - **Contenedores neobrutalistas:** Los grids de álbumes están envueltos en contenedores con borde naranja/rojo grueso (#CA6703) que delimitan visualmente el área de contenido.
 
-![Principio 3: Alineación - Elementos globales](img/perfil_usuario-alineacion.png)
+![Principio 3: Alineación - Elementos globales](img-fase1/perfil_usuario-alineacion.png)
 
 ---
 
@@ -126,7 +126,7 @@ El espaciado agrupa elementos relacionados y separa secciones distintas:
 
 - **Franjas decorativas:** Las líneas de colores en el header están muy próximas entre sí (sin gap), formando un único elemento decorativo cohesivo.
 
-![Principio 4: Proximidad - Carruseles y secciones](img/carruseles-ejemplo-proximidad.png)
+![Principio 4: Proximidad - Carruseles y secciones](img-fase1/carruseles-ejemplo-proximidad.png)
 
 ---
 
@@ -146,7 +146,7 @@ La coherencia visual se logra repitiendo patrones en toda la interfaz:
 
 - **Espaciado modular:** Se repiten los mismos valores de espaciado ($espaciado-s: 1rem, $espaciado-m: 2rem, $espaciado-l: 3rem) en toda la aplicación.
 
-![Principio 5: Repetición - Patrones visuales consistentes](img/carruseles-ejemplo-proximidad.png)
+![Principio 5: Repetición - Patrones visuales consistentes](img-fase1/carruseles-ejemplo-proximidad.png)
 
 ---
 
@@ -287,7 +287,7 @@ Los design tokens son variables SCSS que centralizan todos los valores de diseñ
 | `$color-exito` | #AAD661 | Confirmaciones, éxito |
 | `$color-informacion` | #0A9295 | Información, tips |
 
-![Design Tokens: Paleta de colores completa](img/showcase-paleta-colores-light.png)
+![Design Tokens: Paleta de colores completa](img-fase1/showcase-paleta-colores-light.png)
 
 ---
 
@@ -391,7 +391,7 @@ $sombra-neon-error: 0px 0px 10px $color-error, 0px 0px 20px $color-error;
 $sombra-neon-exito: 0px 0px 10px $color-exito, 0px 0px 20px $color-exito;
 ```
 
-![Design Tokens: Sombras neobrutalistas](img/showcase-botones-neobrutalistas-light.png)
+![Design Tokens: Sombras neobrutalistas](img-fase1/showcase-botones-neobrutalistas-light.png)
 
 ---
 
@@ -633,6 +633,6 @@ El showcase incluye ejemplos de:
 | Estilos base HTML | `03-elements/_base.scss` | ✅ |
 | Sistema de grid | `04-layout/_grid.scss` | ✅ |
 | Documentación | `docs/design/DOCUMENTACION.md` | ✅ |
-| Capturas de Figma | `docs/design/img/` | ✅ |
+| Capturas de Figma | `docs/design/img-fase1/` | ✅ |
 
 ---
