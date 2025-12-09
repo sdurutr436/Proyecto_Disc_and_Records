@@ -1,0 +1,226 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+/* --- Bloque Sidebar --- */
+.sidebar {
+  width: 100%;
+  background-color: vars.$color-fondo-light-secundario;
+  border: vars.$borde-brutal-thick;
+  border-radius: vars.$radio-s;
+  box-shadow: vars.$sombra-brutal-m;
+  
+  @media (min-width: vars.$breakpoint-desktop) {
+    width: 300px;
+    position: sticky;
+    top: calc(70px + vars.$espaciado-m); // Altura del header + espaciado
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+}
+
+/* --- Elemento: Container --- */
+.sidebar__container {
+  padding: vars.$espaciado-m;
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-l;
+}
+
+/* --- Elemento: Section --- */
+.sidebar__section {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-s;
+  padding-bottom: vars.$espaciado-m;
+  border-bottom: vars.$borde-brutal-thin;
+  
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+/* --- Elemento: Title --- */
+.sidebar__title {
+  font-size: vars.$tamanio-fuente-texto-pequeno-m;
+  font-weight: 600;
+  color: vars.$color-letra-oscura;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --- Elemento: User --- */
+.sidebar__user {
+  display: flex;
+  align-items: center;
+  gap: vars.$espaciado-s;
+  padding: vars.$espaciado-s;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-s;
+  background-color: vars.$color-fondo-light;
+  box-shadow: vars.$sombra-brutal-s;
+  transition: all vars.$transicion-rapida;
+  
+  &:hover {
+    box-shadow: vars.$sombra-brutal-hover;
+    transform: translate(2px, 2px);
+  }
+}
+
+.sidebar__user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: vars.$color-contraste-light;
+  color: vars.$color-letra-oscura;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: vars.$tamanio-fuente-texto-pequeno-m;
+  border: vars.$borde-brutal-medium;
+  flex-shrink: 0;
+}
+
+.sidebar__user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow: hidden;
+}
+
+.sidebar__user-name {
+  font-weight: 600;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  color: vars.$color-letra-oscura;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar__user-stats {
+  font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  color: vars.$color-letra-desactivado;
+  margin: 0;
+}
+
+/* --- Elemento: Nav --- */
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-s;
+}
+
+.sidebar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-xs;
+}
+
+.sidebar__list-item {
+  // Sin estilos específicos
+}
+
+/* --- Elemento: Link --- */
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: vars.$espaciado-s;
+  padding: vars.$espaciado-xs vars.$espaciado-s;
+  text-decoration: none;
+  color: vars.$color-letra-oscura;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-s;
+  background-color: transparent;
+  transition: all vars.$transicion-rapida;
+  
+  &:hover {
+    background-color: vars.$color-fondo-light;
+    box-shadow: vars.$sombra-brutal-s;
+    transform: translate(2px, 2px);
+  }
+  
+  &:focus-visible {
+    outline: 3px solid vars.$color-primario-light;
+    outline-offset: 2px;
+  }
+}
+
+/* --- Modificador: Link Activo --- */
+.sidebar__link--active {
+  background-color: vars.$color-primario-light;
+  box-shadow: vars.$sombra-brutal-s;
+  font-weight: 600;
+}
+
+.sidebar__link-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.sidebar__link-text {
+  flex: 1;
+}
+
+/* --- Elemento: Trending --- */
+.sidebar__trending {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-xs;
+}
+
+.sidebar__trending-item {
+  display: flex;
+  align-items: center;
+  gap: vars.$espaciado-s;
+  padding: vars.$espaciado-xs vars.$espaciado-s;
+  border: vars.$borde-brutal-thin;
+  border-radius: vars.$radio-s;
+  background-color: vars.$color-fondo-light;
+  transition: all vars.$transicion-rapida;
+  
+  &:hover {
+    box-shadow: vars.$sombra-brutal-s;
+    transform: translate(2px, 2px);
+  }
+}
+
+.sidebar__trending-number {
+  font-weight: 700;
+  font-size: vars.$tamanio-fuente-texto-pequeno-m;
+  color: vars.$color-primario-light;
+  flex-shrink: 0;
+}
+
+.sidebar__trending-text {
+  font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  color: vars.$color-letra-oscura;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Scrollbar personalizado (opcional) --- */
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: vars.$color-fondo-light-secundario;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: vars.$color-primario-light;
+  border-radius: vars.$radio-xs;
+  border: 2px solid vars.$color-fondo-light-secundario;
+  
+  &:hover {
+    background: vars.$color-secundario-light;
+  }
+}

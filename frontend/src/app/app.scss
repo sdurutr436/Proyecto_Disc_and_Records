@@ -1,12 +1,12 @@
-@use '../styles/00-settings/variables' as *;
+@use '../styles/00-settings/variables' as vars;
 
 :host {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: var(--color-fondo);
-  color: var(--color-texto);
-  font-family: $fuente-principal;
+  background-color: vars.$color-fondo-light;
+  color: vars.$color-letra-oscura;
+  font-family: vars.$fuente-principal;
 }
 
 router-outlet + * {

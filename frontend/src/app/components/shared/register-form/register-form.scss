@@ -1,0 +1,190 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-m;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: vars.$espaciado-l;
+  background-color: vars.$color-fondo-light;
+  border: vars.$borde-brutal-thick;
+  border-radius: vars.$radio-s;
+  box-shadow: vars.$sombra-brutal-m;
+}
+
+/* --- Fieldset --- */
+.register-form__fieldset {
+  border: vars.$borde-brutal-thin;
+  border-radius: vars.$radio-xs;
+  padding: vars.$espaciado-m;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-m;
+  background-color: vars.$color-fondo-light-secundario;
+}
+
+/* --- Legend --- */
+.register-form__legend {
+  font-size: vars.$tamanio-fuente-h4;
+  font-weight: 600;
+  color: vars.$color-letra-oscura;
+  padding: 0 vars.$espaciado-xs;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --- Campo individual --- */
+.register-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-xs;
+}
+
+/* --- Label --- */
+.register-form__label {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  font-weight: 500;
+  color: vars.$color-letra-oscura;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.register-form__required {
+  color: vars.$color-error;
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+/* --- Input --- */
+.register-form__input {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-parrafo;
+  padding: vars.$espaciado-xs vars.$espaciado-s;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-s;
+  background-color: vars.$color-fondo-light;
+  color: vars.$color-letra-oscura;
+  box-shadow: vars.$sombra-brutal-s;
+  transition: all vars.$transicion-rapida;
+  width: 100%;
+  outline: none;
+  
+  &::placeholder {
+    color: vars.$color-letra-desactivado;
+  }
+  
+  &:focus {
+    border-color: vars.$color-primario-light;
+    box-shadow: vars.$sombra-brutal-primario-light;
+  }
+  
+  &:hover:not(:disabled) {
+    box-shadow: vars.$sombra-brutal-hover;
+    transform: translate(2px, 2px);
+  }
+}
+
+.register-form__input--error {
+  border-color: vars.$color-error;
+  box-shadow: 4px 4px 0px vars.$color-error;
+  
+  &:focus {
+    box-shadow: 4px 4px 0px vars.$color-error;
+  }
+}
+
+/* --- Mensajes --- */
+.register-form__error {
+  font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  color: vars.$color-error;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  
+  &::before {
+    content: '⚠';
+    font-size: 1rem;
+  }
+}
+
+.register-form__help {
+  font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  color: vars.$color-letra-desactivado;
+  font-style: italic;
+}
+
+/* --- Botón Submit --- */
+.register-form__submit {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-parrafo;
+  font-weight: 600;
+  padding: vars.$espaciado-s vars.$espaciado-m;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-s;
+  background-color: vars.$color-primario-light;
+  color: vars.$color-letra-oscura;
+  box-shadow: vars.$sombra-brutal-s;
+  transition: all vars.$transicion-rapida;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: 100%;
+  margin-top: vars.$espaciado-s;
+  
+  &:hover:not(:disabled) {
+    box-shadow: vars.$sombra-brutal-hover;
+    transform: translate(2px, 2px);
+  }
+  
+  &:active:not(:disabled) {
+    box-shadow: vars.$sombra-brutal-active;
+    transform: translate(4px, 4px);
+  }
+  
+  &:focus-visible {
+    outline: 3px solid vars.$color-contraste-light;
+    outline-offset: 2px;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: vars.$sombra-brutal-s;
+    transform: none;
+  }
+}
+
+/* --- Footer --- */
+.register-form__footer {
+  text-align: center;
+  margin-top: vars.$espaciado-xs;
+}
+
+.register-form__footer-text {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  color: vars.$color-letra-oscura;
+  margin: 0;
+}
+
+.register-form__link {
+  color: vars.$color-primario-light;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color vars.$transicion-rapida;
+  
+  &:hover {
+    color: vars.$color-secundario-light;
+    text-decoration: underline;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid vars.$color-primario-light;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}

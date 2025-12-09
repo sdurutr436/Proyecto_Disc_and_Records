@@ -1,1 +1,71 @@
-<p>sidebar works!</p>
+<aside class="sidebar">
+  <div class="sidebar__container">
+    <!-- Sección de usuario -->
+    <div class="sidebar__section">
+      <h3 class="sidebar__title">Mi perfil</h3>
+      <div class="sidebar__user">
+        <div class="sidebar__user-avatar">SG</div>
+        <div class="sidebar__user-info">
+          <p class="sidebar__user-name">Sergio García</p>
+          <p class="sidebar__user-stats">127 álbumes</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Navegación secundaria -->
+    <nav class="sidebar__nav" aria-label="Navegación secundaria">
+      <h3 class="sidebar__title">Actividad</h3>
+      <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+          <a href="#" class="sidebar__link sidebar__link--active">
+            <span class="sidebar__link-icon">📊</span>
+            <span class="sidebar__link-text">Estadísticas</span>
+          </a>
+        </li>
+        <li class="sidebar__list-item">
+          <a href="#" class="sidebar__link">
+            <span class="sidebar__link-icon">⭐</span>
+            <span class="sidebar__link-text">Favoritos</span>
+          </a>
+        </li>
+        <li class="sidebar__list-item">
+          <a href="#" class="sidebar__link">
+            <span class="sidebar__link-icon">💬</span>
+            <span class="sidebar__link-text">Reseñas</span>
+          </a>
+        </li>
+        <li class="sidebar__list-item">
+          <a href="#" class="sidebar__link">
+            <span class="sidebar__link-icon">📝</span>
+            <span class="sidebar__link-text">Listas</span>
+          </a>
+        </li>
+        <li class="sidebar__list-item">
+          <a href="#" class="sidebar__link">
+            <span class="sidebar__link-icon">👥</span>
+            <span class="sidebar__link-text">Amigos</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <!-- Sección de tendencias -->
+    <div class="sidebar__section">
+      <h3 class="sidebar__title">Tendencias</h3>
+      <div class="sidebar__trending">
+        <div class="sidebar__trending-item">
+          <span class="sidebar__trending-number">#1</span>
+          <span class="sidebar__trending-text">Abbey Road</span>
+        </div>
+        <div class="sidebar__trending-item">
+          <span class="sidebar__trending-number">#2</span>
+          <span class="sidebar__trending-text">Dark Side of the Moon</span>
+        </div>
+        <div class="sidebar__trending-item">
+          <span class="sidebar__trending-number">#3</span>
+          <span class="sidebar__trending-text">Rumours</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>

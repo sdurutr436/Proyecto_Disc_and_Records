@@ -1,0 +1,246 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+/* --- Bloque Header --- */
+.header {
+  width: 100%;
+  border-bottom: vars.$borde-brutal-thick;
+  background-color: vars.$color-fondo-light;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* --- Sección superior (botones + logo) --- */
+.header__top {
+  width: 100%;
+  background-color: vars.$color-primario-light;
+  padding: vars.$espaciado-m 0;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.header__top-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 vars.$espaciado-xs;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center; /* CAMBIO: center en lugar de space-between */
+  position: relative;
+  gap: 0 /* CAMBIO: gap más pequeño para juntar elementos */
+}
+
+/* --- Wrapper del logo (para posicionar barras detrás) --- */
+.header__logo-wrapper {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background-color: vars.$color-primario-light;
+  flex-shrink: 0; /* NUEVO: evita que el logo se comprima */
+}
+
+/* --- Barras de colores detrás del logo --- */
+.header__stripes {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 1200px; /* RESTAURADO: incluso más ancho que el original */
+  height: 1200px; /* Altura suficiente para las 5 barras */
+  z-index: 1;
+  pointer-events: none;
+}
+
+.header__stripes::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(to right,
+      transparent 0, transparent calc(50% - 2.5rem),
+      vars.$color-exito calc(50% - 2.5rem), vars.$color-exito calc(50% - 1.75rem),
+      transparent calc(50% - 1.75rem), transparent calc(50% - 1.25rem),
+      vars.$color-informacion calc(50% - 1.25rem), vars.$color-informacion calc(50% - 0.5rem),
+      transparent calc(50% - 0.5rem), transparent calc(50% - 0.25rem),
+      vars.$color-advertencia-light calc(50% - 0.25rem), vars.$color-advertencia-light calc(50% + 0.25rem),
+      transparent calc(50% + 0.25rem), transparent calc(50% + 0.5rem),
+      vars.$color-advertencia-dark calc(50% + 0.5rem), vars.$color-advertencia-dark calc(50% + 1.25rem),
+      transparent calc(50% + 1.25rem), transparent calc(50% + 1.75rem),
+      vars.$color-error calc(50% + 1.75rem), vars.$color-error calc(50% + 2.5rem),
+      transparent calc(50% + 2.5rem), transparent 100%
+    );
+}
+
+/* --- Logo --- */
+.header__logo {
+  display: block;
+  height: 16rem;
+  width: auto;
+  position: relative;
+  z-index: 2;
+  transition: transform vars.$transicion-rapida;
+  
+  &:hover {
+    transform: rotate(25deg);
+  }
+}
+
+/* --- Contenedor de botones (ya no necesario como wrapper) --- */
+.header__buttons {
+  display: contents; /* CAMBIO CLAVE: elimina el contenedor del flujo */
+}
+
+/* --- Botones superiores --- */
+.header__btn {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  font-weight: 600;
+  padding: vars.$espaciado-s vars.$espaciado-xl;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-pildora;
+  background-color: vars.$color-fondo-light;
+  color: vars.$color-letra-oscura;
+  cursor: pointer;
+  transition: all vars.$transicion-rapida;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: vars.$sombra-brutal-s;
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+  min-width: 24rem; /* CAMBIO: min-width para botones del tamaño adecuado */
+  
+  &:hover {
+    box-shadow: vars.$sombra-brutal-hover;
+    transform: translate(2px, 2px);
+  }
+  
+  &:active {
+    box-shadow: vars.$sombra-brutal-active;
+    transform: translate(4px, 4px);
+  }
+  
+  &:focus-visible {
+    outline: 3px solid vars.$color-contraste-light;
+    outline-offset: 2px;
+  }
+}
+
+.header__btn--left {
+  order: 1;
+}
+
+.header__btn--right {
+  order: 3;
+}
+
+.header__logo-wrapper {
+  order: 2; /* El logo va en el centro */
+}
+
+/* --- Navegación inferior (sin cambios) --- */
+.header__nav {
+  width: 100%;
+  background-color: vars.$color-secundario-light;
+  border-top: vars.$borde-brutal-medium;
+  position: relative;
+  z-index: 1;
+}
+
+.header__nav-list {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.header__nav-item {
+  flex: 0 0 auto;
+  border-right: vars.$borde-brutal-thin;
+  
+  &:last-child {
+    border-right: none;
+  }
+}
+
+.header__nav-link {
+  display: block;
+  padding: vars.$espaciado-s vars.$espaciado-l;
+  text-decoration: none;
+  color: vars.$color-letra-oscura;
+  font-weight: 600;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  background-color: vars.$color-secundario-light;
+  transition: background-color vars.$transicion-rapida;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  
+  &:hover {
+    background-color: vars.$color-primario-light;
+  }
+  
+  &:focus-visible {
+    outline: 3px solid vars.$color-contraste-light;
+    outline-offset: -3px;
+  }
+}
+
+/* --- Responsive --- */
+@media (max-width: vars.$breakpoint-tablet) {
+  .header__top-container {
+    flex-direction: column; /* Vuelve a columna en móvil */
+    gap: vars.$espaciado-xs;
+  }
+  
+  .header__buttons {
+    display: flex;
+    width: 100%;
+    gap: vars.$espaciado-s;
+  }
+  
+  .header__btn--left,
+  .header__btn--right {
+    flex: 1;
+    min-width: auto;
+  }
+  
+  .header__logo-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .header__logo {
+    height: 80px;
+  }
+  
+  .header__stripes {
+    width: 400px;
+    height: 80px;
+  }
+  
+  .header__btn {
+    font-size: 0.7rem;
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+  }
+  
+  .header__nav-link {
+    font-size: 0.7rem;
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+  }
+  
+  .header__nav-item:nth-child(n+4) {
+    display: none;
+  }
+}

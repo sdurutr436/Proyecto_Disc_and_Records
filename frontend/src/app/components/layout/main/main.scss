@@ -1,0 +1,30 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+/* --- Bloque Main --- */
+.main {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: vars.$color-fondo-light;
+  min-height: calc(100vh - 200px); // Ajustar según altura de header/footer
+}
+
+/* --- Elemento: Container --- */
+.main__container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: vars.$espaciado-l vars.$espaciado-m;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-l;
+  
+  @media (min-width: vars.$breakpoint-tablet) {
+    padding: vars.$espaciado-xl vars.$espaciado-l;
+  }
+  
+  @media (min-width: vars.$breakpoint-desktop) {
+    padding: vars.$espaciado-xl vars.$espaciado-xl;
+  }
+}
