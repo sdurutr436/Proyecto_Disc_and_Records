@@ -1,5 +1,6 @@
 @use '../../../../styles/00-settings/variables' as vars;
 
+
 /* --- Bloque Footer --- */
 .footer {
   width: 100%;
@@ -8,7 +9,9 @@
   margin-top: auto;
   padding: vars.$espaciado-xl 0;
   overflow: hidden;
+  position: relative;
 }
+
 
 /* --- Contenido del footer --- */
 .footer__content {
@@ -16,19 +19,14 @@
   margin: 0 auto;
   padding: 0 vars.$espaciado-m;
   display: flex;
-  justify-content: center;
   align-items: center;
-}
-
-/* --- Wrapper del logo --- */
-.footer__logo-wrapper {
+  justify-content: center;
+  gap: 0;
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-/* --- Barras de colores detrás del logo (colores de apoyo) --- */
+
+/* --- Barras de colores --- */
 .footer__stripes {
   position: absolute;
   top: 50%;
@@ -36,9 +34,10 @@
   transform: translate(-50%, -50%) rotate(135deg);
   width: 1500px;
   height: 3000px;
-  z-index: -1;
+  z-index: 0;
   pointer-events: none;
 }
+
 
 .footer__stripes::before {
   content: '';
@@ -61,22 +60,186 @@
     );
 }
 
+
+/* --- Contenedor de botones --- */
+.footer__buttons-left,
+.footer__buttons-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+
+
+.footer__buttons-left {
+  align-items: flex-end;
+}
+
+
+.footer__buttons-right {
+  align-items: flex-start;
+}
+
+
+/* --- Wrapper del logo --- */
+.footer__logo-wrapper {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
 /* --- Logo --- */
 .footer__logo {
   display: block;
-  height: 120px;
+  height: 16rem;
   width: auto;
   position: relative;
-  z-index: 1;
   transition: transform vars.$transicion-rapida;
   
   &:hover {
-    transform: rotate(-5deg) scale(1.05);
+    transform: rotate(25deg);
   }
 }
 
+
+/* --- Botones del footer --- */
+.footer__btn {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  font-weight: 600;
+  padding: vars.$espaciado-xs vars.$espaciado-l;
+  border: vars.$borde-brutal-medium;
+  background-color: vars.$color-fondo-light;
+  color: vars.$color-letra-oscura;
+  cursor: pointer;
+  transition: all vars.$transicion-rapida;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: vars.$sombra-brutal-s;
+  position: relative;
+  white-space: nowrap;
+  min-width: 24rem;
+  
+  &:hover {
+    box-shadow: vars.$sombra-brutal-hover;
+    transform: translate(2px, 2px);
+  }
+  
+  &:active {
+    box-shadow: vars.$sombra-brutal-active;
+    transform: translate(4px, 4px);
+  }
+  
+  &:focus-visible {
+    outline: 3px solid vars.$color-contraste-light;
+    outline-offset: 2px;
+  }
+}
+
+
+/* Botones izquierdos: lado izquierdo redondeado */
+.footer__btn--left-top {
+  border-radius: vars.$radio-pildora 0 0 0;
+  border-right: none;
+}
+
+
+.footer__btn--left-middle {
+  background-color: vars.$color-primario-light;
+  min-width: 26.4rem; // 24rem * 1.1
+  border-right: none;
+  border-radius: vars.$radio-pildora 0 0 vars.$radio-pildora; // Redondeado izquierdo completo
+  border-top: vars.$borde-brutal-medium;
+  border-top-color: vars.$color-letra-oscura;
+}
+
+
+.footer__btn--left-bottom {
+  border-right: none;
+  border-radius: 0 0 0 vars.$radio-pildora;
+  border-top: vars.$borde-brutal-medium;
+}
+
+
+/* Botones derechos: lado derecho redondeado */
+.footer__btn--right-top {
+  border-radius: 0 vars.$radio-pildora 0 0;
+  border-left: none;
+}
+
+
+.footer__btn--right-middle {
+  background-color: vars.$color-primario-light;
+  min-width: 26.4rem; // 24rem * 1.1
+  border-left: none;
+  border-radius: 0 vars.$radio-pildora vars.$radio-pildora 0; // Redondeado derecho completo
+  border-top: vars.$borde-brutal-medium;
+  border-top-color: vars.$color-letra-oscura;
+}
+
+
+.footer__btn--right-bottom {
+  border-left: none;
+  border-radius: 0 0 vars.$radio-pildora 0;
+  border-top: vars.$borde-brutal-medium;
+}
+
+
 /* --- Responsive --- */
 @media (max-width: vars.$breakpoint-tablet) {
+  .footer__content {
+    flex-direction: column;
+    gap: vars.$espaciado-s;
+  }
+  
+  .footer__buttons-left,
+  .footer__buttons-right {
+    width: 100%;
+  }
+  
+  .footer__btn {
+    border: vars.$borde-brutal-medium;
+    border-radius: vars.$radio-pildora;
+    
+    &:not(:first-child) {
+      border-top: vars.$borde-brutal-medium;
+    }
+  }
+  
+  .footer__btn--left-top {
+    border-radius: vars.$radio-pildora vars.$radio-pildora 0 0;
+  }
+  
+  .footer__btn--left-middle,
+  .footer__btn--right-middle {
+    border-radius: 0;
+  }
+  
+  .footer__btn--left-bottom {
+    border-radius: 0 0 vars.$radio-pildora vars.$radio-pildora;
+  }
+  
+  .footer__btn--right-top {
+    border-radius: vars.$radio-pildora vars.$radio-pildora 0 0;
+    margin-top: vars.$espaciado-s;
+  }
+  
+  .footer__btn--right-bottom {
+    border-radius: 0 0 vars.$radio-pildora vars.$radio-pildora;
+  }
+  
+  .footer__logo-wrapper {
+    position: relative;
+    left: auto;
+    transform: none;
+  }
+  
   .footer__logo {
     height: 80px;
   }
