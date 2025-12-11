@@ -27,19 +27,19 @@
     [attr.aria-required]="required" />
   
   <!-- Mensaje de error (solo se muestra si hay error) -->
-  <span 
+  <p 
     *ngIf="hasError && errorMessage" 
     [id]="inputId + '-description'"
     class="form-input__error"
     role="alert">
     {{ errorMessage }}
-  </span>
+  </p>
   
   <!-- Texto de ayuda (solo se muestra si no hay error) -->
-  <span 
+  <p 
     *ngIf="!hasError && helpText" 
     [id]="inputId + '-description'"
     class="form-input__help">
     {{ helpText }}
-  </span>
+  </p>
 </div>

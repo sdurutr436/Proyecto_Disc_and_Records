@@ -24,21 +24,21 @@
         autocomplete="username" />
       
       <!-- Mensaje de error -->
-      <span 
+      <p 
         *ngIf="usernameError()" 
         id="username-error"
         class="register-form__error"
         role="alert">
         {{ usernameErrorMessage() }}
-      </span>
+      </p>
       
       <!-- Texto de ayuda -->
-      <span 
+      <p 
         *ngIf="!usernameError()" 
         id="username-help"
         class="register-form__help">
         Este será tu nombre visible en Discs & Records
-      </span>
+      </p>
     </div>
     
     <!-- Campo de correo electrónico (reutilizado de login) -->
@@ -62,21 +62,21 @@
         autocomplete="email" />
       
       <!-- Mensaje de error -->
-      <span 
+      <p 
         *ngIf="emailError()" 
         id="email-error"
         class="register-form__error"
         role="alert">
         {{ emailErrorMessage() }}
-      </span>
+      </p>
       
       <!-- Texto de ayuda -->
-      <span 
+      <p 
         *ngIf="!emailError()" 
         id="email-help"
         class="register-form__help">
         Lo usaremos para enviarte actualizaciones de tus álbumes favoritos
-      </span>
+      </p>
     </div>
   </fieldset>
   
