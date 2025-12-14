@@ -6,10 +6,13 @@ import { FormSelect, SelectOption } from '../../components/shared/form-select/fo
 import { FormCheckbox } from '../../components/shared/form-checkbox/form-checkbox';
 import { FormRadioGroup, RadioOption } from '../../components/shared/form-radio-group/form-radio-group';
 import { Breadcrumbs, BreadcrumbItem } from '../../components/shared/breadcrumbs/breadcrumbs';
+import { Alert } from '../../components/shared/alert/alert';
+import { Notification } from '../../components/shared/notification/notification';
 
 @Component({
   selector: 'app-style-guide',
-  imports: [Button, Card, FormTextarea, FormSelect, FormCheckbox, FormRadioGroup, Breadcrumbs],
+  standalone: true,
+  imports: [Button, Card, FormTextarea, FormSelect, FormCheckbox, FormRadioGroup, Breadcrumbs, Alert, Notification],
   templateUrl: './style-guide.html',
   styleUrl: './style-guide.scss',
 })
@@ -67,5 +70,46 @@ export class StyleGuide {
     { label: 'Rock', url: '/collection/albums/rock' },
     { label: 'The Dark Side of the Moon' }
   ];
+
+  // Control para mostrar notificaciones
+  showNotificationSuccess: boolean = false;
+  showNotificationError: boolean = false;
+  showNotificationWarning: boolean = false;
+  showNotificationInfo: boolean = false;
+
+  // Métodos para manejar notificaciones
+  showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
+    switch(type) {
+      case 'success':
+        this.showNotificationSuccess = true;
+        break;
+      case 'error':
+        this.showNotificationError = true;
+        break;
+      case 'warning':
+        this.showNotificationWarning = true;
+        break;
+      case 'info':
+        this.showNotificationInfo = true;
+        break;
+    }
+  }
+
+  hideNotification(type: 'success' | 'error' | 'warning' | 'info'): void {
+    switch(type) {
+      case 'success':
+        this.showNotificationSuccess = false;
+        break;
+      case 'error':
+        this.showNotificationError = false;
+        break;
+      case 'warning':
+        this.showNotificationWarning = false;
+        break;
+      case 'info':
+        this.showNotificationInfo = false;
+        break;
+    }
+  }
 }
 

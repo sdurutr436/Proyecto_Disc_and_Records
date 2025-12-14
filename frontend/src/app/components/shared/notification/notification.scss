@@ -1,15 +1,25 @@
 @use '../../../../styles/00-settings/variables' as vars;
 
-.alert {
+.notification {
+  position: fixed;
+  z-index: 9999;
   display: flex;
   align-items: flex-start;
   gap: vars.$espaciado-s;
   padding: vars.$espaciado-s vars.$espaciado-m;
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-s;
-  box-shadow: vars.$sombra-brutal-s;
+  box-shadow: vars.$sombra-brutal-m;
+  min-width: 300px;
+  max-width: 400px;
+  opacity: 0;
+  transform: translateX(400px);
   transition: all vars.$transicion-base;
-  width: 100%;
+
+  @media (max-width: vars.$breakpoint-tablet) {
+    min-width: 280px;
+    max-width: calc(100vw - 2rem);
+  }
 
   &__icon {
     flex-shrink: 0;
@@ -71,6 +81,40 @@
     }
   }
 
+  // Posiciones
+  &--top-right {
+    top: vars.$espaciado-m;
+    right: vars.$espaciado-m;
+  }
+
+  &--top-left {
+    top: vars.$espaciado-m;
+    left: vars.$espaciado-m;
+    transform: translateX(-400px);
+  }
+
+  &--bottom-right {
+    bottom: vars.$espaciado-m;
+    right: vars.$espaciado-m;
+  }
+
+  &--bottom-left {
+    bottom: vars.$espaciado-m;
+    left: vars.$espaciado-m;
+    transform: translateX(-400px);
+  }
+
+  // Estado visible
+  &--visible {
+    opacity: 1;
+    transform: translateX(0);
+
+    &.notification--top-left,
+    &.notification--bottom-left {
+      transform: translateX(0);
+    }
+  }
+
   // Tipos
   &--success {
     background-color: vars.$color-exito;
@@ -94,12 +138,5 @@
     background-color: vars.$color-informacion;
     border-color: vars.$color-letra-oscura;
     color: vars.$color-fondo-light;
-  }
-
-  // Estado oculto
-  &--hidden {
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
   }
 }

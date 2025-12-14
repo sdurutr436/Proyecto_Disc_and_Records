@@ -407,7 +407,7 @@
     <!-- Sección: Breadcrumbs (Navegación) -->
     <section class="style-guide__section">
       <h2>Breadcrumbs (Migas de pan)</h2>
-      
+
       <div class="showcase">
         <h3 class="showcase__title">Variantes</h3>
         <div class="showcase__column">
@@ -427,16 +427,16 @@
           </div>
 
           <div class="showcase__item showcase__item--full">
-            <app-breadcrumbs 
-              [items]="breadcrumbsSimple" 
+            <app-breadcrumbs
+              [items]="breadcrumbsSimple"
               separator="›"
             ></app-breadcrumbs>
             <code>Breadcrumbs con separador custom (›)</code>
           </div>
 
           <div class="showcase__item showcase__item--full">
-            <app-breadcrumbs 
-              [items]="breadcrumbsWithIcons" 
+            <app-breadcrumbs
+              [items]="breadcrumbsWithIcons"
               separator="→"
             ></app-breadcrumbs>
             <code>Breadcrumbs con separador custom (→)</code>
@@ -445,10 +445,174 @@
       </div>
     </section>
 
+    <!-- Sección: Elementos de Feedback -->
+    <section class="style-guide__section">
+      <h2>Elementos de Feedback</h2>
+
+      <!-- Alerts -->
+      <div class="showcase">
+        <h3 class="showcase__title">Alerts</h3>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <app-alert
+              type="success"
+              title="¡Éxito!"
+              message="Tu álbum se ha agregado correctamente a tu colección."
+            ></app-alert>
+            <code>Alert de éxito</code>
+          </div>
+
+          <div class="showcase__item showcase__item--full">
+            <app-alert
+              type="error"
+              title="Error"
+              message="No se pudo conectar con el servidor. Por favor, inténtalo de nuevo."
+            ></app-alert>
+            <code>Alert de error</code>
+          </div>
+
+          <div class="showcase__item showcase__item--full">
+            <app-alert
+              type="warning"
+              title="Advertencia"
+              message="Tu sesión caducará en 5 minutos. Guarda tus cambios."
+            ></app-alert>
+            <code>Alert de advertencia</code>
+          </div>
+
+          <div class="showcase__item showcase__item--full">
+            <app-alert
+              type="info"
+              title="Información"
+              message="Tenemos nueva música disponible en tu sección de recomendados."
+            ></app-alert>
+            <code>Alert de información</code>
+          </div>
+
+          <div class="showcase__item showcase__item--full">
+            <app-alert
+              type="success"
+              message="Operación completada correctamente."
+            ></app-alert>
+            <code>Alert sin título</code>
+          </div>
+
+          <div class="showcase__item showcase__item--full">
+            <app-alert
+              type="warning"
+              title="Cambios pendientes"
+              message="Tienes cambios sin guardar. ¿Deseas salir de todas formas?"
+              [dismissible]="true"
+            ></app-alert>
+            <code>Alert con botón cerrar</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications (Toast) -->
+      <div class="showcase">
+        <h3 class="showcase__title">Notifications (Toast)</h3>
+        <p class="showcase__description">
+          Las notificaciones aparecen flotando en las esquinas de la pantalla y se auto-descartan por defecto.
+        </p>
+
+        <div class="showcase__column">
+          <div class="showcase__item">
+            <app-button
+              (click)="showToast('success')"
+              variant="primary"
+              size="md"
+            >
+              Mostrar notificación de éxito
+            </app-button>
+            <code>position="top-right" (por defecto)</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-button
+              (click)="showToast('error')"
+              variant="danger"
+              size="md"
+            >
+              Mostrar notificación de error
+            </app-button>
+            <code>autoDismiss=true duration=5000ms</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-button
+              (click)="showToast('warning')"
+              variant="secondary"
+              size="md"
+            >
+              Mostrar notificación de advertencia
+            </app-button>
+            <code>Con título y mensaje</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-button
+              (click)="showToast('info')"
+              variant="ghost"
+              size="md"
+            >
+              Mostrar notificación de información
+            </app-button>
+            <code>Botón de cerrar manual</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Placeholder para futuras secciones -->
     <section class="style-guide__section style-guide__section--placeholder">
       <h2>Más componentes próximamente</h2>
-      <p>Alerts, modales, tooltips...</p>
+      <p>Modales, tooltips, dropdowns...</p>
     </section>
   </div>
+
+  <!-- Notificaciones flotantes -->
+  @if (showNotificationSuccess) {
+    <app-notification
+      type="success"
+      title="¡Guardado!"
+      message="Tu lista de reproducción se ha actualizado."
+      position="top-right"
+      [autoDismiss]="true"
+      (dismissed)="hideNotification('success')"
+    ></app-notification>
+  }
+
+  @if (showNotificationError) {
+    <app-notification
+      type="error"
+      title="Error de conexión"
+      message="No se pudo cargar la información del álbum."
+      position="top-right"
+      [autoDismiss]="true"
+      (dismissed)="hideNotification('error')"
+    ></app-notification>
+  }
+
+  @if (showNotificationWarning) {
+    <app-notification
+      type="warning"
+      title="Sesión próxima a expirar"
+      message="Tu sesión caducará en 2 minutos."
+      position="top-right"
+      [autoDismiss]="true"
+      (dismissed)="hideNotification('warning')"
+    ></app-notification>
+  }
+
+  @if (showNotificationInfo) {
+    <app-notification
+      type="info"
+      title="Nueva funcionalidad"
+      message="Ahora puedes exportar tus listas de reproducción."
+      position="top-right"
+      [autoDismiss]="true"
+      (dismissed)="hideNotification('info')"
+    ></app-notification>
+  }
 </div>

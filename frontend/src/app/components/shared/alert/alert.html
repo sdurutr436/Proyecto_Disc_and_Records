@@ -1,1 +1,18 @@
-<p>alert works!</p>
+<div *ngIf="isVisible" [class]="alertClasses" role="alert">
+  <div class="alert__icon">{{ defaultIcon }}</div>
+
+  <div class="alert__content">
+    <h3 *ngIf="title" class="alert__title">{{ title }}</h3>
+    <p *ngIf="message" class="alert__message">{{ message }}</p>
+  </div>
+
+  <button
+    *ngIf="dismissible"
+    type="button"
+    class="alert__dismiss"
+    (click)="onDismiss()"
+    aria-label="Cerrar alerta"
+  >
+    ✕
+  </button>
+</div>

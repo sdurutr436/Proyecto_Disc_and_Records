@@ -1,0 +1,17 @@
+<div [class]="notificationClasses" role="alert">
+  <div class="notification__icon">{{ defaultIcon }}</div>
+
+  <div class="notification__content">
+    <h3 *ngIf="title" class="notification__title">{{ title }}</h3>
+    <p *ngIf="message" class="notification__message">{{ message }}</p>
+  </div>
+
+  <button
+    type="button"
+    class="notification__dismiss"
+    (click)="onDismiss()"
+    aria-label="Cerrar notificación"
+  >
+    ✕
+  </button>
+</div>
