@@ -1,0 +1,38 @@
+<div class="carousel">
+  <!-- Título del carrusel -->
+  @if (title) {
+    <h2 class="carousel__title">{{ title }}</h2>
+  }
+
+  <!-- Contenedor del carrusel con navegación -->
+  <div class="carousel__container">
+    <!-- Botón anterior -->
+    @if (canScrollLeft) {
+      <button
+        type="button"
+        class="carousel__nav carousel__nav--prev"
+        (click)="scrollLeft()"
+        aria-label="Ver items anteriores"
+      >
+        ‹
+      </button>
+    }
+
+    <!-- Track de items -->
+    <div class="carousel__track" #carouselTrack>
+      <ng-content></ng-content>
+    </div>
+
+    <!-- Botón siguiente -->
+    @if (canScrollRight) {
+      <button
+        type="button"
+        class="carousel__nav carousel__nav--next"
+        (click)="scrollRight()"
+        aria-label="Ver items siguientes"
+      >
+        ›
+      </button>
+    }
+  </div>
+</div>

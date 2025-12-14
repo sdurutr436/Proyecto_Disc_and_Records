@@ -564,10 +564,60 @@
       </div>
     </section>
 
-    <!-- Placeholder para futuras secciones -->
-    <section class="style-guide__section style-guide__section--placeholder">
-      <h2>Más componentes próximamente</h2>
-      <p>Modales, tooltips, dropdowns...</p>
+    <!-- Sección: Carruseles -->
+    <section class="style-guide__section">
+      <h2>Carruseles</h2>
+
+      <!-- Carrusel de álbumes -->
+      <div class="showcase">
+        <app-carousel title="ÁLBUMES EN TENDENCIA">
+          <app-card
+            *ngFor="let album of trendingAlbums"
+            [title]="album.title"
+            [subtitle]="album.artist"
+            imageShape="square"
+            imageSize="medium"
+            variant="normal"
+            cardType="polaroid"
+            titleLink="#album"
+            subtitleLink="#artist">
+          </app-card>
+        </app-carousel>
+      </div>
+
+      <!-- Carrusel de canciones -->
+      <div class="showcase">
+        <app-carousel title="CANCIONES EN TENDENCIA">
+          <app-card
+            *ngFor="let song of trendingSongs"
+            [title]="song.title"
+            [subtitle]="song.artist"
+            imageShape="circle"
+            imageSize="medium"
+            variant="normal"
+            cardType="polaroid"
+            titleLink="#song"
+            subtitleLink="#artist">
+          </app-card>
+        </app-carousel>
+      </div>
+
+      <!-- Carrusel de últimos reseñados -->
+      <div class="showcase">
+        <app-carousel title="ÚLTIMOS ÁLBUMES RESEÑADOS">
+          <app-card
+            *ngFor="let album of trendingAlbums.slice(0, 6)"
+            [title]="album.title"
+            [subtitle]="album.artist + ' • ' + album.year"
+            imageShape="square"
+            imageSize="medium"
+            variant="vinilo"
+            cardType="polaroid"
+            titleLink="#album"
+            subtitleLink="#artist">
+          </app-card>
+        </app-carousel>
+      </div>
     </section>
   </div>
 
