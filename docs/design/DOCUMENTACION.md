@@ -1260,3 +1260,1447 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
 ✅ **Mantenibilidad**: Componente reutilizable `form-input` reduce duplicación
 
 ---
+
+# Secci�n 3: Sistema de Componentes UI
+
+> **Proyecto:** Discs & Records  
+> **Fase:** Sistema de componentes reutilizables  
+> **Framework:** Angular 17+ (standalone components)  
+> **Metodolog�a:** BEM + ITCSS
+
+---
+## 3.1 Componentes Implementados
+
+### 3.1.1 Componentes de Layout
+
+#### Header
+**Propósito:** Barra de navegación principal de la aplicación con logo, búsqueda y acceso a autenticación.
+
+**Variantes disponibles:**
+- Con usuario autenticado (avatar + menú desplegable)
+- Sin usuario autenticado (botones de registro/login)
+
+**Estados:**
+- Normal
+- Con menú desplegable abierto
+
+**Ejemplo de uso:**
+```html
+<app-header></app-header>
+```
+
+**Ubicación:** `frontend/src/app/components/layout/header/`
+
+---
+
+#### Sidebar
+**Propósito:** Menú lateral de navegación para acceso rápido a secciones principales.
+
+**Variantes disponibles:**
+- Sidebar expandido (desktop)
+- Sidebar colapsado (móvil)
+
+**Estados:**
+- Abierto
+- Cerrado
+- Item activo
+
+**Ejemplo de uso:**
+```html
+<app-sidebar></app-sidebar>
+```
+
+**Ubicación:** `frontend/src/app/components/layout/sidebar/`
+
+---
+
+#### Main
+**Propósito:** Contenedor principal del contenido de cada página.
+
+**Ejemplo de uso:**
+```html
+<app-main>
+  <router-outlet></router-outlet>
+</app-main>
+```
+
+**Ubicación:** `frontend/src/app/components/layout/main/`
+
+---
+
+#### Footer
+**Propósito:** Pie de página con información adicional, links y créditos.
+
+**Ejemplo de uso:**
+```html
+<app-footer></app-footer>
+```
+
+**Ubicación:** `frontend/src/app/components/layout/footer/`
+
+---
+
+### 3.1.2 Botones
+
+#### Button
+**Propósito:** Elemento interactivo para acciones del usuario. Sigue el estilo neobrutalista con bordes sólidos y sombras offset.
+
+**Variantes disponibles:**
+- `primary` - Acción principal (fondo naranja, texto blanco)
+- `secondary` - Acción secundaria (fondo beige, texto negro)
+- `ghost` - Acción terciaria (sin fondo, borde sólido)
+- `danger` - Acción destructiva (fondo rojo vino)
+
+**Tamaños disponibles:**
+- `sm` - Pequeño (padding: 8px 16px, font-size: 0.875rem)
+- `md` - Mediano (padding: 12px 24px, font-size: 1rem) - **Por defecto**
+- `lg` - Grande (padding: 16px 32px, font-size: 1.125rem)
+
+**Estados que maneja:**
+- Normal
+- Hover (sombra se mueve, fondo cambia)
+- Active (sombra desaparece, se "hunde")
+- Disabled (opacidad reducida, sin interacción)
+- Focus (outline para accesibilidad)
+
+**Propiedades adicionales:**
+- `fullWidth` - Ocupa el 100% del ancho del contenedor
+- `href` - Convierte el botón en un enlace `<a>`
+
+**Ejemplo de uso:**
+```html
+<!-- Botón primario mediano -->
+<app-button variant="primary" size="md" (clicked)="handleClick()">
+  Guardar cambios
+</app-button>
+
+<!-- Botón de peligro a ancho completo -->
+<app-button variant="danger" [fullWidth]="true" (clicked)="deleteAccount()">
+  Eliminar cuenta
+</app-button>
+
+<!-- Botón deshabilitado -->
+<app-button variant="secondary" [disabled]="isLoading()">
+  Cargando...
+</app-button>
+
+<!-- Botón como enlace -->
+<app-button variant="ghost" href="/profile">
+  Ver perfil
+</app-button>
+```
+
+**Ubicación:** `frontend/src/app/components/shared/button/`
+
+---
+
+### 3.1.3 Cards
+
+#### Card
+**Propósito:** Contenedor visual para mostrar información de álbumes, canciones o perfiles de usuario. Diseño tipo polaroid para carruseles o perfil detallado para páginas individuales.
+
+**Variantes disponibles:**
+- `normal` - Sin efectos especiales
+- `vinilo` - Efecto de reflejo circular simulando un disco de vinilo
+
+**Tipos de Card:**
+- `polaroid` - Card compacta para carruseles (imagen + título + subtítulo)
+- `profile` - Card detallada para perfiles (imagen + título + badges + botones de acción)
+
+**Layouts (solo para type="profile"):**
+- `vertical` - Imagen arriba, contenido abajo
+- `horizontal` - Imagen a la izquierda, contenido a la derecha
+
+**Formas de imagen:**
+- `square` - Cuadrada (para álbumes)
+- `circle` - Circular (para canciones o usuarios)
+
+**Tamaños de imagen:**
+- `small` - 80px
+- `medium` - 150px
+- `large` - 200px
+
+**Estados que maneja:**
+- Normal
+- Hover (elevación de sombra)
+
+**Ejemplo de uso:**
+```html
+<!-- Card polaroid de álbum para carrusel -->
+<app-card
+  title="Dark Side of the Moon"
+  subtitle="Pink Floyd"
+  imageUrl="/assets/albums/dsotm.jpg"
+  imageShape="square"
+  imageSize="medium"
+  variant="vinilo"
+  cardType="polaroid"
+  titleLink="/album/123"
+  subtitleLink="/artist/456">
+</app-card>
+
+<!-- Card de perfil vertical con badges y acciones -->
+<app-card
+  title="JohnDoe"
+  imageUrl="/assets/users/johndoe.jpg"
+  imageShape="square"
+  imageSize="large"
+  variant="normal"
+  cardType="profile"
+  layout="vertical"
+  [badges]="['Rock 35%', 'Jazz 25%', 'Funk 20%']"
+  [actions]="profileActions">
+</app-card>
+
+<!-- Card de perfil horizontal de álbum -->
+<app-card
+  title="Hotel California"
+  subtitle="Eagles • 1976"
+  imageUrl="/assets/albums/hotel-california.jpg"
+  imageShape="square"
+  imageSize="large"
+  variant="normal"
+  cardType="profile"
+  layout="horizontal"
+  [badges]="['Rock', 'Classic Rock']"
+  [actions]="albumActions">
+</app-card>
+```
+
+**Estructura de acciones:**
+```typescript
+profileActions: CardAction[] = [
+  { 
+    label: 'Agregar a mi lista', 
+    icon: '+', 
+    variant: 'primary', 
+    callback: () => console.log('Agregado') 
+  },
+  { 
+    label: 'Eliminar', 
+    icon: '−', 
+    variant: 'danger', 
+    callback: () => console.log('Eliminado') 
+  }
+];
+```
+
+**Ubicación:** `frontend/src/app/components/shared/card/`
+
+---
+
+### 3.1.4 Elementos de Formulario
+
+#### Form-Input
+**Propósito:** Campo de entrada de texto con label, hint, validación y mensajes de error.
+
+**Tipos disponibles:**
+- `text` - Texto normal
+- `email` - Email con validación
+- `password` - Contraseña (oculta caracteres)
+- `number` - Solo números
+- `tel` - Teléfono
+- `url` - URL
+
+**Estados que maneja:**
+- Normal
+- Focus (borde más grueso + sombra)
+- Error (borde rojo + icono de error)
+- Disabled (fondo gris, sin interacción)
+- Filled (con contenido)
+
+**Ejemplo de uso:**
+```html
+<app-form-input
+  label="Correo electrónico"
+  type="email"
+  id="user-email"
+  placeholder="tu@email.com"
+  hint="Usaremos este email para enviarte notificaciones"
+  [required]="true"
+  [error]="emailError()"
+  errorMessage="Introduce un email válido"
+  [(ngModel)]="email">
+</app-form-input>
+```
+
+**Ubicación:** `frontend/src/app/components/shared/form-input/`
+
+---
+
+#### Form-Textarea
+**Propósito:** Área de texto multilínea para contenido extenso (reseñas, biografías, comentarios).
+
+**Tamaños disponibles:**
+- Altura configurable mediante propiedad `rows` (por defecto: 4)
+
+**Estados que maneja:**
+- Normal
+- Focus (borde más grueso + sombra)
+- Error (borde rojo + mensaje)
+- Disabled (fondo gris, sin interacción)
+
+**Ejemplo de uso:**
+```html
+<app-form-textarea
+  label="Escribe tu reseña"
+  id="album-review"
+  placeholder="Comparte tu opinión sobre este álbum..."
+  [rows]="6"
+  hint="Máximo 500 caracteres"
+  [required]="true"
+  [error]="reviewError()"
+  errorMessage="La reseña debe tener al menos 20 caracteres"
+  [(ngModel)]="reviewText">
+</app-form-textarea>
+```
+
+**Ubicación:** `frontend/src/app/components/shared/form-textarea/`
+
+---
+
+#### Form-Select
+**Propósito:** Menú desplegable para seleccionar una opción de una lista.
+
+**Estados que maneja:**
+- Normal
+- Focus (borde más grueso)
+- Error (borde rojo + mensaje)
+- Disabled (fondo gris, sin interacción)
+- Open (desplegado con opciones visibles)
+
+**Ejemplo de uso:**
+```html
+<app-form-select
+  label="Género musical favorito"
+  id="favorite-genre"
+  placeholder="Selecciona un género"
+  [options]="genreOptions"
+  hint="Elige el género que más te gusta"
+  [required]="true"
+  [error]="genreError()"
+  errorMessage="Debes seleccionar un género"
+  [(ngModel)]="selectedGenre">
+</app-form-select>
+```
+
+**Estructura de opciones:**
+```typescript
+genreOptions: SelectOption[] = [
+  { value: 'rock', label: 'Rock' },
+  { value: 'jazz', label: 'Jazz' },
+  { value: 'funk', label: 'Funk' },
+  { value: 'soul', label: 'Soul' }
+];
+```
+
+**Ubicación:** `frontend/src/app/components/shared/form-select/`
+
+---
+
+#### Form-Checkbox
+**Propósito:** Casilla de verificación para opciones booleanas (sí/no, aceptar términos, etc.).
+
+**Estados que maneja:**
+- Unchecked (sin marcar)
+- Checked (marcado)
+- Focus (outline para accesibilidad)
+- Error (borde rojo + mensaje)
+- Disabled (opacidad reducida, sin interacción)
+
+**Ejemplo de uso:**
+```html
+<app-form-checkbox
+  label="Acepto los términos y condiciones"
+  id="accept-terms"
+  [required]="true"
+  [error]="termsError()"
+  errorMessage="Debes aceptar los términos para continuar"
+  [(ngModel)]="acceptTerms">
+</app-form-checkbox>
+
+<!-- Checkbox opcional con texto de ayuda -->
+<app-form-checkbox
+  label="Suscribirme al newsletter"
+  id="newsletter"
+  hint="Recibirás novedades semanales sobre música"
+  [(ngModel)]="subscribeNewsletter">
+</app-form-checkbox>
+```
+
+**Ubicación:** `frontend/src/app/components/shared/form-checkbox/`
+
+---
+
+#### Form-Radio-Group
+**Propósito:** Grupo de botones de radio para seleccionar una única opción entre múltiples.
+
+**Layouts disponibles:**
+- Vertical (por defecto) - Opciones apiladas
+- Horizontal (`inline="true"`) - Opciones en línea
+
+**Estados que maneja:**
+- Unselected (ninguna opción marcada)
+- Selected (una opción marcada)
+- Focus (outline en la opción activa)
+- Error (borde rojo + mensaje)
+
+**Ejemplo de uso:**
+```html
+<!-- Radio group vertical -->
+<app-form-radio-group
+  label="Privacidad del perfil"
+  name="profile-privacy"
+  [options]="privacyOptions"
+  [required]="true"
+  [error]="privacyError()"
+  errorMessage="Debes seleccionar una opción"
+  [(ngModel)]="selectedPrivacy">
+</app-form-radio-group>
+
+<!-- Radio group horizontal -->
+<app-form-radio-group
+  label="Calificación"
+  name="album-rating"
+  [options]="ratingOptions"
+  [inline]="true"
+  [(ngModel)]="albumRating">
+</app-form-radio-group>
+```
+
+**Estructura de opciones:**
+```typescript
+privacyOptions: RadioOption[] = [
+  { value: 'public', label: 'Público' },
+  { value: 'friends', label: 'Solo amigos' },
+  { value: 'private', label: 'Privado' }
+];
+```
+
+**Ubicación:** `frontend/src/app/components/shared/form-radio-group/`
+
+---
+
+### 3.1.5 Navegación
+
+#### Breadcrumbs
+**Propósito:** Migas de pan para mostrar la ubicación actual del usuario en la jerarquía de navegación.
+
+**Variantes disponibles:**
+- Simple (solo texto)
+- Con iconos (emoji/SVG antes del texto)
+- Con separador personalizado
+
+**Separadores disponibles:**
+- `/` (por defecto)
+- `›`
+- `→`
+- `•`
+- Personalizado
+
+**Estados que maneja:**
+- Item activo (sin enlace, color diferente)
+- Item enlace (hover con subrayado)
+
+**Ejemplo de uso:**
+```html
+<!-- Breadcrumbs simple -->
+<app-breadcrumbs [items]="breadcrumbItems"></app-breadcrumbs>
+
+<!-- Breadcrumbs con iconos y separador custom -->
+<app-breadcrumbs 
+  [items]="breadcrumbItemsWithIcons"
+  separator="›">
+</app-breadcrumbs>
+```
+
+**Estructura de items:**
+```typescript
+breadcrumbItems: BreadcrumbItem[] = [
+  { label: 'Inicio', url: '/' },
+  { label: 'Mi colección', url: '/collection' },
+  { label: 'Álbumes', url: '/collection/albums' },
+  { label: 'Dark Side of the Moon' } // Sin url = item activo
+];
+
+breadcrumbItemsWithIcons: BreadcrumbItem[] = [
+  { label: 'Inicio', url: '/', icon: '🏠' },
+  { label: 'Explorar', url: '/explore', icon: '🔍' },
+  { label: 'Artistas', url: '/artists', icon: '🎤' },
+  { label: 'Pink Floyd' }
+];
+```
+
+**Ubicación:** `frontend/src/app/components/shared/breadcrumbs/`
+
+---
+
+### 3.1.6 Elementos de Feedback
+
+#### Alert
+**Propósito:** Mensaje estático de notificación para mostrar información importante, errores, advertencias o éxitos.
+
+**Tipos disponibles:**
+- `success` - Operación exitosa (fondo verde, icono ✓)
+- `error` - Error o fallo (fondo rojo, icono ✕)
+- `warning` - Advertencia (fondo amarillo, icono ⚠)
+- `info` - Información general (fondo azul, icono ℹ)
+
+**Variantes disponibles:**
+- Con título y mensaje
+- Solo mensaje (sin título)
+- Con botón de cerrar (`dismissible="true"`)
+
+**Estados que maneja:**
+- Visible
+- Cerrado (cuando se hace clic en el botón X)
+
+**Ejemplo de uso:**
+```html
+<!-- Alert de éxito con título -->
+<app-alert
+  type="success"
+  title="¡Guardado!"
+  message="Tu lista de reproducción se ha actualizado correctamente.">
+</app-alert>
+
+<!-- Alert de error sin título, dismissible -->
+<app-alert
+  type="error"
+  message="No se pudo conectar con el servidor. Por favor, inténtalo de nuevo."
+  [dismissible]="true"
+  (dismissed)="onAlertDismissed()">
+</app-alert>
+
+<!-- Alert de advertencia -->
+<app-alert
+  type="warning"
+  title="Sesión próxima a expirar"
+  message="Tu sesión caducará en 5 minutos. Guarda tus cambios.">
+</app-alert>
+
+<!-- Alert de información -->
+<app-alert
+  type="info"
+  title="Nueva funcionalidad"
+  message="Ahora puedes exportar tus listas de reproducción a Spotify.">
+</app-alert>
+```
+
+**Ubicación:** `frontend/src/app/components/shared/alert/`
+
+---
+
+#### Notification (Toast)
+**Propósito:** Mensaje flotante temporal que aparece en una esquina de la pantalla para notificar acciones o eventos.
+
+**Tipos disponibles:**
+- `success` - Acción exitosa
+- `error` - Error temporal
+- `warning` - Advertencia
+- `info` - Información
+
+**Posiciones disponibles:**
+- `top-right` (por defecto)
+- `top-left`
+- `bottom-right`
+- `bottom-left`
+- `top-center`
+- `bottom-center`
+
+**Comportamiento:**
+- Auto-dismiss: Se cierra automáticamente después de X segundos (configurable)
+- Manual dismiss: Botón X para cerrar manualmente
+
+**Estados que maneja:**
+- Entrando (animación slide-in)
+- Visible
+- Saliendo (animación fade-out)
+
+**Ejemplo de uso:**
+```html
+<!-- Notification de éxito auto-dismissible -->
+<app-notification
+  type="success"
+  title="¡Álbum agregado!"
+  message="Dark Side of the Moon se agregó a tu colección."
+  position="top-right"
+  [autoDismiss]="true"
+  [duration]="5000"
+  (dismissed)="onNotificationDismissed()">
+</app-notification>
+
+<!-- Notification de error manual -->
+<app-notification
+  type="error"
+  title="Error de conexión"
+  message="No se pudo cargar la información del álbum."
+  position="top-center"
+  [autoDismiss]="false"
+  (dismissed)="onNotificationDismissed()">
+</app-notification>
+```
+
+**Uso en componentes:**
+```typescript
+// En el componente TS
+showSuccessNotification = signal(false);
+
+savePlaylist() {
+  // ... lógica de guardado
+  this.showSuccessNotification.set(true);
+}
+
+onNotificationDismissed() {
+  this.showSuccessNotification.set(false);
+}
+```
+
+```html
+<!-- En el template -->
+@if (showSuccessNotification()) {
+  <app-notification
+    type="success"
+    title="¡Guardado!"
+    message="Tu lista de reproducción se ha actualizado."
+    position="top-right"
+    [autoDismiss]="true"
+    (dismissed)="onNotificationDismissed()">
+  </app-notification>
+}
+```
+
+**Ubicación:** `frontend/src/app/components/shared/notification/`
+
+---
+
+### 3.1.7 Carruseles
+
+#### Carousel
+**Propósito:** Contenedor de desplazamiento horizontal para mostrar múltiples cards de álbumes o canciones con navegación por botones.
+
+**Características:**
+- Scroll suave (smooth scrolling)
+- Botones de navegación izquierda/derecha
+- Auto-hide de botones en los extremos
+- Oculta scrollbar nativa
+- Responsive (ajusta tamaño de cards)
+- Título con tipografía Monoton y efecto 3D
+
+**Tamaños de cards:**
+- Desktop: 220px de ancho fijo
+- Tablet: 180px de ancho fijo
+- Móvil: 160px de ancho fijo
+
+**Estados que maneja:**
+- Botón izquierdo visible/oculto (si está al inicio)
+- Botón derecho visible/oculto (si está al final)
+- Hover en botones (cambio de color)
+
+**Ejemplo de uso:**
+```html
+<!-- Carrusel de álbumes en tendencia -->
+<app-carousel title="ÁLBUMES EN TENDENCIA">
+  <app-card
+    *ngFor="let album of trendingAlbums"
+    [title]="album.title"
+    [subtitle]="album.artist"
+    imageShape="square"
+    imageSize="medium"
+    variant="normal"
+    cardType="polaroid"
+    titleLink="/album/{{ album.id }}"
+    subtitleLink="/artist/{{ album.artistId }}">
+  </app-card>
+</app-carousel>
+
+<!-- Carrusel de canciones -->
+<app-carousel title="CANCIONES EN TENDENCIA">
+  <app-card
+    *ngFor="let song of trendingSongs"
+    [title]="song.title"
+    [subtitle]="song.artist"
+    imageShape="circle"
+    imageSize="medium"
+    variant="normal"
+    cardType="polaroid"
+    titleLink="/song/{{ song.id }}"
+    subtitleLink="/artist/{{ song.artistId }}">
+  </app-card>
+</app-carousel>
+```
+
+**Datos de ejemplo:**
+```typescript
+trendingAlbums = [
+  { id: 1, title: 'Abbey Road', artist: 'The Beatles', artistId: 101 },
+  { id: 2, title: 'Dark Side of the Moon', artist: 'Pink Floyd', artistId: 102 },
+  { id: 3, title: 'Rumours', artist: 'Fleetwood Mac', artistId: 103 },
+  // ... más álbumes
+];
+```
+
+**Ubicación:** `frontend/src/app/components/shared/carousel/`
+
+---
+
+### 3.1.8 Formularios Completos
+
+#### Login Form
+**Propósito:** Formulario completo de inicio de sesión con validación en tiempo real.
+
+**Campos:**
+- Email (con validación de formato)
+- Password (mínimo 8 caracteres)
+
+**Validaciones:**
+- Email: Formato válido (regex)
+- Password: Mínimo 8 caracteres
+- Mostrar errores solo después del primer intento de envío
+
+**Estados que maneja:**
+- Pristine (sin tocar)
+- Dirty (modificado)
+- Valid/Invalid
+- Submitting (enviando datos)
+
+**Ejemplo de uso:**
+```html
+<app-login-form></app-login-form>
+```
+
+**Ubicación:** `frontend/src/app/components/shared/login-form/`
+
+---
+
+#### Register Form
+**Propósito:** Formulario completo de registro de nuevo usuario con validaciones exhaustivas.
+
+**Campos:**
+- Username (mínimo 3 caracteres, único)
+- Email (formato válido)
+- Password (mínimo 8 caracteres)
+- Confirm Password (debe coincidir)
+- Checkbox de términos y condiciones
+
+**Validaciones:**
+- Username: 3-20 caracteres, alfanumérico
+- Email: Formato válido
+- Password: Mínimo 8 caracteres, al menos una mayúscula y un número (configurable)
+- Confirm Password: Debe ser idéntica a Password
+- Terms: Debe estar marcado para enviar
+
+**Estados que maneja:**
+- Pristine/Dirty
+- Valid/Invalid por campo
+- Password match/mismatch
+- Submitting
+
+**Ejemplo de uso:**
+```html
+<app-register-form></app-register-form>
+```
+
+**Ubicación:** `frontend/src/app/components/shared/register-form/`
+
+---
+
+#### Forgot Password Form
+**Propósito:** Formulario para solicitar restablecimiento de contraseña mediante email.
+
+**Campos:**
+- Email (con validación de formato)
+
+**Validaciones:**
+- Email: Formato válido
+- Mensaje de confirmación tras envío exitoso
+
+**Estados que maneja:**
+- Pristine/Dirty
+- Valid/Invalid
+- Submitting
+- Success (email enviado)
+
+**Ejemplo de uso:**
+```html
+<app-forgot-password-form></app-forgot-password-form>
+```
+
+**Ubicación:** `frontend/src/app/components/shared/forgot-password-form/`
+
+---
+
+### 3.1.9 Badge
+**Propósito:** Etiqueta pequeña para mostrar categorías, géneros musicales o porcentajes.
+
+**Estado:** ⚠️ Componente creado pero no implementado aún (placeholder)
+
+**Ubicación:** `frontend/src/app/components/shared/badge/`
+
+---
+## 3.2 Nomenclatura y Metodología BEM
+
+### ¿Qué es BEM?
+
+**BEM** (Block Element Modifier) es una metodología de nomenclatura CSS que ayuda a crear código más mantenible, escalable y predecible. En el proyecto Discs & Records, BEM se combina con ITCSS para la organización estructural de estilos.
+
+### Estructura BEM
+
+```
+.block { }              /* Componente independiente */
+.block__element { }     /* Parte de un bloque */
+.block--modifier { }    /* Variación de un bloque */
+.block__element--modifier { } /* Variación de un elemento */
+```
+
+---
+
+### Ejemplo 1: Componente Button
+
+#### Bloque (Block)
+El **bloque** es el componente principal, una entidad independiente que tiene sentido por sí misma.
+
+```scss
+.button {
+  display: inline-block;
+  padding: vars.$espaciado-m vars.$espaciado-l;
+  font-family: vars.$font-family-primary;
+  font-size: vars.$font-size-base;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  border: vars.$borde-brutal-thick;
+  border-radius: vars.$radio-m;
+  cursor: pointer;
+  transition: vars.$transicion-rapida;
+  background-color: vars.$color-primario-light;
+  color: vars.$color-texto-light;
+  box-shadow: vars.$sombra-brutal-m;
+  
+  &:hover {
+    box-shadow: vars.$sombra-brutal-l;
+    transform: translate(-2px, -2px);
+  }
+  
+  &:active {
+    box-shadow: none;
+    transform: translate(4px, 4px);
+  }
+}
+```
+
+**Explicación:** `.button` es el bloque base que define todos los estilos compartidos por todos los botones.
+
+---
+
+#### Modificadores (Modifiers)
+Los **modificadores** son variaciones del bloque que cambian su apariencia o comportamiento.
+
+```scss
+// Modificador de variante: secondary
+.button--secondary {
+  background-color: vars.$color-secundario-light;
+  color: vars.$color-texto-light;
+  border-color: vars.$color-contraste-light;
+}
+
+// Modificador de variante: ghost
+.button--ghost {
+  background-color: transparent;
+  color: vars.$color-contraste-light;
+  border-color: vars.$color-contraste-light;
+  box-shadow: none;
+  
+  &:hover {
+    background-color: vars.$color-fondo-light-secundario;
+    box-shadow: vars.$sombra-brutal-s;
+  }
+}
+
+// Modificador de variante: danger
+.button--danger {
+  background-color: vars.$color-error-light;
+  color: white;
+  border-color: vars.$color-contraste-light;
+}
+
+// Modificador de tamaño: small
+.button--sm {
+  padding: vars.$espaciado-s vars.$espaciado-m;
+  font-size: vars.$font-size-sm;
+}
+
+// Modificador de tamaño: large
+.button--lg {
+  padding: vars.$espaciado-l vars.$espaciado-xl;
+  font-size: vars.$font-size-lg;
+}
+
+// Modificador de ancho completo
+.button--full-width {
+  width: 100%;
+  display: block;
+}
+```
+
+**Explicación:** Los modificadores usan `--` para indicar una variación del bloque. Se pueden combinar múltiples modificadores en un mismo elemento:
+
+```html
+<button class="button button--secondary button--lg">
+  Botón secundario grande
+</button>
+```
+
+---
+
+#### Clases de Estado
+Las **clases de estado** son similares a modificadores pero representan estados temporales (no variantes permanentes).
+
+```scss
+// Estado: disabled
+.button:disabled,
+.button.is-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+// Estado: loading
+.button.is-loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid white;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: button-loading-spinner 0.6s linear infinite;
+  }
+}
+```
+
+**Estrategia:** Usamos `.is-*` para estados temporales (`.is-loading`, `.is-active`, `.is-disabled`) y `--` para variantes permanentes (`.button--primary`, `.button--lg`).
+
+---
+
+### Ejemplo 2: Componente Card
+
+#### Bloque y Elementos
+
+```scss
+// BLOQUE: card
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: vars.$color-fondo-light;
+  border: vars.$borde-brutal-thick;
+  border-radius: vars.$radio-m;
+  padding: vars.$espaciado-m;
+  box-shadow: vars.$sombra-brutal-s;
+  transition: vars.$transicion-rapida;
+  
+  &:hover {
+    box-shadow: vars.$sombra-brutal-m;
+    transform: translateY(-4px);
+  }
+}
+
+// ELEMENTO: imagen de la card
+.card__image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: vars.$radio-xs;
+  margin-bottom: vars.$espaciado-s;
+}
+
+// ELEMENTO: contenedor de la imagen con wrapper
+.card__image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: vars.$radio-xs;
+  border: vars.$borde-brutal-medium;
+}
+
+// ELEMENTO: título de la card
+.card__title {
+  @include mixins.font-size-line('h3');
+  margin-bottom: vars.$espaciado-xs;
+  color: vars.$color-contraste-light;
+  
+  a {
+    color: inherit;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// ELEMENTO: subtítulo de la card
+.card__subtitle {
+  @include mixins.font-size-line('small');
+  color: vars.$color-texto-light;
+  margin-bottom: vars.$espaciado-s;
+  
+  a {
+    color: inherit;
+    text-decoration: none;
+    
+    &:hover {
+      color: vars.$color-acentuado-light;
+    }
+  }
+}
+
+// ELEMENTO: contenedor de badges
+.card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: vars.$espaciado-xs;
+  margin-bottom: vars.$espaciado-s;
+}
+
+// ELEMENTO: contenedor de acciones (botones)
+.card__actions {
+  display: flex;
+  gap: vars.$espaciado-s;
+  margin-top: auto;
+}
+```
+
+**Explicación de Block vs Element:**
+- **Block (`.card`)**: Entidad independiente que tiene sentido por sí misma.
+- **Element (`.card__title`, `.card__image`)**: Parte de un bloque que NO tiene sentido fuera de su contexto. Siempre usa `__` para conectarse al bloque.
+
+---
+
+#### Modificadores de Card
+
+```scss
+// MODIFICADOR: card tipo polaroid (para carruseles)
+.card--polaroid {
+  padding: vars.$espaciado-s;
+  background-color: white;
+  box-shadow: vars.$sombra-brutal-xs;
+  
+  .card__title {
+    @include mixins.font-size-line('body');
+    font-weight: 600;
+  }
+  
+  .card__subtitle {
+    @include mixins.font-size-line('small');
+  }
+}
+
+// MODIFICADOR: card tipo profile (para detalles)
+.card--profile {
+  padding: vars.$espaciado-l;
+  
+  .card__image-wrapper {
+    margin-bottom: vars.$espaciado-m;
+  }
+}
+
+// MODIFICADOR: layout horizontal
+.card--horizontal {
+  flex-direction: row;
+  align-items: center;
+  
+  .card__image-wrapper {
+    flex: 0 0 200px;
+    margin-right: vars.$espaciado-m;
+    margin-bottom: 0;
+  }
+  
+  .card__content {
+    flex: 1;
+  }
+}
+
+// MODIFICADOR: variante vinilo (efecto de reflejo)
+.card--vinilo {
+  .card__image-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.1) 30%,
+      transparent 60%
+    );
+    pointer-events: none;
+  }
+}
+
+// MODIFICADOR DE ELEMENTO: imagen circular
+.card__image--circle {
+  border-radius: 50%;
+}
+
+// MODIFICADOR DE ELEMENTO: imagen cuadrada (por defecto)
+.card__image--square {
+  border-radius: vars.$radio-xs;
+}
+```
+
+**Cuándo usar modificador de elemento vs modificador de bloque:**
+- **Modificador de bloque** (`.card--polaroid`): Afecta al componente completo y puede cambiar múltiples elementos internos.
+- **Modificador de elemento** (`.card__image--circle`): Solo afecta a ese elemento específico dentro del bloque.
+
+---
+
+### Ejemplo 3: Componente Form-Input
+
+```scss
+// BLOQUE: form-input
+.form-input {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: vars.$espaciado-m;
+}
+
+// ELEMENTO: label del input
+.form-input__label {
+  @include mixins.font-size-line('small');
+  font-weight: 600;
+  color: vars.$color-contraste-light;
+  margin-bottom: vars.$espaciado-xs;
+  display: flex;
+  align-items: center;
+  gap: vars.$espaciado-xs;
+}
+
+// ELEMENTO: asterisco de campo requerido
+.form-input__required {
+  color: vars.$color-error-light;
+}
+
+// ELEMENTO: campo de entrada
+.form-input__field {
+  padding: vars.$espaciado-m;
+  font-family: vars.$font-family-primary;
+  font-size: vars.$font-size-base;
+  background-color: vars.$color-fondo-light;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-m;
+  color: vars.$color-texto-light;
+  transition: vars.$transicion-rapida;
+  
+  &::placeholder {
+    color: vars.$color-texto-light;
+    opacity: 0.6;
+  }
+  
+  &:focus {
+    outline: none;
+    border-width: 4px;
+    box-shadow: vars.$sombra-brutal-s;
+  }
+}
+
+// ESTADO: campo con error
+.form-input__field--error {
+  border-color: vars.$color-error-light;
+  background-color: rgba(vars.$color-error-light, 0.05);
+}
+
+// ELEMENTO: mensaje de error
+.form-input__error {
+  @include mixins.font-size-line('small');
+  color: vars.$color-error-light;
+  margin-top: vars.$espaciado-xs;
+  display: flex;
+  align-items: center;
+  gap: vars.$espaciado-xs;
+  
+  &::before {
+    content: '⚠';
+  }
+}
+
+// ELEMENTO: texto de ayuda
+.form-input__hint {
+  @include mixins.font-size-line('small');
+  color: vars.$color-texto-light;
+  opacity: 0.7;
+  margin-top: vars.$espaciado-xs;
+}
+
+// ESTADO: campo deshabilitado
+.form-input__field:disabled {
+  background-color: vars.$color-fondo-light-secundario;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+```
+
+---
+
+### Estrategia: Modificadores vs Clases de Estado
+
+| **Concepto** | **Cuándo usar** | **Ejemplo** |
+|---|---|---|
+| **Modificador `--`** | Variante permanente del componente que NO cambia durante el uso | `.button--primary`, `.card--polaroid`, `.input--large` |
+| **Estado `.is-*` / `:pseudo`** | Estado temporal que cambia dinámicamente | `.button.is-loading`, `.card.is-active`, `.input:disabled` |
+| **Elemento `__`** | Parte de un bloque que NO tiene sentido fuera de él | `.card__title`, `.form-input__label`, `.carousel__nav` |
+
+---
+
+### Ventajas de BEM en Discs & Records
+
+✅ **Claridad:** Cualquier desarrollador puede entender la estructura al leer el código  
+✅ **Mantenibilidad:** Cambios en un componente no afectan a otros  
+✅ **Escalabilidad:** Fácil añadir nuevas variantes o elementos  
+✅ **Especificidad baja:** Evita guerras de `!important` al tener especificidad plana  
+✅ **Reutilización:** Componentes modulares que se pueden combinar  
+✅ **Naming collision:** Imposible tener conflictos de nombres entre componentes
+
+---
+
+## 3.3 Style Guide: Documentación Visual
+
+### Propósito del Style Guide
+
+La **página Style Guide** (`/style-guide`) es una herramienta fundamental para el desarrollo y mantenimiento del proyecto. Sirve para:
+
+1. **Documentación visual interactiva:** Ver todos los componentes en acción con sus variantes, tamaños y estados.
+2. **Testing rápido:** Probar cambios de estilo o funcionalidad en un entorno aislado sin necesidad de navegar por toda la aplicación.
+3. **Referencia para desarrolladores:** Consultar rápidamente cómo usar cada componente y qué propiedades acepta.
+4. **Onboarding:** Nuevos desarrolladores pueden entender el sistema de diseño de un vistazo.
+5. **Consistency check:** Asegurar que todos los componentes siguen el mismo estilo visual.
+6. **Living documentation:** El style guide se actualiza automáticamente al modificar componentes.
+
+---
+
+### Estructura de la Style Guide
+
+La Style Guide está organizada en **9 secciones principales**:
+
+#### 1. Componentes de Layout
+Referencia a Header, Sidebar, Main y Footer (visibles en toda la app).
+
+**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de componentes de layout]**
+
+---
+
+#### 2. Botones
+- **Variantes:** primary, secondary, ghost, danger
+- **Tamaños:** sm, md, lg
+- **Estados:** normal, disabled, como enlace, full-width
+- **Combinaciones:** Matriz 4x3 de todas las combinaciones de variante × tamaño
+
+**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de botones mostrando todas las variantes]**
+
+---
+
+#### 3. Cards
+- **Variante Polaroid:** Cards compactas para carruseles
+  - Álbum con placeholder (square)
+  - Canción (circle)
+  - Con efecto vinilo
+- **Variante Profile:** Cards detalladas para perfiles
+  - Perfil de usuario vertical con badges
+  - Álbum con badges y acciones
+  - Canción circular con acciones
+- **Profile Horizontal:** Card con layout horizontal
+
+**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de cards mostrando polaroid y profile]**
+
+---
+
+#### 4. Elementos de Formulario
+- **Form-textarea:** normal, con error, deshabilitado
+- **Form-select:** normal, con error, deshabilitado
+- **Form-checkbox:** normal, con error, deshabilitado
+- **Form-radio-group:** normal, con error, inline
+
+**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de elementos de formulario]**
+
+---
+
+#### 5. Breadcrumbs (Navegación)
+- Breadcrumbs simple
+- Con iconos (emoji)
+- Largo (con truncado responsive)
+- Con separadores personalizados (› y →)
+
+**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de breadcrumbs con diferentes variantes]**
+
+---
+
+#### 6. Elementos de Feedback
+- **Alerts:** success, error, warning, info, sin título, dismissible
+- **Notifications (Toast):** Botones interactivos para mostrar notificaciones flotantes en diferentes posiciones
+
+**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de alerts y notifications]**
+
+---
+
+#### 7. Formularios Completos
+- **Login Form:** Formulario funcional con validación en tiempo real
+- **Register Form:** Formulario de registro con validaciones exhaustivas
+- **Forgot Password Form:** Formulario de recuperación de contraseña
+
+**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de formularios completos mostrando el login form]**
+
+**[ESPACIO PARA CAPTURA DE PANTALLA: Formulario de registro con validaciones]**
+
+---
+
+#### 8. Carruseles
+- **Carrusel de álbumes en tendencia:** 8 cards de álbumes con scroll horizontal
+- **Carrusel de canciones en tendencia:** 8 cards de canciones con imágenes circulares
+- **Últimos álbumes reseñados:** Carrusel con efecto vinilo
+
+**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de carruseles con navegación]**
+
+**[ESPACIO PARA CAPTURA DE PANTALLA: Detalle de carrusel mostrando botones de navegación y cards]**
+
+---
+
+### Acceso a la Style Guide
+
+**URL:** `http://localhost:4200/style-guide`
+
+La ruta está configurada en `frontend/src/app/app.routes.ts`:
+
+```typescript
+{
+  path: 'style-guide',
+  loadComponent: () => import('./pages/style-guide/style-guide').then(m => m.StyleGuide),
+  title: 'Guía de Estilo - Discs & Records'
+}
+```
+
+---
+
+### Uso como herramienta de desarrollo
+
+**Flujo de trabajo típico:**
+
+1. **Crear un nuevo componente:**
+   ```bash
+   ng generate component components/shared/new-component
+   ```
+
+2. **Implementar el componente** con sus variantes, estados y propiedades.
+
+3. **Agregar el componente a la Style Guide:**
+   - Importar en `style-guide.ts`
+   - Añadir una nueva sección en `style-guide.html`
+   - Mostrar TODAS las variantes, tamaños y estados
+
+4. **Testing visual:** Navegar a `/style-guide` y verificar que el componente se muestra correctamente.
+
+5. **Iterar:** Hacer ajustes de diseño viendo los cambios en tiempo real en la Style Guide.
+
+6. **Documentación:** Cada variante incluye un `<code>` con la explicación de uso.
+
+---
+
+### Ventajas de tener una Style Guide
+
+✅ **Desarrollo más rápido:** No necesitas crear páginas de prueba temporales  
+✅ **Menos bugs visuales:** Detectas problemas de CSS rápidamente  
+✅ **Consistencia:** Aseguras que todos los componentes siguen el mismo patrón  
+✅ **Comunicación con diseñadores:** Pueden ver exactamente cómo se ve cada componente  
+✅ **Testing responsive:** Puedes redimensionar la ventana y ver cómo responden los componentes  
+✅ **Documentación viva:** Siempre actualizada con el código real
+
+---
+
+**[ESPACIO PARA CAPTURA DE PANTALLA: Vista general del Style Guide con scroll mostrando múltiples secciones]**
+
+---
+
+### Resumen de componentes en Style Guide
+
+| **Categoría** | **Componentes** | **Variantes/Estados** |
+|---|---|---|
+| **Layout** | Header, Sidebar, Main, Footer | 4 componentes |
+| **Botones** | Button | 4 variantes × 3 tamaños + estados |
+| **Cards** | Card | 2 tipos × 2 layouts × 2 efectos |
+| **Formularios** | Input, Textarea, Select, Checkbox, Radio | 3 estados cada uno |
+| **Navegación** | Breadcrumbs | 5 variantes |
+| **Feedback** | Alert, Notification | 4 tipos cada uno |
+| **Formularios completos** | Login, Register, Forgot Password | 3 formularios funcionales |
+| **Carruseles** | Carousel | 3 ejemplos con navegación |
+
+**Total:** 11 componentes implementados con 70+ variantes documentadas
+
+---
+
+### Código de ejemplo de la estructura del Style Guide
+
+```typescript
+// style-guide.ts
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Button } from '../../components/shared/button/button';
+import { Card } from '../../components/shared/card/card';
+// ... más imports
+
+@Component({
+  selector: 'app-style-guide',
+  standalone: true,
+  imports: [CommonModule, Button, Card, /* ... */],
+  templateUrl: './style-guide.html',
+  styleUrl: './style-guide.scss',
+})
+export class StyleGuide {
+  // Datos de ejemplo para cards
+  trendingAlbums = [
+    { title: 'Abbey Road', artist: 'The Beatles', year: '1969' },
+    // ... más álbumes
+  ];
+  
+  // Datos para formularios
+  genreOptions: SelectOption[] = [
+    { value: 'rock', label: 'Rock' },
+    // ... más opciones
+  ];
+}
+```
+
+```html
+<!-- style-guide.html -->
+<div class="style-guide">
+  <header class="style-guide__header">
+    <h1>Guía de Estilo</h1>
+    <p>Sistema de componentes reutilizables para Disc and Records</p>
+  </header>
+
+  <!-- Sección: Botones -->
+  <section class="style-guide__section">
+    <h2>Botones</h2>
+    
+    <div class="showcase">
+      <h3>Variantes</h3>
+      <div class="showcase__row">
+        <div class="showcase__item">
+          <app-button variant="primary">Primary</app-button>
+          <code>.variant="primary"</code>
+        </div>
+        <!-- ... más variantes -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ... más secciones -->
+</div>
+```
+
+---

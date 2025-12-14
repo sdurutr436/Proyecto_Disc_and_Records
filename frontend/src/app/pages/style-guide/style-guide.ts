@@ -10,11 +10,14 @@ import { Breadcrumbs, BreadcrumbItem } from '../../components/shared/breadcrumbs
 import { Alert } from '../../components/shared/alert/alert';
 import { Notification } from '../../components/shared/notification/notification';
 import { Carousel } from '../../components/shared/carousel/carousel';
+import { LoginForm } from '../../components/shared/login-form/login-form';
+import { RegisterForm } from '../../components/shared/register-form/register-form';
+import { ForgotPasswordForm } from '../../components/shared/forgot-password-form/forgot-password-form';
 
 @Component({
   selector: 'app-style-guide',
   standalone: true,
-  imports: [CommonModule, Button, Card, FormTextarea, FormSelect, FormCheckbox, FormRadioGroup, Breadcrumbs, Alert, Notification, Carousel],
+  imports: [CommonModule, Button, Card, FormTextarea, FormSelect, FormCheckbox, FormRadioGroup, Breadcrumbs, Alert, Notification, Carousel, LoginForm, RegisterForm, ForgotPasswordForm],
   templateUrl: './style-guide.html',
   styleUrl: './style-guide.scss',
 })

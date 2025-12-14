@@ -5,6 +5,31 @@
       <p class="style-guide__intro">Sistema de componentes reutilizables para Disc and Records</p>
     </header>
 
+    <!-- Sección: Componentes de Layout -->
+    <section class="style-guide__section">
+      <h2>Componentes de Layout</h2>
+      <div class="showcase">
+        <p class="showcase__description">
+          Los componentes de layout (Header, Footer, Sidebar, Main) están implementados y se utilizan
+          en la estructura general de la aplicación. Se pueden ver en uso en todas las páginas.
+        </p>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <code>&lt;app-header&gt;</code> - Cabecera de la aplicación con navegación
+          </div>
+          <div class="showcase__item showcase__item--full">
+            <code>&lt;app-sidebar&gt;</code> - Barra lateral con menú de navegación
+          </div>
+          <div class="showcase__item showcase__item--full">
+            <code>&lt;app-main&gt;</code> - Contenedor principal de contenido
+          </div>
+          <div class="showcase__item showcase__item--full">
+            <code>&lt;app-footer&gt;</code> - Pie de página con información adicional
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Sección: Botones -->
     <section class="style-guide__section">
       <h2>Botones</h2>
@@ -559,6 +584,44 @@
               Mostrar notificación de información
             </app-button>
             <code>Botón de cerrar manual</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección: Formularios Completos -->
+    <section class="style-guide__section">
+      <h2>Formularios Completos</h2>
+
+      <!-- Login Form -->
+      <div class="showcase">
+        <h3 class="showcase__title">Formulario de Login</h3>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--centered">
+            <app-login-form></app-login-form>
+            <code>Formulario de inicio de sesión con validación</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Register Form -->
+      <div class="showcase">
+        <h3 class="showcase__title">Formulario de Registro</h3>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--centered">
+            <app-register-form></app-register-form>
+            <code>Formulario de registro con validación completa</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div class="showcase">
+        <h3 class="showcase__title">Formulario de Recuperación de Contraseña</h3>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--centered">
+            <app-forgot-password-form></app-forgot-password-form>
+            <code>Formulario para recuperar contraseña</code>
           </div>
         </div>
       </div>
