@@ -1,5 +1,5 @@
+<!-- Parte superior del header (logo y botones) - se va con scroll -->
 <header class="header">
-  <!-- Sección superior con logo y botones -->
   <div class="header__top">
     <div class="header__top-container">
       <!-- Logo central con barras de colores -->
@@ -15,61 +15,72 @@
       </div>
     </div>
   </div>
+</header>
 
-  <!-- Barra de navegación inferior (desktop) -->
-  <nav class="header__nav header__nav--desktop" aria-label="Navegación principal">
-    <ul class="header__nav-list">
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link">MI LISTA</a>
+<!-- Navegación STICKY - se queda fija al hacer scroll -->
+<nav class="header-nav" aria-label="Navegación principal">
+  <!-- Desktop: barra horizontal -->
+  <div class="header-nav__desktop">
+    <ul class="header-nav__list">
+      <li class="header-nav__item">
+        <a href="#" class="header-nav__link">MI LISTA</a>
       </li>
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link">ARTISTAS</a>
+      <li class="header-nav__item">
+        <a href="#" class="header-nav__link">ARTISTAS</a>
       </li>
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link">PRÓXIMAMENTE</a>
+      <li class="header-nav__item">
+        <a href="#" class="header-nav__link">PRÓXIMAMENTE</a>
       </li>
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link">ÁLBUMES</a>
+      <li class="header-nav__item">
+        <a href="#" class="header-nav__link">ÁLBUMES</a>
       </li>
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link">CANCIONES</a>
+      <li class="header-nav__item">
+        <a href="#" class="header-nav__link">CANCIONES</a>
       </li>
     </ul>
-  </nav>
-
-  <!-- Barra "Opciones" para móvil -->
-  <div class="header__options-bar" (click)="toggleMenu()">
-    <span class="header__options-text">OPCIONES</span>
-    <svg
-      class="header__options-icon"
-      [class.header__options-icon--open]="isMenuOpen()"
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
   </div>
 
-  <!-- Menú desplegable móvil -->
-  <nav class="header__nav header__nav--mobile" [class.header__nav--open]="isMenuOpen()" aria-label="Navegación móvil">
-    <ul class="header__nav-list">
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link" (click)="closeMenu()">MI LISTA</a>
+  <!-- Móvil: barra "Opciones" + menú desplegable -->
+  <div class="header-nav__mobile">
+    <button
+      class="header-nav__toggle"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="isMenuOpen()"
+      aria-controls="mobile-menu">
+      <span class="header-nav__toggle-text">OPCIONES</span>
+      <svg
+        class="header-nav__toggle-icon"
+        [class.header-nav__toggle-icon--open]="isMenuOpen()"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <ul
+      id="mobile-menu"
+      class="header-nav__menu"
+      [class.header-nav__menu--open]="isMenuOpen()">
+      <li class="header-nav__item">
+        <a href="#" class="header-nav__link" (click)="closeMenu()">MI LISTA</a>
       </li>
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link" (click)="closeMenu()">ARTISTAS</a>
+      <li class="header-nav__item">
+        <a href="#" class="header-nav__link" (click)="closeMenu()">ARTISTAS</a>
       </li>
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link" (click)="closeMenu()">PRÓXIMAMENTE</a>
+      <li class="header-nav__item">
+        <a href="#" class="header-nav__link" (click)="closeMenu()">PRÓXIMAMENTE</a>
       </li>
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link" (click)="closeMenu()">ÁLBUMES</a>
+      <li class="header-nav__item">
+        <a href="#" class="header-nav__link" (click)="closeMenu()">ÁLBUMES</a>
       </li>
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link" (click)="closeMenu()">CANCIONES</a>
+      <li class="header-nav__item">
+        <a href="#" class="header-nav__link" (click)="closeMenu()">CANCIONES</a>
       </li>
     </ul>
-  </nav>
-</header>
+  </div>
+</nav>
+

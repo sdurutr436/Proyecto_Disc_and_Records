@@ -620,20 +620,7 @@ El showcase incluye ejemplos de:
 - Barras de progreso
 - Sistema de navegación
 
----
-
-## Resumen de Entregables Fase 1
-
-| Entregable | Ubicación | Estado |
-|------------|-----------|--------|
-| Estructura ITCSS | `frontend/src/styles/` | ✅ |
-| Design tokens | `00-settings/_variables.scss` | ✅ |
-| Mixins | `01-tools/_mixins.scss` | ✅ |
-| Reset CSS | `02-generic/_reset.scss` | ✅ |
-| Estilos base HTML | `03-elements/_base.scss` | ✅ |
-| Sistema de grid | `04-layout/_grid.scss` | ✅ |
-| Documentación | `docs/design/DOCUMENTACION.md` | ✅ |
-| Capturas de Figma | `docs/design/img-fase1/` | ✅ |
+**ESTE SHOWCASE NO ES LA GUÍA DE ESTILOS DE LA FASE 3**
 
 ---
 
@@ -1261,12 +1248,12 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
 
 ---
 
-# Secci�n 3: Sistema de Componentes UI
+# Sección 3: Sistema de Componentes UI
 
 > **Proyecto:** Discs & Records  
 > **Fase:** Sistema de componentes reutilizables  
 > **Framework:** Angular 17+ (standalone components)  
-> **Metodolog�a:** BEM + ITCSS
+> **Metodología:** BEM + ITCSS
 
 ---
 ## 3.1 Componentes Implementados

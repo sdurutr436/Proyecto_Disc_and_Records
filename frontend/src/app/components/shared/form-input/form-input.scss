@@ -1,10 +1,8 @@
 @use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
 
 .form-input-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: vars.$espaciado-xs;
-  width: 100%;
+  @include mix.form-field-wrapper;
 }
 
 /* --- Label --- */
@@ -41,27 +39,24 @@
   transition: all vars.$transicion-rapida;
   width: 100%;
   outline: none;
-  
+
   &::placeholder {
     color: vars.$color-letra-desactivado;
   }
-  
+
   &:focus {
     border-color: vars.$color-primario-light;
     box-shadow: vars.$sombra-brutal-primario-light;
   }
-  
-  &:hover:not(:disabled) {
-    box-shadow: vars.$sombra-brutal-hover;
-    transform: translate(2px, 2px);
-  }
+
+  @include mix.brutal-hover;
 }
 
 /* --- Estados del Input --- */
 .form-input__field--error {
   border-color: vars.$color-error;
   box-shadow: 4px 4px 0px vars.$color-error;
-  
+
   &:focus {
     box-shadow: 4px 4px 0px vars.$color-error;
   }
@@ -70,21 +65,14 @@
 .form-input__field--success {
   border-color: vars.$color-exito;
   box-shadow: 4px 4px 0px vars.$color-exito;
-  
+
   &:focus {
     box-shadow: 4px 4px 0px vars.$color-exito;
   }
 }
 
 .form-input__field--disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background-color: vars.$color-fondo-light-secundario;
-  
-  &:hover {
-    box-shadow: vars.$sombra-brutal-s;
-    transform: none;
-  }
+  @include mix.field-disabled;
 }
 
 /* --- Mensaje de Error --- */
@@ -95,7 +83,7 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  
+
   &::before {
     content: '⚠';
     font-size: 1rem;

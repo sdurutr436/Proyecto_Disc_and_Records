@@ -1,10 +1,18 @@
 @use '../00-settings/_variables' as vars;
 
+/* ========================================
+   MIXINS DE TIPOGRAFÍA
+   ======================================== */
+
 // Mixin para tipografía usando variables
 @mixin font-size-line($tipo) {
   font-size: vars.$tamanio-fuente-#{$tipo};
   line-height: vars.$altura-linea-#{$tipo};
 }
+
+/* ========================================
+   MIXINS DE TEMA Y COLORES
+   ======================================== */
 
 // Mixin para modo oscuro/claro usando variables
 @mixin theme-colors($modo: 'light') {
@@ -16,6 +24,16 @@
     color: vars.$color-letra-principal-dark;
   }
 }
+
+// Mixin para alertas accesibles en modo oscuro
+@mixin alert-accesible-dark {
+  background-color: vars.$color-primario-dark;
+  color: vars.$color-letra-oscura;
+}
+
+/* ========================================
+   MIXINS DE RESPONSIVE
+   ======================================== */
 
 // Mixin para media queries usando breakpoints
 @mixin respond-to($breakpoint) {
@@ -32,9 +50,261 @@
   }
 }
 
-// Mixin para alertas accesibles en modo oscuro
-// Usa el color primario dark (menta #93CFBB) como fondo para mejorar contraste
-@mixin alert-accesible-dark {
-  background-color: vars.$color-primario-dark;
+/* ========================================
+   MIXINS NEOBRUTALISTAS - INTERACCIONES
+   ======================================== */
+
+// Efecto hover neobrutalista (hundido)
+@mixin brutal-hover($shadow-hover: vars.$sombra-brutal-hover, $translate: 2px) {
+  &:hover:not(:disabled):not(.button--disabled) {
+    box-shadow: $shadow-hover;
+    transform: translate($translate, $translate);
+  }
+}
+
+// Efecto active neobrutalista (más hundido)
+@mixin brutal-active($shadow-active: vars.$sombra-brutal-active, $translate: 4px) {
+  &:active:not(:disabled):not(.button--disabled) {
+    box-shadow: $shadow-active;
+    transform: translate($translate, $translate);
+  }
+}
+
+// Combo hover + active neobrutalista
+@mixin brutal-interaction(
+  $shadow-hover: vars.$sombra-brutal-hover,
+  $shadow-active: vars.$sombra-brutal-active
+) {
+  @include brutal-hover($shadow-hover);
+  @include brutal-active($shadow-active);
+}
+
+// Efecto hover inverso (se eleva)
+@mixin brutal-hover-lift($shadow-lift: 3px 3px 0px vars.$color-letra-oscura) {
+  &:hover:not(:disabled) {
+    transform: translate(-1px, -1px);
+    box-shadow: $shadow-lift;
+  }
+}
+
+/* ========================================
+   MIXINS DE ESTADOS
+   ======================================== */
+
+// Estado disabled genérico
+@mixin state-disabled($opacity: 0.5) {
+  opacity: $opacity;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+// Estado disabled para campos de formulario
+@mixin field-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: vars.$color-fondo-light-secundario;
+
+  &:hover {
+    box-shadow: vars.$sombra-brutal-s;
+    transform: none;
+  }
+}
+
+// Focus visible accesible
+@mixin focus-visible($color: vars.$color-contraste-light, $offset: 2px) {
+  &:focus-visible {
+    outline: 3px solid $color;
+    outline-offset: $offset;
+  }
+}
+
+// Focus para campos de formulario
+@mixin field-focus($color: vars.$color-primario-light) {
+  &:focus {
+    outline: none;
+    border-color: $color;
+    box-shadow: 3px 3px 0px $color;
+  }
+}
+
+/* ========================================
+   MIXINS DE FORMULARIOS
+   ======================================== */
+
+// Contenedor de campo de formulario
+@mixin form-field-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-xs;
+  width: 100%;
+}
+
+// Label de formulario
+@mixin form-label {
+  font-size: vars.$tamanio-fuente-texto-pequeno-m;
+  font-weight: 700;
   color: vars.$color-letra-oscura;
+  display: block;
+}
+
+// Campo de formulario base (input, select, textarea)
+@mixin form-field-base {
+  width: 100%;
+  padding: vars.$espaciado-xs vars.$espaciado-s;
+  font-family: inherit;
+  font-size: vars.$tamanio-fuente-texto-pequeno-m;
+  color: vars.$color-letra-oscura;
+  background-color: vars.$color-fondo-light;
+  border: vars.$borde-brutal-thin;
+  border-radius: vars.$radio-s;
+  box-shadow: 2px 2px 0px vars.$color-letra-oscura;
+  transition: all vars.$transicion-rapida;
+
+  &::placeholder {
+    color: vars.$color-letra-oscura;
+    opacity: 0.5;
+  }
+
+  @include brutal-hover-lift;
+  @include field-focus;
+
+  &:disabled {
+    @include field-disabled;
+  }
+}
+
+// Estado de error para campos
+@mixin form-field-error {
+  border-color: vars.$color-error;
+  box-shadow: 2px 2px 0px vars.$color-error;
+
+  &:hover:not(:disabled) {
+    box-shadow: 3px 3px 0px vars.$color-error;
+  }
+
+  &:focus {
+    box-shadow: 3px 3px 0px vars.$color-error;
+  }
+}
+
+// Mensaje de error
+@mixin form-error-message {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  color: vars.$color-error;
+  font-weight: 600;
+  margin: 0;
+}
+
+// Texto de ayuda/hint
+@mixin form-hint {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  color: vars.$color-letra-oscura;
+  opacity: 0.7;
+  margin: 0;
+}
+
+/* ========================================
+   MIXINS DE LAYOUT
+   ======================================== */
+
+// Contenedor flex columna
+@mixin flex-column($gap: vars.$espaciado-xs) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+// Contenedor flex fila
+@mixin flex-row($gap: vars.$espaciado-xs) {
+  display: flex;
+  flex-direction: row;
+  gap: $gap;
+}
+
+// Centrado flex
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Contenedor con ancho máximo centrado
+@mixin container-centered($max-width: 1440px) {
+  max-width: $max-width;
+  margin: 0 auto;
+}
+
+// Elemento sticky
+@mixin sticky-top($z-index: 1000) {
+  position: sticky;
+  top: 0;
+  z-index: $z-index;
+}
+
+/* ========================================
+   MIXINS DE TEXTO
+   ======================================== */
+
+// Texto truncado con ellipsis
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Texto uppercase con tracking
+@mixin text-uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ========================================
+   MIXINS DE COMPONENTES NEOBRUTALISTAS
+   ======================================== */
+
+// Caja neobrutalista base
+@mixin brutal-box(
+  $bg: vars.$color-fondo-light,
+  $border: vars.$borde-brutal-thick,
+  $shadow: vars.$sombra-brutal-s,
+  $radius: vars.$radio-s
+) {
+  background-color: $bg;
+  border: $border;
+  border-radius: $radius;
+  box-shadow: $shadow;
+}
+
+// Botón base neobrutalista
+@mixin brutal-button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: vars.$espaciado-xs;
+  font-family: vars.$fuente-principal;
+  font-weight: 600;
+  @include text-uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-pildora;
+  transition: all vars.$transicion-rapida;
+  white-space: nowrap;
+  box-sizing: border-box;
+  @include focus-visible;
+}
+
+// Badge neobrutalista
+@mixin brutal-badge($bg: vars.$color-primario-light) {
+  display: inline-block;
+  padding: 4px vars.$espaciado-xs;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background-color: $bg;
+  color: vars.$color-letra-oscura;
+  border: 2px solid vars.$color-letra-oscura;
+  border-radius: vars.$radio-xs;
+  box-shadow: 2px 2px 0px vars.$color-letra-oscura;
+  line-height: 1;
 }

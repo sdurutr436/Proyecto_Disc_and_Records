@@ -1,12 +1,14 @@
 @use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
 
-/* --- Bloque Header --- */
+/* ========================================
+   HEADER TOP - Logo y botones (no sticky)
+   ======================================== */
 .header {
   width: 100%;
-  border-bottom: vars.$borde-brutal-thick;
   background-color: vars.$color-fondo-light;
   position: relative;
-  z-index: 1000;
+  z-index: 100;
 }
 
 /* --- Sección superior (botones + logo) --- */
@@ -17,27 +19,23 @@
   position: relative;
   z-index: 1;
   overflow: hidden;
+  border-bottom: vars.$borde-brutal-thick;
 }
 
 .header__top-container {
-  max-width: 1440px;
-  margin: 0 auto;
+  @include mix.container-centered;
   padding: 0.25rem vars.$espaciado-xs;
-  display: flex;
-  flex-direction: row;
+  @include mix.flex-row(0);
   align-items: center;
   justify-content: center;
   position: relative;
-  gap: 0;
 }
 
 /* --- Wrapper del logo (para posicionar barras detrás) --- */
 .header__logo-wrapper {
   position: relative;
   z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include mix.flex-center;
   width: 140px;
   height: 140px;
   border-radius: 50%;
@@ -111,8 +109,7 @@
   color: vars.$color-letra-oscura;
   cursor: pointer;
   transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  @include mix.text-uppercase;
   box-shadow: vars.$sombra-brutal-s;
   position: relative;
   z-index: 4;
@@ -120,20 +117,8 @@
   min-width: 20rem;
   margin: 0;
 
-  &:hover {
-    box-shadow: vars.$sombra-brutal-hover;
-    transform: translate(2px, 2px);
-  }
-
-  &:active {
-    box-shadow: vars.$sombra-brutal-active;
-    transform: translate(4px, 4px);
-  }
-
-  &:focus-visible {
-    outline: 3px solid vars.$color-contraste-light;
-    outline-offset: 2px;
-  }
+  @include mix.brutal-interaction;
+  @include mix.focus-visible;
 }
 
 .header__btn--left {
@@ -149,68 +134,25 @@
 /* --- Barra "Opciones" para móvil --- */
 .header__options-bar {
   display: none;
+}
+
+/* ========================================
+   HEADER-NAV - Navegación STICKY (separada del header)
+   ======================================== */
+.header-nav {
+  @include mix.sticky-top;
   width: 100%;
   background-color: vars.$color-secundario-light;
-  padding: vars.$espaciado-s;
-  border-top: vars.$borde-brutal-medium;
-  border-bottom: vars.$borde-brutal-medium;
-  cursor: pointer;
-  z-index: 998;
-  align-items: center;
-  justify-content: center;
-  gap: vars.$espaciado-s;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: vars.$color-primario-light;
-  }
-
-  &:focus-visible {
-    outline: 3px solid vars.$color-contraste-light;
-    outline-offset: -3px;
-  }
+  border-bottom: vars.$borde-brutal-thick;
 }
 
-.header__options-text {
-  font-family: vars.$fuente-principal;
-  font-size: vars.$tamanio-fuente-texto-pequeno-s;
-  font-weight: 700;
-  color: vars.$color-letra-oscura;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.header__options-icon {
-  transition: transform 0.3s ease;
-  color: vars.$color-letra-oscura;
-}
-
-.header__options-icon--open {
-  transform: rotate(180deg);
-}
-
-/* --- Navegación inferior (STICKY en desktop) --- */
-.header__nav--desktop {
+/* --- Desktop: barra horizontal visible --- */
+.header-nav__desktop {
   display: block;
 }
 
-.header__nav--mobile {
-  display: none;
-}
-
-/* --- Navegación inferior (STICKY en desktop) --- */
-.header__nav {
-  width: 100%;
-  background-color: vars.$color-secundario-light;
-  border-top: vars.$borde-brutal-medium;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.header__nav-list {
-  max-width: 1440px;
-  margin: 0 auto;
+.header-nav__list {
+  @include mix.container-centered;
   padding: 0;
   list-style: none;
   display: flex;
@@ -218,7 +160,7 @@
   align-items: stretch;
 }
 
-.header__nav-item {
+.header-nav__item {
   flex: 0 0 auto;
   border-right: vars.$borde-brutal-thin;
 
@@ -227,27 +169,79 @@
   }
 }
 
-.header__nav-link {
+.header-nav__link {
   display: block;
   padding: vars.$espaciado-s vars.$espaciado-l;
   text-decoration: none;
   color: vars.$color-letra-oscura;
+  font-family: vars.$fuente-principal;
   font-weight: 600;
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
   background-color: vars.$color-secundario-light;
   transition: background-color 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  @include mix.text-uppercase;
   white-space: nowrap;
 
   &:hover {
     background-color: vars.$color-primario-light;
   }
 
-  &:focus-visible {
-    outline: 3px solid vars.$color-contraste-light;
-    outline-offset: -3px;
+  @include mix.focus-visible(vars.$color-contraste-light, -3px);
+}
+
+/* --- Móvil: oculto por defecto --- */
+.header-nav__mobile {
+  display: none;
+}
+
+.header-nav__toggle {
+  display: flex;
+  width: 100%;
+  background-color: vars.$color-secundario-light;
+  padding: vars.$espaciado-s;
+  border: none;
+  cursor: pointer;
+  @include mix.flex-center;
+  gap: vars.$espaciado-s;
+  transition: background-color 0.2s ease;
+  font-family: vars.$fuente-principal;
+
+  &:hover {
+    background-color: vars.$color-primario-light;
   }
+
+  @include mix.focus-visible(vars.$color-contraste-light, -3px);
+}
+
+.header-nav__toggle-text {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  font-weight: 700;
+  color: vars.$color-letra-oscura;
+  @include mix.text-uppercase;
+}
+
+.header-nav__toggle-icon {
+  transition: transform 0.3s ease;
+  color: vars.$color-letra-oscura;
+}
+
+.header-nav__toggle-icon--open {
+  transform: rotate(180deg);
+}
+
+.header-nav__menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  background-color: vars.$color-secundario-light;
+  transition: max-height 0.3s ease;
+}
+
+.header-nav__menu--open {
+  max-height: 25rem;
+  border-top: vars.$borde-brutal-thin;
 }
 
 /* ========================================
@@ -330,41 +324,21 @@
     margin-left: -3px;
   }
 
-  /* --- Ocultar navegación desktop --- */
-  .header__nav--desktop {
+  /* --- Navegación móvil sticky --- */
+  .header-nav__desktop {
     display: none;
   }
 
-  /* --- Mostrar barra Opciones --- */
-  .header__options-bar {
-    display: flex;
-    position: sticky;
-    top: 0;
-    padding: vars.$espaciado-xs;
-  }
-
-  /* --- Menú desplegable móvil --- */
-  .header__nav--mobile {
+  .header-nav__mobile {
     display: block;
-    max-height: 0;
-    overflow: hidden;
-    background-color: vars.$color-secundario-light;
-    border-bottom: none;
-    transition: max-height 0.3s ease;
-    z-index: 997;
   }
 
-  .header__nav--mobile.header__nav--open {
-    max-height: 500px;
-    border-bottom: vars.$borde-brutal-thick;
-  }
-
-  .header__nav-list {
+  .header-nav__list {
     flex-direction: column;
     padding: 0;
   }
 
-  .header__nav-item {
+  .header-nav__item {
     border-right: none;
     border-bottom: vars.$borde-brutal-thin;
 
@@ -373,8 +347,8 @@
     }
   }
 
-  .header__nav-link {
+  .header-nav__link {
     padding: vars.$espaciado-xs vars.$espaciado-m;
-    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    text-align: center;
   }
 }
