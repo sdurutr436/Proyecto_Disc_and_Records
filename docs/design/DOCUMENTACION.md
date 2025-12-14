@@ -1264,12 +1264,17 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
 **Propósito:** Barra de navegación principal de la aplicación con logo, búsqueda y acceso a autenticación.
 
 **Variantes disponibles:**
-- Con usuario autenticado (avatar + menú desplegable)
+- Con usuario autenticado (aún por decidir)
 - Sin usuario autenticado (botones de registro/login)
 
 **Estados:**
 - Normal
-- Con menú desplegable abierto
+- Con menú desplegable abierto (En formato móviles)
+
+**Navegación Responsive:**
+- **Desktop:** Barra horizontal con todos los enlaces visibles
+- **Móvil:** Botón "OPCIONES" con menú desplegable tipo hamburguesa
+- **Comportamiento:** La barra de navegación se mantiene fija (sticky) al hacer scroll
 
 **Ejemplo de uso:**
 ```html
@@ -1278,19 +1283,24 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
 
 **Ubicación:** `frontend/src/app/components/layout/header/`
 
+![Header completo escritorio](./img-fase3/header-escritorio.png)
+
+![Header completo móvil](./img-fase3/header-movil.png)
+
 ---
 
 #### Sidebar
 **Propósito:** Menú lateral de navegación para acceso rápido a secciones principales.
 
+**Estado actual:** ⚠️ Componente creado pero **no integrado** en el layout de la aplicación.
+
 **Variantes disponibles:**
 - Sidebar expandido (desktop)
 - Sidebar colapsado (móvil)
 
-**Estados:**
-- Abierto
-- Cerrado
-- Item activo
+**Contenido:**
+- Perfil de usuario con avatar y estadísticas
+- Navegación secundaria: Estadísticas, Favoritos, Reseñas, Listas, Amigos
 
 **Ejemplo de uso:**
 ```html
@@ -1342,6 +1352,10 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
 - `sm` - Pequeño (padding: 8px 16px, font-size: 0.875rem)
 - `md` - Mediano (padding: 12px 24px, font-size: 1rem) - **Por defecto**
 - `lg` - Grande (padding: 16px 32px, font-size: 1.125rem)
+
+![](./img-fase3/botones-variantes-tamanios.png)
+![](./img-fase3/botones-estados-completo.png.png)
+![](./img-fase3/botones-combinaciones-completo.png)
 
 **Estados que maneja:**
 - Normal
@@ -1474,6 +1488,12 @@ profileActions: CardAction[] = [
 
 **Ubicación:** `frontend/src/app/components/shared/card/`
 
+![Card carruseles](./img-fase3/card-variantes-carrusel.png)
+
+![Card perfiles vertical](./img-fase3/card-variantes-perfiles-propios.png)
+
+![Card posible variantes horizontal](./img-fase3/card-variante-horizontal.png)
+
 ---
 
 ### 3.1.4 Elementos de Formulario
@@ -1544,6 +1564,8 @@ profileActions: CardAction[] = [
 
 **Ubicación:** `frontend/src/app/components/shared/form-textarea/`
 
+![Text area](./img-fase3/text-area.png)
+
 ---
 
 #### Form-Select
@@ -1583,6 +1605,8 @@ genreOptions: SelectOption[] = [
 
 **Ubicación:** `frontend/src/app/components/shared/form-select/`
 
+![Form select](./img-fase3/select-options.png)
+
 ---
 
 #### Form-Checkbox
@@ -1616,6 +1640,8 @@ genreOptions: SelectOption[] = [
 ```
 
 **Ubicación:** `frontend/src/app/components/shared/form-checkbox/`
+
+![Checkbox](./img-fase3/checkbox.png)
 
 ---
 
@@ -1665,6 +1691,8 @@ privacyOptions: RadioOption[] = [
 ```
 
 **Ubicación:** `frontend/src/app/components/shared/form-radio-group/`
+
+![Radio buttons](./img-fase3/radiobuttons.png)
 
 ---
 
@@ -1719,6 +1747,8 @@ breadcrumbItemsWithIcons: BreadcrumbItem[] = [
 ```
 
 **Ubicación:** `frontend/src/app/components/shared/breadcrumbs/`
+
+![Breadcrumbs](./img-fase3/breadcrumbs.png)
 
 ---
 
@@ -1775,6 +1805,8 @@ breadcrumbItemsWithIcons: BreadcrumbItem[] = [
 ```
 
 **Ubicación:** `frontend/src/app/components/shared/alert/`
+
+![Elementos feedback](./img-fase3/elementos-feedback.png)
 
 ---
 
@@ -1929,6 +1961,8 @@ trendingAlbums = [
 
 **Ubicación:** `frontend/src/app/components/shared/carousel/`
 
+![Carrusel](./img-fase3/carrusel-tipo1.png)
+
 ---
 
 ### 3.1.8 Formularios Completos
@@ -1940,9 +1974,9 @@ trendingAlbums = [
 - Email (con validación de formato)
 - Password (mínimo 8 caracteres)
 
-**Validaciones:**
-- Email: Formato válido (regex)
-- Password: Mínimo 8 caracteres
+**Validaciones mejoradas:**
+- **Email:** Formato válido con @ obligatorio y dominio terminado en al menos .xx (dos letras, ej: .es, .com, .mx)
+- **Password:** Mínimo 8 caracteres
 - Mostrar errores solo después del primer intento de envío
 
 **Estados que maneja:**
@@ -1958,6 +1992,8 @@ trendingAlbums = [
 
 **Ubicación:** `frontend/src/app/components/shared/login-form/`
 
+![Formulario login](./img-fase3/formulario-login.png)
+
 ---
 
 #### Register Form
@@ -1970,12 +2006,12 @@ trendingAlbums = [
 - Confirm Password (debe coincidir)
 - Checkbox de términos y condiciones
 
-**Validaciones:**
-- Username: 3-20 caracteres, alfanumérico
-- Email: Formato válido
-- Password: Mínimo 8 caracteres, al menos una mayúscula y un número (configurable)
-- Confirm Password: Debe ser idéntica a Password
-- Terms: Debe estar marcado para enviar
+**Validaciones mejoradas:**
+- **Username:** 3-20 caracteres, solo letras, números y guiones bajos. **No se permiten espacios**.
+- **Email:** Formato válido con @ obligatorio y dominio terminado en al menos .xx (dos letras, ej: .es, .com, .mx)
+- **Password:** Mínimo 8 caracteres, **debe incluir al menos una mayúscula y un carácter especial** (!@#$%^&*()_+-=[]{};':"\\|,.<>/?)
+- **Confirm Password:** Debe ser idéntica a Password
+- **Terms:** Debe estar marcado para enviar
 
 **Estados que maneja:**
 - Pristine/Dirty
@@ -1990,6 +2026,8 @@ trendingAlbums = [
 
 **Ubicación:** `frontend/src/app/components/shared/register-form/`
 
+![Formulario register](./img-fase3/formulario-crear-cuenta.png)
+
 ---
 
 #### Forgot Password Form
@@ -1998,8 +2036,8 @@ trendingAlbums = [
 **Campos:**
 - Email (con validación de formato)
 
-**Validaciones:**
-- Email: Formato válido
+**Validaciones mejoradas:**
+- **Email:** Formato válido con @ obligatorio y dominio terminado en al menos .xx (dos letras, ej: .es, .com, .mx)
 - Mensaje de confirmación tras envío exitoso
 
 **Estados que maneja:**
@@ -2015,12 +2053,12 @@ trendingAlbums = [
 
 **Ubicación:** `frontend/src/app/components/shared/forgot-password-form/`
 
+![Formulario recuperar cuenta](./img-fase3/formulario-recuperar-contrasenia.png)
+
 ---
 
 ### 3.1.9 Badge
 **Propósito:** Etiqueta pequeña para mostrar categorías, géneros musicales o porcentajes.
-
-**Estado:** ⚠️ Componente creado pero no implementado aún (placeholder)
 
 **Ubicación:** `frontend/src/app/components/shared/badge/`
 
@@ -2479,7 +2517,9 @@ La Style Guide está organizada en **9 secciones principales**:
 #### 1. Componentes de Layout
 Referencia a Header, Sidebar, Main y Footer (visibles en toda la app).
 
-**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de componentes de layout]**
+![Header normal](img-fase3/header-escritorio.png)
+
+![Header movil](img-fase3/header-movil.png)
 
 ---
 
@@ -2489,7 +2529,11 @@ Referencia a Header, Sidebar, Main y Footer (visibles en toda la app).
 - **Estados:** normal, disabled, como enlace, full-width
 - **Combinaciones:** Matriz 4x3 de todas las combinaciones de variante × tamaño
 
-**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de botones mostrando todas las variantes]**
+![Botones combinaciones](img-fase3/botones-combinaciones-completo.png)
+
+![Botones estados](img-fase3/botones-estados-completo.png)
+
+![Botones tamanios](img-fase3/botones-variantes-tamanios.png)
 
 ---
 
@@ -2504,7 +2548,11 @@ Referencia a Header, Sidebar, Main y Footer (visibles en toda la app).
   - Canción circular con acciones
 - **Profile Horizontal:** Card con layout horizontal
 
-**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de cards mostrando polaroid y profile]**
+![Card variante horizontal](img-fase3/card-variante-horizontal.png)
+
+![Card pequeña para carrusel](img-fase3/card-variantes-carrusel.png)
+
+![Card para perfiles propios vertical](img-fase3/card-variantes-perfiles-propios.png)
 
 ---
 
@@ -2514,7 +2562,13 @@ Referencia a Header, Sidebar, Main y Footer (visibles en toda la app).
 - **Form-checkbox:** normal, con error, deshabilitado
 - **Form-radio-group:** normal, con error, inline
 
-**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de elementos de formulario]**
+![Text area](img-fase3/text-area.png)
+
+![Select options](img-fase3/select-options.png)
+
+![Checkbox](img-fase3/checkbox.png)
+
+![Radio buttons](img-fase3/radiobuttons.png)
 
 ---
 
@@ -2524,7 +2578,7 @@ Referencia a Header, Sidebar, Main y Footer (visibles en toda la app).
 - Largo (con truncado responsive)
 - Con separadores personalizados (› y →)
 
-**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de breadcrumbs con diferentes variantes]**
+![Breadcrumbs](img-fase3/breadcrumbs.png)
 
 ---
 
@@ -2532,7 +2586,7 @@ Referencia a Header, Sidebar, Main y Footer (visibles en toda la app).
 - **Alerts:** success, error, warning, info, sin título, dismissible
 - **Notifications (Toast):** Botones interactivos para mostrar notificaciones flotantes en diferentes posiciones
 
-**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de alerts y notifications]**
+![Elementos de feedback](img-fase3/elementos-feedback.png)
 
 ---
 
@@ -2541,9 +2595,9 @@ Referencia a Header, Sidebar, Main y Footer (visibles en toda la app).
 - **Register Form:** Formulario de registro con validaciones exhaustivas
 - **Forgot Password Form:** Formulario de recuperación de contraseña
 
-**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de formularios completos mostrando el login form]**
+![Formulario login](./img-fase3/formulario-login.png)
 
-**[ESPACIO PARA CAPTURA DE PANTALLA: Formulario de registro con validaciones]**
+![Formulario register](./img-fase3/formulario-crear-cuenta.png)
 
 ---
 
@@ -2552,9 +2606,7 @@ Referencia a Header, Sidebar, Main y Footer (visibles en toda la app).
 - **Carrusel de canciones en tendencia:** 8 cards de canciones con imágenes circulares
 - **Últimos álbumes reseñados:** Carrusel con efecto vinilo
 
-**[ESPACIO PARA CAPTURA DE PANTALLA: Sección de carruseles con navegación]**
-
-**[ESPACIO PARA CAPTURA DE PANTALLA: Detalle de carrusel mostrando botones de navegación y cards]**
+![Carrusel](./img-fase3/carrusel-tipo1.png)
 
 ---
 
@@ -2570,124 +2622,6 @@ La ruta está configurada en `frontend/src/app/app.routes.ts`:
   loadComponent: () => import('./pages/style-guide/style-guide').then(m => m.StyleGuide),
   title: 'Guía de Estilo - Discs & Records'
 }
-```
-
----
-
-### Uso como herramienta de desarrollo
-
-**Flujo de trabajo típico:**
-
-1. **Crear un nuevo componente:**
-   ```bash
-   ng generate component components/shared/new-component
-   ```
-
-2. **Implementar el componente** con sus variantes, estados y propiedades.
-
-3. **Agregar el componente a la Style Guide:**
-   - Importar en `style-guide.ts`
-   - Añadir una nueva sección en `style-guide.html`
-   - Mostrar TODAS las variantes, tamaños y estados
-
-4. **Testing visual:** Navegar a `/style-guide` y verificar que el componente se muestra correctamente.
-
-5. **Iterar:** Hacer ajustes de diseño viendo los cambios en tiempo real en la Style Guide.
-
-6. **Documentación:** Cada variante incluye un `<code>` con la explicación de uso.
-
----
-
-### Ventajas de tener una Style Guide
-
-✅ **Desarrollo más rápido:** No necesitas crear páginas de prueba temporales  
-✅ **Menos bugs visuales:** Detectas problemas de CSS rápidamente  
-✅ **Consistencia:** Aseguras que todos los componentes siguen el mismo patrón  
-✅ **Comunicación con diseñadores:** Pueden ver exactamente cómo se ve cada componente  
-✅ **Testing responsive:** Puedes redimensionar la ventana y ver cómo responden los componentes  
-✅ **Documentación viva:** Siempre actualizada con el código real
-
----
-
-**[ESPACIO PARA CAPTURA DE PANTALLA: Vista general del Style Guide con scroll mostrando múltiples secciones]**
-
----
-
-### Resumen de componentes en Style Guide
-
-| **Categoría** | **Componentes** | **Variantes/Estados** |
-|---|---|---|
-| **Layout** | Header, Sidebar, Main, Footer | 4 componentes |
-| **Botones** | Button | 4 variantes × 3 tamaños + estados |
-| **Cards** | Card | 2 tipos × 2 layouts × 2 efectos |
-| **Formularios** | Input, Textarea, Select, Checkbox, Radio | 3 estados cada uno |
-| **Navegación** | Breadcrumbs | 5 variantes |
-| **Feedback** | Alert, Notification | 4 tipos cada uno |
-| **Formularios completos** | Login, Register, Forgot Password | 3 formularios funcionales |
-| **Carruseles** | Carousel | 3 ejemplos con navegación |
-
-**Total:** 11 componentes implementados con 70+ variantes documentadas
-
----
-
-### Código de ejemplo de la estructura del Style Guide
-
-```typescript
-// style-guide.ts
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Button } from '../../components/shared/button/button';
-import { Card } from '../../components/shared/card/card';
-// ... más imports
-
-@Component({
-  selector: 'app-style-guide',
-  standalone: true,
-  imports: [CommonModule, Button, Card, /* ... */],
-  templateUrl: './style-guide.html',
-  styleUrl: './style-guide.scss',
-})
-export class StyleGuide {
-  // Datos de ejemplo para cards
-  trendingAlbums = [
-    { title: 'Abbey Road', artist: 'The Beatles', year: '1969' },
-    // ... más álbumes
-  ];
-  
-  // Datos para formularios
-  genreOptions: SelectOption[] = [
-    { value: 'rock', label: 'Rock' },
-    // ... más opciones
-  ];
-}
-```
-
-```html
-<!-- style-guide.html -->
-<div class="style-guide">
-  <header class="style-guide__header">
-    <h1>Guía de Estilo</h1>
-    <p>Sistema de componentes reutilizables para Disc and Records</p>
-  </header>
-
-  <!-- Sección: Botones -->
-  <section class="style-guide__section">
-    <h2>Botones</h2>
-    
-    <div class="showcase">
-      <h3>Variantes</h3>
-      <div class="showcase__row">
-        <div class="showcase__item">
-          <app-button variant="primary">Primary</app-button>
-          <code>.variant="primary"</code>
-        </div>
-        <!-- ... más variantes -->
-      </div>
-    </div>
-  </section>
-
-  <!-- ... más secciones -->
-</div>
 ```
 
 ---

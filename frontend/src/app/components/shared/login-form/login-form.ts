@@ -12,52 +12,53 @@ export class LoginForm {
   // Valores del formulario
   email = signal('');
   password = signal('');
-  
+
   // Estados de validación
   emailError = signal(false);
   emailErrorMessage = signal('');
   passwordError = signal(false);
   passwordErrorMessage = signal('');
-  
+
   // Estado del formulario
   isSubmitting = signal(false);
   formSubmitted = signal(false);
-  
+
   // Validación de email
   validateEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Requiere @ y dominio con al menos .xx (dos letras mínimo)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
   }
-  
+
   // Validación de contraseña
   validatePassword(password: string): boolean {
     return password.length >= 8;
   }
-  
+
   // Manejo de cambio en email
   onEmailChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.email.set(target.value);
-    
+
     if (this.formSubmitted()) {
       if (!target.value) {
         this.emailError.set(true);
         this.emailErrorMessage.set('El correo electrónico es requerido');
       } else if (!this.validateEmail(target.value)) {
         this.emailError.set(true);
-        this.emailErrorMessage.set('Introduce un correo electrónico válido');
+        this.emailErrorMessage.set('Correo inválido. Debe tener @ y dominio terminado en .xx (ej: .es, .com)');
       } else {
         this.emailError.set(false);
         this.emailErrorMessage.set('');
       }
     }
   }
-  
+
   // Manejo de cambio en contraseña
   onPasswordChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.password.set(target.value);
-    
+
     if (this.formSubmitted()) {
       if (!target.value) {
         this.passwordError.set(true);
@@ -71,24 +72,24 @@ export class LoginForm {
       }
     }
   }
-  
+
   // Manejo del submit
   onSubmit(event: Event) {
     event.preventDefault();
     this.formSubmitted.set(true);
-    
+
     // Validar email
     if (!this.email()) {
       this.emailError.set(true);
       this.emailErrorMessage.set('El correo electrónico es requerido');
     } else if (!this.validateEmail(this.email())) {
       this.emailError.set(true);
-      this.emailErrorMessage.set('Introduce un correo electrónico válido');
+      this.emailErrorMessage.set('Correo inválido. Debe tener @ y dominio terminado en .xx (ej: .es, .com)');
     } else {
       this.emailError.set(false);
       this.emailErrorMessage.set('');
     }
-    
+
     // Validar contraseña
     if (!this.password()) {
       this.passwordError.set(true);
@@ -100,17 +101,17 @@ export class LoginForm {
       this.passwordError.set(false);
       this.passwordErrorMessage.set('');
     }
-    
+
     // Si no hay errores, procesar el formulario
     if (!this.emailError() && !this.passwordError()) {
       this.isSubmitting.set(true);
-      
+
       // Aquí iría la lógica de autenticación
       console.log('Login:', {
         email: this.email(),
         password: this.password()
       });
-      
+
       // Simular llamada a API
       setTimeout(() => {
         this.isSubmitting.set(false);
