@@ -40,6 +40,6 @@ INSERT INTO canciones (titulo_cancion, anio_salida, id_artista) VALUES
 ('Poetic Justice', 2012, 4);
 
 -- Usuarios de prueba
-INSERT INTO usuarios (nombre_usuario, mail, contrasena, avatar, biografia) VALUES 
-('musicfan', 'musicfan@example.com', 'password123', 'https://i.pravatar.cc/150?img=1', 'Amante de la música clásica y el rock progresivo'),
-('vinylcollector', 'vinyl@example.com', 'password123', 'https://i.pravatar.cc/150?img=2', 'Coleccionista de vinilos desde 1995');
+INSERT INTO usuarios (nombre_usuario, mail, contrasena, avatar, biografia, fecha_registro) VALUES 
+('musicfan', 'musicfan@example.com', 'password123', 'https://i.pravatar.cc/150?img=1', 'Amante de la música clásica y el rock progresivo', CURRENT_TIMESTAMP),
+('vinylcollector', 'vinyl@example.com', 'password123', 'https://i.pravatar.cc/150?img=2', 'Coleccionista de vinilos desde 1995', CURRENT_TIMESTAMP);

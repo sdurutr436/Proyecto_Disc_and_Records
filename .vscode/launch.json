@@ -3,6 +3,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "java",
+      "name": "DiscsAndRecordsApplication",
+      "request": "launch",
+      "mainClass": "com.discsandrecords.api.DiscsAndRecordsApplication",
+      "projectName": "discs-and-records-api"
+    },
+    {
       "name": "ng serve",
       "type": "chrome",
       "request": "launch",
