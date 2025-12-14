@@ -103,6 +103,7 @@
   flex-direction: column;
   gap: vars.$espaciado-xs;
   flex-grow: 1;
+  border-top: vars.$borde-brutal-thin;
 }
 
 /* Contenedor de texto */
@@ -189,6 +190,8 @@
   flex-wrap: wrap;
   gap: vars.$espaciado-xs;
   margin-top: vars.$espaciado-xs;
+  padding-top: vars.$espaciado-s;
+  border-top: vars.$borde-brutal-thin;
 }
 
 .card__badge {
@@ -216,7 +219,9 @@
   flex-direction: column;
   gap: vars.$espaciado-xs;
   margin-top: vars.$espaciado-s;
+  padding-top: vars.$espaciado-s;
   width: 100%;
+  border-top: vars.$borde-brutal-thin;
 }
 
 .card__action {

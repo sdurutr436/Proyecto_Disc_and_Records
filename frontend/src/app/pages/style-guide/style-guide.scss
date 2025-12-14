@@ -120,11 +120,12 @@
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: $espaciado-m;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $espaciado-l $espaciado-m;
+    align-items: center;
 
     @media (max-width: 768px) {
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      grid-template-columns: 1fr;
       gap: $espaciado-s;
     }
   }
