@@ -404,10 +404,51 @@
       </div>
     </section>
 
+    <!-- Sección: Breadcrumbs (Navegación) -->
+    <section class="style-guide__section">
+      <h2>Breadcrumbs (Migas de pan)</h2>
+      
+      <div class="showcase">
+        <h3 class="showcase__title">Variantes</h3>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <app-breadcrumbs [items]="breadcrumbsSimple"></app-breadcrumbs>
+            <code>Breadcrumbs simple</code>
+          </div>
+
+          <div class="showcase__item showcase__item--full">
+            <app-breadcrumbs [items]="breadcrumbsWithIcons"></app-breadcrumbs>
+            <code>Breadcrumbs con iconos</code>
+          </div>
+
+          <div class="showcase__item showcase__item--full">
+            <app-breadcrumbs [items]="breadcrumbsLong"></app-breadcrumbs>
+            <code>Breadcrumbs largo (con truncado en móvil)</code>
+          </div>
+
+          <div class="showcase__item showcase__item--full">
+            <app-breadcrumbs 
+              [items]="breadcrumbsSimple" 
+              separator="›"
+            ></app-breadcrumbs>
+            <code>Breadcrumbs con separador custom (›)</code>
+          </div>
+
+          <div class="showcase__item showcase__item--full">
+            <app-breadcrumbs 
+              [items]="breadcrumbsWithIcons" 
+              separator="→"
+            ></app-breadcrumbs>
+            <code>Breadcrumbs con separador custom (→)</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Placeholder para futuras secciones -->
     <section class="style-guide__section style-guide__section--placeholder">
       <h2>Más componentes próximamente</h2>
-      <p>Alerts, navegación, progress bars...</p>
+      <p>Alerts, modales, tooltips...</p>
     </section>
   </div>
 </div>

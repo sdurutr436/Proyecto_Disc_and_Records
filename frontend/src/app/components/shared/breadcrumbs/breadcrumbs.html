@@ -1,0 +1,28 @@
+<nav class="breadcrumbs" aria-label="Navegación por migas de pan">
+  <ol class="breadcrumbs__list">
+    <li
+      *ngFor="let item of items; let i = index; let isLast = last"
+      class="breadcrumbs__item"
+      [class.breadcrumbs__item--active]="isLast"
+    >
+      <!-- Link para items no activos -->
+      <a
+        *ngIf="!isLast && item.url"
+        [routerLink]="item.url"
+        class="breadcrumbs__link"
+      >
+        <span *ngIf="item.icon" class="breadcrumbs__icon" [innerHTML]="item.icon"></span>
+        <span class="breadcrumbs__label">{{ item.label }}</span>
+      </a>
+
+      <!-- Texto plano para item activo o sin url -->
+      <span *ngIf="isLast || !item.url" class="breadcrumbs__text">
+        <span *ngIf="item.icon" class="breadcrumbs__icon" [innerHTML]="item.icon"></span>
+        <span class="breadcrumbs__label">{{ item.label }}</span>
+      </span>
+
+      <!-- Separador (no en el último item) -->
+      <span *ngIf="!isLast" class="breadcrumbs__separator">{{ separator }}</span>
+    </li>
+  </ol>
+</nav>

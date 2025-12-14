@@ -5,10 +5,11 @@ import { FormTextarea } from '../../components/shared/form-textarea/form-textare
 import { FormSelect, SelectOption } from '../../components/shared/form-select/form-select';
 import { FormCheckbox } from '../../components/shared/form-checkbox/form-checkbox';
 import { FormRadioGroup, RadioOption } from '../../components/shared/form-radio-group/form-radio-group';
+import { Breadcrumbs, BreadcrumbItem } from '../../components/shared/breadcrumbs/breadcrumbs';
 
 @Component({
   selector: 'app-style-guide',
-  imports: [Button, Card, FormTextarea, FormSelect, FormCheckbox, FormRadioGroup],
+  imports: [Button, Card, FormTextarea, FormSelect, FormCheckbox, FormRadioGroup, Breadcrumbs],
   templateUrl: './style-guide.html',
   styleUrl: './style-guide.scss',
 })
@@ -43,6 +44,28 @@ export class StyleGuide {
     { value: 'public', label: 'Público' },
     { value: 'friends', label: 'Solo amigos' },
     { value: 'private', label: 'Privado' }
+  ];
+
+  // Datos para breadcrumbs
+  breadcrumbsSimple: BreadcrumbItem[] = [
+    { label: 'Inicio', url: '/' },
+    { label: 'Mi colección', url: '/collection' },
+    { label: 'Álbumes' }
+  ];
+
+  breadcrumbsWithIcons: BreadcrumbItem[] = [
+    { label: 'Inicio', url: '/', icon: '🏠' },
+    { label: 'Explorar', url: '/explore', icon: '🔍' },
+    { label: 'Artistas', url: '/artists', icon: '🎤' },
+    { label: 'Pink Floyd' }
+  ];
+
+  breadcrumbsLong: BreadcrumbItem[] = [
+    { label: 'Inicio', url: '/' },
+    { label: 'Mi colección', url: '/collection' },
+    { label: 'Álbumes', url: '/collection/albums' },
+    { label: 'Rock', url: '/collection/albums/rock' },
+    { label: 'The Dark Side of the Moon' }
   ];
 }
 
