@@ -1,0 +1,20 @@
+<!-- Botón como enlace si tiene href -->
+<a
+  *ngIf="isLink"
+  [href]="href"
+  [class]="buttonClasses"
+  [attr.aria-disabled]="disabled"
+  [attr.tabindex]="disabled ? -1 : 0"
+  (click)="onClick($event)">
+  <ng-content></ng-content>
+</a>
+
+<!-- Botón normal si no tiene href -->
+<button
+  *ngIf="!isLink"
+  [type]="type"
+  [class]="buttonClasses"
+  [disabled]="disabled"
+  (click)="onClick($event)">
+  <ng-content></ng-content>
+</button>

@@ -1,0 +1,173 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+/* ========================================
+   COMPONENTE: BUTTON
+   Sistema completo de botones neobrutalistas
+   ======================================== */
+
+/* --- Estilos base del botón --- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: vars.$espaciado-xs;
+  font-family: vars.$fuente-principal;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-pildora;
+  transition: all vars.$transicion-rapida, border-radius vars.$transicion-base;
+  white-space: nowrap;
+  box-sizing: border-box;
+  position: relative;
+
+  // Tamaño por defecto (medium)
+  padding: vars.$espaciado-s vars.$espaciado-l;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  min-height: 44px; // Accesibilidad táctil
+
+  &:focus-visible {
+    outline: 3px solid vars.$color-contraste-light;
+    outline-offset: 2px;
+  }
+}
+
+/* ========================================
+   VARIANTES DE COLOR
+   ======================================== */
+
+/* --- Variante: Primary --- */
+.button--primary {
+  background-color: vars.$color-primario-light;
+  color: vars.$color-letra-oscura;
+  border-color: vars.$color-letra-oscura;
+  box-shadow: vars.$sombra-brutal-s;
+
+  &:hover:not(.button--disabled) {
+    background-color: vars.$color-secundario-light;
+    box-shadow: vars.$sombra-brutal-hover;
+    transform: translate(2px, 2px);
+  }
+
+  &:active:not(.button--disabled) {
+    box-shadow: vars.$sombra-brutal-active;
+    transform: translate(4px, 4px);
+  }
+}
+
+/* --- Variante: Secondary --- */
+.button--secondary {
+  background-color: vars.$color-fondo-light;
+  color: vars.$color-letra-oscura;
+  border-color: vars.$color-letra-oscura;
+  box-shadow: vars.$sombra-brutal-s;
+
+  &:hover:not(.button--disabled) {
+    background-color: vars.$color-fondo-light-secundario;
+    box-shadow: vars.$sombra-brutal-hover;
+    transform: translate(2px, 2px);
+  }
+
+  &:active:not(.button--disabled) {
+    box-shadow: vars.$sombra-brutal-active;
+    transform: translate(4px, 4px);
+  }
+}
+
+/* --- Variante: Ghost --- */
+.button--ghost {
+  background-color: transparent;
+  color: vars.$color-letra-oscura;
+  border-color: vars.$color-letra-oscura;
+  box-shadow: none;
+
+  &:hover:not(.button--disabled) {
+    background-color: vars.$color-fondo-light-secundario;
+    box-shadow: vars.$sombra-brutal-xs;
+  }
+
+  &:active:not(.button--disabled) {
+    background-color: vars.$color-primario-light;
+    transform: translate(1px, 1px);
+  }
+}
+
+/* --- Variante: Danger --- */
+.button--danger {
+  background-color: vars.$color-error;
+  color: vars.$color-letra-blanca;
+  border-color: vars.$color-letra-oscura;
+  box-shadow: vars.$sombra-brutal-s;
+
+  &:hover:not(.button--disabled) {
+    background-color: vars.$color-acentuado-light;
+    box-shadow: vars.$sombra-brutal-hover;
+    transform: translate(2px, 2px);
+  }
+
+  &:active:not(.button--disabled) {
+    box-shadow: vars.$sombra-brutal-active;
+    transform: translate(4px, 4px);
+  }
+}
+
+/* ========================================
+   TAMAÑOS
+   ======================================== */
+
+/* --- Tamaño: Small --- */
+.button--sm {
+  padding: vars.$espaciado-xs vars.$espaciado-m;
+  font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  min-height: 36px;
+}
+
+/* --- Tamaño: Medium (ya definido en base) --- */
+.button--md {
+  padding: vars.$espaciado-s vars.$espaciado-l;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  min-height: 44px;
+}
+
+/* --- Tamaño: Large --- */
+.button--lg {
+  padding: vars.$espaciado-m vars.$espaciado-xl;
+  font-size: vars.$tamanio-fuente-texto-pequeno-m;
+  min-height: 52px;
+}
+
+/* ========================================
+   ESTADOS ESPECIALES
+   ======================================== */
+
+/* --- Estado: Disabled --- */
+.button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+/* --- Modificador: Full Width --- */
+.button--full-width {
+  width: 100%;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: vars.$breakpoint-tablet) {
+  .button {
+    // En móvil, los botones pueden ser más compactos
+    padding: vars.$espaciado-xs vars.$espaciado-m;
+    font-size: 0.75rem;
+  }
+
+  .button--lg {
+    padding: vars.$espaciado-s vars.$espaciado-l;
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  }
+}

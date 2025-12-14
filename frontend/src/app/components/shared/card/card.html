@@ -1,0 +1,55 @@
+<article [class]="cardClasses">
+  <!-- Sección de imagen -->
+  <section [class]="imageClasses">
+    <img *ngIf="imageUrl" [src]="imageUrl" [alt]="imageAlt" />
+    <span *ngIf="!imageUrl" class="card__placeholder">🎵</span>
+  </section>
+
+  <!-- Sección de contenido (fondo beige estilo polaroid) -->
+  <section class="card__content">
+    <!-- Variante Polaroid: Links clicables -->
+    <div *ngIf="cardType === 'polaroid'" class="card__text">
+      <a *ngIf="title && titleLink" [href]="titleLink" class="card__title card__title--link">
+        {{ title }}
+      </a>
+      <h3 *ngIf="title && !titleLink" class="card__title">
+        {{ title }}
+      </h3>
+
+      <a *ngIf="subtitle && subtitleLink" [href]="subtitleLink" class="card__subtitle card__subtitle--link">
+        {{ subtitle }}
+      </a>
+      <p *ngIf="subtitle && !subtitleLink" class="card__subtitle">
+        {{ subtitle }}
+      </p>
+    </div>
+
+    <!-- Variante Profile: Título, subtítulo, badges y botones -->
+    <div *ngIf="cardType === 'profile'" class="card__text">
+      <h3 *ngIf="title" class="card__title">{{ title }}</h3>
+      <p *ngIf="subtitle" class="card__subtitle">{{ subtitle }}</p>
+
+      <!-- Badges -->
+      <div *ngIf="badges.length > 0" class="card__badges">
+        <span
+          *ngFor="let badge of badges; let i = index"
+          class="card__badge"
+          [class.card__badge--alt]="i % 2 !== 0">
+          {{ badge }}
+        </span>
+      </div>
+
+      <!-- Botones de acción -->
+      <div *ngIf="actions.length > 0" class="card__actions">
+        <button
+          *ngFor="let action of actions"
+          type="button"
+          [class]="'card__action card__action--' + action.variant"
+          (click)="onActionClick(action, $event)">
+          <span *ngIf="action.icon" class="card__action-icon" [innerHTML]="action.icon"></span>
+          <span class="card__action-label">{{ action.label }}</span>
+        </button>
+      </div>
+    </div>
+  </section>
+</article>

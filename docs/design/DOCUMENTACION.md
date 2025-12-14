@@ -636,3 +636,627 @@ El showcase incluye ejemplos de:
 | Capturas de Figma | `docs/design/img-fase1/` | ✅ |
 
 ---
+
+# Sección 2: HTML Semántico y Estructura
+
+> **Proyecto:** Discs & Records  
+> **Fase:** 2 - HTML Semántico y Accesibilidad  
+
+---
+
+## 2.1 Elementos Semánticos Utilizados
+
+El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de manera significativa, mejorando la accesibilidad y el SEO.
+
+### `<header>` - Encabezado de la aplicación
+
+**Uso:** Contiene el logotipo, navegación principal y botones de autenticación.
+
+**Ejemplo del proyecto:**
+
+```html
+<header class="header">
+  <!-- Sección superior con logo y botones -->
+  <div class="header__top">
+    <div class="header__top-container">
+      <!-- Logo central con barras de colores -->
+      <div class="header__logo-wrapper">
+        <div class="header__stripes" aria-hidden="true"></div>
+        <img src="/assets/logo.png" alt="Discs & Records" class="header__logo" />
+      </div>
+
+      <!-- Botones de autenticación -->
+      <div class="header__buttons">
+        <button class="header__btn header__btn--left">REGISTRARSE</button>
+        <button class="header__btn header__btn--right">INICIAR SESIÓN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navegación principal -->
+  <nav class="header__nav header__nav--desktop" aria-label="Navegación principal">
+    <ul class="header__nav-list">
+      <li class="header__nav-item">
+        <a href="#" class="header__nav-link">MI LISTA</a>
+      </li>
+      <li class="header__nav-item">
+        <a href="#" class="header__nav-link">ARTISTAS</a>
+      </li>
+      <li class="header__nav-item">
+        <a href="#" class="header__nav-link">PRÓXIMAMENTE</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+```
+
+---
+
+### `<nav>` - Navegación
+
+**Uso:** Agrupa enlaces de navegación principal. Siempre incluimos `aria-label` para contexto adicional.
+
+**Ejemplo del proyecto:**
+
+```html
+<nav class="header__nav header__nav--desktop" aria-label="Navegación principal">
+  <ul class="header__nav-list">
+    <li class="header__nav-item">
+      <a href="#" class="header__nav-link">MI LISTA</a>
+    </li>
+    <li class="header__nav-item">
+      <a href="#" class="header__nav-link">ARTISTAS</a>
+    </li>
+  </ul>
+</nav>
+```
+
+**Nota:** En móvil, tenemos una navegación secundaria con dropdown, también usando `<nav>` con diferente `aria-label`.
+
+---
+
+### `<main>` - Contenido principal
+
+**Uso:** Envuelve el contenido principal único de cada página. Solo debe haber un `<main>` por página.
+
+**Ejemplo del proyecto:**
+
+```html
+<!-- app.html -->
+<app-header></app-header>
+
+<app-main>
+  <router-outlet></router-outlet>
+</app-main>
+
+<app-footer></app-footer>
+```
+
+```html
+<!-- main.html -->
+<main class="main">
+  <div class="main__container">
+    <ng-content></ng-content>
+  </div>
+</main>
+```
+
+---
+
+### `<aside>` - Contenido complementario
+
+**Uso:** Sidebar con información relacionada pero no esencial para el contenido principal.
+
+**Ejemplo del proyecto:**
+
+```html
+<aside class="sidebar">
+  <div class="sidebar__content">
+    <!-- Navegación rápida -->
+    <nav class="sidebar__nav" aria-label="Navegación rápida">
+      <ul class="sidebar__nav-list">
+        <li><a href="#" class="sidebar__nav-link">Inicio</a></li>
+        <li><a href="#" class="sidebar__nav-link">Descubrir</a></li>
+      </ul>
+    </nav>
+    
+    <!-- Sección de tendencias -->
+    <div class="sidebar__section">
+      <h3 class="sidebar__title">Tendencias</h3>
+      <div class="sidebar__trending">
+        <div class="sidebar__trending-item">
+          <span class="sidebar__trending-number">#1</span>
+          <span class="sidebar__trending-text">Abbey Road</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+```
+
+---
+
+### `<section>` - Secciones temáticas
+
+**Uso:** Agrupa contenido relacionado temáticamente. Cada sección debe tener un heading.
+
+**Ejemplo esperado en el proyecto:**
+
+```html
+<section class="albums-section">
+  <h2 class="albums-section__title">Álbumes en Tendencia</h2>
+  <div class="albums-section__grid">
+    <!-- Cards de álbumes -->
+  </div>
+</section>
+
+<section class="reviews-section">
+  <h2 class="reviews-section__title">Reseñas Recientes</h2>
+  <div class="reviews-section__list">
+    <!-- Lista de reseñas -->
+  </div>
+</section>
+```
+
+---
+
+### `<article>` - Contenido autónomo
+
+**Uso:** Contenido que podría distribuirse o reutilizarse independientemente (reseñas, posts, cards de álbumes).
+
+**Ejemplo esperado en el proyecto:**
+
+```html
+<article class="album-card">
+  <img src="album-cover.jpg" alt="Portada de Abbey Road" class="album-card__image" />
+  <h3 class="album-card__title">Abbey Road</h3>
+  <p class="album-card__artist">The Beatles</p>
+  <div class="album-card__rating">
+    <span class="album-card__stars">★★★★★</span>
+    <span class="album-card__score">4.8</span>
+  </div>
+</article>
+
+<article class="review">
+  <header class="review__header">
+    <h3 class="review__title">Una obra maestra atemporal</h3>
+    <p class="review__meta">Por @usuario • Hace 2 días</p>
+  </header>
+  <p class="review__content">
+    Abbey Road representa la culminación artística de The Beatles...
+  </p>
+</article>
+```
+
+---
+
+### `<footer>` - Pie de página
+
+**Uso:** Información institucional, enlaces secundarios, información de contacto.
+
+**Ejemplo del proyecto:**
+
+```html
+<footer class="footer">
+  <div class="footer__content">
+    <div class="footer__stripes" aria-hidden="true"></div>
+    
+    <!-- Columna izquierda: enlaces institucionales -->
+    <div class="footer__buttons-left">
+      <button class="footer__btn footer__btn--left-top">API de Desarrollo</button>
+      <button class="footer__btn footer__btn--left-middle">Mi perfil</button>
+      <button class="footer__btn footer__btn--left-bottom">Contacto</button>
+    </div>
+    
+    <!-- Centro: Logo -->
+    <div class="footer__logo-wrapper">
+      <img src="/assets/logo.png" alt="Discs & Records" class="footer__logo" />
+    </div>
+    
+    <!-- Columna derecha: enlaces adicionales -->
+    <div class="footer__buttons-right">
+      <button class="footer__btn footer__btn--right-top">Sobre nosotros</button>
+      <button class="footer__btn footer__btn--right-middle">Mi perfil</button>
+      <button class="footer__btn footer__btn--right-bottom">Privacidad</button>
+    </div>
+  </div>
+</footer>
+```
+
+---
+
+## 2.2 Jerarquía de Headings
+
+### Reglas de la jerarquía
+
+1. **Un solo `<h1>` por página** - Representa el título principal del contenido
+2. **No saltar niveles** - Siempre seguir el orden h1 → h2 → h3 → h4 → h5 → h6
+3. **Los headings representan estructura** - No usar headings solo por estética
+4. **Cada `<section>` debe tener un heading** - Para contexto semántico
+
+---
+
+### Diagrama de jerarquía del proyecto
+
+```
+Página: Inicio (Home)
+│
+├─ <h1> "Discs & Records" ─────────────────────── Título principal de la aplicación
+│
+├─ <section> Álbumes en Tendencia
+│  └─ <h2> "Álbumes en Tendencia" ──────────────── Título de sección
+│     ├─ <article> Card de álbum
+│     │  └─ <h3> "Abbey Road" ───────────────────── Título del álbum
+│     ├─ <article> Card de álbum
+│     │  └─ <h3> "Dark Side of the Moon" ────────── Título del álbum
+│     └─ <article> Card de álbum
+│        └─ <h3> "Thriller" ──────────────────────── Título del álbum
+│
+├─ <section> Reseñas Recientes
+│  └─ <h2> "Reseñas Recientes" ─────────────────── Título de sección
+│     ├─ <article> Reseña
+│     │  └─ <h3> "Una obra maestra atemporal" ───── Título de reseña
+│     └─ <article> Reseña
+│        └─ <h3> "Revolucionario para su época" ─── Título de reseña
+│
+└─ <aside> Sidebar
+   ├─ <h2> "Navegación Rápida" ─────────────────── Título del sidebar
+   └─ <h3> "Tendencias" ────────────────────────── Subsección del sidebar
+```
+
+---
+
+### Ejemplo de implementación correcta
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <title>Discs & Records - Inicio</title>
+</head>
+<body>
+  <header>
+    <!-- Navegación sin headings -->
+  </header>
+
+  <main>
+    <h1>Descubre y valora tu música favorita</h1>
+
+    <section class="albums-section">
+      <h2>Álbumes en Tendencia</h2>
+      <div class="albums-grid">
+        <article class="album-card">
+          <h3>Abbey Road</h3>
+          <p>The Beatles • 1969</p>
+        </article>
+        <article class="album-card">
+          <h3>Dark Side of the Moon</h3>
+          <p>Pink Floyd • 1973</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="reviews-section">
+      <h2>Reseñas Recientes</h2>
+      <article class="review">
+        <h3>Una obra maestra atemporal</h3>
+        <p class="review__meta">Reseña de Abbey Road por @usuario</p>
+        <p class="review__content">...</p>
+      </article>
+    </section>
+
+    <aside class="sidebar">
+      <h2>Explorar</h2>
+      <nav>
+        <h3>Géneros</h3>
+        <ul>
+          <li><a href="#">Rock</a></li>
+          <li><a href="#">Pop</a></li>
+        </ul>
+      </nav>
+      
+      <h3>Tendencias</h3>
+      <div class="trending-list">
+        <!-- Lista de tendencias -->
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <!-- Enlaces y copyright sin headings -->
+  </footer>
+</body>
+</html>
+```
+
+---
+
+### Ejemplo de jerarquía INCORRECTA (nunca hacer esto)
+
+```html
+<!-- ❌ INCORRECTO: Saltamos de h1 a h3 -->
+<h1>Título Principal</h1>
+<h3>Subtítulo</h3> <!-- ❌ Falta el h2 -->
+
+<!-- ❌ INCORRECTO: Múltiples h1 en la misma página -->
+<h1>Título Principal</h1>
+<section>
+  <h1>Otra sección</h1> <!-- ❌ Solo debe haber un h1 -->
+</section>
+
+<!-- ❌ INCORRECTO: Usar headings solo por estilo -->
+<h2>Texto grande</h2>
+<p>Contenido normal</p>
+<h4>Texto mediano</h4> <!-- ❌ No hay jerarquía real -->
+```
+
+---
+
+## 2.3 Estructura de Formularios
+
+### Elementos clave de los formularios
+
+1. **`<form>`** - Contenedor principal del formulario
+2. **`<fieldset>`** - Agrupa campos relacionados lógicamente
+3. **`<legend>`** - Describe el propósito del fieldset
+4. **`<label>`** - Asociado a inputs mediante `for` e `id`
+5. **Atributos ARIA** - Para mejorar accesibilidad
+
+---
+
+### Ejemplo del componente `register-form`
+
+```html
+<form class="register-form" (submit)="onSubmit($event)" method="post" novalidate>
+  
+  <!-- Fieldset 1: Información de cuenta -->
+  <fieldset class="register-form__fieldset">
+    <legend class="register-form__legend">Crea tu cuenta</legend>
+    
+    <!-- Campo de nombre de usuario -->
+    <div class="register-form__field">
+      <label for="register-username" class="register-form__label">
+        Nombre de usuario
+        <span class="register-form__required" aria-label="Campo requerido">*</span>
+      </label>
+      <input
+        id="register-username"
+        type="text"
+        name="username"
+        placeholder="tunombredeusuario"
+        required
+        class="register-form__input"
+        [attr.aria-invalid]="usernameError()"
+        [attr.aria-describedby]="usernameError() ? 'username-error' : 'username-help'"
+        autocomplete="username" />
+      
+      <!-- Mensaje de error -->
+      <p 
+        *ngIf="usernameError()" 
+        id="username-error"
+        class="register-form__error"
+        role="alert">
+        {{ usernameErrorMessage() }}
+      </p>
+      
+      <!-- Texto de ayuda -->
+      <p 
+        *ngIf="!usernameError()" 
+        id="username-help"
+        class="register-form__help">
+        Este será tu nombre visible en Discs & Records
+      </p>
+    </div>
+    
+    <!-- Campo de correo electrónico -->
+    <div class="register-form__field">
+      <label for="register-email" class="register-form__label">
+        Correo electrónico
+        <span class="register-form__required" aria-label="Campo requerido">*</span>
+      </label>
+      <input
+        id="register-email"
+        type="email"
+        name="email"
+        placeholder="tu@email.com"
+        required
+        class="register-form__input"
+        [attr.aria-invalid]="emailError()"
+        [attr.aria-describedby]="emailError() ? 'email-error' : 'email-help'"
+        autocomplete="email" />
+      
+      <!-- Mensaje de error -->
+      <p 
+        *ngIf="emailError()" 
+        id="email-error"
+        class="register-form__error"
+        role="alert">
+        {{ emailErrorMessage() }}
+      </p>
+      
+      <!-- Texto de ayuda -->
+      <p 
+        *ngIf="!emailError()" 
+        id="email-help"
+        class="register-form__help">
+        Lo usaremos para enviarte actualizaciones de tus álbumes favoritos
+      </p>
+    </div>
+  </fieldset>
+  
+  <!-- Fieldset 2: Seguridad -->
+  <fieldset class="register-form__fieldset">
+    <legend class="register-form__legend">Seguridad</legend>
+    
+    <!-- Campo de contraseña -->
+    <div class="register-form__field">
+      <label for="register-password" class="register-form__label">
+        Contraseña
+        <span class="register-form__required" aria-label="Campo requerido">*</span>
+      </label>
+      <input
+        id="register-password"
+        type="password"
+        name="password"
+        placeholder="••••••••"
+        required
+        class="register-form__input"
+        autocomplete="new-password" />
+    </div>
+  </fieldset>
+
+  <!-- Botón de envío -->
+  <button type="submit" class="register-form__submit">
+    Crear cuenta
+  </button>
+</form>
+```
+
+---
+
+### Componente reutilizable `form-input`
+
+Este componente encapsula la lógica de label + input + mensajes, facilitando la creación de formularios accesibles.
+
+```html
+<!-- form-input.html -->
+<div class="form-input-wrapper">
+  <!-- Label con asociación al input mediante 'for' -->
+  <label 
+    [for]="inputId" 
+    class="form-input__label"
+    [class.form-input__label--required]="required">
+    {{ label }}
+    <span class="form-input__required-indicator" *ngIf="required" aria-label="Campo requerido">*</span>
+  </label>
+  
+  <!-- Input con todos los atributos necesarios -->
+  <input 
+    [id]="inputId"
+    [type]="type"
+    [name]="name"
+    [placeholder]="placeholder"
+    [required]="required"
+    [disabled]="disabled"
+    class="form-input__field"
+    [class.form-input__field--error]="hasError"
+    [class.form-input__field--success]="hasSuccess"
+    [attr.aria-describedby]="(helpText || errorMessage) ? inputId + '-description' : null"
+    [attr.aria-invalid]="hasError"
+    [attr.aria-required]="required" />
+  
+  <!-- Mensaje de error (solo se muestra si hay error) -->
+  <p 
+    *ngIf="hasError && errorMessage" 
+    [id]="inputId + '-description'"
+    class="form-input__error"
+    role="alert">
+    {{ errorMessage }}
+  </p>
+  
+  <!-- Texto de ayuda (solo se muestra si no hay error) -->
+  <p 
+    *ngIf="!hasError && helpText" 
+    [id]="inputId + '-description'"
+    class="form-input__help">
+    {{ helpText }}
+  </p>
+</div>
+```
+
+---
+
+### Explicación de la estructura
+
+#### 1. **Uso de `<fieldset>` y `<legend>`**
+
+```html
+<fieldset class="register-form__fieldset">
+  <legend class="register-form__legend">Crea tu cuenta</legend>
+  <!-- Campos relacionados -->
+</fieldset>
+```
+
+- **`<fieldset>`**: Agrupa campos lógicamente relacionados (por ejemplo, "Información de cuenta" vs "Seguridad")
+- **`<legend>`**: Proporciona un título descriptivo para el grupo de campos
+- **Beneficio**: Los lectores de pantalla anuncian el contexto del fieldset cuando el usuario navega por él
+
+#### 2. **Asociación `<label>` con `<input>` mediante `for` e `id`**
+
+```html
+<label for="register-username" class="register-form__label">
+  Nombre de usuario
+</label>
+<input id="register-username" type="text" name="username" />
+```
+
+- El atributo `for` del label debe coincidir exactamente con el `id` del input
+- **Beneficio**: Al hacer clic en el label, el input recibe foco automáticamente
+- **Accesibilidad**: Los lectores de pantalla asocian el texto del label con el campo
+
+#### 3. **Indicadores de campos requeridos**
+
+```html
+<label for="register-username">
+  Nombre de usuario
+  <span class="register-form__required" aria-label="Campo requerido">*</span>
+</label>
+```
+
+- El asterisco `*` indica visualmente que el campo es obligatorio
+- `aria-label="Campo requerido"` proporciona contexto para lectores de pantalla
+- El atributo `required` en el input activa la validación nativa del navegador
+
+#### 4. **Atributos ARIA para accesibilidad**
+
+```html
+<input
+  id="register-username"
+  [attr.aria-invalid]="usernameError()"
+  [attr.aria-describedby]="usernameError() ? 'username-error' : 'username-help'" />
+
+<p id="username-error" class="register-form__error" role="alert">
+  El nombre de usuario debe tener al menos 3 caracteres
+</p>
+```
+
+- **`aria-invalid`**: Indica si el campo tiene un error de validación
+- **`aria-describedby`**: Vincula el input con un elemento que lo describe (mensaje de error o ayuda)
+- **`role="alert"`**: Anuncia inmediatamente el error a los lectores de pantalla
+
+#### 5. **Mensajes de error y ayuda**
+
+```html
+<!-- Mensaje de error (prioridad alta) -->
+<p 
+  *ngIf="usernameError()" 
+  id="username-error"
+  class="register-form__error"
+  role="alert">
+  {{ usernameErrorMessage() }}
+</p>
+
+<!-- Texto de ayuda (solo si no hay error) -->
+<p 
+  *ngIf="!usernameError()" 
+  id="username-help"
+  class="register-form__help">
+  Este será tu nombre visible en Discs & Records
+</p>
+```
+
+- Los mensajes de error se muestran solo cuando hay un problema
+- Los textos de ayuda guían al usuario sobre qué introducir
+- Ambos están vinculados al input mediante `aria-describedby`
+
+---
+
+### Ventajas de esta estructura
+
+✅ **Accesibilidad mejorada**: Lectores de pantalla pueden navegar y entender el formulario  
+✅ **Validación clara**: Los errores están asociados visualmente y semánticamente con los campos  
+✅ **Experiencia de usuario**: Labels clicables, mensajes de ayuda contextuales  
+✅ **SEO y semántica**: HTML estructurado correctamente  
+✅ **Mantenibilidad**: Componente reutilizable `form-input` reduce duplicación
+
+---

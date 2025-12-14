@@ -1,0 +1,314 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+/* --- Article Card Principal --- */
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: vars.$color-fondo-light;
+  border: vars.$borde-brutal-thick;
+  border-radius: vars.$radio-s;
+  box-shadow: vars.$sombra-brutal-s;
+  transition: all vars.$transicion-rapida;
+  overflow: hidden;
+  width: 100%;
+  max-width: 280px;
+
+  /* Variante con efecto hover lift (hundido) - solo para polaroid */
+  &--polaroid.card--hover-lift:hover {
+    transform: translate(2px, 2px);
+    box-shadow: vars.$sombra-brutal-xs;
+  }
+
+  /* Variante con sombras multicolor estilo vinilo */
+  &--vinilo {
+    box-shadow:
+      2px 2px 0px vars.$color-acentuado-light,
+      4px 4px 0px vars.$color-secundario-light,
+      6px 6px 0px vars.$color-primario-light;
+
+    &.card--polaroid.card--hover-lift:hover {
+      transform: translate(2px, 2px);
+      box-shadow:
+        1px 1px 0px vars.$color-acentuado-light,
+        2px 2px 0px vars.$color-secundario-light,
+        3px 3px 0px vars.$color-primario-light;
+    }
+  }
+
+  /* Modificadores por tipo de card */
+  &--polaroid {
+    max-width: 220px;
+  }
+
+  &--profile {
+    max-width: 320px;
+  }
+}
+
+/* --- Section: Imagen --- */
+.card__image {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: vars.$color-fondo-light-secundario;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Formas */
+  &--circle img {
+    border-radius: 50%;
+    padding: vars.$espaciado-xs;
+  }
+
+  &--square img {
+    border-radius: 0;
+  }
+
+  /* Tamaños */
+  &--small {
+    aspect-ratio: 1;
+    max-height: 120px;
+  }
+
+  &--medium {
+    aspect-ratio: 1;
+    max-height: 200px;
+  }
+
+  &--large {
+    aspect-ratio: 1;
+    max-height: 300px;
+  }
+}
+
+/* Placeholder emoji cuando no hay imagen */
+.card__placeholder {
+  font-size: 4rem;
+  opacity: 0.3;
+}
+
+/* --- Section: Contenido (fondo beige estilo polaroid) --- */
+.card__content {
+  background-color: vars.$color-fondo-light-secundario;
+  padding: vars.$espaciado-m;
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-xs;
+  flex-grow: 1;
+}
+
+/* Contenedor de texto */
+.card__text {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-xs;
+  text-align: center;
+}
+
+.card--profile .card__text {
+  text-align: left;
+}
+
+/* --- Título y subtítulo --- */
+.card__title {
+  font-size: vars.$tamanio-fuente-h4;
+  font-weight: 700;
+  color: vars.$color-letra-oscura;
+  margin: 0;
+  line-height: 1.2;
+
+  /* Truncado con ellipsis para polaroid */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: all vars.$transicion-base;
+
+  /* Links en variante polaroid */
+  &--link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+
+    &:hover {
+      color: vars.$color-primario-light;
+      /* Animación de rotación del texto si es muy largo */
+      animation: scroll-text 3s linear infinite;
+      white-space: nowrap;
+      overflow: visible;
+    }
+  }
+}
+
+.card__subtitle {
+  font-size: vars.$tamanio-fuente-parrafo;
+  color: vars.$color-letra-oscura;
+  opacity: 0.7;
+  margin: 0;
+  line-height: 1.3;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: all vars.$transicion-base;
+
+  &--link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+
+    &:hover {
+      color: vars.$color-secundario-light;
+      animation: scroll-text 3s linear infinite;
+      white-space: nowrap;
+      overflow: visible;
+    }
+  }
+}
+
+/* Animación de scroll de texto para títulos largos */
+@keyframes scroll-text {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* --- Badges --- */
+.card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: vars.$espaciado-xs;
+  margin-top: vars.$espaciado-xs;
+}
+
+.card__badge {
+  display: inline-block;
+  padding: 4px vars.$espaciado-xs;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background-color: vars.$color-primario-light;
+  color: vars.$color-letra-oscura;
+  border: 2px solid vars.$color-letra-oscura;
+  border-radius: vars.$radio-xs;
+  box-shadow: 2px 2px 0px vars.$color-letra-oscura;
+  line-height: 1;
+
+  /* Colores alternos */
+  &--alt {
+    background-color: vars.$color-secundario-light;
+  }
+}
+
+/* --- Botones de acción --- */
+.card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-xs;
+  margin-top: vars.$espaciado-s;
+  width: 100%;
+}
+
+.card__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: vars.$espaciado-xs;
+  width: 100%;
+  padding: vars.$espaciado-xs vars.$espaciado-s;
+  font-size: vars.$tamanio-fuente-parrafo;
+  font-weight: 600;
+  font-family: inherit;
+  border: vars.$borde-brutal-medium;
+  border-radius: 9999px;
+  box-shadow: 2px 2px 0px vars.$color-letra-oscura;
+  cursor: pointer;
+  transition: all vars.$transicion-rapida;
+  min-height: 40px;
+
+  &:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px vars.$color-letra-oscura;
+  }
+
+  &:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px vars.$color-letra-oscura;
+  }
+
+  /* Variantes de color */
+  &--primary {
+    background-color: vars.$color-primario-light;
+    color: vars.$color-letra-oscura;
+  }
+
+  &--secondary {
+    background-color: vars.$color-secundario-light;
+    color: vars.$color-letra-oscura;
+  }
+
+  &--contrast {
+    background-color: vars.$color-contraste-light;
+    color: vars.$color-letra-oscura;
+  }
+
+  &--accent {
+    background-color: vars.$color-acentuado-light;
+    color: vars.$color-letra-oscura;
+  }
+}
+
+.card__action-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card__action-label {
+  line-height: 1;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .card {
+    max-width: 100%;
+  }
+
+  .card--polaroid {
+    max-width: 180px;
+  }
+
+  .card--profile {
+    max-width: 100%;
+  }
+
+  .card__content {
+    padding: vars.$espaciado-s;
+  }
+
+  .card__title {
+    font-size: vars.$tamanio-fuente-h5;
+  }
+
+  .card__subtitle {
+    font-size: 0.875rem;
+  }
+
+  .card__action {
+    padding: vars.$espaciado-xs;
+    font-size: 0.875rem;
+    min-height: 36px;
+  }
+}

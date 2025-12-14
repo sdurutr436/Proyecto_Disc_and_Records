@@ -7,6 +7,11 @@ export const routes: Routes = [
     title: 'Inicio - Discs & Records'
   },
   {
+    path: 'style-guide',
+    loadComponent: () => import('./pages/style-guide/style-guide').then(m => m.StyleGuide),
+    title: 'Guía de Estilo - Discs & Records'
+  },
+  {
     path: '**',
     redirectTo: ''
   }
