@@ -10,6 +10,7 @@
   padding: vars.$espaciado-xl 0;
   overflow: hidden;
   position: relative;
+  transition: padding vars.$transicion-base;
 }
 
 
@@ -23,6 +24,7 @@
   justify-content: center;
   gap: 0;
   position: relative;
+  transition: flex-direction vars.$transicion-base, gap vars.$transicion-base, padding vars.$transicion-base;
 }
 
 
@@ -44,8 +46,8 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background: 
-    linear-gradient(to bottom, 
+  background:
+    linear-gradient(to bottom,
       transparent 0, transparent calc(50% - 1.875rem - 8px),
       vars.$color-exito calc(50% - 1.875rem - 8px), vars.$color-exito calc(50% - 1.125rem - 8px),
       transparent calc(50% - 1.125rem - 8px), transparent calc(50% - 1.125rem - 4px),
@@ -91,6 +93,7 @@
   z-index: 10;
   left: 50%;
   transform: translateX(-50%);
+  transition: all vars.$transicion-base;
 }
 
 
@@ -101,7 +104,7 @@
   width: auto;
   position: relative;
   transition: transform vars.$transicion-rapida;
-  
+
   &:hover {
     transform: rotate(25deg);
   }
@@ -118,24 +121,24 @@
   background-color: vars.$color-fondo-light;
   color: vars.$color-letra-oscura;
   cursor: pointer;
-  transition: all vars.$transicion-rapida;
+  transition: all vars.$transicion-rapida, border-radius vars.$transicion-base, width vars.$transicion-base, min-width vars.$transicion-base;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   box-shadow: vars.$sombra-brutal-s;
   position: relative;
   white-space: nowrap;
   min-width: 24rem;
-  
+
   &:hover {
     box-shadow: vars.$sombra-brutal-hover;
     transform: translate(2px, 2px);
   }
-  
+
   &:active {
     box-shadow: vars.$sombra-brutal-active;
     transform: translate(4px, 4px);
   }
-  
+
   &:focus-visible {
     outline: 3px solid vars.$color-contraste-light;
     outline-offset: 2px;
@@ -193,59 +196,111 @@
 
 /* --- Responsive --- */
 @media (max-width: vars.$breakpoint-tablet) {
+  .footer {
+    padding: vars.$espaciado-xs 0;
+  }
+
   .footer__content {
     flex-direction: column;
-    gap: vars.$espaciado-s;
+    gap: 0;
+    padding: vars.$espaciado-xs;
   }
-  
-  .footer__buttons-left,
-  .footer__buttons-right {
-    width: 100%;
-  }
-  
-  .footer__btn {
-    border: vars.$borde-brutal-medium;
-    border-radius: vars.$radio-pildora;
-    
-    &:not(:first-child) {
-      border-top: vars.$borde-brutal-medium;
-    }
-  }
-  
-  .footer__btn--left-top {
-    border-radius: vars.$radio-pildora vars.$radio-pildora 0 0;
-  }
-  
-  .footer__btn--left-middle,
-  .footer__btn--right-middle {
-    border-radius: 0;
-  }
-  
-  .footer__btn--left-bottom {
-    border-radius: 0 0 vars.$radio-pildora vars.$radio-pildora;
-  }
-  
-  .footer__btn--right-top {
-    border-radius: vars.$radio-pildora vars.$radio-pildora 0 0;
-    margin-top: vars.$espaciado-s;
-  }
-  
-  .footer__btn--right-bottom {
-    border-radius: 0 0 vars.$radio-pildora vars.$radio-pildora;
-  }
-  
+
+  /* --- Logo arriba de todo --- */
   .footer__logo-wrapper {
     position: relative;
     left: auto;
     transform: none;
+    order: 1;
+    z-index: 100;
+    margin-bottom: vars.$espaciado-xs;
+    margin-top: 0;
   }
-  
+
   .footer__logo {
-    height: 80px;
+    height: 8rem;
   }
-  
+
+  /* --- Barras verticales debajo de todo --- */
   .footer__stripes {
-    width: 150px;
-    height: 150px;
+    transform: translate(-50%, -50%) rotate(0deg);
+    width: 100%;
+    height: 100vh;
+    z-index: 0;
+  }
+
+  .footer__stripes::before {
+    background:
+      linear-gradient(to right,
+        transparent 0, transparent calc(50% - 1.875rem - 8px),
+        vars.$color-exito calc(50% - 1.875rem - 8px), vars.$color-exito calc(50% - 1.125rem - 8px),
+        transparent calc(50% - 1.125rem - 8px), transparent calc(50% - 1.125rem - 4px),
+        vars.$color-informacion calc(50% - 1.125rem - 4px), vars.$color-informacion calc(50% - 0.375rem - 4px),
+        transparent calc(50% - 0.375rem - 4px), transparent calc(50% - 0.375rem),
+        vars.$color-advertencia-light calc(50% - 0.375rem), vars.$color-advertencia-light calc(50% + 0.375rem),
+        transparent calc(50% + 0.375rem), transparent calc(50% + 0.375rem + 4px),
+        vars.$color-advertencia-dark calc(50% + 0.375rem + 4px), vars.$color-advertencia-dark calc(50% + 1.125rem + 4px),
+        transparent calc(50% + 1.125rem + 4px), transparent calc(50% + 1.125rem + 8px),
+        vars.$color-error calc(50% + 1.125rem + 8px), vars.$color-error calc(50% + 1.875rem + 8px),
+        transparent calc(50% + 1.875rem + 8px), transparent 100%
+      );
+  }
+
+  /* --- Todos los botones en una sola pila --- */
+  .footer__buttons-left {
+    width: 100%;
+    order: 2;
+    z-index: 10;
+    align-items: stretch;
+  }
+
+  .footer__buttons-right {
+    width: 100%;
+    order: 2;
+    z-index: 10;
+    align-items: stretch;
+  }
+
+  .footer__btn {
+    width: 100%;
+    min-width: auto;
+    padding: vars.$espaciado-xs vars.$espaciado-m;
+    font-size: 0.75rem;
+    border: vars.$borde-brutal-medium;
+    border-radius: 0;
+    margin: 0;
+    margin-top: vars.$espaciado-xs;
+  }
+
+  /* Primer botón: pan superior con esquinas redondeadas arriba */
+  .footer__btn--left-top {
+    border-radius: vars.$radio-pildora vars.$radio-pildora 0 0;
+    border-top: vars.$borde-brutal-medium;
+    margin-top: 0;
+  }
+
+  /* Segundo botón: queso (Mi perfil) - redondeado pequeño en todas las esquinas */
+  .footer__btn--left-middle {
+    border-radius: vars.$radio-s;
+  }
+
+  /* Tercer botón: patty (Contacto) - redondeado completo en todas las esquinas */
+  .footer__btn--left-bottom {
+    border-radius: vars.$radio-pildora;
+  }
+
+  /* Cuarto botón: patty (Sobre nosotros) - redondeado completo en todas las esquinas */
+  .footer__btn--right-top {
+    border-radius: vars.$radio-pildora;
+  }
+
+  /* Quinto botón: queso (Mi perfil) - redondeado pequeño en todas las esquinas */
+  .footer__btn--right-middle {
+    border-radius: vars.$radio-s;
+  }
+
+  /* Último botón: pan inferior con esquinas redondeadas abajo */
+  .footer__btn--right-bottom {
+    border-radius: 0 0 vars.$radio-pildora vars.$radio-pildora;
   }
 }
