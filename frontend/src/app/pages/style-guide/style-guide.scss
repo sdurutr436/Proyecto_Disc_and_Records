@@ -128,6 +128,21 @@
       grid-template-columns: 1fr;
       gap: $espaciado-s;
     }
+
+    // Grid específico para formularios (más estrecho)
+    &--forms {
+      grid-template-columns: repeat(3, 1fr);
+      align-items: flex-start;
+      gap: $espaciado-xl;
+
+      @media (max-width: 1024px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+    }
   }
 
   &__item {

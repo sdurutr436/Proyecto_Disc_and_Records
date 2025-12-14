@@ -1,0 +1,110 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+.form-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-s;
+
+  &__label {
+    font-size: vars.$tamanio-fuente-texto-pequeno-m;
+    font-weight: 700;
+    color: vars.$color-letra-oscura;
+    margin: 0;
+  }
+
+  &__options {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$espaciado-s;
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: vars.$espaciado-s;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  &__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:focus + .form-radio-group__radio {
+      outline: 2px solid vars.$color-primario-light;
+      outline-offset: 2px;
+    }
+  }
+
+  &__radio {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: vars.$borde-brutal-thin;
+    border-radius: 50%;
+    background-color: vars.$color-fondo-light;
+    box-shadow: 2px 2px 0px vars.$color-letra-oscura;
+    transition: all vars.$transicion-rapida;
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: vars.$color-letra-oscura;
+    transition: all vars.$transicion-rapida;
+  }
+
+  &__text {
+    font-size: vars.$tamanio-fuente-texto-pequeno-m;
+    color: vars.$color-letra-oscura;
+    font-weight: 500;
+  }
+
+  &__error {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    color: vars.$color-error;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  // Estados
+  &:not(.form-radio-group--disabled) &__option:hover &__radio {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px vars.$color-letra-oscura;
+  }
+
+  &__input:checked + &__radio {
+    background-color: vars.$color-primario-light;
+    border-color: vars.$color-letra-oscura;
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    .form-radio-group__option {
+      cursor: not-allowed;
+    }
+  }
+
+  &--inline &__options {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  &--error &__radio {
+    border-color: vars.$color-error;
+    box-shadow: 2px 2px 0px vars.$color-error;
+
+    &:hover {
+      box-shadow: 3px 3px 0px vars.$color-error;
+    }
+  }
+}

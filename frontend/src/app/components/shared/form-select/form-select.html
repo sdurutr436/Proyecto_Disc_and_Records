@@ -1,0 +1,26 @@
+<div [class]="wrapperClasses">
+  <label *ngIf="label" [for]="id" class="form-select__label">
+    {{ label }}
+  </label>
+
+  <div class="form-select__wrapper">
+    <select
+      [id]="id"
+      [disabled]="disabled"
+      [value]="value"
+      (change)="onSelectChange($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      class="form-select__field"
+    >
+      <option value="" disabled selected>{{ placeholder }}</option>
+      <option *ngFor="let option of options" [value]="option.value">
+        {{ option.label }}
+      </option>
+    </select>
+    <span class="form-select__arrow">▼</span>
+  </div>
+
+  <p *ngIf="hint && !error" class="form-select__hint">{{ hint }}</p>
+  <p *ngIf="error" class="form-select__error">{{ error }}</p>
+</div>

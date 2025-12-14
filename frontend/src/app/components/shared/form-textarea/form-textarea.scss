@@ -1,0 +1,81 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+.form-textarea {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-xs;
+  width: 100%;
+
+  &__label {
+    font-size: vars.$tamanio-fuente-texto-pequeno-m;
+    font-weight: 700;
+    color: vars.$color-letra-oscura;
+    display: block;
+  }
+
+  &__field {
+    width: 100%;
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+    font-family: inherit;
+    font-size: vars.$tamanio-fuente-texto-pequeno-m;
+    line-height: 1.4;
+    color: vars.$color-letra-oscura;
+    background-color: vars.$color-fondo-light;
+    border: vars.$borde-brutal-thin;
+    border-radius: vars.$radio-s;
+    box-shadow: 2px 2px 0px vars.$color-letra-oscura;
+    transition: all vars.$transicion-rapida;
+    resize: vertical;
+    min-height: 80px;
+
+    &::placeholder {
+      color: vars.$color-letra-oscura;
+      opacity: 0.5;
+    }
+
+    &:hover:not(:disabled) {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px vars.$color-letra-oscura;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: vars.$color-primario-light;
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px vars.$color-primario-light;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: vars.$color-fondo-light-secundario;
+    }
+  }
+
+  &__hint {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    color: vars.$color-letra-oscura;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  &__error {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    color: vars.$color-error;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  &--error &__field {
+    border-color: vars.$color-error;
+    box-shadow: 2px 2px 0px vars.$color-error;
+
+    &:hover:not(:disabled) {
+      box-shadow: 3px 3px 0px vars.$color-error;
+    }
+
+    &:focus {
+      box-shadow: 3px 3px 0px vars.$color-error;
+    }
+  }
+}

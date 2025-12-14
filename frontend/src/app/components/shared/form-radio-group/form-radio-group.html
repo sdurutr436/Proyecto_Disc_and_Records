@@ -1,0 +1,26 @@
+<div [class]="wrapperClasses">
+  <p *ngIf="label" class="form-radio-group__label">{{ label }}</p>
+
+  <div class="form-radio-group__options">
+    <label
+      *ngFor="let option of options; let i = index"
+      class="form-radio-group__option"
+    >
+      <input
+        type="radio"
+        [name]="name"
+        [value]="option.value"
+        [checked]="isChecked(option.value)"
+        [disabled]="disabled"
+        (change)="onRadioChange($event)"
+        class="form-radio-group__input"
+      />
+      <span class="form-radio-group__radio">
+        <span *ngIf="isChecked(option.value)" class="form-radio-group__dot"></span>
+      </span>
+      <span class="form-radio-group__text">{{ option.label }}</span>
+    </label>
+  </div>
+
+  <p *ngIf="error" class="form-radio-group__error">{{ error }}</p>
+</div>

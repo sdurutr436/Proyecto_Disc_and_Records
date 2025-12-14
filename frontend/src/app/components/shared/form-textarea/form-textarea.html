@@ -1,0 +1,20 @@
+<div [class]="wrapperClasses">
+  <label *ngIf="label" [for]="id" class="form-textarea__label">
+    {{ label }}
+  </label>
+
+  <textarea
+    [id]="id"
+    [placeholder]="placeholder"
+    [rows]="rows"
+    [disabled]="disabled"
+    [value]="value"
+    (input)="onInputChange($event)"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    class="form-textarea__field"
+  ></textarea>
+
+  <p *ngIf="hint && !error" class="form-textarea__hint">{{ hint }}</p>
+  <p *ngIf="error" class="form-textarea__error">{{ error }}</p>
+</div>

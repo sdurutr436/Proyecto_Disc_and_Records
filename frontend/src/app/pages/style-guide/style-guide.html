@@ -254,10 +254,160 @@
       </div>
     </section>
 
+    <!-- Sección: Elementos de Formulario -->
+    <section class="style-guide__section">
+      <h2>Elementos de Formulario</h2>
+
+      <!-- Textarea -->
+      <div class="showcase">
+        <h3 class="showcase__title">Textarea</h3>
+        <div class="showcase__grid showcase__grid--forms">
+          <div class="showcase__item">
+            <app-form-textarea
+              label="Descripción"
+              id="textarea-normal"
+              placeholder="Escribe tu descripción aquí..."
+              [rows]="4"
+              hint="Máximo 500 caracteres"
+            ></app-form-textarea>
+            <code>Textarea normal</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-form-textarea
+              label="Biografía"
+              id="textarea-error"
+              placeholder="Escribe tu biografía..."
+              [rows]="4"
+              error="Este campo es obligatorio"
+            ></app-form-textarea>
+            <code>Textarea con error</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-form-textarea
+              label="Comentario"
+              id="textarea-disabled"
+              placeholder="No disponible"
+              [rows]="4"
+              [disabled]="true"
+            ></app-form-textarea>
+            <code>Textarea deshabilitado</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Select -->
+      <div class="showcase">
+        <h3 class="showcase__title">Select</h3>
+        <div class="showcase__grid showcase__grid--forms">
+          <div class="showcase__item">
+            <app-form-select
+              label="Género musical"
+              id="select-normal"
+              placeholder="Selecciona tu género favorito"
+              [options]="genreOptions"
+              hint="Elige el género que más te gusta"
+            ></app-form-select>
+            <code>Select normal</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-form-select
+              label="Género musical"
+              id="select-error"
+              placeholder="Selecciona tu género favorito"
+              [options]="genreOptions"
+              error="Debes seleccionar un género"
+            ></app-form-select>
+            <code>Select con error</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-form-select
+              label="Género musical"
+              id="select-disabled"
+              placeholder="No disponible"
+              [options]="genreOptions"
+              [disabled]="true"
+            ></app-form-select>
+            <code>Select deshabilitado</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checkbox -->
+      <div class="showcase">
+        <h3 class="showcase__title">Checkbox</h3>
+        <div class="showcase__grid showcase__grid--forms">
+          <div class="showcase__item">
+            <app-form-checkbox
+              label="Acepto los términos y condiciones"
+              id="checkbox-normal"
+            ></app-form-checkbox>
+            <code>Checkbox normal</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-form-checkbox
+              label="Suscribirme al newsletter"
+              id="checkbox-error"
+              error="Debes aceptar para continuar"
+            ></app-form-checkbox>
+            <code>Checkbox con error</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-form-checkbox
+              label="Opción no disponible"
+              id="checkbox-disabled"
+              [disabled]="true"
+            ></app-form-checkbox>
+            <code>Checkbox deshabilitado</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Radio Group -->
+      <div class="showcase">
+        <h3 class="showcase__title">Radio Group</h3>
+        <div class="showcase__grid showcase__grid--forms">
+          <div class="showcase__item">
+            <app-form-radio-group
+              label="Privacidad del perfil"
+              name="privacy"
+              [options]="privacyOptions"
+            ></app-form-radio-group>
+            <code>Radio group normal</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-form-radio-group
+              label="Privacidad del perfil"
+              name="privacy-error"
+              [options]="privacyOptions"
+              error="Debes seleccionar una opción"
+            ></app-form-radio-group>
+            <code>Radio group con error</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-form-radio-group
+              label="Privacidad del perfil"
+              name="privacy-inline"
+              [options]="privacyOptions"
+              [inline]="true"
+            ></app-form-radio-group>
+            <code>Radio group inline</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Placeholder para futuras secciones -->
     <section class="style-guide__section style-guide__section--placeholder">
       <h2>Más componentes próximamente</h2>
-      <p>Inputs, checkboxes, alerts, navegación...</p>
+      <p>Alerts, navegación, progress bars...</p>
     </section>
   </div>
 </div>

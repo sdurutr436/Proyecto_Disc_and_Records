@@ -167,10 +167,6 @@
   }
 
   /* Modificadores por layout (legacy, ahora se maneja con responsive) */
-  &--horizontal {
-    // Ya manejado por &--profile
-  }
-
   &--vertical {
     flex-direction: column;
   }
