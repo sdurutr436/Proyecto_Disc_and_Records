@@ -185,7 +185,7 @@
       <div class="showcase">
         <h3>Variante Profile (Detalles)</h3>
         <div class="showcase__row">
-          <!-- Card perfil de usuario -->
+          <!-- Card perfil de usuario vertical -->
           <div class="showcase__item">
             <app-card
               title="JohnDoe"
@@ -193,10 +193,11 @@
               imageSize="large"
               variant="normal"
               cardType="profile"
+              layout="vertical"
               [badges]="userGenres"
               [actions]="profileActions">
             </app-card>
-            <code>Perfil usuario con géneros</code>
+            <code>Perfil vertical con géneros</code>
           </div>
 
           <!-- Card álbum con botones -->
@@ -227,6 +228,27 @@
               [actions]="profileActions.slice(0, 2)">
             </app-card>
             <code>Canción (circular) con acciones</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variante Profile Horizontal -->
+      <div class="showcase">
+        <h3>Variante Profile Horizontal</h3>
+        <div class="showcase__column">
+          <!-- Card perfil de usuario horizontal -->
+          <div class="showcase__item showcase__item--full">
+            <app-card
+              title="JohnDoe"
+              imageShape="square"
+              imageSize="medium"
+              variant="normal"
+              cardType="profile"
+              layout="horizontal"
+              [badges]="userGenres"
+              [actions]="profileActions">
+            </app-card>
+            <code>Perfil horizontal con géneros y acciones</code>
           </div>
         </div>
       </div>

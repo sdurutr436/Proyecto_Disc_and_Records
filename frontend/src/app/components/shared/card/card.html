@@ -24,11 +24,14 @@
       </p>
     </div>
 
-    <!-- Variante Profile: Título, subtítulo, badges y botones -->
+    <!-- Variante Profile: Título y subtítulo -->
     <div *ngIf="cardType === 'profile'" class="card__text">
       <h3 *ngIf="title" class="card__title">{{ title }}</h3>
       <p *ngIf="subtitle" class="card__subtitle">{{ subtitle }}</p>
+    </div>
 
+    <!-- Contenedor para badges + actions (layout horizontal en profile) -->
+    <div *ngIf="cardType === 'profile'" class="card__info">
       <!-- Badges -->
       <div *ngIf="badges.length > 0" class="card__badges">
         <span

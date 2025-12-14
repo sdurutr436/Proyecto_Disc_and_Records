@@ -41,7 +41,138 @@
   }
 
   &--profile {
-    max-width: 320px;
+    max-width: 100%;
+
+    // Desktop: [imagen+título] | [badges+botones]
+    flex-direction: row;
+    align-items: stretch;
+
+    .card__image {
+      width: 200px;
+      min-width: 200px;
+      max-width: 200px;
+      flex-shrink: 0;
+      border-right: none;
+      border-top: none;
+      aspect-ratio: 1;
+    }
+
+    .card__content {
+      border-top: none;
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      gap: 0;
+      align-items: stretch;
+    }
+
+    // Columna izquierda: título bajo la imagen
+    .card__text {
+      flex: 0 0 auto;
+      padding: vars.$espaciado-m;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: vars.$borde-brutal-thin;
+    }
+
+    // Columna derecha: badges arriba, botones abajo
+    .card__info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .card__badges {
+      flex: 1;
+      margin: 0;
+      padding: vars.$espaciado-m;
+      border-top: none;
+      border-left: none;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      align-content: center;
+      gap: vars.$espaciado-xs;
+    }
+
+    .card__actions {
+      flex: 0 0 auto;
+      margin: 0;
+      padding: vars.$espaciado-m;
+      border-top: vars.$borde-brutal-thin;
+      border-left: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+    }
+
+    // Tablet: [imagen+título] | [badges] → [botones abajo]
+    @media (max-width: vars.$breakpoint-desktop) {
+      .card__image {
+        width: 180px;
+        min-width: 180px;
+        max-width: 180px;
+      }
+
+      .card__actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: vars.$espaciado-xs;
+      }
+    }
+
+    // Móvil: todo vertical
+    @media (max-width: vars.$breakpoint-tablet) {
+      flex-direction: column;
+
+      .card__image {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        max-height: 200px;
+        border-right: none;
+        border-bottom: vars.$borde-brutal-thin;
+        aspect-ratio: auto;
+      }
+
+      .card__content {
+        flex-direction: column;
+      }
+
+      .card__text {
+        width: 100%;
+        border-right: none;
+        border-bottom: vars.$borde-brutal-thin;
+      }
+
+      .card__info {
+        width: 100%;
+      }
+
+      .card__badges {
+        justify-content: center;
+        border-bottom: vars.$borde-brutal-thin;
+      }
+
+      .card__actions {
+        flex-direction: column;
+        border-top: none;
+      }
+    }
+  }
+
+  /* Modificadores por layout (legacy, ahora se maneja con responsive) */
+  &--horizontal {
+    // Ya manejado por &--profile
+  }
+
+  &--vertical {
+    flex-direction: column;
   }
 }
 

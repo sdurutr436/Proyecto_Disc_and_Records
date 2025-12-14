@@ -29,6 +29,7 @@ export class Card {
   // Variantes de diseño
   @Input() variant: 'normal' | 'vinilo' = 'normal';
   @Input() hoverEffect: 'none' | 'lift' = 'lift';
+  @Input() layout: 'vertical' | 'horizontal' = 'vertical';
 
   // Tipo de card
   @Input() cardType: 'polaroid' | 'profile' = 'polaroid';
@@ -53,6 +54,7 @@ export class Card {
     }
 
     classes.push(`card--${this.cardType}`);
+    classes.push(`card--${this.layout}`);
 
     return classes.join(' ');
   }
