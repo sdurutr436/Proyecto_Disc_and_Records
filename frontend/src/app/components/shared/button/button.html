@@ -3,10 +3,13 @@
   *ngIf="isLink"
   [href]="href"
   [class]="buttonClasses"
-  [attr.aria-disabled]="disabled"
-  [attr.tabindex]="disabled ? -1 : 0"
+  [attr.aria-disabled]="isDisabled"
+  [attr.tabindex]="isDisabled ? -1 : 0"
   (click)="onClick($event)">
-  <ng-content></ng-content>
+  <span *ngIf="isLoading" class="button__spinner"></span>
+  <span [class.button__content--hidden]="isLoading">
+    <ng-content></ng-content>
+  </span>
 </a>
 
 <!-- Botón normal si no tiene href -->
@@ -14,7 +17,10 @@
   *ngIf="!isLink"
   [type]="type"
   [class]="buttonClasses"
-  [disabled]="disabled"
+  [disabled]="isDisabled"
   (click)="onClick($event)">
-  <ng-content></ng-content>
+  <span *ngIf="isLoading" class="button__spinner"></span>
+  <span [class.button__content--hidden]="isLoading">
+    <ng-content></ng-content>
+  </span>
 </button>

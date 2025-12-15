@@ -149,6 +149,231 @@
           <app-button variant="danger" size="lg">Danger LG</app-button>
         </div>
       </div>
+
+      <!-- Loading States en Botones -->
+      <div class="showcase">
+        <h3>Loading States</h3>
+        <p class="showcase__description">
+          Los botones soportan estados de carga con spinner integrado.
+          Durante el loading, el botón se deshabilita automáticamente.
+        </p>
+        <div class="showcase__row">
+          <div class="showcase__item">
+            <app-button [loading]="buttonLoading1" (clicked)="simulateLoading('btn1')">
+              {{ buttonLoading1 ? 'Cargando...' : 'Click para cargar' }}
+            </app-button>
+            <code>[loading]="true"</code>
+          </div>
+          <div class="showcase__item">
+            <app-button variant="secondary" [loading]="buttonLoading2" (clicked)="simulateLoading('btn2')">
+              Guardar
+            </app-button>
+            <code>Spinner automático</code>
+          </div>
+          <div class="showcase__item">
+            <app-button variant="danger" [loading]="buttonLoading3" (clicked)="simulateLoading('btn3')">
+              Eliminar
+            </app-button>
+            <code>Mantiene variante</code>
+          </div>
+        </div>
+        <div class="showcase__row" style="margin-top: 1rem;">
+          <div class="showcase__item">
+            <app-button size="sm" [loading]="true">
+              Loading SM
+            </app-button>
+            <code>size="sm"</code>
+          </div>
+          <div class="showcase__item">
+            <app-button size="md" [loading]="true">
+              Loading MD
+            </app-button>
+            <code>size="md"</code>
+          </div>
+          <div class="showcase__item">
+            <app-button size="lg" [loading]="true">
+              Loading LG
+            </app-button>
+            <code>size="lg"</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección: Loading States -->
+    <section class="style-guide__section">
+      <h2>Loading States</h2>
+      <p class="showcase__description">
+        Sistema centralizado de estados de carga con LoadingService.
+        Incluye spinner global, barras de progreso y loading local en componentes.
+      </p>
+
+      <!-- Spinner -->
+      <div class="showcase">
+        <h3>Spinner</h3>
+        <div class="showcase__row">
+          <div class="showcase__item">
+            <app-spinner [show]="true" mode="inline" size="sm"></app-spinner>
+            <code>size="sm"</code>
+          </div>
+          <div class="showcase__item">
+            <app-spinner [show]="true" mode="inline" size="md"></app-spinner>
+            <code>size="md"</code>
+          </div>
+          <div class="showcase__item">
+            <app-spinner [show]="true" mode="inline" size="lg"></app-spinner>
+            <code>size="lg"</code>
+          </div>
+        </div>
+        <div class="showcase__row" style="margin-top: 1rem;">
+          <div class="showcase__item">
+            <app-spinner [show]="true" mode="inline" color="primary"></app-spinner>
+            <code>color="primary"</code>
+          </div>
+          <div class="showcase__item">
+            <app-spinner [show]="true" mode="inline" color="secondary"></app-spinner>
+            <code>color="secondary"</code>
+          </div>
+          <div class="showcase__item" style="background: var(--border-color); padding: 1rem;">
+            <app-spinner [show]="true" mode="inline" color="white"></app-spinner>
+            <code style="color: white;">color="white"</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spinner Global Demo -->
+      <div class="showcase">
+        <h3>Spinner Global</h3>
+        <p class="showcase__description">
+          El spinner global muestra un overlay sobre toda la aplicación.
+          Usa LoadingService para controlarlo.
+        </p>
+        <div class="showcase__row">
+          <div class="showcase__item">
+            <app-button (clicked)="showGlobalSpinner()">
+              Mostrar Spinner Global (2s)
+            </app-button>
+            <code>loadingService.start()</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="showcase">
+        <h3>Barra de Progreso</h3>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar [value]="25" size="sm"></app-progress-bar>
+            <code>value="25" size="sm"</code>
+          </div>
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar [value]="50" size="md" [showLabel]="true"></app-progress-bar>
+            <code>value="50" size="md" showLabel</code>
+          </div>
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar [value]="75" size="lg" [showLabel]="true"></app-progress-bar>
+            <code>value="75" size="lg" showLabel</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar Variantes -->
+      <div class="showcase">
+        <h3>Variantes de Color</h3>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar [value]="60" variant="primary" [showLabel]="true"></app-progress-bar>
+            <code>variant="primary"</code>
+          </div>
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar [value]="60" variant="secondary" [showLabel]="true"></app-progress-bar>
+            <code>variant="secondary"</code>
+          </div>
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar [value]="60" variant="success" [showLabel]="true"></app-progress-bar>
+            <code>variant="success"</code>
+          </div>
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar [value]="60" variant="warning" [showLabel]="true"></app-progress-bar>
+            <code>variant="warning"</code>
+          </div>
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar [value]="60" variant="error" [showLabel]="true"></app-progress-bar>
+            <code>variant="error"</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar Estados Especiales -->
+      <div class="showcase">
+        <h3>Estados Especiales</h3>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar [indeterminate]="true"></app-progress-bar>
+            <code>indeterminate="true" (animación continua)</code>
+          </div>
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar [value]="75" [striped]="true" [showLabel]="true"></app-progress-bar>
+            <code>striped="true" (rayas animadas)</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Demo Interactivo -->
+      <div class="showcase">
+        <h3>Demo Interactivo</h3>
+        <p class="showcase__description">
+          Simula una operación de carga con progreso.
+        </p>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar
+              [value]="demoProgress"
+              [showLabel]="true"
+              [variant]="demoProgress === 100 ? 'success' : 'primary'"
+              size="lg">
+            </app-progress-bar>
+          </div>
+          <div class="showcase__row" style="margin-top: 1rem;">
+            <div class="showcase__item">
+              <app-button
+                [disabled]="isProgressRunning"
+                (clicked)="startProgressDemo()">
+                {{ isProgressRunning ? 'En progreso...' : 'Iniciar Demo' }}
+              </app-button>
+            </div>
+            <div class="showcase__item">
+              <app-button
+                variant="secondary"
+                (clicked)="resetProgressDemo()"
+                [disabled]="demoProgress === 0">
+                Reiniciar
+              </app-button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Responsive -->
+      <div class="showcase showcase--responsive">
+        <h3>Comportamiento Responsive</h3>
+        <p class="showcase__description">
+          Los componentes de loading se adaptan automáticamente a diferentes tamaños de pantalla.
+        </p>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <app-progress-bar [value]="45" size="lg" [showLabel]="true" [striped]="true"></app-progress-bar>
+          </div>
+          <div class="showcase__row" style="margin-top: 1rem;">
+            <div class="showcase__item">
+              <app-button [loading]="true" size="sm">Procesando</app-button>
+            </div>
+            <div class="showcase__item">
+              <app-spinner [show]="true" mode="inline" size="md"></app-spinner>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Sección: Cards -->

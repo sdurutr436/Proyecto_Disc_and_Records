@@ -17,24 +17,117 @@ import { Modal } from '../../components/shared/modal/modal';
 import { Accordion, AccordionItem } from '../../components/shared/accordion/accordion';
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
 import { Tooltip } from '../../components/shared/tooltip/tooltip';
+import { Spinner } from '../../components/shared/spinner/spinner';
+import { ProgressBar } from '../../components/shared/progress-bar/progress-bar';
 import { NotificationService } from '../../services/notification';
+import { LoadingService } from '../../services/loading';
 
 @Component({
   selector: 'app-style-guide',
   standalone: true,
-  imports: [CommonModule, Button, Card, FormTextarea, FormSelect, FormCheckbox, FormRadioGroup, Breadcrumbs, Alert, Notification, Carousel, LoginForm, RegisterForm, ForgotPasswordForm, Modal, Accordion, Tabs, Tooltip],
+  imports: [
+    CommonModule,
+    Button,
+    Card,
+    FormTextarea,
+    FormSelect,
+    FormCheckbox,
+    FormRadioGroup,
+    Breadcrumbs,
+    Alert,
+    Notification,
+    Carousel,
+    LoginForm,
+    RegisterForm,
+    ForgotPasswordForm,
+    Modal,
+    Accordion,
+    Tabs,
+    Tooltip,
+    Spinner,
+    ProgressBar
+  ],
   templateUrl: './style-guide.html',
   styleUrl: './style-guide.scss',
 })
 export class StyleGuide {
-  // Inyectar el servicio de notificaciones dinámicas
+  // Inyectar servicios
   private notificationService = inject(NotificationService);
+  private loadingService = inject(LoadingService);
 
   // Referencias a carouseles para manipulación DOM
   @ViewChild('demoCarousel') demoCarousel?: any;
   carouselOpacity: number = 1;
+
+  // Estados de loading para botones
+  buttonLoading1 = false;
+  buttonLoading2 = false;
+  buttonLoading3 = false;
+
+  // Estado para demo de progress bar
+  demoProgress = 0;
+  isProgressRunning = false;
+
   onButtonClick(variant: string, size: string): void {
     console.log(`Botón ${variant} ${size} clickeado`);
+  }
+
+  /**
+   * Simula una operación de carga en un botón
+   */
+  simulateLoading(buttonId: string): void {
+    switch (buttonId) {
+      case 'btn1':
+        this.buttonLoading1 = true;
+        setTimeout(() => (this.buttonLoading1 = false), 2000);
+        break;
+      case 'btn2':
+        this.buttonLoading2 = true;
+        setTimeout(() => (this.buttonLoading2 = false), 2000);
+        break;
+      case 'btn3':
+        this.buttonLoading3 = true;
+        setTimeout(() => (this.buttonLoading3 = false), 2000);
+        break;
+    }
+  }
+
+  /**
+   * Muestra el spinner global durante 2 segundos
+   */
+  showGlobalSpinner(): void {
+    this.loadingService.start('Cargando datos...');
+    setTimeout(() => {
+      this.loadingService.stop();
+    }, 2000);
+  }
+
+  /**
+   * Inicia demo de barra de progreso
+   */
+  startProgressDemo(): void {
+    if (this.isProgressRunning) return;
+
+    this.demoProgress = 0;
+    this.isProgressRunning = true;
+
+    const interval = setInterval(() => {
+      this.demoProgress += Math.random() * 15;
+
+      if (this.demoProgress >= 100) {
+        this.demoProgress = 100;
+        this.isProgressRunning = false;
+        clearInterval(interval);
+      }
+    }, 300);
+  }
+
+  /**
+   * Reinicia la demo de progreso
+   */
+  resetProgressDemo(): void {
+    this.demoProgress = 0;
+    this.isProgressRunning = false;
   }
 
   // Ejemplos de acciones para cards de perfil

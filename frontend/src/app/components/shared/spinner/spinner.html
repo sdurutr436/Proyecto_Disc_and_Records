@@ -1,0 +1,41 @@
+<!-- Spinner Global con Overlay -->
+<div *ngIf="mode === 'global'" [class]="overlayClasses">
+  <div class="spinner-container">
+    <div [class]="spinnerClasses">
+      <svg class="spinner__flower" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <!-- Pétalos de la margarita -->
+        <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal"/>
+        <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(45 50 50)"/>
+        <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(90 50 50)"/>
+        <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(135 50 50)"/>
+        <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(180 50 50)"/>
+        <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(225 50 50)"/>
+        <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(270 50 50)"/>
+        <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(315 50 50)"/>
+        <!-- Centro de la flor -->
+        <circle cx="50" cy="50" r="14" class="flower__center"/>
+        <!-- Puntos decorativos en el centro -->
+        <circle cx="50" cy="50" r="3" class="flower__center-dot"/>
+      </svg>
+    </div>
+    <p *ngIf="displayMessage" class="spinner__message">{{ displayMessage }}</p>
+  </div>
+</div>
+
+<!-- Spinner Inline o Button -->
+<div *ngIf="mode !== 'global' && isVisible" [class]="spinnerClasses">
+  <svg class="spinner__flower" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Pétalos de la margarita -->
+    <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal"/>
+    <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(45 50 50)"/>
+    <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(90 50 50)"/>
+    <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(135 50 50)"/>
+    <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(180 50 50)"/>
+    <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(225 50 50)"/>
+    <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(270 50 50)"/>
+    <ellipse cx="50" cy="20" rx="12" ry="18" class="flower__petal" transform="rotate(315 50 50)"/>
+    <!-- Centro de la flor -->
+    <circle cx="50" cy="50" r="14" class="flower__center"/>
+    <circle cx="50" cy="50" r="3" class="flower__center-dot"/>
+  </svg>
+</div>

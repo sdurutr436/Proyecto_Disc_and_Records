@@ -1,0 +1,13 @@
+<div [class]="containerClasses" role="progressbar"
+     [attr.aria-valuenow]="isIndeterminate ? null : currentValue"
+     [attr.aria-valuemin]="0"
+     [attr.aria-valuemax]="100">
+
+  <div class="progress-bar__track">
+    <div class="progress-bar__fill" [style.width.%]="isIndeterminate ? 30 : currentValue"></div>
+  </div>
+
+  <span *ngIf="showLabel && !isIndeterminate" class="progress-bar__label">
+    {{ labelText }}
+  </span>
+</div>

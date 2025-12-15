@@ -2583,6 +2583,482 @@ notificationService.show({
 
 ---
 
+## 2.9 Gestión de Loading States
+
+### Descripción General
+
+El sistema de loading states proporciona una forma centralizada de gestionar indicadores de carga en la aplicación. Incluye:
+
+1. **LoadingService** - Servicio central para gestionar estados
+2. **Spinner** - Componente visual de carga (global e inline)
+3. **ProgressBar** - Barra de progreso con múltiples variantes
+4. **Button Loading** - Estado de carga integrado en botones
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    COMPONENTES                               │
+│  (AlbumService, AuthService, HttpInterceptor, etc.)         │
+└──────────────┬──────────────────────────────────────────────┘
+               │ start() / stop()
+               ↓
+┌─────────────────────────────────────────────────────────────┐
+│                  LoadingService                              │
+│  - isLoading (Signal<boolean>)                              │
+│  - progress (Signal<number>)                                │
+│  - localStates (Map<string, boolean>)                       │
+└──────────────┬──────────────────────────────────────────────┘
+               │ Signals/Observables
+               ↓
+┌─────────────────────────────────────────────────────────────┐
+│              UI COMPONENTS                                   │
+│  - Spinner (overlay global / inline)                        │
+│  - ProgressBar (barra de progreso)                          │
+│  - Button (spinner integrado)                               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### LoadingService
+
+**Archivo:** `frontend/src/app/services/loading.ts`
+
+#### Propósito
+
+Servicio centralizado para gestionar estados de carga global y local, permitiendo mostrar/ocultar indicadores de forma coordinada.
+
+#### Características
+
+- Contador de operaciones simultáneas (evita conflictos)
+- Estado global con Signals (reactividad automática)
+- Estados locales por identificador (para botones/componentes)
+- Soporte para progreso determinado (0-100%)
+- Métodos de conveniencia para operaciones async
+
+#### API Pública
+
+##### start(message?: string): void
+
+Inicia una operación de carga global.
+
+```typescript
+loadingService.start('Guardando álbum...');
+await albumService.save(album);
+loadingService.stop();
+```
+
+##### stop(): void
+
+Detiene una operación de carga global.
+
+```typescript
+loadingService.stop();
+```
+
+##### stopAll(): void
+
+Fuerza la detención de todas las operaciones. Usar con precaución.
+
+```typescript
+// Al cerrar sesión
+loadingService.stopAll();
+```
+
+##### setProgress(percent: number): void
+
+Establece el progreso de la operación actual (0-100).
+
+```typescript
+loadingService.start('Subiendo archivo...');
+loadingService.setProgress(25);
+loadingService.setProgress(50);
+loadingService.setProgress(100);
+loadingService.stop();
+```
+
+##### startLocal(id: string): void
+
+Inicia loading local para un componente específico.
+
+```typescript
+loadingService.startLocal('save-button');
+await save();
+loadingService.stopLocal('save-button');
+```
+
+##### stopLocal(id: string): void
+
+Detiene loading local para un componente específico.
+
+```typescript
+loadingService.stopLocal('save-button');
+```
+
+##### isLocalLoading(id: string): boolean
+
+Verifica si un componente está en loading.
+
+```typescript
+if (loadingService.isLocalLoading('save-button')) {
+  return; // No hacer nada si ya está cargando
+}
+```
+
+##### withLoading<T>(operation: Promise<T>, message?: string): Promise<T>
+
+Ejecuta operación async con loading automático.
+
+```typescript
+const albums = await loadingService.withLoading(
+  albumService.getAll(),
+  'Cargando álbumes...'
+);
+```
+
+##### withLocalLoading<T>(id: string, operation: Promise<T>): Promise<T>
+
+Ejecuta operación async con loading local automático.
+
+```typescript
+await loadingService.withLocalLoading(
+  'save-button',
+  albumService.save(album)
+);
+```
+
+#### Signals Públicos
+
+```typescript
+// Indica si hay alguna operación activa
+readonly isLoading: Signal<boolean>
+
+// Mensaje de carga actual
+readonly message: Signal<string>
+
+// Progreso actual (0-100, -1 = indeterminado)
+readonly progress: Signal<number>
+```
+
+### Spinner Component
+
+**Archivo:** `frontend/src/app/components/shared/spinner/`
+
+#### Propósito
+
+Componente visual para indicar estados de carga. Soporta tres modos de uso.
+
+#### Modos
+
+| Modo | Descripción | Uso típico |
+|------|---|---|
+| `global` | Overlay de pantalla completa | Operaciones bloqueantes |
+| `inline` | Spinner dentro de contenedor | Carga de secciones |
+| `button` | Spinner pequeño para botones | Loading en acciones |
+
+#### Inputs
+
+```typescript
+@Input() show?: boolean;        // Control manual de visibilidad
+@Input() mode: 'global' | 'inline' | 'button' = 'inline';
+@Input() size: 'sm' | 'md' | 'lg' = 'md';
+@Input() message?: string;      // Solo en modo global
+@Input() localId?: string;      // Vincular con LoadingService
+@Input() color: 'primary' | 'secondary' | 'white' = 'primary';
+```
+
+#### Ejemplos de Uso
+
+```html
+<!-- Global overlay (se vincula automáticamente a LoadingService) -->
+<app-spinner mode="global"></app-spinner>
+
+<!-- Control manual -->
+<app-spinner [show]="isLoading" mode="inline" size="md"></app-spinner>
+
+<!-- Vinculado a estado local del servicio -->
+<app-spinner [localId]="'my-component'" mode="inline"></app-spinner>
+
+<!-- Diferentes tamaños -->
+<app-spinner [show]="true" size="sm"></app-spinner>
+<app-spinner [show]="true" size="md"></app-spinner>
+<app-spinner [show]="true" size="lg"></app-spinner>
+
+<!-- Diferentes colores -->
+<app-spinner [show]="true" color="primary"></app-spinner>
+<app-spinner [show]="true" color="secondary"></app-spinner>
+<app-spinner [show]="true" color="white"></app-spinner>
+```
+
+### ProgressBar Component
+
+**Archivo:** `frontend/src/app/components/shared/progress-bar/`
+
+#### Propósito
+
+Barra de progreso para operaciones con porcentaje conocido.
+
+#### Modos
+
+- **Determinado:** Muestra porcentaje específico (0-100)
+- **Indeterminado:** Animación continua sin porcentaje
+
+#### Inputs
+
+```typescript
+@Input() value: number = 0;           // Valor 0-100
+@Input() indeterminate: boolean = false;
+@Input() showLabel: boolean = false;  // Mostrar porcentaje
+@Input() size: 'sm' | 'md' | 'lg' = 'md';
+@Input() variant: 'primary' | 'secondary' | 'success' | 'warning' | 'error' = 'primary';
+@Input() useService: boolean = false; // Usar valor del LoadingService
+@Input() label?: string;              // Texto personalizado
+@Input() striped: boolean = false;    // Rayas animadas
+```
+
+#### Ejemplos de Uso
+
+```html
+<!-- Progreso básico -->
+<app-progress-bar [value]="75"></app-progress-bar>
+
+<!-- Con etiqueta -->
+<app-progress-bar [value]="50" [showLabel]="true"></app-progress-bar>
+
+<!-- Diferentes tamaños -->
+<app-progress-bar [value]="60" size="sm"></app-progress-bar>
+<app-progress-bar [value]="60" size="md"></app-progress-bar>
+<app-progress-bar [value]="60" size="lg"></app-progress-bar>
+
+<!-- Variantes de color -->
+<app-progress-bar [value]="60" variant="primary"></app-progress-bar>
+<app-progress-bar [value]="60" variant="success"></app-progress-bar>
+<app-progress-bar [value]="60" variant="warning"></app-progress-bar>
+<app-progress-bar [value]="60" variant="error"></app-progress-bar>
+
+<!-- Indeterminado -->
+<app-progress-bar [indeterminate]="true"></app-progress-bar>
+
+<!-- Con rayas animadas -->
+<app-progress-bar [value]="75" [striped]="true"></app-progress-bar>
+
+<!-- Vinculado al LoadingService -->
+<app-progress-bar [useService]="true" [showLabel]="true"></app-progress-bar>
+```
+
+### Button Loading State
+
+El componente Button tiene soporte integrado para estados de carga.
+
+#### Inputs Adicionales
+
+```typescript
+@Input() loading: boolean = false;  // Control manual
+@Input() loadingId?: string;        // Vincular con LoadingService
+```
+
+#### Comportamiento
+
+- Cuando `loading=true`:
+  - Muestra spinner integrado
+  - Oculta contenido del botón
+  - Deshabilita el botón automáticamente
+  - Cambia cursor a `wait`
+
+#### Ejemplos de Uso
+
+```html
+<!-- Control manual -->
+<app-button [loading]="isSaving" (clicked)="save()">
+  Guardar
+</app-button>
+
+<!-- Vinculado al LoadingService -->
+<app-button [loadingId]="'save-btn'" (clicked)="save()">
+  Guardar
+</app-button>
+
+<!-- En TypeScript -->
+async save() {
+  this.loadingService.startLocal('save-btn');
+  await this.albumService.save(album);
+  this.loadingService.stopLocal('save-btn');
+}
+
+<!-- O con el método de conveniencia -->
+async save() {
+  await this.loadingService.withLocalLoading(
+    'save-btn',
+    this.albumService.save(album)
+  );
+}
+```
+
+### Workflows
+
+#### Workflow 1: Loading Global
+
+```
+Usuario hace click en "Cargar datos"
+    ↓
+Componente llama: loadingService.start('Cargando...')
+    ↓
+LoadingService:
+    ├─ activeOperations.update(count => count + 1)
+    └─ loadingMessage.set('Cargando...')
+    ↓
+Signal isLoading() retorna true
+    ↓
+Spinner Component (mode="global"):
+    ├─ Detecta isLoading() === true
+    └─ Muestra overlay con spinner
+    ↓
+[Operación async se ejecuta]
+    ↓
+Componente llama: loadingService.stop()
+    ↓
+LoadingService:
+    └─ activeOperations.update(count => count - 1)
+    ↓
+Signal isLoading() retorna false
+    ↓
+Spinner Component:
+    └─ Oculta overlay
+```
+
+#### Workflow 2: Loading en Botón
+
+```
+Usuario hace click en botón "Guardar"
+    ↓
+Button Component:
+    ├─ onClick() se ejecuta
+    └─ clicked.emit(event)
+    ↓
+Componente padre:
+    └─ loadingService.startLocal('save-btn')
+    ↓
+LoadingService:
+    ├─ localStates.set('save-btn', true)
+    └─ localStatesSubject.next(Map)
+    ↓
+Button Component (con loadingId='save-btn'):
+    ├─ Subscription recibe nuevo Map
+    ├─ serviceLoading.set(true)
+    ├─ isLoading getter retorna true
+    ├─ buttonClasses incluye 'button--loading'
+    └─ Template muestra spinner interno
+    ↓
+[Operación async se ejecuta]
+    ↓
+Componente padre:
+    └─ loadingService.stopLocal('save-btn')
+    ↓
+Button Component:
+    └─ Vuelve a estado normal
+```
+
+#### Workflow 3: Progress Bar con Subida de Archivo
+
+```
+Usuario selecciona archivo para subir
+    ↓
+Componente:
+    ├─ loadingService.start('Subiendo archivo...')
+    └─ loadingService.setProgress(0)
+    ↓
+ProgressBar [useService]="true":
+    ├─ currentValue = loadingService.progress()
+    └─ Muestra barra en 0%
+    ↓
+[Upload progresa]
+    ↓
+Evento de progreso del upload:
+    └─ loadingService.setProgress(25)
+    ↓
+ProgressBar:
+    └─ Actualiza a 25%
+    ↓
+[Más progreso...]
+    ↓
+loadingService.setProgress(100)
+    ↓
+ProgressBar:
+    └─ Muestra 100% (puede cambiar a variant="success")
+    ↓
+loadingService.stop()
+```
+
+### Integración con HTTP Interceptor
+
+Para aplicar loading global automático a todas las peticiones HTTP:
+
+```typescript
+// http-loading.interceptor.ts
+import { Injectable } from '@angular/core';
+import { HttpInterceptor, HttpRequest, HttpHandler } from '@angular/common/http';
+import { finalize } from 'rxjs/operators';
+import { LoadingService } from './services/loading';
+
+@Injectable()
+export class HttpLoadingInterceptor implements HttpInterceptor {
+  constructor(private loadingService: LoadingService) {}
+
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    // Excluir ciertas URLs si es necesario
+    const skipUrls = ['/api/heartbeat', '/api/notifications'];
+    
+    if (skipUrls.some(url => req.url.includes(url))) {
+      return next.handle(req);
+    }
+
+    this.loadingService.start();
+
+    return next.handle(req).pipe(
+      finalize(() => this.loadingService.stop())
+    );
+  }
+}
+```
+
+### Best Practices
+
+**DO:**
+- Usar `withLoading()` para operaciones simples
+- Usar `loadingId` en botones para estados independientes
+- Mostrar spinner global para operaciones bloqueantes
+- Usar `stopAll()` al hacer logout
+- Proporcionar mensajes descriptivos
+
+**DON'T:**
+- No mostrar múltiples spinners globales simultáneamente
+- No olvidar llamar a `stop()` después de `start()`
+- No usar spinner global para operaciones muy cortas (<300ms)
+- No bloquear la UI innecesariamente
+
+### Accesibilidad
+
+- El spinner global usa `role="status"` implícito
+- ProgressBar incluye atributos ARIA:
+  - `role="progressbar"`
+  - `aria-valuenow`
+  - `aria-valuemin`
+  - `aria-valuemax`
+- Los botones en loading tienen `aria-disabled="true"`
+- El cursor cambia a `wait` durante loading
+
+### Archivos Relacionados
+
+- **LoadingService:** `frontend/src/app/services/loading.ts`
+- **Spinner:** `frontend/src/app/components/shared/spinner/`
+- **ProgressBar:** `frontend/src/app/components/shared/progress-bar/`
+- **Button (actualizado):** `frontend/src/app/components/shared/button/`
+
+---
+
+**Última actualización:** 15 de diciembre de 2025
+**Responsable:** Sergio Durán
+**Estado Fase 2:** Completado (Parte 4 - Gestión de Loading States)
+
+---
+
 **Última actualización:** 15 de diciembre de 2025
 **Responsable:** Sergio Durán
 **Estado Fase 2:** Completado (Parte 3 - Sistema de Notificaciones)
