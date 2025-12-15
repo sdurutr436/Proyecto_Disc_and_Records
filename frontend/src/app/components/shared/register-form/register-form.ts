@@ -1,6 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 /**
  * RegisterForm Component
@@ -111,6 +111,27 @@ export class RegisterForm {
   }
 
   /**
+   * Getters para acceder a los FormControls
+   * Devuelven los controles tipados evitando null
+   * Usados en el template: [formControl]="usernameControl"
+   */
+  get usernameControl(): FormControl {
+    return this.registerForm.get('username') as FormControl;
+  }
+
+  get emailControl(): FormControl {
+    return this.registerForm.get('email') as FormControl;
+  }
+
+  get passwordControl(): FormControl {
+    return this.registerForm.get('password') as FormControl;
+  }
+
+  get confirmPasswordControl(): FormControl {
+    return this.registerForm.get('confirmPassword') as FormControl;
+  }
+
+  /**
    * Validador Custom: Coincidencia de contraseñas
    *
    * PROPÓSITO:
@@ -150,7 +171,7 @@ export class RegisterForm {
 
   /**
    * Manejo del submit
-   * 
+   *
    * FLUJO:
    * 1. Marcar todos los campos como tocados (para mostrar errores)
    * 2. Verificar si el formulario es válido (todos los campos + validadores de grupo)

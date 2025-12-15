@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 /**
  * LoginForm Component
@@ -57,10 +57,10 @@ export class LoginForm {
   constructor(private formBuilder: FormBuilder) {
     /**
      * Inicialización del formulario con FormBuilder
-     * 
+     *
      * Sintaxis:
      * [valor_inicial, [validadores]]
-     * 
+     *
      * Validadores utilizados:
      * - Validators.required: campo no puede estar vacío
      * - Validators.email: debe ser un email válido (RFC5322 simplificado)
@@ -85,13 +85,26 @@ export class LoginForm {
   }
 
   /**
+   * Getters para acceder a los FormControls
+   * Devuelven los controles tipados evitando null
+   * Usados en el template: [formControl]="emailControl"
+   */
+  get emailControl(): FormControl {
+    return this.loginForm.get('email') as FormControl;
+  }
+
+  get passwordControl(): FormControl {
+    return this.loginForm.get('password') as FormControl;
+  }
+
+  /**
    * Manejo del submit
-   * 
+   *
    * ANTES (Template-driven):
    * - Validación manual en cada método onChange
    * - Estado disperso en múltiples signals
    * - Lógica repetida para validar
-   * 
+   *
    * DESPUÉS (Reactivo):
    * - Validación automática en FormGroup
    * - Un solo check: if (this.loginForm.valid)

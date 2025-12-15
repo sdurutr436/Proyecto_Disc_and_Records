@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 /**
  * ForgotPasswordForm Component
@@ -93,6 +93,15 @@ export class ForgotPasswordForm {
         this.emailSent.set(true);
       }, 1500);
     }
+  }
+
+  /**
+   * Getter para acceder al FormControl de email
+   * Devuelve el control tipado evitando null
+   * Usado en el template: [formControl]="emailControl"
+   */
+  get emailControl(): FormControl {
+    return this.forgotForm.get('email') as FormControl;
   }
 
   /**

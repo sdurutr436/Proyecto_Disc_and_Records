@@ -12,31 +12,31 @@
       <input
         id="login-email"
         type="email"
-        [formControl]="loginForm.get('email')"
+        [formControl]="emailControl"
         placeholder="tu@email.com"
         class="login-form__input"
-        [class.login-form__input--error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
-        [attr.aria-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
-        [attr.aria-describedby]="(loginForm.get('email')?.invalid && loginForm.get('email')?.touched) ? 'email-error' : 'email-help'"
+        [class.login-form__input--error]="emailControl?.invalid && emailControl?.touched"
+        [attr.aria-invalid]="emailControl?.invalid && emailControl?.touched"
+        [attr.aria-describedby]="(emailControl?.invalid && emailControl?.touched) ? 'email-error' : 'email-help'"
         autocomplete="email" />
 
       <!-- Mensaje de error -->
-      @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+      @if (emailControl?.invalid && emailControl?.touched) {
       <p
         id="email-error"
         class="login-form__error"
         role="alert">
-        @if (loginForm.get('email')?.hasError('required')) {
+        @if (emailControl?.hasError('required')) {
           Email es requerido
         }
-        @if (loginForm.get('email')?.hasError('email')) {
+        @if (emailControl?.hasError('email')) {
           Email debe ser válido (ej: usuario@dominio.com)
         }
       </p>
       }
 
       <!-- Texto de ayuda -->
-      @if (!loginForm.get('email')?.invalid || !loginForm.get('email')?.touched) {
+      @if (!emailControl?.invalid || !emailControl?.touched) {
       <p
         id="email-help"
         class="login-form__help">
@@ -54,31 +54,31 @@
       <input
         id="login-password"
         type="password"
-        [formControl]="loginForm.get('password')"
+        [formControl]="passwordControl"
         placeholder="••••••••"
         class="login-form__input"
-        [class.login-form__input--error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-        [attr.aria-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-        [attr.aria-describedby]="(loginForm.get('password')?.invalid && loginForm.get('password')?.touched) ? 'password-error' : 'password-help'"
+        [class.login-form__input--error]="passwordControl?.invalid && passwordControl?.touched"
+        [attr.aria-invalid]="passwordControl?.invalid && passwordControl?.touched"
+        [attr.aria-describedby]="(passwordControl?.invalid && passwordControl?.touched) ? 'password-error' : 'password-help'"
         autocomplete="current-password" />
 
       <!-- Mensaje de error -->
-      @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+      @if (passwordControl?.invalid && passwordControl?.touched) {
       <p
         id="password-error"
         class="login-form__error"
         role="alert">
-        @if (loginForm.get('password')?.hasError('required')) {
+        @if (passwordControl?.hasError('required')) {
           Contraseña es requerida
         }
-        @if (loginForm.get('password')?.hasError('minlength')) {
+        @if (passwordControl?.hasError('minlength')) {
           Contraseña debe tener al menos 8 caracteres
         }
       </p>
       }
 
       <!-- Texto de ayuda -->
-      @if (!loginForm.get('password')?.invalid || !loginForm.get('password')?.touched) {
+      @if (!passwordControl?.invalid || !passwordControl?.touched) {
       <p
         id="password-help"
         class="login-form__help">

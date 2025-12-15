@@ -12,37 +12,37 @@
       <input
         id="register-username"
         type="text"
-        [formControl]="registerForm.get('username')"
+        [formControl]="usernameControl"
         placeholder="tunombredeusuario"
         class="register-form__input"
-        [class.register-form__input--error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
-        [attr.aria-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
-        [attr.aria-describedby]="(registerForm.get('username')?.invalid && registerForm.get('username')?.touched) ? 'username-error' : 'username-help'"
+        [class.register-form__input--error]="usernameControl?.invalid && usernameControl?.touched"
+        [attr.aria-invalid]="usernameControl?.invalid && usernameControl?.touched"
+        [attr.aria-describedby]="(usernameControl?.invalid && usernameControl?.touched) ? 'username-error' : 'username-help'"
         autocomplete="username" />
 
       <!-- Mensaje de error -->
-      @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
+      @if (usernameControl?.invalid && usernameControl?.touched) {
       <p
         id="username-error"
         class="register-form__error"
         role="alert">
-        @if (registerForm.get('username')?.hasError('required')) {
+        @if (usernameControl?.hasError('required')) {
           Username es requerido
         }
-        @if (registerForm.get('username')?.hasError('minlength')) {
+        @if (usernameControl?.hasError('minlength')) {
           Mínimo 3 caracteres
         }
-        @if (registerForm.get('username')?.hasError('maxlength')) {
+        @if (usernameControl?.hasError('maxlength')) {
           Máximo 20 caracteres
         }
-        @if (registerForm.get('username')?.hasError('pattern')) {
+        @if (usernameControl?.hasError('pattern')) {
           Solo letras, números y guiones bajos
         }
       </p>
       }
 
       <!-- Texto de ayuda -->
-      @if (!registerForm.get('username')?.invalid || !registerForm.get('username')?.touched) {
+      @if (!usernameControl?.invalid || !usernameControl?.touched) {
       <p
         id="username-help"
         class="register-form__help">
@@ -60,31 +60,31 @@
       <input
         id="register-email"
         type="email"
-        [formControl]="registerForm.get('email')"
+        [formControl]="emailControl"
         placeholder="tu@email.com"
         class="register-form__input"
-        [class.register-form__input--error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
-        [attr.aria-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
-        [attr.aria-describedby]="(registerForm.get('email')?.invalid && registerForm.get('email')?.touched) ? 'email-error' : 'email-help'"
+        [class.register-form__input--error]="emailControl?.invalid && emailControl?.touched"
+        [attr.aria-invalid]="emailControl?.invalid && emailControl?.touched"
+        [attr.aria-describedby]="(emailControl?.invalid && emailControl?.touched) ? 'email-error' : 'email-help'"
         autocomplete="email" />
 
       <!-- Mensaje de error -->
-      @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+      @if (emailControl?.invalid && emailControl?.touched) {
       <p
         id="email-error"
         class="register-form__error"
         role="alert">
-        @if (registerForm.get('email')?.hasError('required')) {
+        @if (emailControl?.hasError('required')) {
           Email es requerido
         }
-        @if (registerForm.get('email')?.hasError('email')) {
+        @if (emailControl?.hasError('email')) {
           Email debe ser válido
         }
       </p>
       }
 
       <!-- Texto de ayuda -->
-      @if (!registerForm.get('email')?.invalid || !registerForm.get('email')?.touched) {
+      @if (!emailControl?.invalid || !emailControl?.touched) {
       <p
         id="email-help"
         class="register-form__help">
@@ -107,34 +107,34 @@
       <input
         id="register-password"
         type="password"
-        [formControl]="registerForm.get('password')"
+        [formControl]="passwordControl"
         placeholder="••••••••"
         class="register-form__input"
-        [class.register-form__input--error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
-        [attr.aria-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
-        [attr.aria-describedby]="(registerForm.get('password')?.invalid && registerForm.get('password')?.touched) ? 'password-error' : 'password-help'"
+        [class.register-form__input--error]="passwordControl?.invalid && passwordControl?.touched"
+        [attr.aria-invalid]="passwordControl?.invalid && passwordControl?.touched"
+        [attr.aria-describedby]="(passwordControl?.invalid && passwordControl?.touched) ? 'password-error' : 'password-help'"
         autocomplete="new-password" />
 
       <!-- Mensaje de error -->
-      @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+      @if (passwordControl?.invalid && passwordControl?.touched) {
       <span
         id="password-error"
         class="register-form__error"
         role="alert">
-        @if (registerForm.get('password')?.hasError('required')) {
+        @if (passwordControl?.hasError('required')) {
           Contraseña es requerida
         }
-        @if (registerForm.get('password')?.hasError('minlength')) {
+        @if (passwordControl?.hasError('minlength')) {
           Mínimo 8 caracteres
         }
-        @if (registerForm.get('password')?.hasError('pattern')) {
+        @if (passwordControl?.hasError('pattern')) {
           Debe contener mayúscula y carácter especial (!@#$%...)
         }
       </span>
       }
 
       <!-- Texto de ayuda -->
-      @if (!registerForm.get('password')?.invalid || !registerForm.get('password')?.touched) {
+      @if (!passwordControl?.invalid || !passwordControl?.touched) {
       <span
         id="password-help"
         class="register-form__help">
@@ -152,21 +152,21 @@
       <input
         id="register-confirm-password"
         type="password"
-        [formControl]="registerForm.get('confirmPassword')"
+        [formControl]="confirmPasswordControl"
         placeholder="••••••••"
         class="register-form__input"
-        [class.register-form__input--error]="(registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('confirmPassword')?.touched"
-        [attr.aria-invalid]="(registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('confirmPassword')?.touched"
-        [attr.aria-describedby]="((registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('confirmPassword')?.touched) ? 'confirm-password-error' : 'confirm-password-help'"
+        [class.register-form__input--error]="(confirmPasswordControl?.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl?.touched"
+        [attr.aria-invalid]="(confirmPasswordControl?.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl?.touched"
+        [attr.aria-describedby]="((confirmPasswordControl?.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl?.touched) ? 'confirm-password-error' : 'confirm-password-help'"
         autocomplete="new-password" />
 
       <!-- Mensaje de error -->
-      @if ((registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('confirmPassword')?.touched) {
+      @if ((confirmPasswordControl?.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl?.touched) {
       <span
         id="confirm-password-error"
         class="register-form__error"
         role="alert">
-        @if (registerForm.get('confirmPassword')?.hasError('required')) {
+        @if (confirmPasswordControl?.hasError('required')) {
           Confirma tu contraseña
         }
         @if (registerForm.hasError('passwordMismatch')) {
@@ -176,7 +176,7 @@
       }
 
       <!-- Texto de ayuda -->
-      @if ((!registerForm.get('confirmPassword')?.invalid && !registerForm.hasError('passwordMismatch')) || !registerForm.get('confirmPassword')?.touched) {
+      @if ((!confirmPasswordControl?.invalid && !registerForm.hasError('passwordMismatch')) || !confirmPasswordControl?.touched) {
       <span
         id="confirm-password-help"
         class="register-form__help">
@@ -198,7 +198,7 @@
   <!-- Link de inicio de sesión -->
   <div class="register-form__footer">
     <p class="register-form__footer-text">
-      ¿Ya tienes cuenta? 
+      ¿Ya tienes cuenta?
       <a href="#" class="register-form__link">Inicia sesión</a>
     </p>
   </div>
