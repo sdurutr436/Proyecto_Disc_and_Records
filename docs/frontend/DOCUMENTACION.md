@@ -1,654 +1,95 @@
-# Documentación Técnica Frontend - Disc and Records
+# Documentación Técnica Frontend — Disc and Records
 
-**Proyecto:** Disc and Records  
-**Última actualización:** 15 de diciembre de 2025  
-**Versión:** 1.0
-
----
-
-## Índice General
-
-### Bloque 1: Fundamentos y Funcionalidad Core
-
-#### Fase 1: Manipulación del DOM y Eventos
-1.1 [Resumen Ejecutivo](#resumen-ejecutivo)
-1.2 [Patterns Implementados](#patterns-implementados)
-1.3 [Diagramas de Flujo](#diagramas-de-flujo)
-1.4 [Sistema de Eventos](#sistema-de-eventos)
-1.5 [Manipulación del DOM](#manipulación-del-dom)
-1.6 [Componentes Interactivos](#componentes-interactivos)
-1.7 [Gestión de Estado](#gestión-de-estado)
-1.8 [Ejemplos de Código](#ejemplos-de-código)
-1.9 [Compatibilidad de Navegadores](#compatibilidad-de-navegadores)
-1.10 [Best Practices](#best-practices-implementadas)
-
-#### Fase 2: Componentes Interactivos y Comunicación
-2.1 [Servicios de Comunicación](#servicios-de-comunicación)
-2.2 [EventBusService - Comunicación entre Componentes](#eventbusservice)
-2.3 [AppStateService - Estado Global](#appstateservice)
-2.4 [NotificationStreamService - Patrón Observable](#notificationstreamservice)
-2.5 [Workflows de Comunicación](#workflows-de-comunicación)
-2.6 [Patrones de Uso](#patrones-de-uso)
-2.7 [Separación de Responsabilidades](#27-separación-de-responsabilidades)
-2.8 [Sistema de Notificaciones/Toasts](#28-sistema-de-notificacionestoasts)
-
-#### Fase 3: [Título Fase 3]
-*Pendiente de implementación*
-
-#### Fase 4: [Título Fase 4]
-*Pendiente de implementación*
-
-#### Fase 5: [Título Fase 5]
-*Pendiente de implementación*
+**Proyecto:** Disc and Records  \
+**Versión:** 1.0  \
+**Última actualización:** 15 de diciembre de 2025  \
+**Responsable:** Sergio Durán  \
 
 ---
 
-# Sección 1: Manipulación del DOM y Eventos
+## Índice
 
-## Resumen Ejecutivo
-
-El proyecto implementa una arquitectura moderna de eventos basada en Angular Signals para gestión de estado reactivo, @HostListener para eventos globales, y ViewChild/ElementRef para acceso directo al DOM.
-
-### Características clave:
-- Sistema de eventos reactivo con Angular Signals
-- Manipulación directa del DOM cuando es necesario
-- Componentes interactivos accesibles (teclado, mouse, touch)
-- Gestión avanzada de eventos (preventDefault, stopPropagation)
-- Theme switcher con persistencia en localStorage
+- [1. Visión general](#1-visión-general)
+- [2. Arquitectura](#2-arquitectura)
+- [3. Patrones UI (eventos + DOM)](#3-patrones-ui-eventos--dom)
+- [4. Componentes interactivos](#4-componentes-interactivos)
+- [5. Servicios](#5-servicios)
+  - [5.1 EventBusService](#51-eventbusservice)
+  - [5.2 AppStateService](#52-appstateservice)
+  - [5.3 NotificationStreamService](#53-notificationstreamservice)
+  - [5.4 NotificationService](#54-notificationservice)
+  - [5.5 ThemeService](#55-themeservice)
+  - [5.6 ValidationService](#56-validationservice)
+  - [5.7 AuthService](#57-authservice)
+  - [5.8 LoadingService](#58-loadingservice)
+- [6. Workflows clave](#6-workflows-clave)
+- [7. Compatibilidad](#7-compatibilidad)
+- [8. Buenas prácticas](#8-buenas-prácticas)
 
 ---
 
-## Patterns Implementados
+## 1. Visión general
 
-### 1. **Signal-Based State Management**
+Este frontend usa Angular Signals para estado reactivo, `@HostListener` para eventos globales, y `ViewChild/ElementRef` para acceso directo al DOM cuando es necesario.
 
-Usamos Angular Signals para estado reactivo en lugar de propiedades tradicionales con change detection.
+Objetivos:
+- Mantener componentes principalmente de presentación y mover lógica a servicios.
+- Proveer comunicación desacoplada entre componentes no relacionados (eventos).
+- Centralizar estado global (usuario, favoritos, búsqueda, preferencias) con persistencia.
+- Unificar el feedback de acciones con notificaciones/toasts reutilizables.
 
-**Ventajas:**
-- Reactividad automática
-- Mejor rendimiento
-- Código más declarativo
-- Fácil de testear
+---
 
-**Ejemplo en Modal:**
-```typescript
+## 2. Arquitectura
+
+Arquitectura híbrida (según el tipo de problema):
+- **Estado (state):** `AppStateService` + Angular Signals para “estado actual” y datos compartidos (persistentes).
+- **Eventos (eventos puntuales):** `EventBusService` (RxJS) para comunicación desacoplada entre componentes sin relación directa.
+- **Notificaciones (feedback UI):** `NotificationStreamService` → `NotificationService` (render).
+
+Esquema general:
+
+- **Eventos (RxJS)**
+  - Componente A/B/C → `EventBusService` → componentes interesados
+- **Estado (Signals + persistencia)**
+  - Componentes → `AppStateService` → UI reactiva + `localStorage`
+- **Notificaciones (stream + render)**
+  - Componentes → `NotificationStreamService` → `NotificationService` → DOM (toasts)
+
+### 2.1 Decisión rápida (qué usar)
+
+- ¿Es un dato compartido y duradero (usuario, favoritos, preferencias, query)? → `AppStateService`.
+- ¿Es un “suceso” puntual que otros deben reaccionar (se agregó favorito, se abrió modal)? → `EventBusService`.
+- ¿Es feedback visual (success/error/warning/info)? → `NotificationStreamService` (y render con `NotificationService`).
+
+---
+
+## 3. Patrones UI (eventos + DOM)
+
+### 3.1 Signals (estado reactivo en componentes)
+
+Patrón típico:
+- Input signal para controlar estado desde el padre.
+- Signal interno para estado local.
+- `effect()` para sincronizar señales y ejecutar efectos colaterales (p. ej. bloquear scroll).
+
+Ejemplo (Modal):
+
+```ts
 export class Modal {
-  isOpen = input<boolean>(false);  // Input signal
-  isVisible = signal(false);       // Signal interno
-
-  constructor() {
-    effect(() => {
-      if (this.isOpen()) {
-        this.open();
-      }
-    });
-  }
-}
-```
-
-### 2. **@HostListener for Global Events**
-
-Para eventos que afectan a todo el documento (ESC, click fuera, resize).
-
-**Ejemplo en Header:**
-```typescript
-export class Header {
-  @HostListener('document:keydown.escape')
-  onEscapeKey() {
-    if (this.isMenuOpen()) {
-      this.closeMenu();
-    }
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.header-nav__mobile')) {
-      this.closeMenu();
-    }
-  }
-}
-```
-
-### 3. ViewChild/ElementRef for DOM Access
-
-Para acceder y manipular elementos del DOM cuando sea necesario.
-
-**Ejemplo en Carousel:**
-```typescript
-export class Carousel {
-  @ViewChild('carouselTrack') carouselTrack!: ElementRef<HTMLDivElement>;
-
-  scrollRight(): void {
-    const track = this.carouselTrack.nativeElement;
-    track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-  }
-}
-```
-
----
-
-## Diagramas de Flujo
-
-### Flujo 1: Modal - Apertura y Cierre con ESC
-
-```
-┌─────────────────────────────────────────────────────┐
-│ Usuario: Hace clic en botón "Abrir Modal"          │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Componente Padre: Cambia signal isOpen(true)       │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Modal: effect() detecta cambio en isOpen()         │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Modal: Llama a open()                               │
-│ • isVisible.set(true)                               │
-│ • document.body.style.overflow = 'hidden'           │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Template: Muestra modal con overlay                 │
-└─────────────────────────────────────────────────────┘
-                 
-                 
-┌─────────────────────────────────────────────────────┐
-│ Usuario: Presiona tecla ESC                         │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ @HostListener: Detecta 'document:keydown.escape'   │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Modal: onEscapeKey() ejecuta                        │
-│ • Verifica if (isVisible())                         │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Modal: Llama a close()                              │
-│ • isVisible.set(false)                              │
-│ • document.body.style.overflow = ''                 │
-│ • onClose.emit()                                    │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Template: Oculta modal automáticamente              │
-└─────────────────────────────────────────────────────┘
-```
-
-### Flujo 2: Theme Switcher - Detección y Aplicación
-
-```
-┌─────────────────────────────────────────────────────┐
-│ Aplicación: Se inicia (constructor ThemeService)   │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ ThemeService: Llama a loadTheme()                   │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ ThemeService: Busca en localStorage                 │
-│ ¿Hay tema guardado?                                 │
-└────────┬────────────────────────┬───────────────────┘
-         │ Sí                     │ No
-         ↓                        ↓
-┌────────────────┐      ┌─────────────────────────────┐
-│ Usa tema       │      │ Detecta preferencia sistema │
-│ guardado       │      │ matchMedia(prefers-dark)    │
-└────────┬───────┘      └────────┬────────────────────┘
-         │                       │
-         └───────────┬───────────┘
-                     ↓
-┌─────────────────────────────────────────────────────┐
-│ ThemeService: setTheme(theme)                       │
-│ • currentTheme.set(theme)                           │
-│ • applyTheme(theme)                                 │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ DOM: Aplica data-theme al <html>                    │
-│ • document.documentElement.setAttribute(...)        │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ CSS: Variables cambian automáticamente              │
-│ html[data-theme="dark"] { --color-... }             │
-└─────────────────────────────────────────────────────┘
-
-
-┌─────────────────────────────────────────────────────┐
-│ Usuario: Hace clic en botón toggle tema            │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Header: toggleTheme()                               │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ ThemeService: toggleTheme()                         │
-│ • Calcula nuevo tema (light ↔ dark)                │
-│ • setTheme(newTheme)                                │
-│ • saveToLocalStorage(newTheme)                      │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Signal: currentTheme() actualizado                  │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Template Header: Icono cambia automáticamente       │
-│ *ngIf="themeService.currentTheme() === 'light'"    │
-└─────────────────────────────────────────────────────┘
-```
-
-### Flujo 3: NotificationService - Creación Dinámica en DOM
-
-```
-┌─────────────────────────────────────────────────────┐
-│ Componente: Llama a notificationService.show()     │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ NotificationService: createComponent()              │
-│ • Crea instancia de Notification                    │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ NotificationService: Configura inputs              │
-│ • componentRef.setInput('type', ...)                │
-│ • componentRef.setInput('title', ...)               │
-│ • componentRef.setInput('message', ...)             │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ NotificationService: Suscribe a evento dismissed   │
-│ • componentRef.instance.dismissed.subscribe()       │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Angular: Añade al árbol de change detection        │
-│ • appRef.attachView(componentRef.hostView)          │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ DOM: Inserta elemento HTML                          │
-│ • document.body.appendChild(domElem)                │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Pantalla: Notificación aparece con animación       │
-└─────────────────────────────────────────────────────┘
-
-
-┌─────────────────────────────────────────────────────┐
-│ Usuario: Hace clic en botón X o timeout vence      │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Notification: dismissed.emit()                      │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ NotificationService: remove(componentRef)           │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ DOM: Elimina elemento HTML                          │
-│ • domElem.parentNode.removeChild(domElem)           │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Angular: Limpia referencias                         │
-│ • appRef.detachView(componentRef.hostView)          │
-│ • componentRef.destroy()                            │
-└────────────────┬────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────┐
-│ Pantalla: Notificación desaparece                   │
-└─────────────────────────────────────────────────────┘
-```
-
----
-
-## Sistema de Eventos
-
-### Event Binding en Templates
-
-Usamos la sintaxis de Angular para binding de eventos:
-
-```html
-<!-- Click events -->
-<button (click)="openModal()">Abrir</button>
-
-<!-- Keyboard events -->
-<input (keydown.enter)="onSubmit()" />
-
-<!-- Mouse events -->
-<div (mouseenter)="showTooltip()" (mouseleave)="hideTooltip()"></div>
-
-<!-- Custom events -->
-<app-modal (onClose)="closeModal()"></app-modal>
-```
-
-### Prevención de Comportamientos Por Defecto
-
-**Caso de uso:** Trap focus en Modal
-
-```typescript
-@HostListener('keydown', ['$event'])
-onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Tab') {
-    event.preventDefault();  // ⚠️ Prevenir navegación normal
-    // Lógica personalizada de navegación
-  }
-}
-```
-
-### Detención de Propagación
-
-**Caso de uso:** Acciones en Cards
-
-```typescript
-onActionClick(action: CardAction, event: Event): void {
-  event.preventDefault();       // No navegar si es un link
-  event.stopPropagation();      // No activar eventos del card padre
-  action.callback?.();
-}
-```
-
-### Eventos de Teclado Globales
-
-Implementados en componentes que requieren cerrar con ESC:
-
-- **Modal:** ESC cierra el modal
-- **Header (menú móvil):** ESC cierra el menú
-- **Tabs:** Flechas izquierda/derecha navegan entre tabs
-
----
-
-## Manipulación del DOM
-
-### 1. Acceso con ViewChild
-
-```typescript
-@ViewChild('carouselTrack') carouselTrack!: ElementRef<HTMLDivElement>;
-
-ngAfterViewInit() {
-  const element = this.carouselTrack.nativeElement;
-  // Ahora podemos manipular el elemento
-}
-```
-
-### 2. Modificación de Estilos Dinámicos
-
-**Ejemplo:** Modificar estilos del carousel programáticamente
-
-```typescript
-toggleHighlight(): void {
-  const track = this.carouselTrack.nativeElement;
-  
-  // MANIPULACIÓN DIRECTA: modificar estilos
-  if (track.style.boxShadow === '') {
-    track.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.6)';
-    track.style.border = '2px solid gold';
-    track.style.transition = 'all 0.3s ease';
-  } else {
-    track.style.boxShadow = '';
-    track.style.border = '';
-  }
-}
-
-setOpacity(value: number): void {
-  this.carouselTrack.nativeElement.style.opacity = value.toString();
-}
-```
-
-### 3. Creación Dinámica de Componentes
-
-**NotificationService:** Crea y destruye componentes en el DOM
-
-```typescript
-@Injectable({ providedIn: 'root' })
-export class NotificationService {
-  show(config: NotificationConfig): void {
-    // 1. Crear componente dinámicamente
-    const componentRef = createComponent(Notification, {
-      environmentInjector: this.injector,
-    });
-
-    // 2. Configurar inputs
-    componentRef.setInput('type', config.type);
-    componentRef.setInput('title', config.title);
-
-    // 3. Añadir al árbol de Angular
-    this.appRef.attachView(componentRef.hostView);
-
-    // 4. MANIPULACIÓN DIRECTA: appendChild al DOM
-    const domElem = (componentRef.hostView as any).rootNodes[0];
-    document.body.appendChild(domElem);
-  }
-
-  private remove(componentRef: ComponentRef<Notification>): void {
-    const domElem = (componentRef.hostView as any).rootNodes[0];
-    
-    // MANIPULACIÓN DIRECTA: removeChild del DOM
-    if (domElem?.parentNode) {
-      domElem.parentNode.removeChild(domElem);
-    }
-    
-    this.appRef.detachView(componentRef.hostView);
-    componentRef.destroy();
-  }
-}
-```
-
----
-
-## Componentes Interactivos
-
-### Modal
-
-**Características:**
-- Cierre con ESC
-- Cierre al hacer click en overlay
-- Trap focus (Tab/Shift+Tab)
-- Previene scroll del body cuando está abierto
-
-**Eventos manejados:**
-- `keydown.escape`: Cierra el modal
-- `keydown` (Tab): Mantiene el focus dentro del modal
-- `click` en overlay: Cierra el modal
-
-### Accordion
-
-**Características:**
-- Modo single: Solo un item abierto
-- Modo multiple: Varios items abiertos
-- Estado en Signal (Set de IDs)
-
-**Lógica:**
-```typescript
-toggle(itemId: string | number) {
-  const currentOpen = new Set(this.openItems());
-  
-  if (currentOpen.has(itemId)) {
-    currentOpen.delete(itemId);
-  } else {
-    if (this.mode() === 'single') {
-      currentOpen.clear();  // Cerrar todos en modo single
-    }
-    currentOpen.add(itemId);
-  }
-  
-  this.openItems.set(currentOpen);
-}
-```
-
-### Tabs
-
-**Características:**
-- Navegación con flechas del teclado
-- Soporte para tabs deshabilitados
-- Estado activo con signal
-
-**Eventos:**
-```typescript
-@HostListener('keydown.arrowleft')
-onArrowLeft() {
-  this.navigateTabs(-1);
-}
-
-@HostListener('keydown.arrowright')
-onArrowRight() {
-  this.navigateTabs(1);
-}
-```
-
-### Tooltip
-
-**Características:**
-- Aparece al hover con delay configurable
-- Desaparece al salir
-- Posicionamiento dinámico (top/bottom/left/right)
-
-**Eventos:**
-```typescript
-@HostListener('mouseenter')
-onMouseEnter() {
-  this.showTimeout = setTimeout(() => {
-    this.isVisible.set(true);
-  }, this.showDelay());
-}
-
-@HostListener('mouseleave')
-onMouseLeave() {
-  this.hideTimeout = setTimeout(() => {
-    this.isVisible.set(false);
-  }, this.hideDelay());
-}
-```
-
----
-
-## Gestión de Estado
-
-### ThemeService
-
-Servicio global para gestión del tema (claro/oscuro):
-
-```typescript
-@Injectable({ providedIn: 'root' })
-export class ThemeService {
-  currentTheme = signal<Theme>('light');
-
-  constructor() {
-    this.loadTheme();
-  }
-
-  detectSystemPreference(): Theme {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    return prefersDark.matches ? 'dark' : 'light';
-  }
-
-  loadTheme(): void {
-    const savedTheme = localStorage.getItem('app-theme');
-    
-    if (savedTheme) {
-      this.setTheme(savedTheme as Theme);
-    } else {
-      this.setTheme(this.detectSystemPreference());
-    }
-
-    // Escuchar cambios del sistema
-    window.matchMedia('(prefers-color-scheme: dark)')
-      .addEventListener('change', (e) => {
-        if (!localStorage.getItem('app-theme')) {
-          this.setTheme(e.matches ? 'dark' : 'light');
-        }
-      });
-  }
-
-  toggleTheme(): void {
-    const newTheme = this.currentTheme() === 'light' ? 'dark' : 'light';
-    this.setTheme(newTheme);
-    localStorage.setItem('app-theme', newTheme);
-  }
-
-  private applyTheme(theme: Theme): void {
-    if (theme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-    }
-  }
-}
-```
-
-**Uso en componentes:**
-```typescript
-export class Header {
-  themeService = inject(ThemeService);
-
-  toggleTheme() {
-    this.themeService.toggleTheme();
-  }
-}
-```
-
-**En template:**
-```html
-<button (click)="toggleTheme()">
-  <svg *ngIf="themeService.currentTheme() === 'light'">
-    <!-- Icono de sol -->
-  </svg>
-  <svg *ngIf="themeService.currentTheme() === 'dark'">
-    <!-- Icono de luna -->
-  </svg>
-</button>
-```
-
----
-
-## Ejemplos de Código
-
-### Ejemplo Completo: Modal con Todos los Patterns
-
-```typescript
-import { Component, signal, input, output, HostListener, effect } from '@angular/core';
-
-@Component({
-  selector: 'app-modal',
-  templateUrl: './modal.html',
-})
-export class Modal {
-  // PATTERN: Input/Output Signals
   isOpen = input<boolean>(false);
-  title = input<string>('');
+  isVisible = signal(false);
   onClose = output<void>();
 
-  // PATTERN: Internal Signal
-  isVisible = signal(false);
-
   constructor() {
-    // PATTERN: Effect para sincronizar signals
     effect(() => {
-      if (this.isOpen()) {
-        this.open();
-      } else {
-        this.close();
-      }
+      if (this.isOpen()) this.open();
+      else this.close();
     });
   }
 
   open() {
     this.isVisible.set(true);
-    // PATTERN: Manipulación DOM directa
     document.body.style.overflow = 'hidden';
   }
 
@@ -657,172 +98,125 @@ export class Modal {
     document.body.style.overflow = '';
     this.onClose.emit();
   }
+}
+```
 
-  // PATTERN: @HostListener para evento global
-  @HostListener('document:keydown.escape')
-  onEscapeKey() {
-    if (this.isVisible()) {
-      this.close();
-    }
-  }
+### 3.2 @HostListener (eventos globales)
 
-  // PATTERN: Prevención de propagación
-  onOverlayClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (target.classList.contains('modal__overlay')) {
-      this.close();
-    }
-  }
+Uso recomendado para:
+- ESC para cerrar modales/menú móvil.
+- Click fuera para cerrar overlays.
+- Flechas para navegar tabs.
 
-  // PATTERN: preventDefault para Tab trap
-  @HostListener('keydown', ['$event'])
-  onKeydown(event: KeyboardEvent) {
-    if (event.key !== 'Tab') return;
+Ejemplo:
 
-    const focusableElements = this.getFocusableElements();
-    const first = focusableElements[0];
-    const last = focusableElements[focusableElements.length - 1];
+```ts
+@HostListener('document:keydown.escape')
+onEscapeKey() {
+  if (this.isVisible()) this.close();
+}
+```
 
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last?.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first?.focus();
-    }
-  }
+### 3.3 Control de eventos (preventDefault / stopPropagation)
+
+- `preventDefault()`: evitar comportamiento por defecto (p. ej. Tab trap en modal).
+- `stopPropagation()`: evitar que un click “suba” a un contenedor con handlers.
+
+Ejemplo (acciones en card):
+
+```ts
+onActionClick(action: CardAction, event: Event): void {
+  event.preventDefault();
+  event.stopPropagation();
+  action.callback?.();
+}
+```
+
+### 3.4 ViewChild/ElementRef (DOM puntual)
+
+Usar solo cuando:
+- Necesitas scroll programático/mediciones.
+- Estás integrando lógica de UI no trivial.
+- Creas componentes dinámicos (toasts).
+
+Ejemplo (Carousel):
+
+```ts
+@ViewChild('carouselTrack') carouselTrack!: ElementRef<HTMLDivElement>;
+
+scrollRight(): void {
+  this.carouselTrack.nativeElement.scrollBy({ left: 200, behavior: 'smooth' });
 }
 ```
 
 ---
 
-## Compatibilidad de Navegadores
+## 4. Componentes interactivos
 
-| Característica | Chrome | Firefox | Safari | Edge |
-|----------------|--------|---------|--------|------|
-| Angular Signals | ✅ 119+ | ✅ 119+ | ✅ 17+ | ✅ 119+ |
-| @HostListener | ✅ Todos | ✅ Todos | ✅ Todos | ✅ Todos |
-| ViewChild/ElementRef | ✅ Todos | ✅ Todos | ✅ Todos | ✅ Todos |
-| matchMedia | ✅ Todos | ✅ Todos | ✅ Todos | ✅ Todos |
-| localStorage | ✅ Todos | ✅ Todos | ✅ Todos | ✅ Todos |
-| createComponent | ✅ 14+ | ✅ 14+ | ✅ 14+ | ✅ 14+ |
+### 4.1 Modal
 
-**Nota:** Todas las características son compatibles con navegadores modernos (últimas 2 versiones).
+Características:
+- Cierre con ESC.
+- Cierre al hacer click en overlay.
+- Trap focus (Tab/Shift+Tab).
+- Bloqueo de scroll del body cuando está abierto.
 
----
+Flujo resumido (apertura/cierre):
+- Padre cambia `isOpen(true/false)`.
+- `effect()` abre/cierra.
+- ESC dispara `@HostListener` → `close()` → emite `onClose`.
 
-## Best Practices Implementadas
+### 4.2 Accordion
 
-### 1. Accesibilidad
-- Navegación por teclado en todos los componentes
-- Trap focus en modales
-- Aria labels en botones
-- ESC cierra elementos interactivos
+Características:
+- Modo **single**: solo un item abierto.
+- Modo **multiple**: varios items abiertos.
+- Estado con Signal (Set de IDs).
 
-### 2. Performance
-- Signals en lugar de change detection tradicional
-- Debounce/throttle en eventos frecuentes (scroll)
-- Lazy loading de componentes pesados
-- Cleanup de event listeners en ngOnDestroy
+### 4.3 Tabs
 
-### 3. Mantenibilidad
-- Separación de concerns (services vs components)
-- Código DRY (servicios reutilizables)
-- TypeScript estricto
-- Naming conventions consistentes
+Características:
+- Navegación con flechas izquierda/derecha.
+- Soporte para tabs deshabilitados.
+- Estado activo con Signal.
 
----
+### 4.4 Tooltip
 
-## Conclusión Sección 1
-
-Esta arquitectura de eventos proporciona una base sólida para aplicaciones Angular modernas, combinando lo mejor de:
-
-- **Reactividad:** Con Angular Signals
-- **Control:** Con acceso directo al DOM cuando es necesario
-- **Accesibilidad:** Con soporte completo de teclado
-- **Performance:** Con técnicas optimizadas
-
-El código es escalable, mantenible y sigue las mejores prácticas de Angular 18+.
+Características:
+- Hover con delay configurable.
+- Ocultación con delay configurable.
+- Posicionamiento dinámico (top/bottom/left/right).
 
 ---
 
-**Última actualización:** 15 de diciembre de 2025  
-**Responsable:** Sergio Durán  
-**Estado:** Completado
+## 5. Servicios
 
----
-
-# Sección 2: Componentes Interactivos y Comunicación
-
-## Servicios de Comunicación
-
-Esta sección documenta los servicios implementados para la comunicación entre componentes y gestión de estado global en la aplicación.
-
-### Arquitectura de Comunicación
-
-El proyecto implementa una arquitectura híbrida que combina:
-
-1. **Angular Signals** para estado reactivo (AppStateService)
-2. **RxJS Observables/Subjects** para comunicación basada en eventos (EventBusService)
-3. **Patrón Publisher-Subscriber** para notificaciones (NotificationStreamService)
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    ARQUITECTURA GENERAL                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Componente A          Componente B          Componente C   │
-│       ↓                     ↓                     ↓          │
-│       └─────────┬───────────┴──────────┬────────┘          │
-│                 ↓                      ↓                     │
-│         EventBusService        AppStateService              │
-│         (Eventos)              (Estado)                     │
-│                 ↓                      ↓                     │
-│         RxJS Observables       Angular Signals              │
-│                                                              │
-│                 ↓                                           │
-│         NotificationStreamService                           │
-│         (Notificaciones)                                    │
-│                 ↓                                           │
-│         NotificationService                                 │
-│         (Renderizado DOM)                                   │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## EventBusService
+## 5.1 EventBusService
 
 ### Descripción
 
-EventBusService implementa el patrón Publisher-Subscriber usando RxJS para permitir comunicación desacoplada entre componentes que no tienen relación directa padre-hijo.
+Implementa Publisher–Subscriber con RxJS para comunicación desacoplada entre componentes no relacionados (sin cadenas de `@Input/@Output`).
 
-### Características Principales
+### Tipos de eventos
 
-- Comunicación hermano-hermano sin cadenas de @Input/@Output
-- Sistema de eventos tipado con enum EventType
-- Filtrado de eventos por tipo
-- Logging automático en desarrollo
-- Estadísticas de suscripciones
+Ejemplo de enum:
 
-### Tipos de Eventos Disponibles
-
-```typescript
+```ts
 export enum EventType {
   // Autenticación
   USER_LOGIN = 'USER_LOGIN',
   USER_LOGOUT = 'USER_LOGOUT',
   USER_PROFILE_UPDATED = 'USER_PROFILE_UPDATED',
-  
+
   // Búsqueda
   SEARCH_QUERY_CHANGED = 'SEARCH_QUERY_CHANGED',
   SEARCH_RESULTS_READY = 'SEARCH_RESULTS_READY',
-  
+
   // Álbumes
   ALBUM_ADDED_TO_FAVORITES = 'ALBUM_ADDED_TO_FAVORITES',
   ALBUM_REMOVED_FROM_FAVORITES = 'ALBUM_REMOVED_FROM_FAVORITES',
   ALBUM_RATED = 'ALBUM_RATED',
-  
+
   // UI
   MODAL_OPENED = 'MODAL_OPENED',
   MODAL_CLOSED = 'MODAL_CLOSED',
@@ -830,289 +224,108 @@ export enum EventType {
 }
 ```
 
-### Estructura de un Evento
+### Contrato de evento
 
-```typescript
+```ts
 interface AppEvent<T = any> {
-  type: EventType;          // Tipo del evento
-  payload?: T;              // Datos asociados
-  timestamp: number;        // Momento de emisión
-  source?: string;          // Componente origen (opcional)
+  type: EventType;
+  payload?: T;
+  timestamp: number;
+  source?: string;
 }
 ```
 
-### Workflow - Emisión de Evento
+### API pública
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│ WORKFLOW: Emisión de Evento                                 │
-└─────────────────────────────────────────────────────────────┘
+Emitir:
 
-Componente A                                    Componente B
-    |                                                |
-    | 1. emit(event)                                 |
-    ↓                                                |
-EventBusService                                      |
-    |                                                |
-    | 2. next() al Subject                           |
-    ↓                                                |
-Subject interno                                      |
-    |                                                |
-    | 3. Propaga a todos los observadores            |
-    ↓                                                ↓
-Observable stream ─────────────────────→  4. on(EventType).subscribe()
-                                                    |
-                                                    | 5. Ejecuta handler
-                                                    ↓
-                                          Actualiza UI / Ejecuta lógica
-```
-
-### API Pública
-
-#### emit(event: AppEvent)
-
-Emite un evento en el bus.
-
-```typescript
-// Ejemplo: Notificar que se agregó un álbum a favoritos
+```ts
 eventBus.emit({
   type: EventType.ALBUM_ADDED_TO_FAVORITES,
   payload: { albumId: 123, albumTitle: 'Dark Side of the Moon' },
-  source: 'AlbumDetailComponent'
+  source: 'AlbumDetailComponent',
+  timestamp: Date.now(),
 });
 ```
 
-#### on(eventType: EventType): Observable
+Escuchar un tipo:
 
-Suscribe a eventos de un tipo específico.
-
-```typescript
-// Ejemplo: Escuchar cuando se agregan álbumes a favoritos
-this.subscription = eventBus
+```ts
+this.sub = eventBus
   .on(EventType.ALBUM_ADDED_TO_FAVORITES)
   .subscribe(event => {
-    console.log('Álbum agregado:', event.payload.albumId);
     this.updateFavoritesCounter();
   });
 ```
 
-#### onMultiple(eventTypes: EventType[]): Observable
+Escuchar múltiples tipos:
 
-Suscribe a múltiples tipos de eventos.
-
-```typescript
-// Ejemplo: Escuchar eventos relacionados con favoritos
-eventBus
+```ts
+this.sub = eventBus
   .onMultiple([
     EventType.ALBUM_ADDED_TO_FAVORITES,
     EventType.ALBUM_REMOVED_FROM_FAVORITES
   ])
-  .subscribe(event => {
-    this.refreshFavoritesList();
-  });
+  .subscribe(() => this.refreshFavoritesList());
 ```
 
-### Ejemplo Completo
+### Buenas prácticas (EventBus)
 
-```typescript
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { EventBusService, EventType } from '@services/event-bus';
-import { Subscription } from 'rxjs';
-
-export class FavoritesCounterComponent implements OnInit, OnDestroy {
-  private eventBus = inject(EventBusService);
-  private subscription?: Subscription;
-  
-  count = signal(0);
-
-  ngOnInit() {
-    // Suscribirse a eventos de favoritos
-    this.subscription = this.eventBus
-      .onMultiple([
-        EventType.ALBUM_ADDED_TO_FAVORITES,
-        EventType.ALBUM_REMOVED_FROM_FAVORITES
-      ])
-      .subscribe(() => {
-        this.updateCount();
-      });
-  }
-
-  ngOnDestroy() {
-    // CRÍTICO: Limpiar suscripción
-    this.subscription?.unsubscribe();
-  }
-
-  private updateCount() {
-    // Actualizar contador
-    this.count.update(c => c + 1);
-  }
-}
-```
-
-### Buenas Prácticas
-
-1. **Siempre hacer unsubscribe en ngOnDestroy** para evitar memory leaks
-2. **Usar tipos específicos en payload** para type safety
-3. **Incluir source en desarrollo** para facilitar debugging
-4. **No abusar del EventBus** - para relaciones padre-hijo usar @Input/@Output
-5. **Preferir AppStateService para estado persistente**
+- Unsubscribe en `ngOnDestroy` (crítico).
+- No usar EventBus para estado (para eso AppState).
+- Mantener payloads tipados (evitar `any` en código de negocio).
+- Usar `source` solo para debugging (no como lógica de negocio).
 
 ---
 
-## AppStateService
+## 5.2 AppStateService
 
 ### Descripción
 
-AppStateService gestiona el estado global de la aplicación usando Angular Signals, proporcionando reactividad automática y persistencia en localStorage.
+Gestor de estado global con Angular Signals + persistencia en `localStorage` mediante `effect()`.
 
-### Características Principales
+### Estado gestionado (ejemplo)
 
-- Estado reactivo con Angular Signals
-- Persistencia automática en localStorage
-- Computed signals para datos derivados
-- Effects para sincronización automática
-- API simple y type-safe
+- Autenticación: `currentUser`, `isAuthenticated`, `userName`
+- Búsqueda: `searchQuery`, `searchResults`, `isSearching`
+- Favoritos: `favorites`, `favoriteIds`, `favoritesCount`
+- UI: `sidebarOpen`, `loading`
+- Preferencias: `userPreferences`
 
-### Estado Gestionado
+### API pública (resumen)
 
-```typescript
-// Autenticación
-currentUser: Signal<User | null>
-isAuthenticated: Signal<boolean>
-userName: Signal<string>
+Autenticación:
+- `setUser(user: User)`
+- `logout()`
+- `updateUser(updates: Partial<User>)`
 
-// Búsqueda
-searchQuery: Signal<string>
-searchResults: Signal<SearchResult>
-isSearching: Signal<boolean>
+Favoritos:
+- `addToFavorites(album: Album)`
+- `removeFromFavorites(albumId: number)`
+- `isFavorite(albumId: number): boolean`
+- `clearFavorites()`
 
-// Favoritos
-favorites: Signal<Album[]>
-favoriteIds: Signal<Set<number>>
-favoritesCount: Signal<number>
+Búsqueda:
+- `startSearch(query: string)`
+- `setSearchResults(results: SearchResult)`
+- `clearSearch()`
 
-// UI
-sidebarOpen: Signal<boolean>
-loading: Signal<boolean>
+Preferencias:
+- `updatePreferences(updates: Partial<UserPreferences>)`
 
-// Preferencias
-userPreferences: Signal<UserPreferences>
-```
+### Ejemplo completo (Header con AppStateService)
 
-### Workflow - Actualización de Estado
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ WORKFLOW: Actualización de Estado Global                    │
-└─────────────────────────────────────────────────────────────┘
-
-Componente
-    |
-    | 1. setUser(user)
-    ↓
-AppStateService
-    |
-    | 2. currentUser.set(user)
-    ↓
-Signal actualizado
-    |
-    ├─→ 3a. effect() detecta cambio
-    │       └─→ 4a. Persiste en localStorage
-    │
-    └─→ 3b. Todos los componentes suscritos
-            └─→ 4b. Se actualizan automáticamente
-```
-
-### Workflow - Persistencia
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ WORKFLOW: Persistencia Automática                           │
-└─────────────────────────────────────────────────────────────┘
-
-1. AppStateService se inicia
-   ↓
-2. constructor() ejecuta loadPersistedState()
-   ↓
-3. Lee localStorage
-   ├─→ app-user
-   ├─→ app-favorites
-   └─→ app-preferences
-   ↓
-4. Actualiza signals con datos recuperados
-   ↓
-5. Establece effects() para cambios futuros
-   ↓
-6. Cuando un signal cambia:
-   effect() → localStorage.setItem()
-```
-
-### API Pública
-
-#### Autenticación
-
-```typescript
-// Establecer usuario
-appState.setUser(user: User): void
-
-// Cerrar sesión
-appState.logout(): void
-
-// Actualizar usuario
-appState.updateUser(updates: Partial<User>): void
-```
-
-#### Favoritos
-
-```typescript
-// Agregar a favoritos
-appState.addToFavorites(album: Album): void
-
-// Remover de favoritos
-appState.removeFromFavorites(albumId: number): void
-
-// Verificar si está en favoritos
-appState.isFavorite(albumId: number): boolean
-
-// Limpiar favoritos
-appState.clearFavorites(): void
-```
-
-#### Búsqueda
-
-```typescript
-// Iniciar búsqueda
-appState.startSearch(query: string): void
-
-// Establecer resultados
-appState.setSearchResults(results: SearchResult): void
-
-// Limpiar búsqueda
-appState.clearSearch(): void
-```
-
-#### Preferencias
-
-```typescript
-// Actualizar preferencias
-appState.updatePreferences(updates: Partial<UserPreferences>): void
-```
-
-### Ejemplo Completo
-
-```typescript
-import { Component, inject, computed } from '@angular/core';
+```ts
+import { Component, computed, inject } from '@angular/core';
 import { AppStateService } from '@services/app-state';
 
 export class HeaderComponent {
   private appState = inject(AppStateService);
 
-  // Computed se actualiza automáticamente
-  userName = computed(() => {
-    const user = this.appState.currentUser();
-    return user ? user.username : 'Guest';
-  });
+  // Computed se actualiza automáticamente cuando cambia currentUser()
+  userName = computed(() => this.appState.currentUser()?.username ?? 'Guest');
 
+  // Signals expuestos por el estado global
   isAuthenticated = this.appState.isAuthenticated;
   favoritesCount = this.appState.favoritesCount;
 
@@ -1135,1930 +348,171 @@ export class HeaderComponent {
 </header>
 ```
 
-### Ventajas de Signals vs BehaviorSubject
+#### Signals vs BehaviorSubject (cuándo preferir)
 
-| Característica | Signals | BehaviorSubject |
-|----------------|---------|-----------------|
-| Sintaxis | Más simple | Más verbose |
-| Performance | Mejor | Bueno |
-| Subscribe/Unsubscribe | No necesario | Requerido |
-| Computed values | Nativo | Requiere pipe |
-| Change detection | Optimizado | Estándar |
+- **Signals**: estado “actual” (no stream), computed nativos, menos boilerplate.
+- **RxJS (BehaviorSubject/Observables)**: streams/eventos, composición compleja, o pipelines async.
 
 ---
 
-## NotificationStreamService
+## 5.3 NotificationStreamService
 
 ### Descripción
 
-NotificationStreamService implementa el patrón Observable para el sistema de notificaciones, permitiendo que múltiples componentes emitan notificaciones de forma desacoplada.
+Stream para emitir notificaciones desde cualquier componente de forma desacoplada.
 
-### Arquitectura
+### API típica
 
-```
-Componente A          Componente B
-    |                      |
-    | notify()             | notify()
-    ↓                      ↓
-    NotificationStreamService
-           |
-           | Subject → Observable
-           ↓
-    NotificationService
-           |
-           | createComponent()
-           ↓
-         DOM
-```
+- `notify(config)`
+- `success(title, message, duration?)`
+- `error(title, message, duration?)`
+- `warning(title, message, duration?)`
+- `info(title, message, duration?)`
 
-### Workflow Completo
+### Ejemplo
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│ WORKFLOW: Sistema de Notificaciones                         │
-└─────────────────────────────────────────────────────────────┘
-
-1. Componente ejecuta acción
-   ↓
-2. Componente llama a notificationStream.success()
-   ↓
-3. NotificationStreamService.notify(config)
-   ↓
-4. Subject.next(config)
-   ↓
-5. Observable emite config
-   ↓
-6. Constructor suscrito ejecuta NotificationService.show()
-   ↓
-7. NotificationService crea componente dinámicamente
-   ↓
-8. createComponent(Notification)
-   ↓
-9. document.body.appendChild(element)
-   ↓
-10. Notificación aparece en pantalla
-    ↓
-11. Después de X segundos o click en X
-    ↓
-12. dismissed.emit()
-    ↓
-13. removeChild(element)
-    ↓
-14. Notificación desaparece
-```
-
-### API Pública
-
-#### notify(config: NotificationConfig)
-
-Emite una notificación en el stream.
-
-```typescript
-notificationStream.notify({
-  type: 'success',
-  title: 'Guardado',
-  message: 'Los cambios se guardaron correctamente',
-  duration: 5000,
-  position: 'top-right'
-});
-```
-
-#### Métodos de Conveniencia
-
-```typescript
-// Éxito
-notificationStream.success('Título', 'Mensaje');
-
-// Error
-notificationStream.error('Título', 'Mensaje', 8000);
-
-// Advertencia
-notificationStream.warning('Título', 'Mensaje');
-
-// Información
-notificationStream.info('Título', 'Mensaje');
-```
-
-### Ejemplo Completo
-
-```typescript
-import { Component, inject } from '@angular/core';
-import { NotificationStreamService } from '@services/notification-stream';
-import { AppStateService } from '@services/app-state';
-import { EventBusService, EventType } from '@services/event-bus';
-
-export class AlbumFormComponent {
-  private notificationStream = inject(NotificationStreamService);
-  private appState = inject(AppStateService);
-  private eventBus = inject(EventBusService);
-
-  async onSave(albumData: any) {
-    try {
-      // Guardar álbum
-      const album = await this.saveAlbum(albumData);
-
-      // Actualizar estado
-      this.appState.addToFavorites(album);
-
-      // Emitir evento
-      this.eventBus.emit({
-        type: EventType.ALBUM_ADDED_TO_FAVORITES,
-        payload: { albumId: album.id }
-      });
-
-      // Notificación de éxito
-      this.notificationStream.success(
-        'Guardado',
-        'El álbum se guardó correctamente'
-      );
-    } catch (error) {
-      // Notificación de error
-      this.notificationStream.error(
-        'Error',
-        'No se pudo guardar el álbum',
-        10000 // Más tiempo para errores
-      );
-    }
-  }
-
-  private async saveAlbum(data: any) {
-    // Lógica de guardado...
-    return data;
-  }
-}
-```
-
----
-
-## Workflows de Comunicación
-
-### Workflow 1: Agregar Álbum a Favoritos
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ Usuario hace click en "Agregar a favoritos"                 │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ AlbumCardComponent.onToggleFavorite()                       │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ AppStateService.addToFavorites(album)                       │
-│ • favorites.set([...current, album])                        │
-│ • effect() → localStorage.setItem()                         │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ EventBusService.emit(ALBUM_ADDED_TO_FAVORITES)              │
-│ • Subject.next(event)                                       │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ NotificationStreamService.success()                         │
-│ • Subject.next(config)                                      │
-│ • NotificationService.show()                                │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ RESULTADOS:                                                  │
-│ • FavoritesPageComponent se actualiza (Signal)              │
-│ • HeaderComponent actualiza contador (Signal)               │
-│ • FavoritesCounterComponent actualiza (EventBus)            │
-│ • Notificación aparece en pantalla                          │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Workflow 2: Login de Usuario
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ Usuario envía formulario de login                           │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ LoginComponent.onSubmit()                                   │
-│ • Valida credenciales con backend                           │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ AppStateService.setUser(user)                               │
-│ • currentUser.set(user)                                     │
-│ • effect() → localStorage.setItem('app-user')               │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ EventBusService.emit(USER_LOGIN)                            │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ NotificationStreamService.success('Bienvenido')             │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ RESULTADOS:                                                  │
-│ • HeaderComponent muestra nombre (computed)                 │
-│ • ProfileComponent se actualiza (Signal)                    │
-│ • Router navega a /dashboard                                │
-│ • Notificación de bienvenida                                │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Patrones de Uso
-
-### Patrón 1: Comunicación Hermano-Hermano
-
-**Cuándo usar:** Dos componentes no relacionados necesitan comunicarse.
-
-```typescript
-// ComponenteA.ts - Emisor
-export class ComponenteA {
-  private eventBus = inject(EventBusService);
-
-  onAction() {
-    this.eventBus.emit({
-      type: EventType.CUSTOM_EVENT,
-      payload: { data: 'algo' }
-    });
-  }
-}
-
-// ComponenteB.ts - Receptor
-export class ComponenteB implements OnInit, OnDestroy {
-  private eventBus = inject(EventBusService);
-  private subscription?: Subscription;
-
-  ngOnInit() {
-    this.subscription = this.eventBus
-      .on(EventType.CUSTOM_EVENT)
-      .subscribe(event => {
-        // Reaccionar al evento
-      });
-  }
-
-  ngOnDestroy() {
-    this.subscription?.unsubscribe();
-  }
-}
-```
-
-### Patrón 2: Estado Compartido
-
-**Cuándo usar:** Múltiples componentes necesitan acceder al mismo dato.
-
-```typescript
-// Componente A - Escritura
-export class ComponenteA {
-  private appState = inject(AppStateService);
-
-  onUpdate() {
-    this.appState.setUser(newUser);
-  }
-}
-
-// Componente B - Lectura
-export class ComponenteB {
-  private appState = inject(AppStateService);
-
-  // Actualización automática
-  user = this.appState.currentUser;
-}
-```
-
-### Patrón 3: Acción con Feedback
-
-**Cuándo usar:** Acción del usuario necesita confirmación visual.
-
-```typescript
-export class MiComponente {
-  private notificationStream = inject(NotificationStreamService);
-
-  async onAction() {
-    try {
-      await this.performAction();
-      this.notificationStream.success('Éxito', 'Operación completada');
-    } catch (error) {
-      this.notificationStream.error('Error', error.message);
-    }
-  }
-}
-```
-
-### Patrón 4: Workflow Completo
-
-**Cuándo usar:** Acción compleja que requiere múltiples servicios.
-
-```typescript
-export class ComplexComponent {
-  private eventBus = inject(EventBusService);
-  private appState = inject(AppStateService);
-  private notificationStream = inject(NotificationStreamService);
-
-  async onComplexAction(data: any) {
-    try {
-      // 1. Actualizar estado
-      this.appState.setLoading(true);
-
-      // 2. Ejecutar acción
-      const result = await this.performAction(data);
-
-      // 3. Actualizar estado global
-      this.appState.addToFavorites(result);
-
-      // 4. Emitir evento
-      this.eventBus.emit({
-        type: EventType.ACTION_COMPLETED,
-        payload: result
-      });
-
-      // 5. Feedback visual
-      this.notificationStream.success('Completado', 'Acción exitosa');
-
-    } catch (error) {
-      this.notificationStream.error('Error', error.message);
-    } finally {
-      this.appState.setLoading(false);
-    }
-  }
-}
-```
-
----
-
-## Comparación de Enfoques
-
-### EventBus vs AppState
-
-| Característica | EventBus | AppState |
-|----------------|----------|----------|
-| **Propósito** | Eventos puntuales | Estado persistente |
-| **Tecnología** | RxJS Subject | Angular Signals |
-| **Persistencia** | No | Sí (localStorage) |
-| **Cleanup** | Requiere unsubscribe | Automático |
-| **Uso típico** | Click, acción, evento | Usuario, config, datos |
-
-### Cuándo usar cada uno
-
-**Usar EventBus cuando:**
-- Componente A necesita notificar a B sobre una acción
-- No hay relación padre-hijo
-- El evento es puntual (no persiste)
-
-**Usar AppState cuando:**
-- Múltiples componentes necesitan el mismo dato
-- Los datos deben persistir entre sesiones
-- Necesitas computed values reactivos
-
-**Usar NotificationStream cuando:**
-- Necesitas mostrar feedback visual
-- Diferentes componentes pueden generar notificaciones
-- Quieres centralizar el sistema de notificaciones
-
----
-
-## Conclusión Sección 2
-
-Los servicios de comunicación implementados proporcionan una arquitectura robusta y escalable para:
-
-- **Comunicación desacoplada** entre componentes
-- **Estado global reactivo** con persistencia
-- **Sistema de notificaciones** centralizado
-- **Workflows complejos** bien estructurados
-
-La combinación de Signals (reactividad) y RxJS (eventos) ofrece lo mejor de ambos mundos: simplicidad y potencia.
-
----
-
-## 2.7 Separación de Responsabilidades
-
-### Principio: Single Responsibility Principle (SRP)
-
-La arquitectura del proyecto implementa una clara separación entre componentes de presentación y servicios de lógica de negocio.
-
-#### Reglas de Diseño
-
-**Componentes:**
-- ✅ Gestión de presentación UI
-- ✅ Captura de input del usuario
-- ✅ Navegación entre páginas
-- ✅ Estado de loading/disabled
-- ❌ Validación de datos
-- ❌ Llamadas HTTP
-- ❌ Lógica de negocio
-- ❌ Gestión de autenticación
-
-**Servicios:**
-- ✅ Lógica de validación
-- ✅ Reglas de negocio
-- ✅ Comunicación con backend
-- ✅ Gestión de tokens/sesiones
-- ✅ Coordinación entre servicios
-- ❌ Manipulación directa del DOM
-- ❌ Navegación (Router)
-
----
-
-### ValidationService - Validación Centralizada
-
-**Archivo:** `frontend/src/app/services/validation.ts`
-
-#### Propósito
-
-Centralizar toda la lógica de validación de formularios para:
-- Eliminar código duplicado entre componentes
-- Facilitar testing de reglas de negocio
-- Mantener validaciones consistentes
-- Simplificar componentes
-
-#### Diagrama de Flujo
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ Usuario escribe en campo de formulario                      │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ LoginComponent.onEmailChange(event)                         │
-│ • Extrae valor del input                                    │
-│ • this.email.set(value)                                     │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ ValidationService.validateEmail(value)                      │
-│ • Verifica campo no vacío                                   │
-│ • Aplica regex: /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/          │
-│ • Retorna { isValid, errorMessage }                         │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ LoginComponent procesa resultado                            │
-│ • this.emailError.set(result.errorMessage)                  │
-│ • UI se actualiza automáticamente (Signal)                  │
-└─────────────────────────────────────────────────────────────┘
-```
-
-#### API Pública
-
-##### validateEmail(email: string): ValidationResult
-
-```typescript
-const result = validationService.validateEmail('user@example.com');
-
-if (!result.isValid) {
-  console.error(result.errorMessage);
-  // Output: "Correo inválido. Debe tener @ y dominio..."
-}
-```
-
-**Reglas de negocio:**
-- Debe contener @
-- Debe tener dominio con al menos .xx
-- No debe contener espacios
-
-##### validatePassword(password: string): ValidationResult
-
-```typescript
-const result = validationService.validatePassword('MyPass123!');
-
-// Reglas:
-// - Mínimo 8 caracteres
-// - Al menos una mayúscula
-// - Al menos un carácter especial
-```
-
-##### validateUsername(username: string): ValidationResult
-
-```typescript
-const result = validationService.validateUsername('john_doe_2024');
-
-// Reglas:
-// - Entre 3 y 20 caracteres
-// - Solo letras, números y guiones bajos
-// - Sin espacios
-```
-
-##### validatePasswordConfirmation(password, confirmPassword): ValidationResult
-
-```typescript
-const result = validationService.validatePasswordConfirmation(
-  'MyPass123!',
-  'MyPass123!'
-);
-
-// Verifica que ambas contraseñas sean idénticas
-```
-
-##### validateLoginForm(email, password): FormValidationResult
-
-```typescript
-const result = validationService.validateLoginForm(
-  'user@example.com',
-  'password123'
-);
-
-if (result.isValid) {
-  // Proceder con login
-} else {
-  // Mostrar errores individuales
-  console.log(result.errors.email.errorMessage);
-  console.log(result.errors.password.errorMessage);
-}
-```
-
-##### validateRegisterForm(data): FormValidationResult
-
-```typescript
-const result = validationService.validateRegisterForm({
-  username: 'john_doe',
-  email: 'john@example.com',
-  password: 'MyPass123!',
-  confirmPassword: 'MyPass123!'
-});
-
-// Valida todos los campos a la vez
-// Retorna objeto con todos los errores
-```
-
----
-
-### AuthService - Autenticación y Sesiones
-
-**Archivo:** `frontend/src/app/services/auth.ts`
-
-#### Propósito
-
-Centralizar toda la lógica de autenticación:
-- Login/Logout/Register
-- Gestión de tokens
-- Coordinación con AppState
-- Emisión de eventos
-- Feedback visual (notificaciones)
-
-#### Diagrama de Flujo: Login
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ Usuario hace submit del formulario de login                 │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ LoginComponent.onSubmit()                                   │
-│ • Obtiene email y password de Signals                       │
-│ • Llama a authService.login({ email, password })            │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ AuthService.login(credentials)                              │
-│ 1. Hace llamada HTTP a backend (o simula)                   │
-│    POST /api/login { email, password }                      │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Backend responde con { success, user, token }               │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Si success === true:                                         │
-│ 1. appState.setUser(user)                                   │
-│ 2. localStorage.setItem('auth-token', token)                │
-│ 3. eventBus.emit(USER_LOGIN, { userId, username })          │
-│ 4. notificationStream.success('Bienvenido', '...')          │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ AuthService retorna { success: true, user, token }          │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ LoginComponent recibe resultado                             │
-│ • Si success: router.navigate(['/dashboard'])               │
-│ • Si !success: muestra error en UI                          │
-└─────────────────────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ EFECTOS EN CASCADA:                                          │
-│ • HeaderComponent actualiza con nombre usuario (Signal)     │
-│ • FavoritesComponent carga favoritos del usuario (Event)    │
-│ • Notificación aparece en pantalla (NotificationStream)     │
-└─────────────────────────────────────────────────────────────┘
-```
-
-#### API Pública
-
-##### login(credentials): Promise<AuthResponse>
-
-```typescript
-const result = await authService.login({
-  email: 'user@example.com',
-  password: 'MyPass123!'
-});
-
-if (result.success) {
-  router.navigate(['/dashboard']);
-} else {
-  console.error(result.message);
-}
-```
-
-**Workflow interno:**
-1. Llamada HTTP a backend
-2. Actualiza AppState con usuario
-3. Guarda token en localStorage
-4. Emite evento USER_LOGIN
-5. Muestra notificación de bienvenida
-
-##### register(data): Promise<AuthResponse>
-
-```typescript
-const result = await authService.register({
-  username: 'john_doe',
-  email: 'john@example.com',
-  password: 'MyPass123!'
-});
-
-if (result.success) {
-  router.navigate(['/login']);
-}
-```
-
-**Workflow interno:**
-1. Llamada HTTP POST /api/register
-2. Si éxito: notificación "Cuenta creada"
-3. Opcionalmente: login automático
-
-##### logout(): void
-
-```typescript
-authService.logout();
-// El servicio se encarga de todo
-```
-
-**Workflow interno:**
-1. appState.logout()
-2. localStorage.removeItem('auth-token')
-3. eventBus.emit(USER_LOGOUT)
-4. notificationStream.info('Sesión cerrada', '...')
-
-##### isAuthenticated(): boolean
-
-```typescript
-// Para guards de rutas
-if (!authService.isAuthenticated()) {
-  router.navigate(['/login']);
-}
-```
-
-##### getCurrentUser(): User | null
-
-```typescript
-const user = authService.getCurrentUser();
-console.log(user?.username);
-```
-
-##### requestPasswordReset(email): Promise<AuthResponse>
-
-```typescript
-await authService.requestPasswordReset('user@example.com');
-// Envía email con instrucciones
-```
-
----
-
-### Comparación: Antes vs Después
-
-#### ANTES (Anti-patrón)
-
-```typescript
-// LoginComponent tiene DEMASIADAS responsabilidades
-export class LoginComponentOLD {
-  // ❌ Validación en componente
-  validateEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
-  }
-
-  // ❌ Llamada HTTP en componente
-  // ❌ Gestión de token en componente
-  // ❌ Gestión de estado en componente
-  async onSubmit(): Promise<void> {
-    if (!this.validateEmail(this.email())) return;
-
-    const response: any = await this.http.post('/api/login', {
-      email: this.email(),
-      password: this.password(),
-    }).toPromise();
-
-    localStorage.setItem('user', JSON.stringify(response.user));
-    localStorage.setItem('token', response.token);
-
-    alert('¡Bienvenido!');
-    this.router.navigate(['/dashboard']);
-  }
-}
-```
-
-**Problemas:**
-- Código duplicado (RegisterComponent tiene las mismas validaciones)
-- Difícil de testear (necesita mockear HTTP, localStorage, router)
-- Componente muy grande y complejo
-- Lógica de negocio mezclada con presentación
-
-#### DESPUÉS (Patrón correcto)
-
-```typescript
-// LoginComponent solo presenta
-export class LoginComponentNEW {
-  private validationService = inject(ValidationService);
-  private authService = inject(AuthService);
-  private router = inject(Router);
-
-  // ✅ Delegación a ValidationService
-  onEmailChange(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.email.set(value);
-
-    const result = this.validationService.validateEmail(value);
-    this.emailError.set(result.isValid ? '' : result.errorMessage);
-  }
-
-  // ✅ Delegación a AuthService
-  async onSubmit(): Promise<void> {
-    const result = await this.authService.login({
-      email: this.email(),
-      password: this.password(),
-    });
-
-    if (result.success) {
-      this.router.navigate(['/dashboard']);
-    }
-  }
-}
-```
-
-**Beneficios:**
-- Sin código duplicado
-- Fácil de testear (mockear solo servicios)
-- Componente simple (3 métodos vs 7)
-- Lógica de negocio en servicios reutilizables
-
----
-
-### Tabla Comparativa: Responsabilidades
-
-| Responsabilidad | Antes | Después |
-|----------------|-------|---------|
-| **Presentación UI** | LoginComponent | LoginComponent |
-| **Validación email** | LoginComponent | ValidationService |
-| **Validación password** | LoginComponent | ValidationService |
-| **Llamada HTTP login** | LoginComponent | AuthService |
-| **Gestión de token** | LoginComponent | AuthService |
-| **Actualizar AppState** | LoginComponent | AuthService |
-| **Emitir eventos** | LoginComponent | AuthService |
-| **Notificaciones** | LoginComponent | AuthService (vía NotificationStream) |
-| **Navegación** | LoginComponent | LoginComponent |
-
-### Resultado
-
-**Componente LoginComponent:**
-- **Antes:** 8 responsabilidades
-- **Después:** 2 responsabilidades (presentación + navegación)
-
-**Servicios creados:**
-- ValidationService: 5 responsabilidades de validación
-- AuthService: 5 responsabilidades de autenticación
-
----
-
-### Testing: Comparación
-
-#### Antes (Difícil)
-
-```typescript
-describe('LoginComponentOLD', () => {
-  it('should validate email', () => {
-    const component = new LoginComponentOLD(mockHttp, mockRouter);
-    
-    // ❌ Testeando lógica de negocio en componente
-    expect(component.validateEmail('invalid')).toBe(false);
-  });
-
-  it('should login', async () => {
-    // ❌ Necesita mockear HTTP, localStorage, router...
-    mockHttp.post.mockReturnValue(of({ user: {}, token: 'abc' }));
-    
-    await component.onSubmit();
-    
-    expect(localStorage.setItem).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalled();
-  });
-});
-```
-
-#### Después (Fácil)
-
-```typescript
-// Test de ValidationService (aislado)
-describe('ValidationService', () => {
-  it('should validate email', () => {
-    const service = new ValidationService();
-    
-    // ✅ Testear lógica pura
-    const result = service.validateEmail('invalid');
-    expect(result.isValid).toBe(false);
-    expect(result.errorMessage).toBe('Correo inválido...');
-  });
-});
-
-// Test de AuthService (aislado)
-describe('AuthService', () => {
-  it('should login', async () => {
-    const service = new AuthService(mockHttp, mockAppState, mockEventBus);
-    
-    // ✅ Testear lógica de autenticación aislada
-    const result = await service.login({ email: 'test@example.com', password: 'pass' });
-    
-    expect(result.success).toBe(true);
-    expect(mockAppState.setUser).toHaveBeenCalled();
-  });
-});
-
-// Test de LoginComponent (delegación)
-describe('LoginComponentNEW', () => {
-  it('should delegate to services', async () => {
-    const component = new LoginComponentNEW();
-    
-    // ✅ Solo testear que delega correctamente
-    await component.onSubmit();
-    
-    expect(mockAuthService.login).toHaveBeenCalledWith({
-      email: component.email(),
-      password: component.password(),
-    });
-  });
-});
-```
-
----
-
-### Workflow Completo: Registro de Usuario
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ Usuario completa formulario de registro                     │
-│ • Username: john_doe                                         │
-│ • Email: john@example.com                                    │
-│ • Password: MyPass123!                                       │
-│ • Confirm: MyPass123!                                        │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ RegisterComponent.onSubmit()                                │
-│ • Obtiene todos los valores de Signals                      │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ ValidationService.validateRegisterForm({...})               │
-│ • validateUsername('john_doe')                              │
-│ • validateEmail('john@example.com')                         │
-│ • validatePassword('MyPass123!')                            │
-│ • validatePasswordConfirmation('MyPass123!', 'MyPass123!')  │
-│                                                              │
-│ Retorna: { isValid: true, errors: {...} }                   │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Si !isValid: RegisterComponent muestra errores en UI        │
-│ • usernameError.set(errors.username.errorMessage)           │
-│ • emailError.set(errors.email.errorMessage)                 │
-│ • ... etc                                                    │
-│ TERMINA FLUJO                                                │
-└─────────────────────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Si isValid: AuthService.register({...})                     │
-│ 1. POST /api/register { username, email, password }         │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Backend responde { success, user?, token? }                 │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Si success:                                                  │
-│ 1. notificationStream.success('Cuenta creada', '...')       │
-│ 2. (Opcional) Login automático:                             │
-│    • appState.setUser(user)                                 │
-│    • localStorage.setItem('auth-token', token)              │
-│    • eventBus.emit(USER_LOGIN)                              │
-└────────────────┬────────────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────────────────────────────┐
-│ RegisterComponent recibe resultado                          │
-│ • Si success: router.navigate(['/login'])                   │
-│   o router.navigate(['/dashboard']) si login automático     │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-### Resumen: Separación de Responsabilidades
-
-#### Principios Implementados
-
-1. **Single Responsibility Principle (SRP)**
-   - Cada clase tiene una única razón para cambiar
-   - Componentes: solo presentación
-   - Servicios: solo lógica de negocio
-
-2. **Don't Repeat Yourself (DRY)**
-   - Sin código duplicado entre componentes
-   - Validaciones centralizadas
-   - Lógica reutilizable
-
-3. **Dependency Injection**
-   - Servicios inyectados con `inject()`
-   - Fácil de testear con mocks
-   - Loose coupling
-
-4. **Separation of Concerns**
-   - UI separada de lógica
-   - Datos separados de presentación
-   - Comunicación separada de negocio
-
-#### Archivos Relacionados
-
-- **ValidationService:** `frontend/src/app/services/validation.ts`
-- **AuthService:** `frontend/src/app/services/auth.ts`
-- **Ejemplos de refactorización:** `frontend/src/app/services/REFACTORIZACION_EJEMPLOS.ts`
-
-#### Ventajas de esta Arquitectura
-
-1. **Testabilidad:** Servicios testeables en aislamiento
-2. **Mantenibilidad:** Cambios localizados en servicios
-3. **Reutilización:** Validaciones usables en múltiples componentes
-4. **Escalabilidad:** Fácil agregar nuevos servicios
-5. **Claridad:** Componentes simples y fáciles de entender
-
----
-
-## 2.8 Sistema de Notificaciones/Toasts
-
-### Descripción General
-
-El sistema de notificaciones implementa un patrón de arquitectura de tres capas:
-
-1. **NotificationService** (Gestión DOM) - Crea/destruye componentes dinámicamente
-2. **Notification Component** (Presentación) - Renderiza y anima toasts
-3. **NotificationStreamService** (Comunicación) - Observable para desacoplamiento
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    CAPA DE NEGOCIO                          │
-│  (Componentes, Servicios de Autenticación, etc.)           │
-│                                                              │
-│  - AlbumComponent                                           │
-│  - AuthService                                              │
-│  - ValidationService                                        │
-└──────────────┬──────────────────────────────────────────────┘
-               │ Llama a notify()
-               ↓
-┌─────────────────────────────────────────────────────────────┐
-│            CAPA DE COMUNICACIÓN (Opcional)                  │
-│                                                              │
-│  NotificationStreamService (RxJS Subject/Observable)        │
-│  - notify(config)                                           │
-│  - success(), error(), warning(), info()                    │
-│  - Observable stream para múltiples suscriptores           │
-└──────────────┬──────────────────────────────────────────────┘
-               │ Emite evento en stream
-               ↓
-┌─────────────────────────────────────────────────────────────┐
-│              CAPA DE GESTIÓN DEL DOM                        │
-│                                                              │
-│  NotificationService (Manipulación DOM)                     │
-│  - show(config)                                             │
-│  - createComponent() → Notification Component               │
-│  - appendChild() al body                                    │
-│  - removeChild() después de dismiss                         │
-└──────────────┬──────────────────────────────────────────────┘
-               │ Crea componente dinámico
-               ↓
-┌─────────────────────────────────────────────────────────────┐
-│              CAPA DE PRESENTACIÓN                           │
-│                                                              │
-│  Notification Component (UI)                                │
-│  - Renderiza HTML/CSS                                       │
-│  - Animaciones entrada/salida                               │
-│  - Timer de auto-dismiss                                    │
-│  - Emite evento dismissed                                   │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Separación de Responsabilidades en Notificaciones
-
-| Capa | Responsable de | NO Responsable de |
-|------|---|---|
-| **NotificationService** | Crear componentes dinámicamente, Manipular DOM (appendChild/removeChild), Gestionar ciclo de vida, API conveniente (success, error, etc.) | Renderizar HTML/CSS, Manejar animaciones, Lógica de negocio |
-| **Notification Component** | Renderizar UI, Animaciones CSS, Timer de auto-dismiss, Emitir evento dismissed | Crear otras notificaciones, Manipular DOM externo, Contener lógica de negocio |
-| **Componentes de Negocio** | Lógica de aplicación, Llamar a notify(), Decidir cuándo notificar | Crear componentes visuales, Manipular DOM, Gestionar timers |
-
-### Workflow Completo de Notificación
-
-```
-Usuario ejecuta acción
-    ↓
-Componente llama: notificationService.success('Título', 'Mensaje')
-    ↓
-NotificationService.show(config)
-    ├─ createComponent(Notification)
-    ├─ componentRef.setInput('type', 'success')
-    ├─ componentRef.setInput('title', 'Título')
-    ├─ componentRef.setInput('message', 'Mensaje')
-    ├─ componentRef.setInput('position', 'top-right')
-    ├─ componentRef.setInput('duration', 5000)
-    ├─ componentRef.setInput('autoDismiss', true)
-    ├─ suscribirse a dismissed event
-    ├─ appRef.attachView(componentRef.hostView)
-    └─ document.body.appendChild(element)
-    ↓
-Notification Component ngOnInit()
-    ├─ Espera 10ms para activar animación
-    ├─ isVisible.set(true) - Inicia animación entrada
-    └─ Inicia timer de 5000ms
-    ↓
-Notificación aparece en pantalla con animación
-    ↓
-[Usuario ve la notificación durante 5 segundos]
-    ↓
-Timer vence O usuario hace click en X
-    ↓
-Notification Component onDismiss()
-    ├─ isVisible.set(false) - Inicia animación salida
-    └─ Emite dismissed event después de 300ms
-    ↓
-NotificationService recibe dismissed
-    ├─ removeChild(element)
-    ├─ appRef.detachView(componentRef.hostView)
-    ├─ componentRef.destroy()
-    └─ Remover de array de activas
-    ↓
-Notificación desaparece de pantalla
-```
-
-### Tipos de Notificaciones
-
-#### Success (verde con icono ✓)
-- Duración: 5000ms
-- Uso: Operaciones exitosas
-- Ejemplo: "Guardado correctamente"
-
-#### Error (rojo con icono ✕)
-- Duración: 8000ms (más tiempo para leer)
-- Uso: Errores y fallos
-- Ejemplo: "No se pudo guardar el álbum"
-
-#### Warning (amarillo/naranja con icono ⚠)
-- Duración: 6000ms
-- Uso: Advertencias y precauciones
-- Ejemplo: "Este álbum ya está en favoritos"
-
-#### Info (azul con icono ℹ)
-- Duración: 5000ms
-- Uso: Información general
-- Ejemplo: "Hay 3 álbumes nuevos"
-
-### API de NotificationService
-
-#### show(config: NotificationConfig): void
-
-Método principal para mostrar notificación con configuración completa.
-
-```typescript
-notificationService.show({
-  type: 'success',
-  title: 'Guardado',
-  message: 'Los cambios se guardaron correctamente',
-  position: 'top-right',
-  duration: 5000,
-  autoDismiss: true,
-  icon: '✓'
-});
-```
-
-#### success(title: string, message: string, duration?: number): void
-
-Atajo para notificaciones de éxito.
-
-```typescript
-notificationService.success('Guardado', 'Los cambios se guardaron correctamente');
-```
-
-#### error(title: string, message: string, duration?: number): void
-
-Atajo para notificaciones de error (duración por defecto: 8000ms).
-
-```typescript
-notificationService.error('Error', 'No se pudo guardar el álbum', 10000);
-```
-
-#### warning(title: string, message: string, duration?: number): void
-
-Atajo para advertencias.
-
-```typescript
-notificationService.warning('Atención', 'Este álbum ya está en favoritos');
-```
-
-#### info(title: string, message: string, duration?: number): void
-
-Atajo para información general.
-
-```typescript
-notificationService.info('Actualización', 'Hay 3 álbumes nuevos disponibles');
-```
-
-#### persistent(type, title, message): void
-
-Notificación que NO se cierra automáticamente. El usuario debe cerrarla manualmente.
-
-```typescript
-notificationService.persistent('error', 'Conexión perdida', 'No se puede conectar al servidor');
-```
-
-#### clearAll(): void
-
-Elimina todas las notificaciones activas.
-
-```typescript
-notificationService.clearAll();
-```
-
-#### getActiveCount(): number
-
-Retorna el número de notificaciones actualmente en pantalla.
-
-```typescript
-const count = notificationService.getActiveCount();
-console.log(`${count} notificaciones activas`);
-```
-
-### Interfaz NotificationConfig
-
-```typescript
-interface NotificationConfig {
-  type: 'success' | 'error' | 'warning' | 'info';
-  title: string;
-  message: string;
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
-  duration?: number;
-  autoDismiss?: boolean;
-  icon?: string;
-}
-```
-
-### Ejemplos de Uso
-
-#### Ejemplo 1: Notificación Simple
-
-```typescript
-export class AlbumComponent {
-  private notificationService = inject(NotificationService);
-
-  onSave() {
-    this.notificationService.success(
-      'Guardado',
-      'El álbum se guardó correctamente'
-    );
-  }
-}
-```
-
-#### Ejemplo 2: Notificación con Manejo de Errores
-
-```typescript
-async onSaveAlbum(albumData: any) {
-  try {
-    await this.albumService.save(albumData);
-    this.notificationService.success(
-      'Guardado',
-      'El álbum se guardó correctamente'
-    );
-  } catch (error: any) {
-    this.notificationService.error(
-      'Error',
-      error.message || 'No se pudo guardar el álbum',
-      10000
-    );
-  }
-}
-```
-
-#### Ejemplo 3: Notificación Persistente
-
-```typescript
-checkConnection() {
-  if (!this.isConnected) {
-    this.notificationService.persistent(
-      'error',
-      'Conexión perdida',
-      'No se puede conectar al servidor. La notificación persistirá hasta que se reconecte.'
-    );
-  }
-}
-```
-
-#### Ejemplo 4: Configuración Avanzada
-
-```typescript
-onAddToFavorites(album: Album) {
-  this.notificationService.show({
-    type: 'success',
-    title: 'Agregado a Favoritos',
-    message: `${album.title} se agregó a tus favoritos`,
-    position: 'bottom-right',
-    duration: 3000,
-    autoDismiss: true,
-    icon: '💿'
-  });
-}
-```
-
-#### Ejemplo 5: Múltiples Notificaciones Secuenciales
-
-```typescript
-async onComplexWorkflow() {
-  this.notificationService.info('Iniciando', 'Procesando datos...');
-  
-  await this.step1();
-  this.notificationService.info('Paso 1', 'Datos procesados');
-  
-  await this.step2();
-  this.notificationService.info('Paso 2', 'Validación completada');
-  
-  await this.step3();
-  this.notificationService.success('Completado', 'Operación exitosa');
-}
-```
-
-#### Ejemplo 6: Limpiar Notificaciones
-
-```typescript
-onLogout() {
-  this.authService.logout();
-  this.notificationService.clearAll();
-  this.router.navigate(['/login']);
-}
-```
-
-#### Ejemplo 7: Integración con AuthService
-
-```typescript
-// En AuthService
-async login(credentials: LoginCredentials): Promise<AuthResponse> {
-  try {
-    const response = await this.http.post('/api/login', credentials).toPromise();
-    
-    this.appState.setUser(response.user);
-    localStorage.setItem('auth-token', response.token);
-    
-    this.notificationService.success(
-      'Bienvenido',
-      `Hola, ${response.user.username}`
-    );
-    
-    return response;
-  } catch (error: any) {
-    this.notificationService.error(
-      'Error de login',
-      error.message || 'Credenciales inválidas',
-      8000
-    );
-    throw error;
-  }
-}
-```
-
-### API de Notification Component
-
-#### Inputs
-
-```typescript
-@Input() type: 'success' | 'error' | 'warning' | 'info' = 'info';
-@Input() title: string = '';
-@Input() message: string = '';
-@Input() icon: string = '';
-@Input() position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
-@Input() autoDismiss: boolean = true;
-@Input() duration: number = 5000;
-```
-
-#### Outputs
-
-```typescript
-@Output() dismissed = new EventEmitter<void>();
-```
-
-#### Lifecycle Hooks
-
-**ngOnInit:**
-- Espera 10ms para permitir que Angular renderice
-- Establece isVisible.set(true) para animación de entrada
-- Si autoDismiss, inicia timer de duration ms
-
-**ngOnDestroy:**
-- Limpia timeout para prevenir memory leaks
-
-#### Propiedades Computadas
-
-```typescript
-// Clases CSS dinámicas basadas en tipo y estado
-notificationClasses: string
-
-// Icono por defecto según tipo
-defaultIcon: string
-```
-
-### Testing del Sistema
-
-```typescript
-describe('NotificationService', () => {
-  let service: NotificationService;
-
-  beforeEach(() => {
-    service = new NotificationService(mockAppRef, mockInjector);
-  });
-
-  it('should create notification component', () => {
-    service.show({
-      type: 'success',
-      title: 'Test',
-      message: 'Testing'
-    });
-
-    expect(service.getActiveCount()).toBe(1);
-  });
-
-  it('should remove notification on dismiss', (done) => {
-    service.show({
-      type: 'info',
-      title: 'Test',
-      message: 'Testing'
-    });
-
-    setTimeout(() => {
-      expect(service.getActiveCount()).toBe(0);
-      done();
-    }, 5100);
-  });
-
-  it('should clear all notifications', () => {
-    service.success('Test 1', 'Message 1');
-    service.info('Test 2', 'Message 2');
-    service.warning('Test 3', 'Message 3');
-
-    expect(service.getActiveCount()).toBe(3);
-
-    service.clearAll();
-
-    expect(service.getActiveCount()).toBe(0);
-  });
-});
-```
-
-### Best Practices
-
-**DO:**
-- Usar métodos de conveniencia (success, error, etc.) para casos comunes
-- Mostrar mensajes de error detallados para mejor UX
-- Aumentar duración para errores críticos (8000-10000ms)
-- Usar notificaciones persistentes para conectividad
-- Limpiar notificaciones al hacer logout
-
-**DON'T:**
-- No mostrar múltiples notificaciones del mismo tipo simultáneamente (agruparlas)
-- No usar notificaciones para casos que necesitan acción inmediata (usar Modales)
-- No abusar de los iconos personalizados
-- No cambiar duración sin razón específica
-
-### Características Especiales
-
-#### Observable Stream
-
-El servicio expone un Observable para que otros componentes observen notificaciones:
-
-```typescript
-notificationService.notification$.subscribe(config => {
-  console.log('Notificación mostrada:', config);
-  // Útil para analytics, logging, etc.
-});
-```
-
-#### Posicionamiento Flexible
-
-4 posiciones disponibles:
-- top-right (por defecto)
-- top-left
-- bottom-right
-- bottom-left
-
-#### Iconos Personalizables
-
-```typescript
-notificationService.show({
-  type: 'success',
-  title: 'Música agregada',
-  message: 'Nueva canción en tu playlist',
-  icon: '🎵'
-});
-```
-
-#### Gestión Automática
-
-- El sistema apila notificaciones automáticamente
-- Cada notificación se gestiona independientemente
-- clearAll() permite limpiar todas a la vez
-- Limpieza automática de memory en ngOnDestroy
-
----
-
-## 2.9 Gestión de Loading States
-
-### Descripción General
-
-El sistema de loading states proporciona una forma centralizada de gestionar indicadores de carga en la aplicación. Incluye:
-
-1. **LoadingService** - Servicio central para gestionar estados
-2. **Spinner** - Componente visual de carga (global e inline)
-3. **ProgressBar** - Barra de progreso con múltiples variantes
-4. **Button Loading** - Estado de carga integrado en botones
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    COMPONENTES                               │
-│  (AlbumService, AuthService, HttpInterceptor, etc.)         │
-└──────────────┬──────────────────────────────────────────────┘
-               │ start() / stop()
-               ↓
-┌─────────────────────────────────────────────────────────────┐
-│                  LoadingService                              │
-│  - isLoading (Signal<boolean>)                              │
-│  - progress (Signal<number>)                                │
-│  - localStates (Map<string, boolean>)                       │
-└──────────────┬──────────────────────────────────────────────┘
-               │ Signals/Observables
-               ↓
-┌─────────────────────────────────────────────────────────────┐
-│              UI COMPONENTS                                   │
-│  - Spinner (overlay global / inline)                        │
-│  - ProgressBar (barra de progreso)                          │
-│  - Button (spinner integrado)                               │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### LoadingService
-
-**Archivo:** `frontend/src/app/services/loading.ts`
-
-#### Propósito
-
-Servicio centralizado para gestionar estados de carga global y local, permitiendo mostrar/ocultar indicadores de forma coordinada.
-
-#### Características
-
-- Contador de operaciones simultáneas (evita conflictos)
-- Estado global con Signals (reactividad automática)
-- Estados locales por identificador (para botones/componentes)
-- Soporte para progreso determinado (0-100%)
-- Métodos de conveniencia para operaciones async
-
-#### API Pública
-
-##### start(message?: string): void
-
-Inicia una operación de carga global.
-
-```typescript
-loadingService.start('Guardando álbum...');
-await albumService.save(album);
-loadingService.stop();
-```
-
-##### stop(): void
-
-Detiene una operación de carga global.
-
-```typescript
-loadingService.stop();
-```
-
-##### stopAll(): void
-
-Fuerza la detención de todas las operaciones. Usar con precaución.
-
-```typescript
-// Al cerrar sesión
-loadingService.stopAll();
-```
-
-##### setProgress(percent: number): void
-
-Establece el progreso de la operación actual (0-100).
-
-```typescript
-loadingService.start('Subiendo archivo...');
-loadingService.setProgress(25);
-loadingService.setProgress(50);
-loadingService.setProgress(100);
-loadingService.stop();
-```
-
-##### startLocal(id: string): void
-
-Inicia loading local para un componente específico.
-
-```typescript
-loadingService.startLocal('save-button');
-await save();
-loadingService.stopLocal('save-button');
-```
-
-##### stopLocal(id: string): void
-
-Detiene loading local para un componente específico.
-
-```typescript
-loadingService.stopLocal('save-button');
-```
-
-##### isLocalLoading(id: string): boolean
-
-Verifica si un componente está en loading.
-
-```typescript
-if (loadingService.isLocalLoading('save-button')) {
-  return; // No hacer nada si ya está cargando
-}
-```
-
-##### withLoading<T>(operation: Promise<T>, message?: string): Promise<T>
-
-Ejecuta operación async con loading automático.
-
-```typescript
-const albums = await loadingService.withLoading(
-  albumService.getAll(),
-  'Cargando álbumes...'
+```ts
+notificationStream.success(
+  'Guardado',
+  'Los cambios se guardaron correctamente'
 );
 ```
 
-##### withLocalLoading<T>(id: string, operation: Promise<T>): Promise<T>
+---
 
-Ejecuta operación async con loading local automático.
+## 5.4 NotificationService
 
-```typescript
-await loadingService.withLocalLoading(
-  'save-button',
-  albumService.save(album)
+### Descripción
+
+Renderiza toasts creando componentes dinámicamente y gestionando su ciclo de vida (`attachView` / `detachView` / `destroy`).
+
+### Puntos clave
+
+- `createComponent(Notification)`
+- `setInput(...)` para configurar type/title/message/etc.
+- Insertar en DOM (p. ej. `document.body.appendChild`)
+- Escuchar `dismissed` → limpiar DOM y destruir componente
+
+---
+
+## 5.5 ThemeService
+
+### Descripción
+
+Gestiona tema claro/oscuro con Signal y persistencia.
+
+- Detecta preferencia del sistema (`prefers-color-scheme`).
+- Si hay tema guardado en `localStorage`, lo respeta.
+- Aplica un atributo (p. ej. `data-theme`) para activar variables CSS.
+
+### Ejemplo de aplicación
+
+- dark → `document.documentElement.setAttribute('data-theme', 'dark')`
+- light → `document.documentElement.removeAttribute('data-theme')`
+
+---
+
+## 5.6 ValidationService
+
+### Descripción
+
+Centraliza validaciones para eliminar duplicación y mantener reglas consistentes.
+
+Incluye típicamente:
+- `validateEmail`
+- `validatePassword`
+- `validateUsername`
+- Validación de formularios completos (login/register)
+
+---
+
+## 5.7 AuthService
+
+### Descripción
+
+Centraliza autenticación:
+- login / logout / register
+- gestión de token
+- coordinación con AppState (user, isAuthenticated)
+- (opcional) emisión de eventos (EventBus) y notificaciones (NotificationStream)
+
+---
+
+## 5.8 LoadingService
+
+### Descripción
+
+Centraliza estados de carga:
+- Loading global (overlay)
+- Loading local (por id: botones/componentes)
+- (opcional) progreso 0–100 para progress bar
+
+Ejemplo (loading local):
+
+```ts
+await this.loadingService.withLocalLoading(
+  'save-btn',
+  this.albumService.save(album)
 );
 ```
 
-#### Signals Públicos
-
-```typescript
-// Indica si hay alguna operación activa
-readonly isLoading: Signal<boolean>
-
-// Mensaje de carga actual
-readonly message: Signal<string>
-
-// Progreso actual (0-100, -1 = indeterminado)
-readonly progress: Signal<number>
-```
-
-### Spinner Component
-
-**Archivo:** `frontend/src/app/components/shared/spinner/`
-
-#### Propósito
-
-Componente visual para indicar estados de carga. Soporta tres modos de uso.
-
-#### Modos
-
-| Modo | Descripción | Uso típico |
-|------|---|---|
-| `global` | Overlay de pantalla completa | Operaciones bloqueantes |
-| `inline` | Spinner dentro de contenedor | Carga de secciones |
-| `button` | Spinner pequeño para botones | Loading en acciones |
-
-#### Inputs
-
-```typescript
-@Input() show?: boolean;        // Control manual de visibilidad
-@Input() mode: 'global' | 'inline' | 'button' = 'inline';
-@Input() size: 'sm' | 'md' | 'lg' = 'md';
-@Input() message?: string;      // Solo en modo global
-@Input() localId?: string;      // Vincular con LoadingService
-@Input() color: 'primary' | 'secondary' | 'white' = 'primary';
-```
-
-#### Ejemplos de Uso
-
-```html
-<!-- Global overlay (se vincula automáticamente a LoadingService) -->
-<app-spinner mode="global"></app-spinner>
-
-<!-- Control manual -->
-<app-spinner [show]="isLoading" mode="inline" size="md"></app-spinner>
-
-<!-- Vinculado a estado local del servicio -->
-<app-spinner [localId]="'my-component'" mode="inline"></app-spinner>
-
-<!-- Diferentes tamaños -->
-<app-spinner [show]="true" size="sm"></app-spinner>
-<app-spinner [show]="true" size="md"></app-spinner>
-<app-spinner [show]="true" size="lg"></app-spinner>
-
-<!-- Diferentes colores -->
-<app-spinner [show]="true" color="primary"></app-spinner>
-<app-spinner [show]="true" color="secondary"></app-spinner>
-<app-spinner [show]="true" color="white"></app-spinner>
-```
-
-### ProgressBar Component
-
-**Archivo:** `frontend/src/app/components/shared/progress-bar/`
-
-#### Propósito
-
-Barra de progreso para operaciones con porcentaje conocido.
-
-#### Modos
-
-- **Determinado:** Muestra porcentaje específico (0-100)
-- **Indeterminado:** Animación continua sin porcentaje
-
-#### Inputs
-
-```typescript
-@Input() value: number = 0;           // Valor 0-100
-@Input() indeterminate: boolean = false;
-@Input() showLabel: boolean = false;  // Mostrar porcentaje
-@Input() size: 'sm' | 'md' | 'lg' = 'md';
-@Input() variant: 'primary' | 'secondary' | 'success' | 'warning' | 'error' = 'primary';
-@Input() useService: boolean = false; // Usar valor del LoadingService
-@Input() label?: string;              // Texto personalizado
-@Input() striped: boolean = false;    // Rayas animadas
-```
-
-#### Ejemplos de Uso
-
-```html
-<!-- Progreso básico -->
-<app-progress-bar [value]="75"></app-progress-bar>
-
-<!-- Con etiqueta -->
-<app-progress-bar [value]="50" [showLabel]="true"></app-progress-bar>
-
-<!-- Diferentes tamaños -->
-<app-progress-bar [value]="60" size="sm"></app-progress-bar>
-<app-progress-bar [value]="60" size="md"></app-progress-bar>
-<app-progress-bar [value]="60" size="lg"></app-progress-bar>
-
-<!-- Variantes de color -->
-<app-progress-bar [value]="60" variant="primary"></app-progress-bar>
-<app-progress-bar [value]="60" variant="success"></app-progress-bar>
-<app-progress-bar [value]="60" variant="warning"></app-progress-bar>
-<app-progress-bar [value]="60" variant="error"></app-progress-bar>
-
-<!-- Indeterminado -->
-<app-progress-bar [indeterminate]="true"></app-progress-bar>
-
-<!-- Con rayas animadas -->
-<app-progress-bar [value]="75" [striped]="true"></app-progress-bar>
-
-<!-- Vinculado al LoadingService -->
-<app-progress-bar [useService]="true" [showLabel]="true"></app-progress-bar>
-```
-
-### Button Loading State
-
-El componente Button tiene soporte integrado para estados de carga.
-
-#### Inputs Adicionales
-
-```typescript
-@Input() loading: boolean = false;  // Control manual
-@Input() loadingId?: string;        // Vincular con LoadingService
-```
-
-#### Comportamiento
-
-- Cuando `loading=true`:
-  - Muestra spinner integrado
-  - Oculta contenido del botón
-  - Deshabilita el botón automáticamente
-  - Cambia cursor a `wait`
-
-#### Ejemplos de Uso
-
-```html
-<!-- Control manual -->
-<app-button [loading]="isSaving" (clicked)="save()">
-  Guardar
-</app-button>
-
-<!-- Vinculado al LoadingService -->
-<app-button [loadingId]="'save-btn'" (clicked)="save()">
-  Guardar
-</app-button>
-
-<!-- En TypeScript -->
-async save() {
-  this.loadingService.startLocal('save-btn');
-  await this.albumService.save(album);
-  this.loadingService.stopLocal('save-btn');
-}
-
-<!-- O con el método de conveniencia -->
-async save() {
-  await this.loadingService.withLocalLoading(
-    'save-btn',
-    this.albumService.save(album)
-  );
-}
-```
-
-### Workflows
-
-#### Workflow 1: Loading Global
-
-```
-Usuario hace click en "Cargar datos"
-    ↓
-Componente llama: loadingService.start('Cargando...')
-    ↓
-LoadingService:
-    ├─ activeOperations.update(count => count + 1)
-    └─ loadingMessage.set('Cargando...')
-    ↓
-Signal isLoading() retorna true
-    ↓
-Spinner Component (mode="global"):
-    ├─ Detecta isLoading() === true
-    └─ Muestra overlay con spinner
-    ↓
-[Operación async se ejecuta]
-    ↓
-Componente llama: loadingService.stop()
-    ↓
-LoadingService:
-    └─ activeOperations.update(count => count - 1)
-    ↓
-Signal isLoading() retorna false
-    ↓
-Spinner Component:
-    └─ Oculta overlay
-```
-
-#### Workflow 2: Loading en Botón
-
-```
-Usuario hace click en botón "Guardar"
-    ↓
-Button Component:
-    ├─ onClick() se ejecuta
-    └─ clicked.emit(event)
-    ↓
-Componente padre:
-    └─ loadingService.startLocal('save-btn')
-    ↓
-LoadingService:
-    ├─ localStates.set('save-btn', true)
-    └─ localStatesSubject.next(Map)
-    ↓
-Button Component (con loadingId='save-btn'):
-    ├─ Subscription recibe nuevo Map
-    ├─ serviceLoading.set(true)
-    ├─ isLoading getter retorna true
-    ├─ buttonClasses incluye 'button--loading'
-    └─ Template muestra spinner interno
-    ↓
-[Operación async se ejecuta]
-    ↓
-Componente padre:
-    └─ loadingService.stopLocal('save-btn')
-    ↓
-Button Component:
-    └─ Vuelve a estado normal
-```
-
-#### Workflow 3: Progress Bar con Subida de Archivo
-
-```
-Usuario selecciona archivo para subir
-    ↓
-Componente:
-    ├─ loadingService.start('Subiendo archivo...')
-    └─ loadingService.setProgress(0)
-    ↓
-ProgressBar [useService]="true":
-    ├─ currentValue = loadingService.progress()
-    └─ Muestra barra en 0%
-    ↓
-[Upload progresa]
-    ↓
-Evento de progreso del upload:
-    └─ loadingService.setProgress(25)
-    ↓
-ProgressBar:
-    └─ Actualiza a 25%
-    ↓
-[Más progreso...]
-    ↓
-loadingService.setProgress(100)
-    ↓
-ProgressBar:
-    └─ Muestra 100% (puede cambiar a variant="success")
-    ↓
-loadingService.stop()
-```
-
-### Integración con HTTP Interceptor
-
-Para aplicar loading global automático a todas las peticiones HTTP:
-
-```typescript
-// http-loading.interceptor.ts
-import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler } from '@angular/common/http';
-import { finalize } from 'rxjs/operators';
-import { LoadingService } from './services/loading';
-
-@Injectable()
-export class HttpLoadingInterceptor implements HttpInterceptor {
-  constructor(private loadingService: LoadingService) {}
-
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
-    // Excluir ciertas URLs si es necesario
-    const skipUrls = ['/api/heartbeat', '/api/notifications'];
-    
-    if (skipUrls.some(url => req.url.includes(url))) {
-      return next.handle(req);
-    }
-
-    this.loadingService.start();
-
-    return next.handle(req).pipe(
-      finalize(() => this.loadingService.stop())
-    );
-  }
-}
-```
-
-### Best Practices
-
-**DO:**
-- Usar `withLoading()` para operaciones simples
-- Usar `loadingId` en botones para estados independientes
-- Mostrar spinner global para operaciones bloqueantes
-- Usar `stopAll()` al hacer logout
-- Proporcionar mensajes descriptivos
-
-**DON'T:**
-- No mostrar múltiples spinners globales simultáneamente
-- No olvidar llamar a `stop()` después de `start()`
-- No usar spinner global para operaciones muy cortas (<300ms)
-- No bloquear la UI innecesariamente
-
-### Accesibilidad
-
-- El spinner global usa `role="status"` implícito
-- ProgressBar incluye atributos ARIA:
-  - `role="progressbar"`
-  - `aria-valuenow`
-  - `aria-valuemin`
-  - `aria-valuemax`
-- Los botones en loading tienen `aria-disabled="true"`
-- El cursor cambia a `wait` durante loading
-
-### Archivos Relacionados
-
-- **LoadingService:** `frontend/src/app/services/loading.ts`
-- **Spinner:** `frontend/src/app/components/shared/spinner/`
-- **ProgressBar:** `frontend/src/app/components/shared/progress-bar/`
-- **Button (actualizado):** `frontend/src/app/components/shared/button/`
+---
+
+## 6. Workflows clave
+
+### 6.1 Agregar álbum a favoritos
+
+Flujo recomendado:
+1) UI dispara acción (toggle favorito).
+2) `AppStateService.addToFavorites/removeFromFavorites`:
+   - actualiza signals (UI reacciona)
+   - persiste en localStorage (effect)
+3) `EventBusService.emit(ALBUM_ADDED_TO_FAVORITES / ALBUM_REMOVED_FROM_FAVORITES)`:
+   - otros componentes reaccionan (contadores, listados, etc.)
+4) `NotificationStreamService.success/info`:
+   - feedback visual inmediato
+
+### 6.2 Login de usuario
+
+Flujo recomendado:
+1) LoginComponent valida con `ValidationService`.
+2) `AuthService.login`:
+   - persiste token (si aplica)
+   - actualiza `AppState.setUser(...)`
+3) (Opcional) EventBus emit `USER_LOGIN`.
+4) Notification success/error.
 
 ---
 
-**Última actualización:** 15 de diciembre de 2025
-**Responsable:** Sergio Durán
-**Estado Fase 2:** Completado (Parte 4 - Gestión de Loading States)
+## 7. Compatibilidad
+
+Orientado a navegadores modernos:
+- Angular Signals: Chrome/Edge/Firefox actuales y Safari moderno.
+- `@HostListener`, `ViewChild/ElementRef`, `matchMedia`, `localStorage`: soporte amplio en navegadores actuales.
+
+Nota: objetivo = últimas 2 versiones de navegadores principales.
 
 ---
 
-**Última actualización:** 15 de diciembre de 2025
-**Responsable:** Sergio Durán
-**Estado Fase 2:** Completado (Parte 3 - Sistema de Notificaciones)
+## 8. Buenas prácticas
+
+### 8.1 Accesibilidad
+
+- Soporte de teclado (tabs con flechas, modales con ESC).
+- Trap focus en modales.
+- ARIA labels en botones cuando aplique.
+- Asegurar orden de tabulación y foco visible.
+
+### 8.2 Performance
+
+- Preferir Signals para estado local y global.
+- Debounce/throttle en eventos frecuentes (scroll/resize) si se usan.
+- Lazy loading en partes pesadas cuando aplique.
+- Limpiar listeners/suscripciones en ngOnDestroy (especialmente RxJS).
+
+### 8.3 Mantenibilidad
+
+- Separación de responsabilidades (componentes vs servicios).
+- DRY: validaciones centralizadas y servicios reutilizables.
+- Tipado estricto en payloads/eventos/modelos.
+- Naming consistente y estructura de carpetas clara.
