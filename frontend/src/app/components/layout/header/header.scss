@@ -104,7 +104,7 @@
   padding: vars.$espaciado-s vars.$espaciado-xl;
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-pildora;
-  background-color: var(--header-bg);
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -128,6 +128,7 @@
 .header__btn--right {
   order: 3;
   margin-left: 6px;
+  z-index: 0;
 }
 
 /* ========================================
@@ -142,13 +143,13 @@
   }
 
   .header__logo-wrapper {
-    width: 100px;
-    height: 100px;
+    width: 0.25rem;
+    height: 0.25rem;
     order: 1;
   }
 
   .header__logo {
-    height: 12rem;
+    height: 1rem;
   }
 
   /* --- Franjas verticales en móvil --- */

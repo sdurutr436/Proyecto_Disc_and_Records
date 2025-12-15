@@ -115,7 +115,7 @@
 
 .login-form__help {
   font-size: vars.$tamanio-fuente-texto-pequeno-xs;
-  color: vars.$color-letra-desactivado;
+  color: vars.$color-letra-blanca;
   font-style: italic;
 }
 
@@ -168,17 +168,17 @@
 
 .login-form__link {
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
-  color: vars.$color-primario-light;
+  color: var(--color-primary);
   text-decoration: none;
   transition: color vars.$transicion-rapida;
 
   &:hover {
-    color: vars.$color-secundario-light;
+    color: var(--color-secondary);
     text-decoration: underline;
   }
 
   &:focus-visible {
-    outline: 2px solid vars.$color-primario-light;
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
     border-radius: 2px;
   }
