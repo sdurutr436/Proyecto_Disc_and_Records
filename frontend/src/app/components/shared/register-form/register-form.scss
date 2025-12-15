@@ -7,7 +7,7 @@
   max-width: 500px;
   margin: 0 auto;
   padding: vars.$espaciado-l;
-  background-color: vars.$color-fondo-light;
+  background-color: var(--bg-primary);
   border: vars.$borde-brutal-thick;
   border-radius: vars.$radio-s;
   box-shadow: vars.$sombra-brutal-m;
@@ -22,14 +22,14 @@
   display: flex;
   flex-direction: column;
   gap: vars.$espaciado-m;
-  background-color: vars.$color-fondo-light-secundario;
+  background-color: var(--bg-secondary);
 }
 
 /* --- Legend --- */
 .register-form__legend {
   font-size: vars.$tamanio-fuente-h4;
   font-weight: 600;
-  color: vars.$color-letra-oscura;
+  color: var(--text-dark);
   padding: 0 vars.$espaciado-xs;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -46,7 +46,7 @@
 .register-form__label {
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
   font-weight: 500;
-  color: vars.$color-letra-oscura;
+  color: var(--text-dark);
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -66,19 +66,19 @@
   padding: vars.$espaciado-xs vars.$espaciado-s;
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-s;
-  background-color: vars.$color-fondo-light;
-  color: vars.$color-letra-oscura;
+  background-color: var(--bg-primary);
+  color: var(--text-dark);
   box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   width: 100%;
   outline: none;
   
   &::placeholder {
-    color: vars.$color-letra-desactivado;
+    color: var(--text-secondary);
   }
   
   &:focus {
-    border-color: vars.$color-primario-light;
+    border-color: var(--color-primary);
     box-shadow: vars.$sombra-brutal-primario-light;
   }
   

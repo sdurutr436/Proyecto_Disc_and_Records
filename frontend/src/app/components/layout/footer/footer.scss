@@ -4,7 +4,7 @@
 /* --- Bloque Footer --- */
 .footer {
   width: 100%;
-  background-color: vars.$color-primario-light;
+  background-color: var(--color-primary);
   border-top: vars.$borde-brutal-thick;
   margin-top: auto;
   padding: vars.$espaciado-xl 0;

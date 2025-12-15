@@ -7,7 +7,7 @@
   max-width: 450px;
   margin: 0 auto;
   padding: vars.$espaciado-l;
-  background-color: vars.$color-fondo-light;
+  background-color: var(--bg-primary);
   border: vars.$borde-brutal-thick;
   border-radius: vars.$radio-s;
   box-shadow: vars.$sombra-brutal-m;
@@ -27,7 +27,7 @@
 .login-form__legend {
   font-size: vars.$tamanio-fuente-h3;
   font-weight: 600;
-  color: vars.$color-letra-oscura;
+  color: var(--text-dark);
   margin-bottom: vars.$espaciado-s;
   text-align: center;
   text-transform: uppercase;

@@ -1,0 +1,80 @@
+/* ========================================
+   CSS CUSTOM PROPERTIES
+   Convertimos variables SCSS a variables CSS
+   para permitir cambio de tema dinámico
+   ======================================== */
+
+:root {
+  /* --- Colores de fondo --- */
+  --bg-primary: #{$color-fondo-light};              // #FBFAF2
+  --bg-secondary: #{$color-fondo-light-secundario}; // #E7D8AB
+  
+  /* --- Colores de texto --- */
+  --text-primary: #{$color-letra-principal-light};   // #01131B
+  --text-secondary: #{$color-letra-desactivado};     // rgba(1, 19, 27, 0.5)
+  --text-white: #{$color-letra-blanca};              // #FBFAF2
+  --text-dark: #{$color-letra-oscura};               // #01131B
+  
+  /* --- Colores principales --- */
+  --color-primary: #{$color-primario-light};         // #ED9C05
+  --color-secondary: #{$color-secundario-light};     // #CA6703
+  --color-contrast: #{$color-contraste-light};       // #BB3F03
+  --color-accent: #{$color-acentuado-light};         // #9D2227
+  
+  /* --- Colores de borde --- */
+  --border-color: #{$color-letra-oscura};            // #01131B
+  
+  /* --- Colores de estado (apoyo) --- */
+  --color-error: #{$color-error};                    // #E04A4A
+  --color-warning: #{$color-advertencia-light};      // #FFC047
+  --color-success: #{$color-exito};                  // #AAD661
+  --color-info: #{$color-informacion};               // #0A9295
+  
+  /* --- Colores de franjas (decoración) --- */
+  --color-stripe-1: #{$color-franja-1};              // #93CFBB
+  --color-stripe-2: #{$color-franja-2};              // #0A9295
+  --color-stripe-3: #{$color-franja-3};              // #ED9C05
+  --color-stripe-4: #{$color-franja-4};              // #CA6703
+  --color-stripe-5: #{$color-franja-5};              // #BB3F03
+  --color-stripe-6: #{$color-franja-6};              // #9D2227
+}
+
+/* ========================================
+   TEMA OSCURO
+   Se activa con [data-theme="dark"] en <html>
+   ======================================== */
+
+[data-theme="dark"] {
+  /* --- Colores de fondo --- */
+  --bg-primary: #{$color-fondo-oscuro};              // #01131B
+  --bg-secondary: #{$color-fondo-oscuro-secundario}; // #013946
+  
+  /* --- Colores de texto --- */
+  --text-primary: #{$color-letra-principal-dark};    // #FBFAF2
+  --text-secondary: rgba(251, 250, 242, 0.5);        // Blanco con opacidad
+  --text-white: #{$color-letra-blanca};              // #FBFAF2 (no cambia)
+  --text-dark: #{$color-letra-oscura};               // #01131B (no cambia)
+  
+  /* --- Colores principales --- */
+  --color-primary: #{$color-primario-dark};          // #93CFBB
+  --color-secondary: #{$color-secundario-dark};      // #0A9295
+  --color-contrast: #{$color-contraste-dark};        // #015F72
+  --color-accent: #{$color-acentuado-dark};          // #01131B
+  
+  /* --- Colores de borde --- */
+  --border-color: #{$color-letra-blanca};            // #FBFAF2
+  
+  /* --- Colores de estado (no cambian en dark) --- */
+  --color-error: #{$color-error};                    // #E04A4A
+  --color-warning: #{$color-advertencia-dark};       // #FEF84A (versión oscura)
+  --color-success: #{$color-exito};                  // #AAD661
+  --color-info: #{$color-informacion};               // #0A9295
+  
+  /* --- Colores de franjas (no cambian) --- */
+  --color-stripe-1: #{$color-franja-1};
+  --color-stripe-2: #{$color-franja-2};
+  --color-stripe-3: #{$color-franja-3};
+  --color-stripe-4: #{$color-franja-4};
+  --color-stripe-5: #{$color-franja-5};
+  --color-stripe-6: #{$color-franja-6};
+}

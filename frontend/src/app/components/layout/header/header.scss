@@ -6,7 +6,7 @@
    ======================================== */
 .header {
   width: 100%;
-  background-color: vars.$color-fondo-light;
+  background-color: var(--bg-primary);
   position: relative;
   z-index: 100;
 }
@@ -14,7 +14,7 @@
 /* --- Sección superior (botones + logo) --- */
 .header__top {
   width: 100%;
-  background-color: vars.$color-primario-light;
+  background-color: var(--color-primary);
   padding: vars.$espaciado-m 0;
   position: relative;
   z-index: 1;
