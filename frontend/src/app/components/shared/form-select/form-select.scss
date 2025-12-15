@@ -33,7 +33,7 @@
     transform: translateY(-50%);
     pointer-events: none;
     font-size: 0.75rem;
-    color: vars.$color-letra-oscura;
+    color: var(--text-primary);
     transition: transform vars.$transicion-rapida;
   }
 

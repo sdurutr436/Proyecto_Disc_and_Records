@@ -6,7 +6,7 @@
   align-items: flex-start;
   gap: vars.$espaciado-s;
   padding: vars.$espaciado-s vars.$espaciado-m;
-  @include mix.brutal-box(vars.$color-fondo-light, vars.$borde-brutal-medium);
+  @include mix.brutal-box(var(--bg-secondary), vars.$borde-brutal-medium);
   transition: all vars.$transicion-base;
   width: 100%;
 
@@ -67,26 +67,26 @@
   // Tipos
   &--success {
     background-color: vars.$color-exito;
-    border-color: vars.$color-letra-oscura;
-    color: vars.$color-letra-oscura;
+    border-color: var(--border-color);
+    color: var(--text-primary);
   }
 
   &--error {
     background-color: vars.$color-error;
-    border-color: vars.$color-letra-oscura;
-    color: vars.$color-fondo-light;
+    border-color: var(--border-color);
+    color: var(--text-white);
   }
 
   &--warning {
     background-color: vars.$color-advertencia-light;
-    border-color: vars.$color-letra-oscura;
-    color: vars.$color-letra-oscura;
+    border-color: var(--border-color);
+    color: var(--text-primary);
   }
 
   &--info {
     background-color: vars.$color-informacion;
-    border-color: vars.$color-letra-oscura;
-    color: vars.$color-fondo-light;
+    border-color: var(--border-color);
+    color: var(--text-white);
   }
 
   // Estado oculto

@@ -8,7 +8,7 @@
   &__label {
     font-size: vars.$tamanio-fuente-texto-pequeno-m;
     font-weight: 700;
-    color: vars.$color-letra-oscura;
+    color: var(--text-primary);
     margin: 0;
   }
 

@@ -49,7 +49,7 @@
   box-shadow: vars.$sombra-brutal-s;
 
   &:hover:not(.button--disabled) {
-    background-color: vars.$color-fondo-light-secundario;
+    background-color: var(--bg-primary);
     box-shadow: vars.$sombra-brutal-hover;
     transform: translate(2px, 2px);
   }
@@ -63,17 +63,17 @@
 /* --- Variante: Ghost --- */
 .button--ghost {
   background-color: transparent;
-  color: vars.$color-letra-oscura;
-  border-color: vars.$color-letra-oscura;
+  color: var(--text-primary);
+  border-color: var(--border-color);
   box-shadow: none;
 
   &:hover:not(.button--disabled) {
-    background-color: vars.$color-fondo-light-secundario;
+    background-color: var(--bg-secondary);
     box-shadow: vars.$sombra-brutal-xs;
   }
 
   &:active:not(.button--disabled) {
-    background-color: vars.$color-primario-light;
+    background-color: var(--color-primary);
     transform: translate(1px, 1px);
   }
 }
@@ -82,11 +82,11 @@
 .button--danger {
   background-color: vars.$color-error;
   color: vars.$color-letra-blanca;
-  border-color: vars.$color-letra-oscura;
+  border-color: var(--border-color);
   box-shadow: vars.$sombra-brutal-s;
 
   &:hover:not(.button--disabled) {
-    background-color: vars.$color-acentuado-light;
+    background-color: var(--color-accent);
     box-shadow: vars.$sombra-brutal-hover;
     transform: translate(2px, 2px);
   }

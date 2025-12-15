@@ -118,8 +118,8 @@
   font-weight: 600;
   padding: vars.$espaciado-xs vars.$espaciado-l;
   border: vars.$borde-brutal-medium;
-  background-color: vars.$color-fondo-light;
-  color: vars.$color-letra-oscura;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   cursor: pointer;
   transition: all vars.$transicion-rapida, border-radius vars.$transicion-base, width vars.$transicion-base, min-width vars.$transicion-base;
   text-transform: uppercase;
@@ -140,7 +140,7 @@
   }
 
   &:focus-visible {
-    outline: 3px solid vars.$color-contraste-light;
+    outline: 3px solid var(--color-accent);
     outline-offset: 2px;
   }
 }
@@ -154,12 +154,12 @@
 
 
 .footer__btn--left-middle {
-  background-color: vars.$color-primario-light;
+  background-color: var(--color-primary);
   min-width: 26.4rem; // 24rem * 1.1
   border-right: none;
   border-radius: vars.$radio-pildora 0 0 vars.$radio-pildora; // Redondeado izquierdo completo
   border-top: vars.$borde-brutal-medium;
-  border-top-color: vars.$color-letra-oscura;
+  border-top-color: var(--border-color);
 }
 
 
@@ -178,12 +178,12 @@
 
 
 .footer__btn--right-middle {
-  background-color: vars.$color-primario-light;
+  background-color: var(--color-primary);
   min-width: 26.4rem; // 24rem * 1.1
   border-left: none;
   border-radius: 0 vars.$radio-pildora vars.$radio-pildora 0; // Redondeado derecho completo
   border-top: vars.$borde-brutal-medium;
-  border-top-color: vars.$color-letra-oscura;
+  border-top-color: var(--border-color);
 }
 
 

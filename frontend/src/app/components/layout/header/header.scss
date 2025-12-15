@@ -39,7 +39,7 @@
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  background-color: vars.$color-primario-light;
+  background-color: var(--color-primary);
   flex-shrink: 0;
   margin: 0;
   order: 2;
@@ -105,8 +105,8 @@
   padding: vars.$espaciado-s vars.$espaciado-xl;
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-pildora;
-  background-color: vars.$color-fondo-light;
-  color: vars.$color-letra-oscura;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
   @include mix.text-uppercase;

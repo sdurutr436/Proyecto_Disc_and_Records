@@ -57,7 +57,7 @@
   padding: vars.$espaciado-s;
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-s;
-  background-color: vars.$color-fondo-light;
+  background-color: var(--bg-secondary);
   box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
 
@@ -71,8 +71,8 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: vars.$color-contraste-light;
-  color: vars.$color-letra-oscura;
+  background-color: var(--color-accent);
+  color: var(--text-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,7 +92,7 @@
 .sidebar__user-name {
   font-weight: 600;
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
-  color: vars.$color-letra-oscura;
+  color: var(--text-primary);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -132,7 +132,7 @@
   gap: vars.$espaciado-s;
   padding: vars.$espaciado-xs vars.$espaciado-s;
   text-decoration: none;
-  color: vars.$color-letra-oscura;
+  color: var(--text-primary);
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-s;
@@ -140,20 +140,20 @@
   transition: all vars.$transicion-rapida;
 
   &:hover {
-    background-color: vars.$color-fondo-light;
+    background-color: var(--bg-secondary);
     box-shadow: vars.$sombra-brutal-s;
     transform: translate(2px, 2px);
   }
 
   &:focus-visible {
-    outline: 3px solid vars.$color-primario-light;
+    outline: 3px solid var(--color-primary);
     outline-offset: 2px;
   }
 }
 
 /* --- Modificador: Link Activo --- */
 .sidebar__link--active {
-  background-color: vars.$color-primario-light;
+  background-color: var(--color-primary);
   box-shadow: vars.$sombra-brutal-s;
   font-weight: 600;
 }
@@ -182,7 +182,7 @@
   padding: vars.$espaciado-xs vars.$espaciado-s;
   border: vars.$borde-brutal-thin;
   border-radius: vars.$radio-s;
-  background-color: vars.$color-fondo-light;
+  background-color: var(--bg-secondary);
   transition: all vars.$transicion-rapida;
 
   &:hover {
@@ -194,13 +194,13 @@
 .sidebar__trending-number {
   font-weight: 700;
   font-size: vars.$tamanio-fuente-texto-pequeno-m;
-  color: vars.$color-primario-light;
+  color: var(--color-primary);
   flex-shrink: 0;
 }
 
 .sidebar__trending-text {
   font-size: vars.$tamanio-fuente-texto-pequeno-xs;
-  color: vars.$color-letra-oscura;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -212,15 +212,15 @@
 }
 
 .sidebar::-webkit-scrollbar-track {
-  background: vars.$color-fondo-light-secundario;
+  background: var(--bg-secondary);
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background: vars.$color-primario-light;
+  background: var(--color-primary);
   border-radius: vars.$radio-xs;
-  border: 2px solid vars.$color-fondo-light-secundario;
+  border: 2px solid var(--bg-secondary);
 
   &:hover {
-    background: vars.$color-secundario-light;
+    background: var(--color-secondary);
   }
 }
