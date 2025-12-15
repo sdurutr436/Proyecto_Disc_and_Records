@@ -24,21 +24,23 @@
         autocomplete="username" />
       
       <!-- Mensaje de error -->
-      <p 
-        *ngIf="usernameError()" 
+      @if (usernameError()) {
+      <p
         id="username-error"
         class="register-form__error"
         role="alert">
         {{ usernameErrorMessage() }}
       </p>
+      }
       
       <!-- Texto de ayuda -->
-      <p 
-        *ngIf="!usernameError()" 
+      @if (!usernameError()) {
+      <p
         id="username-help"
         class="register-form__help">
         Este será tu nombre visible en Discs & Records
       </p>
+      }
     </div>
     
     <!-- Campo de correo electrónico (reutilizado de login) -->
@@ -62,21 +64,23 @@
         autocomplete="email" />
       
       <!-- Mensaje de error -->
-      <p 
-        *ngIf="emailError()" 
+      @if (emailError()) {
+      <p
         id="email-error"
         class="register-form__error"
         role="alert">
         {{ emailErrorMessage() }}
       </p>
+      }
       
       <!-- Texto de ayuda -->
-      <p 
-        *ngIf="!emailError()" 
+      @if (!emailError()) {
+      <p
         id="email-help"
         class="register-form__help">
         Lo usaremos para enviarte actualizaciones de tus álbumes favoritos
       </p>
+      }
     </div>
   </fieldset>
   
@@ -105,21 +109,23 @@
         autocomplete="new-password" />
       
       <!-- Mensaje de error -->
-      <span 
-        *ngIf="passwordError()" 
+      @if (passwordError()) {
+      <span
         id="password-error"
         class="register-form__error"
         role="alert">
         {{ passwordErrorMessage() }}
       </span>
+      }
       
       <!-- Texto de ayuda -->
-      <span 
-        *ngIf="!passwordError()" 
+      @if (!passwordError()) {
+      <span
         id="password-help"
         class="register-form__help">
         Mínimo 8 caracteres para proteger tu cuenta
       </span>
+      }
     </div>
     
     <!-- Campo de confirmación de contraseña -->
@@ -143,21 +149,23 @@
         autocomplete="new-password" />
       
       <!-- Mensaje de error -->
-      <span 
-        *ngIf="confirmPasswordError()" 
+      @if (confirmPasswordError()) {
+      <span
         id="confirm-password-error"
         class="register-form__error"
         role="alert">
         {{ confirmPasswordErrorMessage() }}
       </span>
+      }
       
       <!-- Texto de ayuda -->
-      <span 
-        *ngIf="!confirmPasswordError()" 
+      @if (!confirmPasswordError()) {
+      <span
         id="confirm-password-help"
         class="register-form__help">
         Vuelve a escribir tu contraseña
       </span>
+      }
     </div>
   </fieldset>
   

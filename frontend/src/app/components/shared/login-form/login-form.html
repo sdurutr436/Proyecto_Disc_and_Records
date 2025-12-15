@@ -24,21 +24,23 @@
         autocomplete="email" />
 
       <!-- Mensaje de error -->
+      @if (emailError()) {
       <p
-        *ngIf="emailError()"
         id="email-error"
         class="login-form__error"
         role="alert">
         {{ emailErrorMessage() }}
       </p>
+      }
 
       <!-- Texto de ayuda -->
+      @if (!emailError()) {
       <p
-        *ngIf="!emailError()"
         id="email-help"
         class="login-form__help">
         Introduce el correo con el que te registraste
       </p>
+      }
     </div>
 
     <!-- Campo de contraseña -->
@@ -62,21 +64,23 @@
         autocomplete="current-password" />
 
       <!-- Mensaje de error -->
+      @if (passwordError()) {
       <p
-        *ngIf="passwordError()"
         id="password-error"
         class="login-form__error"
         role="alert">
         {{ passwordErrorMessage() }}
       </p>
+      }
 
       <!-- Texto de ayuda -->
+      @if (!passwordError()) {
       <p
-        *ngIf="!passwordError()"
         id="password-help"
         class="login-form__help">
         Mínimo 8 caracteres
       </p>
+      }
     </div>
   </fieldset>
 

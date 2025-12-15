@@ -1,6 +1,6 @@
 <!-- Modal overlay: sólo visible cuando isVisible() es true -->
+@if (isVisible()) {
 <div
-  *ngIf="isVisible()"
   class="modal__overlay"
   (click)="onOverlayClick($event)"
   role="dialog"
@@ -11,12 +11,13 @@
   <div class="modal__content">
     <!-- Header del modal -->
     <div class="modal__header">
+      @if (title()) {
       <h2
-        *ngIf="title()"
         id="modal-title"
         class="modal__title">
         {{ title() }}
       </h2>
+      }
       <button
         class="modal__close"
         (click)="close()"
@@ -48,3 +49,4 @@
     </div>
   </div>
 </div>
+}

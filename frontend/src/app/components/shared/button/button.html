@@ -1,26 +1,32 @@
 <!-- Botón como enlace si tiene href -->
+@if (isLink) {
 <a
-  *ngIf="isLink"
   [href]="href"
   [class]="buttonClasses"
   [attr.aria-disabled]="isDisabled"
   [attr.tabindex]="isDisabled ? -1 : 0"
   (click)="onClick($event)">
-  <span *ngIf="isLoading" class="button__spinner"></span>
+  @if (isLoading) {
+  <span class="button__spinner"></span>
+  }
   <span [class.button__content--hidden]="isLoading">
     <ng-content></ng-content>
   </span>
 </a>
+}
 
 <!-- Botón normal si no tiene href -->
+@if (!isLink) {
 <button
-  *ngIf="!isLink"
   [type]="type"
   [class]="buttonClasses"
   [disabled]="isDisabled"
   (click)="onClick($event)">
-  <span *ngIf="isLoading" class="button__spinner"></span>
+  @if (isLoading) {
+  <span class="button__spinner"></span>
+  }
   <span [class.button__content--hidden]="isLoading">
     <ng-content></ng-content>
   </span>
 </button>
+}

@@ -7,7 +7,9 @@
     <div class="progress-bar__fill" [style.width.%]="isIndeterminate ? 30 : currentValue"></div>
   </div>
 
-  <span *ngIf="showLabel && !isIndeterminate" class="progress-bar__label">
+  @if (showLabel && !isIndeterminate) {
+  <span class="progress-bar__label">
     {{ labelText }}
   </span>
+  }
 </div>
