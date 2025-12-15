@@ -26,7 +26,8 @@
 2.3 [AppStateService - Estado Global](#appstateservice)  
 2.4 [NotificationStreamService - Patrón Observable](#notificationstreamservice)  
 2.5 [Workflows de Comunicación](#workflows-de-comunicación)  
-2.6 [Patrones de Uso](#patrones-de-uso)
+2.6 [Patrones de Uso](#patrones-de-uso)  
+2.7 [Separación de Responsabilidades](#27-separación-de-responsabilidades)
 
 ### Sección 3: [Título Fase 3]
 *Pendiente de implementación*
@@ -1521,6 +1522,578 @@ Los servicios de comunicación implementados proporcionan una arquitectura robus
 - **Workflows complejos** bien estructurados
 
 La combinación de Signals (reactividad) y RxJS (eventos) ofrece lo mejor de ambos mundos: simplicidad y potencia.
+
+---
+
+## 2.7 Separación de Responsabilidades
+
+### Principio: Single Responsibility Principle (SRP)
+
+La arquitectura del proyecto implementa una clara separación entre componentes de presentación y servicios de lógica de negocio.
+
+#### Reglas de Diseño
+
+**Componentes:**
+- ✅ Gestión de presentación UI
+- ✅ Captura de input del usuario
+- ✅ Navegación entre páginas
+- ✅ Estado de loading/disabled
+- ❌ Validación de datos
+- ❌ Llamadas HTTP
+- ❌ Lógica de negocio
+- ❌ Gestión de autenticación
+
+**Servicios:**
+- ✅ Lógica de validación
+- ✅ Reglas de negocio
+- ✅ Comunicación con backend
+- ✅ Gestión de tokens/sesiones
+- ✅ Coordinación entre servicios
+- ❌ Manipulación directa del DOM
+- ❌ Navegación (Router)
+
+---
+
+### ValidationService - Validación Centralizada
+
+**Archivo:** `frontend/src/app/services/validation.ts`
+
+#### Propósito
+
+Centralizar toda la lógica de validación de formularios para:
+- Eliminar código duplicado entre componentes
+- Facilitar testing de reglas de negocio
+- Mantener validaciones consistentes
+- Simplificar componentes
+
+#### Diagrama de Flujo
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Usuario escribe en campo de formulario                      │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ LoginComponent.onEmailChange(event)                         │
+│ • Extrae valor del input                                    │
+│ • this.email.set(value)                                     │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ ValidationService.validateEmail(value)                      │
+│ • Verifica campo no vacío                                   │
+│ • Aplica regex: /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/          │
+│ • Retorna { isValid, errorMessage }                         │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ LoginComponent procesa resultado                            │
+│ • this.emailError.set(result.errorMessage)                  │
+│ • UI se actualiza automáticamente (Signal)                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### API Pública
+
+##### validateEmail(email: string): ValidationResult
+
+```typescript
+const result = validationService.validateEmail('user@example.com');
+
+if (!result.isValid) {
+  console.error(result.errorMessage);
+  // Output: "Correo inválido. Debe tener @ y dominio..."
+}
+```
+
+**Reglas de negocio:**
+- Debe contener @
+- Debe tener dominio con al menos .xx
+- No debe contener espacios
+
+##### validatePassword(password: string): ValidationResult
+
+```typescript
+const result = validationService.validatePassword('MyPass123!');
+
+// Reglas:
+// - Mínimo 8 caracteres
+// - Al menos una mayúscula
+// - Al menos un carácter especial
+```
+
+##### validateUsername(username: string): ValidationResult
+
+```typescript
+const result = validationService.validateUsername('john_doe_2024');
+
+// Reglas:
+// - Entre 3 y 20 caracteres
+// - Solo letras, números y guiones bajos
+// - Sin espacios
+```
+
+##### validatePasswordConfirmation(password, confirmPassword): ValidationResult
+
+```typescript
+const result = validationService.validatePasswordConfirmation(
+  'MyPass123!',
+  'MyPass123!'
+);
+
+// Verifica que ambas contraseñas sean idénticas
+```
+
+##### validateLoginForm(email, password): FormValidationResult
+
+```typescript
+const result = validationService.validateLoginForm(
+  'user@example.com',
+  'password123'
+);
+
+if (result.isValid) {
+  // Proceder con login
+} else {
+  // Mostrar errores individuales
+  console.log(result.errors.email.errorMessage);
+  console.log(result.errors.password.errorMessage);
+}
+```
+
+##### validateRegisterForm(data): FormValidationResult
+
+```typescript
+const result = validationService.validateRegisterForm({
+  username: 'john_doe',
+  email: 'john@example.com',
+  password: 'MyPass123!',
+  confirmPassword: 'MyPass123!'
+});
+
+// Valida todos los campos a la vez
+// Retorna objeto con todos los errores
+```
+
+---
+
+### AuthService - Autenticación y Sesiones
+
+**Archivo:** `frontend/src/app/services/auth.ts`
+
+#### Propósito
+
+Centralizar toda la lógica de autenticación:
+- Login/Logout/Register
+- Gestión de tokens
+- Coordinación con AppState
+- Emisión de eventos
+- Feedback visual (notificaciones)
+
+#### Diagrama de Flujo: Login
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Usuario hace submit del formulario de login                 │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ LoginComponent.onSubmit()                                   │
+│ • Obtiene email y password de Signals                       │
+│ • Llama a authService.login({ email, password })            │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ AuthService.login(credentials)                              │
+│ 1. Hace llamada HTTP a backend (o simula)                   │
+│    POST /api/login { email, password }                      │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Backend responde con { success, user, token }               │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Si success === true:                                         │
+│ 1. appState.setUser(user)                                   │
+│ 2. localStorage.setItem('auth-token', token)                │
+│ 3. eventBus.emit(USER_LOGIN, { userId, username })          │
+│ 4. notificationStream.success('Bienvenido', '...')          │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ AuthService retorna { success: true, user, token }          │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ LoginComponent recibe resultado                             │
+│ • Si success: router.navigate(['/dashboard'])               │
+│ • Si !success: muestra error en UI                          │
+└─────────────────────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ EFECTOS EN CASCADA:                                          │
+│ • HeaderComponent actualiza con nombre usuario (Signal)     │
+│ • FavoritesComponent carga favoritos del usuario (Event)    │
+│ • Notificación aparece en pantalla (NotificationStream)     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### API Pública
+
+##### login(credentials): Promise<AuthResponse>
+
+```typescript
+const result = await authService.login({
+  email: 'user@example.com',
+  password: 'MyPass123!'
+});
+
+if (result.success) {
+  router.navigate(['/dashboard']);
+} else {
+  console.error(result.message);
+}
+```
+
+**Workflow interno:**
+1. Llamada HTTP a backend
+2. Actualiza AppState con usuario
+3. Guarda token en localStorage
+4. Emite evento USER_LOGIN
+5. Muestra notificación de bienvenida
+
+##### register(data): Promise<AuthResponse>
+
+```typescript
+const result = await authService.register({
+  username: 'john_doe',
+  email: 'john@example.com',
+  password: 'MyPass123!'
+});
+
+if (result.success) {
+  router.navigate(['/login']);
+}
+```
+
+**Workflow interno:**
+1. Llamada HTTP POST /api/register
+2. Si éxito: notificación "Cuenta creada"
+3. Opcionalmente: login automático
+
+##### logout(): void
+
+```typescript
+authService.logout();
+// El servicio se encarga de todo
+```
+
+**Workflow interno:**
+1. appState.logout()
+2. localStorage.removeItem('auth-token')
+3. eventBus.emit(USER_LOGOUT)
+4. notificationStream.info('Sesión cerrada', '...')
+
+##### isAuthenticated(): boolean
+
+```typescript
+// Para guards de rutas
+if (!authService.isAuthenticated()) {
+  router.navigate(['/login']);
+}
+```
+
+##### getCurrentUser(): User | null
+
+```typescript
+const user = authService.getCurrentUser();
+console.log(user?.username);
+```
+
+##### requestPasswordReset(email): Promise<AuthResponse>
+
+```typescript
+await authService.requestPasswordReset('user@example.com');
+// Envía email con instrucciones
+```
+
+---
+
+### Comparación: Antes vs Después
+
+#### ANTES (Anti-patrón)
+
+```typescript
+// LoginComponent tiene DEMASIADAS responsabilidades
+export class LoginComponentOLD {
+  // ❌ Validación en componente
+  validateEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  }
+
+  // ❌ Llamada HTTP en componente
+  // ❌ Gestión de token en componente
+  // ❌ Gestión de estado en componente
+  async onSubmit(): Promise<void> {
+    if (!this.validateEmail(this.email())) return;
+
+    const response: any = await this.http.post('/api/login', {
+      email: this.email(),
+      password: this.password(),
+    }).toPromise();
+
+    localStorage.setItem('user', JSON.stringify(response.user));
+    localStorage.setItem('token', response.token);
+
+    alert('¡Bienvenido!');
+    this.router.navigate(['/dashboard']);
+  }
+}
+```
+
+**Problemas:**
+- Código duplicado (RegisterComponent tiene las mismas validaciones)
+- Difícil de testear (necesita mockear HTTP, localStorage, router)
+- Componente muy grande y complejo
+- Lógica de negocio mezclada con presentación
+
+#### DESPUÉS (Patrón correcto)
+
+```typescript
+// LoginComponent solo presenta
+export class LoginComponentNEW {
+  private validationService = inject(ValidationService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  // ✅ Delegación a ValidationService
+  onEmailChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.email.set(value);
+
+    const result = this.validationService.validateEmail(value);
+    this.emailError.set(result.isValid ? '' : result.errorMessage);
+  }
+
+  // ✅ Delegación a AuthService
+  async onSubmit(): Promise<void> {
+    const result = await this.authService.login({
+      email: this.email(),
+      password: this.password(),
+    });
+
+    if (result.success) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+}
+```
+
+**Beneficios:**
+- Sin código duplicado
+- Fácil de testear (mockear solo servicios)
+- Componente simple (3 métodos vs 7)
+- Lógica de negocio en servicios reutilizables
+
+---
+
+### Tabla Comparativa: Responsabilidades
+
+| Responsabilidad | Antes | Después |
+|----------------|-------|---------|
+| **Presentación UI** | LoginComponent | LoginComponent |
+| **Validación email** | LoginComponent | ValidationService |
+| **Validación password** | LoginComponent | ValidationService |
+| **Llamada HTTP login** | LoginComponent | AuthService |
+| **Gestión de token** | LoginComponent | AuthService |
+| **Actualizar AppState** | LoginComponent | AuthService |
+| **Emitir eventos** | LoginComponent | AuthService |
+| **Notificaciones** | LoginComponent | AuthService (vía NotificationStream) |
+| **Navegación** | LoginComponent | LoginComponent |
+
+### Resultado
+
+**Componente LoginComponent:**
+- **Antes:** 8 responsabilidades
+- **Después:** 2 responsabilidades (presentación + navegación)
+
+**Servicios creados:**
+- ValidationService: 5 responsabilidades de validación
+- AuthService: 5 responsabilidades de autenticación
+
+---
+
+### Testing: Comparación
+
+#### Antes (Difícil)
+
+```typescript
+describe('LoginComponentOLD', () => {
+  it('should validate email', () => {
+    const component = new LoginComponentOLD(mockHttp, mockRouter);
+    
+    // ❌ Testeando lógica de negocio en componente
+    expect(component.validateEmail('invalid')).toBe(false);
+  });
+
+  it('should login', async () => {
+    // ❌ Necesita mockear HTTP, localStorage, router...
+    mockHttp.post.mockReturnValue(of({ user: {}, token: 'abc' }));
+    
+    await component.onSubmit();
+    
+    expect(localStorage.setItem).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalled();
+  });
+});
+```
+
+#### Después (Fácil)
+
+```typescript
+// Test de ValidationService (aislado)
+describe('ValidationService', () => {
+  it('should validate email', () => {
+    const service = new ValidationService();
+    
+    // ✅ Testear lógica pura
+    const result = service.validateEmail('invalid');
+    expect(result.isValid).toBe(false);
+    expect(result.errorMessage).toBe('Correo inválido...');
+  });
+});
+
+// Test de AuthService (aislado)
+describe('AuthService', () => {
+  it('should login', async () => {
+    const service = new AuthService(mockHttp, mockAppState, mockEventBus);
+    
+    // ✅ Testear lógica de autenticación aislada
+    const result = await service.login({ email: 'test@example.com', password: 'pass' });
+    
+    expect(result.success).toBe(true);
+    expect(mockAppState.setUser).toHaveBeenCalled();
+  });
+});
+
+// Test de LoginComponent (delegación)
+describe('LoginComponentNEW', () => {
+  it('should delegate to services', async () => {
+    const component = new LoginComponentNEW();
+    
+    // ✅ Solo testear que delega correctamente
+    await component.onSubmit();
+    
+    expect(mockAuthService.login).toHaveBeenCalledWith({
+      email: component.email(),
+      password: component.password(),
+    });
+  });
+});
+```
+
+---
+
+### Workflow Completo: Registro de Usuario
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Usuario completa formulario de registro                     │
+│ • Username: john_doe                                         │
+│ • Email: john@example.com                                    │
+│ • Password: MyPass123!                                       │
+│ • Confirm: MyPass123!                                        │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ RegisterComponent.onSubmit()                                │
+│ • Obtiene todos los valores de Signals                      │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ ValidationService.validateRegisterForm({...})               │
+│ • validateUsername('john_doe')                              │
+│ • validateEmail('john@example.com')                         │
+│ • validatePassword('MyPass123!')                            │
+│ • validatePasswordConfirmation('MyPass123!', 'MyPass123!')  │
+│                                                              │
+│ Retorna: { isValid: true, errors: {...} }                   │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Si !isValid: RegisterComponent muestra errores en UI        │
+│ • usernameError.set(errors.username.errorMessage)           │
+│ • emailError.set(errors.email.errorMessage)                 │
+│ • ... etc                                                    │
+│ TERMINA FLUJO                                                │
+└─────────────────────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Si isValid: AuthService.register({...})                     │
+│ 1. POST /api/register { username, email, password }         │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Backend responde { success, user?, token? }                 │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Si success:                                                  │
+│ 1. notificationStream.success('Cuenta creada', '...')       │
+│ 2. (Opcional) Login automático:                             │
+│    • appState.setUser(user)                                 │
+│    • localStorage.setItem('auth-token', token)              │
+│    • eventBus.emit(USER_LOGIN)                              │
+└────────────────┬────────────────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────────────────────────────────┐
+│ RegisterComponent recibe resultado                          │
+│ • Si success: router.navigate(['/login'])                   │
+│   o router.navigate(['/dashboard']) si login automático     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Resumen: Separación de Responsabilidades
+
+#### Principios Implementados
+
+1. **Single Responsibility Principle (SRP)**
+   - Cada clase tiene una única razón para cambiar
+   - Componentes: solo presentación
+   - Servicios: solo lógica de negocio
+
+2. **Don't Repeat Yourself (DRY)**
+   - Sin código duplicado entre componentes
+   - Validaciones centralizadas
+   - Lógica reutilizable
+
+3. **Dependency Injection**
+   - Servicios inyectados con `inject()`
+   - Fácil de testear con mocks
+   - Loose coupling
+
+4. **Separation of Concerns**
+   - UI separada de lógica
+   - Datos separados de presentación
+   - Comunicación separada de negocio
+
+#### Archivos Relacionados
+
+- **ValidationService:** `frontend/src/app/services/validation.ts`
+- **AuthService:** `frontend/src/app/services/auth.ts`
+- **Ejemplos de refactorización:** `frontend/src/app/services/REFACTORIZACION_EJEMPLOS.ts`
+
+#### Ventajas de esta Arquitectura
+
+1. **Testabilidad:** Servicios testeables en aislamiento
+2. **Mantenibilidad:** Cambios localizados en servicios
+3. **Reutilización:** Validaciones usables en múltiples componentes
+4. **Escalabilidad:** Fácil agregar nuevos servicios
+5. **Claridad:** Componentes simples y fáciles de entender
 
 ---
 
