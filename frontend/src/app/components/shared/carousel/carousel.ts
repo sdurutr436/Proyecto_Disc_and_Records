@@ -68,4 +68,37 @@ export class Carousel implements AfterViewInit {
     const maxScroll = track.scrollWidth - track.clientWidth;
     this.canScrollRight = track.scrollLeft < maxScroll - 10;
   }
+
+  /**
+   * MANIPULACIÓN DOM AVANZADA: Modificar estilos dinámicamente
+   * Añade un efecto de highlight al track del carousel
+   */
+  toggleHighlight(): void {
+    if (!this.carouselTrack) return;
+
+    const track = this.carouselTrack.nativeElement;
+
+    // MANIPULACIÓN DIRECTA DEL DOM: Modificar estilos con nativeElement.style
+    if (track.style.boxShadow === '') {
+      // Aplicar estilos dinámicamente
+      track.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.6)';
+      track.style.border = '2px solid gold';
+      track.style.transition = 'all 0.3s ease';
+    } else {
+      // Remover estilos
+      track.style.boxShadow = '';
+      track.style.border = '';
+    }
+  }
+
+  /**
+   * MANIPULACIÓN DOM: Cambiar opacidad dinámicamente
+   */
+  setOpacity(value: number): void {
+    if (!this.carouselTrack) return;
+
+    // MANIPULACIÓN DIRECTA: modificar estilo de opacidad
+    this.carouselTrack.nativeElement.style.opacity = value.toString();
+    this.carouselTrack.nativeElement.style.transition = 'opacity 0.3s ease';
+  }
 }

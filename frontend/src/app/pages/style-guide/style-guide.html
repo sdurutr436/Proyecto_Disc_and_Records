@@ -587,6 +587,61 @@
           </div>
         </div>
       </div>
+
+      <!-- Notifications dinámicas (Manipulación DOM avanzada) -->
+      <div class="showcase">
+        <h3 class="showcase__title">Notificaciones Dinámicas (Manipulación DOM)</h3>
+        <p class="showcase__description">
+          Estas notificaciones se crean dinámicamente en el DOM usando <code>createComponent()</code> y <code>appendChild()</code>.
+          Demuestran manipulación avanzada del DOM: creación y eliminación programática de elementos.
+        </p>
+
+        <div class="showcase__column">
+          <div class="showcase__item">
+            <app-button
+              (click)="showDynamicNotification('success')"
+              variant="primary"
+              size="md"
+            >
+              Crear notificación en el DOM
+            </app-button>
+            <code>position="bottom-right" - createElement + appendChild</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-button
+              (click)="showDynamicNotification('error')"
+              variant="danger"
+              size="md"
+            >
+              Error con creación dinámica
+            </app-button>
+            <code>Componente creado programáticamente</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-button
+              (click)="showDynamicNotification('warning')"
+              variant="secondary"
+              size="md"
+            >
+              Advertencia dinámica
+            </app-button>
+            <code>Se añade al document.body en runtime</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-button
+              (click)="showDynamicNotification('info')"
+              variant="ghost"
+              size="md"
+            >
+              Info con manipulación DOM
+            </app-button>
+            <code>Se elimina con removeChild() al cerrarse</code>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Sección: Formularios Completos -->
@@ -627,17 +682,201 @@
       </div>
     </section>
 
+    <!-- Sección: Modal -->
+    <section class="style-guide__section">
+      <h2>Modal</h2>
+
+      <div class="showcase">
+        <h3>Modal Interactivo</h3>
+        <p class="showcase__description">
+          Componente modal con overlay, cierre con ESC, click fuera y trap focus.
+        </p>
+        <div class="showcase__row">
+          <div class="showcase__item">
+            <app-button (clicked)="openModal()">
+              Abrir Modal
+            </app-button>
+            <code>Modal con signal isOpen</code>
+          </div>
+        </div>
+
+        <!-- Modal -->
+        <app-modal
+          [isOpen]="isModalOpen()"
+          title="Confirmar acción"
+          (onClose)="closeModal()">
+          <p>¿Estás seguro de que quieres eliminar este álbum de tu colección?</p>
+          <p>Esta acción no se puede deshacer.</p>
+          <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <app-button variant="danger" (clicked)="closeModal()">
+              Eliminar
+            </app-button>
+            <app-button variant="secondary" (clicked)="closeModal()">
+              Cancelar
+            </app-button>
+          </div>
+        </app-modal>
+      </div>
+    </section>
+
+    <!-- Sección: Accordion -->
+    <section class="style-guide__section">
+      <h2>Accordion (Acordeón)</h2>
+
+      <div class="showcase">
+        <h3>Modo Single (solo uno abierto)</h3>
+        <p class="showcase__description">
+          Componente accordion con expansión/colapso. En modo 'single' solo puede haber un item abierto.
+        </p>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <app-accordion [items]="accordionItems" mode="single"></app-accordion>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase">
+        <h3>Modo Multiple (varios abiertos)</h3>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <app-accordion [items]="accordionItems" mode="multiple"></app-accordion>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección: Tabs -->
+    <section class="style-guide__section">
+      <h2>Tabs (Pestañas)</h2>
+
+      <div class="showcase">
+        <h3>Navegación por pestañas</h3>
+        <p class="showcase__description">
+          Componente de tabs con navegación por teclado (flechas izquierda/derecha) y soporte para tabs deshabilitados.
+        </p>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <app-tabs [tabs]="tabsExample" [initialActiveTab]="'overview'"></app-tabs>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección: Tooltip -->
+    <section class="style-guide__section">
+      <h2>Tooltip</h2>
+
+      <div class="showcase">
+        <h3>Posiciones del Tooltip</h3>
+        <p class="showcase__description">
+          Tooltips con diferentes posiciones y delays configurables.
+        </p>
+        <div class="showcase__grid" style="gap: 3rem; padding: 3rem;">
+          <div class="showcase__item">
+            <app-tooltip text="Tooltip arriba" position="top">
+              <app-button>Top</app-button>
+            </app-tooltip>
+          </div>
+
+          <div class="showcase__item">
+            <app-tooltip text="Tooltip abajo" position="bottom">
+              <app-button>Bottom</app-button>
+            </app-tooltip>
+          </div>
+
+          <div class="showcase__item">
+            <app-tooltip text="Tooltip izquierda" position="left">
+              <app-button>Left</app-button>
+            </app-tooltip>
+          </div>
+
+          <div class="showcase__item">
+            <app-tooltip text="Tooltip derecha" position="right">
+              <app-button>Right</app-button>
+            </app-tooltip>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase">
+        <h3>Con delay personalizado</h3>
+        <div class="showcase__row" style="gap: 2rem;">
+          <div class="showcase__item">
+            <app-tooltip text="Aparece inmediatamente" [showDelay]="0">
+              <app-button variant="secondary">Sin delay</app-button>
+            </app-tooltip>
+            <code>[showDelay]="0"</code>
+          </div>
+
+          <div class="showcase__item">
+            <app-tooltip text="Aparece después de 1 segundo" [showDelay]="1000">
+              <app-button variant="secondary">1s delay</app-button>
+            </app-tooltip>
+            <code>[showDelay]="1000"</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Sección: Carruseles -->
     <section class="style-guide__section">
       <h2>Carruseles</h2>
 
+      <!-- Carrusel con manipulación de estilos -->
+      <div class="showcase">
+        <h3>Manipulación de Estilos Dinámicos (DOM)</h3>
+        <p class="showcase__description">
+          Este carousel demuestra manipulación directa del DOM modificando estilos con <code>nativeElement.style</code>.
+          Los estilos se aplican programáticamente en tiempo de ejecución.
+        </p>
+        <div class="showcase__column">
+          <div class="showcase__item showcase__item--full">
+            <app-carousel #demoCarousel title="DEMO - MANIPULACIÓN DE ESTILOS">
+              <app-card
+                *ngFor="let album of trendingAlbums.slice(0, 5)"
+                [title]="album.title"
+                [subtitle]="album.artist"
+                imageShape="square"
+                imageSize="medium"
+                variant="normal"
+                cardType="polaroid"
+                titleLink="#album"
+                subtitleLink="#artist">
+              </app-card>
+            </app-carousel>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1rem; align-items: center;">
+              <app-button (clicked)="toggleCarouselHighlight()" variant="secondary" size="sm">
+                Toggle Highlight (boxShadow + border)
+              </app-button>
+
+              <label style="display: flex; align-items: center; gap: 0.5rem;">
+                <span>Opacidad:</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  [value]="carouselOpacity"
+                  (input)="updateCarouselOpacity($event)"
+                  style="width: 150px;"
+                />
+                <span>{{ carouselOpacity }}</span>
+              </label>
+            </div>
+            <code>Modifica: boxShadow, border, opacity con nativeElement.style</code>
+          </div>
+        </div>
+      </div>
+
       <!-- Carrusel de álbumes -->
       <div class="showcase">
+        <h3>Carrusel Normal</h3>
         <app-carousel title="ÁLBUMES EN TENDENCIA">
           <app-card
             *ngFor="let album of trendingAlbums"
             [title]="album.title"
-            [subtitle]="album.artist"
+            [subtitle]="album.artist + ' • ' + album.year"
             imageShape="square"
             imageSize="medium"
             variant="normal"

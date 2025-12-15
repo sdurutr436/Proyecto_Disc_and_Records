@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Button } from '../../components/shared/button/button';
 import { Card, CardAction } from '../../components/shared/card/card';
@@ -13,15 +13,26 @@ import { Carousel } from '../../components/shared/carousel/carousel';
 import { LoginForm } from '../../components/shared/login-form/login-form';
 import { RegisterForm } from '../../components/shared/register-form/register-form';
 import { ForgotPasswordForm } from '../../components/shared/forgot-password-form/forgot-password-form';
+import { Modal } from '../../components/shared/modal/modal';
+import { Accordion, AccordionItem } from '../../components/shared/accordion/accordion';
+import { Tabs, Tab } from '../../components/shared/tabs/tabs';
+import { Tooltip } from '../../components/shared/tooltip/tooltip';
+import { NotificationService } from '../../services/notification';
 
 @Component({
   selector: 'app-style-guide',
   standalone: true,
-  imports: [CommonModule, Button, Card, FormTextarea, FormSelect, FormCheckbox, FormRadioGroup, Breadcrumbs, Alert, Notification, Carousel, LoginForm, RegisterForm, ForgotPasswordForm],
+  imports: [CommonModule, Button, Card, FormTextarea, FormSelect, FormCheckbox, FormRadioGroup, Breadcrumbs, Alert, Notification, Carousel, LoginForm, RegisterForm, ForgotPasswordForm, Modal, Accordion, Tabs, Tooltip],
   templateUrl: './style-guide.html',
   styleUrl: './style-guide.scss',
 })
 export class StyleGuide {
+  // Inyectar el servicio de notificaciones dinámicas
+  private notificationService = inject(NotificationService);
+
+  // Referencias a carouseles para manipulación DOM
+  @ViewChild('demoCarousel') demoCarousel?: any;
+  carouselOpacity: number = 1;
   onButtonClick(variant: string, size: string): void {
     console.log(`Botón ${variant} ${size} clickeado`);
   }
@@ -106,7 +117,42 @@ export class StyleGuide {
   showNotificationWarning: boolean = false;
   showNotificationInfo: boolean = false;
 
-  // Métodos para manejar notificaciones
+  // Control para Modal
+  isModalOpen = signal(false);
+
+  // Datos para Accordion
+  accordionItems: AccordionItem[] = [
+    {
+      id: 1,
+      title: '¿Qué es Disc and Records?',
+      content: 'Una plataforma social para amantes de la música donde puedes descubrir, coleccionar y compartir tus álbumes y canciones favoritas.'
+    },
+    {
+      id: 2,
+      title: '¿Cómo añado música a mi colección?',
+      content: 'Navega por nuestro catálogo, busca tus artistas favoritos y haz clic en el botón "Añadir a mi lista" en cualquier álbum o canción.'
+    },
+    {
+      id: 3,
+      title: '¿Puedo compartir mis listas de reproducción?',
+      content: 'Sí, puedes hacer públicas tus listas y compartirlas con tus amigos o la comunidad. También puedes colaborar en listas compartidas.'
+    },
+    {
+      id: 4,
+      title: '¿Hay una aplicación móvil?',
+      content: 'Actualmente estamos en desarrollo. Por ahora, nuestra web es totalmente responsive y funciona perfectamente en dispositivos móviles.'
+    }
+  ];
+
+  // Datos para Tabs
+  tabsExample: Tab[] = [
+    { id: 'overview', label: 'Resumen', content: 'Información general del álbum, año de lanzamiento y géneros musicales.' },
+    { id: 'tracklist', label: 'Lista de Canciones', content: 'Todas las canciones del álbum con duración y colaboradores.' },
+    { id: 'reviews', label: 'Reseñas', content: 'Opiniones de la comunidad y críticas profesionales sobre este álbum.' },
+    { id: 'similar', label: 'Similares', content: 'Álbumes y artistas similares que te podrían gustar.' }
+  ];
+
+  // Métodos para manejar notificaciones (forma antigua - estática)
   showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
     switch(type) {
       case 'success':
@@ -138,6 +184,47 @@ export class StyleGuide {
       case 'info':
         this.showNotificationInfo = false;
         break;
+    }
+  }
+
+  // Métodos para notificaciones dinámicas (MANIPULACIÓN DOM AVANZADA)
+  showDynamicNotification(type: 'success' | 'error' | 'warning' | 'info'): void {
+    const messages = {
+      success: { title: '¡Éxito!', message: 'Notificación creada dinámicamente en el DOM' },
+      error: { title: 'Error', message: 'Esta notificación fue creada con createElement' },
+      warning: { title: 'Advertencia', message: 'Se creó el componente en tiempo de ejecución' },
+      info: { title: 'Información', message: 'El componente se añadió al body con appendChild' }
+    };
+
+    this.notificationService.show({
+      type,
+      ...messages[type],
+      duration: 5000,
+      position: 'bottom-right'
+    });
+  }
+
+  // Métodos para Modal
+  openModal(): void {
+    this.isModalOpen.set(true);
+  }
+
+  closeModal(): void {
+    this.isModalOpen.set(false);
+  }
+
+  // Métodos para manipulación DOM de estilos (carousel)
+  toggleCarouselHighlight(): void {
+    if (this.demoCarousel) {
+      this.demoCarousel.toggleHighlight();
+    }
+  }
+
+  updateCarouselOpacity(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.carouselOpacity = parseFloat(input.value);
+    if (this.demoCarousel) {
+      this.demoCarousel.setOpacity(this.carouselOpacity);
     }
   }
 }
