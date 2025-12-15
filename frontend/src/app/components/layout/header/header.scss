@@ -186,9 +186,8 @@
 
 /* --- Item especial para theme toggle --- */
 .header-nav__item--theme {
-  margin-left: auto;
+  /* Sin margin-left: auto para que esté junto a los demás */
   border-right: none;
-  border-left: vars.$borde-brutal-thin;
 }
 
 /* --- Botón Theme Toggle en navbar --- */
@@ -207,6 +206,7 @@
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
   transition: all 0.2s ease;
   height: 100%;
+  width: 100%;
 
   &:hover {
     background-color: var(--color-primary);
@@ -230,8 +230,9 @@
 /* --- Versión móvil del botón theme --- */
 .header-nav__theme-toggle--mobile {
   width: 100%;
-  justify-content: space-between;
+  justify-content: center;
   padding: vars.$espaciado-s vars.$espaciado-l;
+  gap: vars.$espaciado-s;
 
   .header-nav__theme-label {
     display: block;
