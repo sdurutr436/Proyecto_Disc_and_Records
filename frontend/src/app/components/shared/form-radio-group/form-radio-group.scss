@@ -48,8 +48,8 @@
     justify-content: center;
     border: vars.$borde-brutal-thin;
     border-radius: 50%;
-    background-color: vars.$color-fondo-light;
-    box-shadow: 2px 2px 0px vars.$color-letra-oscura;
+    background-color: var(--bg-secondary);
+    box-shadow: 2px 2px 0px var(--border-color);
     transition: all vars.$transicion-rapida;
   }
 
@@ -57,13 +57,13 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: vars.$color-letra-oscura;
+    background-color: var(--text-dark);
     transition: all vars.$transicion-rapida;
   }
 
   &__text {
     font-size: vars.$tamanio-fuente-texto-pequeno-m;
-    color: vars.$color-letra-oscura;
+    color: var(--text-primary);
     font-weight: 500;
   }
 
@@ -77,12 +77,12 @@
   // Estados
   &:not(.form-radio-group--disabled) &__option:hover &__radio {
     transform: translate(-1px, -1px);
-    box-shadow: 3px 3px 0px vars.$color-letra-oscura;
+    box-shadow: 3px 3px 0px var(--border-color);
   }
 
   &__input:checked + &__radio {
-    background-color: vars.$color-primario-light;
-    border-color: vars.$color-letra-oscura;
+    background-color: var(--color-primary);
+    border-color: var(--border-color);
   }
 
   &--disabled {

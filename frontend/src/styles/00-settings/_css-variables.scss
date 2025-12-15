@@ -47,24 +47,24 @@
    ======================================== */
 
 [data-theme="dark"] {
-  /* --- Colores de fondo - tonos azules más oscuros --- */
-  --bg-primary: #000D14;                             // Azul noche ultra profundo (más oscuro)
-  --bg-secondary: #002333;                           // Azul océano profundo
+  /* --- Colores de fondo - tonos azules oscuros pero no extremos --- */
+  --bg-primary: #0B1F2A;                             // Azul oscuro pero más legible
+  --bg-secondary: #154360;                           // Azul océano con más luminosidad
 
-  /* --- Colores de texto - mayor contraste --- */
+  /* --- Colores de texto - alto contraste --- */
   --text-primary: #F8F9FA;                           // Casi blanco para mejor legibilidad
   --text-secondary: rgba(248, 249, 250, 0.7);        // Blanco con transparencia
   --text-white: #{$color-letra-blanca};              // #FBFAF2 (no cambia)
-  --text-dark: #000D14;                              // Azul oscuro (para fondos claros)
+  --text-dark: #0B1F2A;                              // Azul oscuro (para fondos claros)
 
-  /* --- Colores principales - tonos más saturados --- */
-  --color-primary: #0FA9AC;                          // Teal vibrante (más brillante)
-  --color-secondary: #00D9FF;                        // Cyan brillante para contraste
+  /* --- Colores principales - tonos más saturados y brillantes --- */
+  --color-primary: #17A2B8;                          // Teal más visible
+  --color-secondary: #20C997;                        // Verde aqua brillante
   --color-contrast: #93CFBB;                         // Verde menta (más visible)
-  --color-accent: #1FC7CA;                           // Teal brillante para acentos
+  --color-accent: #28A745;                           // Verde brillante para acentos
 
-  /* --- Colores de borde --- */
-  --border-color: #015F72;                           // Teal profundo para bordes
+  /* --- Colores de borde - más visible en dark --- */
+  --border-color: #2C5F7C;                           // Teal medio para bordes
 
   /* --- Colores de estado (ajustados para dark) --- */
   --color-error: #FF6B6B;                            // Rojo más brillante

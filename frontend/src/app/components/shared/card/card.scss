@@ -4,7 +4,7 @@
 .card {
   display: flex;
   flex-direction: column;
-  background-color: vars.$color-fondo-light;
+  background-color: var(--bg-secondary);
   border: vars.$borde-brutal-thick;
   border-radius: vars.$radio-s;
   box-shadow: vars.$sombra-brutal-s;

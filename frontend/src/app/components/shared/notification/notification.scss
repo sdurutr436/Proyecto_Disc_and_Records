@@ -118,25 +118,25 @@
   // Tipos
   &--success {
     background-color: vars.$color-exito;
-    border-color: vars.$color-letra-oscura;
-    color: vars.$color-letra-oscura;
+    border-color: var(--border-color);
+    color: var(--text-dark);
   }
 
   &--error {
     background-color: vars.$color-error;
-    border-color: vars.$color-letra-oscura;
-    color: vars.$color-fondo-light;
+    border-color: var(--border-color);
+    color: var(--text-white);
   }
 
   &--warning {
     background-color: vars.$color-advertencia-light;
-    border-color: vars.$color-letra-oscura;
-    color: vars.$color-letra-oscura;
+    border-color: var(--border-color);
+    color: var(--text-dark);
   }
 
   &--info {
     background-color: vars.$color-informacion;
-    border-color: vars.$color-letra-oscura;
-    color: vars.$color-fondo-light;
+    border-color: var(--border-color);
+    color: var(--text-white);
   }
 }

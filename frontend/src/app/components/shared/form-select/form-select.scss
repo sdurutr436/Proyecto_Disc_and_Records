@@ -20,8 +20,8 @@
     cursor: pointer;
 
     option {
-      background-color: vars.$color-fondo-light;
-      color: vars.$color-letra-oscura;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
       padding: vars.$espaciado-s;
     }
   }

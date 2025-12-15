@@ -3,7 +3,7 @@
 .carousel {
   width: 100%;
   margin-bottom: vars.$espaciado-xl;
-  background-color: vars.$color-fondo-light-secundario;
+  background-color: var(--bg-secondary);
   border: vars.$borde-brutal-thick;
   border-radius: vars.$radio-m;
   padding: vars.$espaciado-l;
@@ -20,10 +20,10 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin: 0 0 vars.$espaciado-m 0;
-    color: vars.$color-letra-oscura;
+    color: var(--text-primary);
     text-shadow:
-      3px 3px 0px vars.$color-primario-light,
-      6px 6px 0px vars.$color-secundario-light;
+      3px 3px 0px var(--color-primary),
+      6px 6px 0px var(--color-secondary);
     padding-bottom: vars.$espaciado-s;
 
     @media (max-width: vars.$breakpoint-tablet) {
