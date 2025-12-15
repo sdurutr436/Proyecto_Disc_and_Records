@@ -1,13 +1,182 @@
 @use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
 
-/* --- Bloque Main --- */
+/* ========================================
+   MAIN-NAV - Navegación STICKY
+   ======================================== */
+.main-nav {
+  @include mix.sticky-top;
+  width: 100%;
+  background-color: var(--nav-bg);
+  border-top: vars.$borde-brutal-thick;
+  border-bottom: vars.$borde-brutal-thick;
+  z-index: 3;
+}
+
+/* --- Desktop: barra horizontal visible --- */
+.main-nav__desktop {
+  display: block;
+}
+
+.main-nav__list {
+  @include mix.container-centered;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.main-nav__item {
+  flex: 0 0 auto;
+  border-right: vars.$borde-brutal-thin;
+
+  &:last-child {
+    border-right: none;
+  }
+}
+
+.main-nav__link {
+  display: block;
+  padding: vars.$espaciado-s vars.$espaciado-l;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-family: vars.$fuente-principal;
+  font-weight: 600;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+  @include mix.text-uppercase;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: var(--color-primary);
+  }
+
+  @include mix.focus-visible(vars.$color-contraste-light, -3px);
+}
+
+/* --- Item especial para theme toggle --- */
+.main-nav__item--theme {
+  border-right: none;
+}
+
+/* --- Botón Theme Toggle en navbar --- */
+.main-nav__theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: vars.$espaciado-xs;
+  padding: vars.$espaciado-s vars.$espaciado-l;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-family: vars.$fuente-principal;
+  font-weight: 600;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  transition: all 0.2s ease;
+  height: 100%;
+  width: 100%;
+
+  &:hover {
+    background-color: var(--color-primary);
+  }
+
+  @include mix.focus-visible(vars.$color-contraste-light, -3px);
+}
+
+.main-nav__theme-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.main-nav__theme-label {
+  display: none;
+  @include mix.text-uppercase;
+}
+
+/* --- Versión móvil del botón theme --- */
+.main-nav__theme-toggle--mobile {
+  width: 100%;
+  justify-content: center;
+  padding: vars.$espaciado-s vars.$espaciado-l;
+  gap: vars.$espaciado-s;
+
+  .main-nav__theme-label {
+    display: block;
+  }
+}
+
+/* --- Móvil: oculto por defecto --- */
+.main-nav__mobile {
+  display: none;
+}
+
+.main-nav__toggle {
+  display: flex;
+  width: 100%;
+  background-color: transparent;
+  padding: vars.$espaciado-s;
+  border: none;
+  cursor: pointer;
+  @include mix.flex-center;
+  gap: vars.$espaciado-s;
+  transition: background-color 0.2s ease;
+  font-family: vars.$fuente-principal;
+
+  &:hover {
+    background-color: var(--color-primary);
+  }
+
+  @include mix.focus-visible(vars.$color-contraste-light, -3px);
+}
+
+.main-nav__toggle-text {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  font-weight: 700;
+  color: var(--text-primary);
+  @include mix.text-uppercase;
+}
+
+.main-nav__toggle-icon {
+  transition: transform 0.3s ease;
+  color: var(--text-primary);
+}
+
+.main-nav__toggle-icon--open {
+  transform: rotate(180deg);
+}
+
+.main-nav__menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  background-color: var(--color-secondary);
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.main-nav__menu--open {
+  max-height: 25rem;
+  border-top: vars.$borde-brutal-thin;
+  opacity: 1;
+}
+
+/* ========================================
+   MAIN - Contenido principal
+   ======================================== */
 .main {
   width: 100%;
   flex: 1;
   display: flex;
   flex-direction: column;
   background-color: var(--bg-primary);
-  min-height: calc(100vh - 200px); // Ajustar según altura de header/footer
+  min-height: calc(100vh - 200px);
 }
 
 /* --- Elemento: Container --- */
@@ -26,5 +195,38 @@
 
   @media (min-width: vars.$breakpoint-desktop) {
     padding: vars.$espaciado-xl vars.$espaciado-xl;
+  }
+}
+
+/* ========================================
+   RESPONSIVE - MÓVIL
+   ======================================== */
+@media (max-width: vars.$breakpoint-tablet) {
+  /* --- Navegación móvil sticky --- */
+  .main-nav__desktop {
+    display: none;
+  }
+
+  .main-nav__mobile {
+    display: block;
+  }
+
+  .main-nav__list {
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .main-nav__item {
+    border-right: none;
+    border-bottom: vars.$borde-brutal-thin;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .main-nav__link {
+    padding: vars.$espaciado-xs vars.$espaciado-m;
+    text-align: center;
   }
 }

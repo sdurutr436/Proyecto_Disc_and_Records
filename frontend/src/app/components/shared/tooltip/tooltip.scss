@@ -12,7 +12,7 @@
 /* --- Tooltip flotante --- */
 .tooltip {
   position: absolute;
-  z-index: 9999;
+  z-index: 4;
   padding: vars.$espaciado-s vars.$espaciado-m;
   background-color: var(--bg-secondary);
   color: var(--text-primary);

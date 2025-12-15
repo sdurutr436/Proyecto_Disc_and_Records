@@ -236,7 +236,7 @@
 }
 
 // Elemento sticky
-@mixin sticky-top($z-index: 1000) {
+@mixin sticky-top($z-index: 3) {
   position: sticky;
   top: 0;
   z-index: $z-index;

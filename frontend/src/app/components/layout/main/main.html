@@ -1,3 +1,165 @@
+<!-- Navegación STICKY - se queda fija al hacer scroll -->
+<nav class="main-nav" aria-label="Navegación principal">
+  <!-- Desktop: barra horizontal -->
+  <div class="main-nav__desktop">
+    <ul class="main-nav__list">
+      <li class="main-nav__item">
+        <a href="#" class="main-nav__link">MI LISTA</a>
+      </li>
+      <li class="main-nav__item">
+        <a href="#" class="main-nav__link">ARTISTAS</a>
+      </li>
+      <li class="main-nav__item">
+        <a href="#" class="main-nav__link">PRÓXIMAMENTE</a>
+      </li>
+      <li class="main-nav__item">
+        <a href="#" class="main-nav__link">ÁLBUMES</a>
+      </li>
+      <li class="main-nav__item">
+        <a href="#" class="main-nav__link">CANCIONES</a>
+      </li>
+      <li class="main-nav__item main-nav__item--theme">
+        <!-- Botón Theme Switcher en navbar -->
+        <button
+          class="main-nav__theme-toggle"
+          (click)="toggleTheme()"
+          [attr.aria-label]="themeService.currentTheme() === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'"
+          type="button">
+          <!-- Icono Sol (modo claro) -->
+          <svg
+            *ngIf="themeService.currentTheme() === 'light'"
+            class="main-nav__theme-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+
+          <!-- Icono Luna (modo oscuro) -->
+          <svg
+            *ngIf="themeService.currentTheme() === 'dark'"
+            class="main-nav__theme-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Móvil: barra "Opciones" + menú desplegable -->
+  <div class="main-nav__mobile">
+    <button
+      class="main-nav__toggle"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="isMenuOpen()"
+      aria-controls="mobile-menu">
+      <span class="main-nav__toggle-text">OPCIONES</span>
+      <svg
+        class="main-nav__toggle-icon"
+        [class.main-nav__toggle-icon--open]="isMenuOpen()"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true">
+        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <ul
+      id="mobile-menu"
+      class="main-nav__menu"
+      [class.main-nav__menu--open]="isMenuOpen()">
+      <li class="main-nav__item">
+        <a href="#" class="main-nav__link" (click)="closeMenu()">MI LISTA</a>
+      </li>
+      <li class="main-nav__item">
+        <a href="#" class="main-nav__link" (click)="closeMenu()">ARTISTAS</a>
+      </li>
+      <li class="main-nav__item">
+        <a href="#" class="main-nav__link" (click)="closeMenu()">PRÓXIMAMENTE</a>
+      </li>
+      <li class="main-nav__item">
+        <a href="#" class="main-nav__link" (click)="closeMenu()">ÁLBUMES</a>
+      </li>
+      <li class="main-nav__item">
+        <a href="#" class="main-nav__link" (click)="closeMenu()">CANCIONES</a>
+      </li>
+      <li class="main-nav__item main-nav__item--theme">
+        <!-- Botón Theme Switcher en menú móvil -->
+        <button
+          class="main-nav__theme-toggle main-nav__theme-toggle--mobile"
+          (click)="toggleTheme()"
+          [attr.aria-label]="themeService.currentTheme() === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'"
+          type="button">
+          <span class="main-nav__theme-label">
+            {{ themeService.currentTheme() === 'light' ? 'MODO OSCURO' : 'MODO CLARO' }}
+          </span>
+          <!-- Icono Sol (modo claro) -->
+          <svg
+            *ngIf="themeService.currentTheme() === 'light'"
+            class="main-nav__theme-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+
+          <!-- Icono Luna (modo oscuro) -->
+          <svg
+            *ngIf="themeService.currentTheme() === 'dark'"
+            class="main-nav__theme-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
+
 <main class="main">
   <div class="main__container">
     <ng-content></ng-content>
