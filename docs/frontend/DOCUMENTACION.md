@@ -8,31 +8,37 @@
 
 ## Índice General
 
-### Sección 1: Manipulación del DOM y Eventos
-1.1 [Resumen Ejecutivo](#resumen-ejecutivo)  
-1.2 [Patterns Implementados](#patterns-implementados)  
-1.3 [Diagramas de Flujo](#diagramas-de-flujo)  
-1.4 [Sistema de Eventos](#sistema-de-eventos)  
-1.5 [Manipulación del DOM](#manipulación-del-dom)  
-1.6 [Componentes Interactivos](#componentes-interactivos)  
-1.7 [Gestión de Estado](#gestión-de-estado)  
-1.8 [Ejemplos de Código](#ejemplos-de-código)  
-1.9 [Compatibilidad de Navegadores](#compatibilidad-de-navegadores)  
+### Bloque 1: Fundamentos y Funcionalidad Core
+
+#### Fase 1: Manipulación del DOM y Eventos
+1.1 [Resumen Ejecutivo](#resumen-ejecutivo)
+1.2 [Patterns Implementados](#patterns-implementados)
+1.3 [Diagramas de Flujo](#diagramas-de-flujo)
+1.4 [Sistema de Eventos](#sistema-de-eventos)
+1.5 [Manipulación del DOM](#manipulación-del-dom)
+1.6 [Componentes Interactivos](#componentes-interactivos)
+1.7 [Gestión de Estado](#gestión-de-estado)
+1.8 [Ejemplos de Código](#ejemplos-de-código)
+1.9 [Compatibilidad de Navegadores](#compatibilidad-de-navegadores)
 1.10 [Best Practices](#best-practices-implementadas)
 
-### Sección 2: Componentes Interactivos y Comunicación
-2.1 [Servicios de Comunicación](#servicios-de-comunicación)  
-2.2 [EventBusService - Comunicación entre Componentes](#eventbusservice)  
-2.3 [AppStateService - Estado Global](#appstateservice)  
-2.4 [NotificationStreamService - Patrón Observable](#notificationstreamservice)  
-2.5 [Workflows de Comunicación](#workflows-de-comunicación)  
-2.6 [Patrones de Uso](#patrones-de-uso)  
+#### Fase 2: Componentes Interactivos y Comunicación
+2.1 [Servicios de Comunicación](#servicios-de-comunicación)
+2.2 [EventBusService - Comunicación entre Componentes](#eventbusservice)
+2.3 [AppStateService - Estado Global](#appstateservice)
+2.4 [NotificationStreamService - Patrón Observable](#notificationstreamservice)
+2.5 [Workflows de Comunicación](#workflows-de-comunicación)
+2.6 [Patrones de Uso](#patrones-de-uso)
 2.7 [Separación de Responsabilidades](#27-separación-de-responsabilidades)
+2.8 [Sistema de Notificaciones/Toasts](#28-sistema-de-notificacionestoasts)
 
-### Sección 3: [Título Fase 3]
+#### Fase 3: [Título Fase 3]
 *Pendiente de implementación*
 
-### Sección 4: [Título Fase 4]
+#### Fase 4: [Título Fase 4]
+*Pendiente de implementación*
+
+#### Fase 5: [Título Fase 5]
 *Pendiente de implementación*
 
 ---
@@ -2097,6 +2103,486 @@ describe('LoginComponentNEW', () => {
 
 ---
 
-**Última actualización:** 15 de diciembre de 2025  
-**Responsable:** Sergio Durán  
-**Estado Sección 2:** Completado
+## 2.8 Sistema de Notificaciones/Toasts
+
+### Descripción General
+
+El sistema de notificaciones implementa un patrón de arquitectura de tres capas:
+
+1. **NotificationService** (Gestión DOM) - Crea/destruye componentes dinámicamente
+2. **Notification Component** (Presentación) - Renderiza y anima toasts
+3. **NotificationStreamService** (Comunicación) - Observable para desacoplamiento
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    CAPA DE NEGOCIO                          │
+│  (Componentes, Servicios de Autenticación, etc.)           │
+│                                                              │
+│  - AlbumComponent                                           │
+│  - AuthService                                              │
+│  - ValidationService                                        │
+└──────────────┬──────────────────────────────────────────────┘
+               │ Llama a notify()
+               ↓
+┌─────────────────────────────────────────────────────────────┐
+│            CAPA DE COMUNICACIÓN (Opcional)                  │
+│                                                              │
+│  NotificationStreamService (RxJS Subject/Observable)        │
+│  - notify(config)                                           │
+│  - success(), error(), warning(), info()                    │
+│  - Observable stream para múltiples suscriptores           │
+└──────────────┬──────────────────────────────────────────────┘
+               │ Emite evento en stream
+               ↓
+┌─────────────────────────────────────────────────────────────┐
+│              CAPA DE GESTIÓN DEL DOM                        │
+│                                                              │
+│  NotificationService (Manipulación DOM)                     │
+│  - show(config)                                             │
+│  - createComponent() → Notification Component               │
+│  - appendChild() al body                                    │
+│  - removeChild() después de dismiss                         │
+└──────────────┬──────────────────────────────────────────────┘
+               │ Crea componente dinámico
+               ↓
+┌─────────────────────────────────────────────────────────────┐
+│              CAPA DE PRESENTACIÓN                           │
+│                                                              │
+│  Notification Component (UI)                                │
+│  - Renderiza HTML/CSS                                       │
+│  - Animaciones entrada/salida                               │
+│  - Timer de auto-dismiss                                    │
+│  - Emite evento dismissed                                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Separación de Responsabilidades en Notificaciones
+
+| Capa | Responsable de | NO Responsable de |
+|------|---|---|
+| **NotificationService** | Crear componentes dinámicamente, Manipular DOM (appendChild/removeChild), Gestionar ciclo de vida, API conveniente (success, error, etc.) | Renderizar HTML/CSS, Manejar animaciones, Lógica de negocio |
+| **Notification Component** | Renderizar UI, Animaciones CSS, Timer de auto-dismiss, Emitir evento dismissed | Crear otras notificaciones, Manipular DOM externo, Contener lógica de negocio |
+| **Componentes de Negocio** | Lógica de aplicación, Llamar a notify(), Decidir cuándo notificar | Crear componentes visuales, Manipular DOM, Gestionar timers |
+
+### Workflow Completo de Notificación
+
+```
+Usuario ejecuta acción
+    ↓
+Componente llama: notificationService.success('Título', 'Mensaje')
+    ↓
+NotificationService.show(config)
+    ├─ createComponent(Notification)
+    ├─ componentRef.setInput('type', 'success')
+    ├─ componentRef.setInput('title', 'Título')
+    ├─ componentRef.setInput('message', 'Mensaje')
+    ├─ componentRef.setInput('position', 'top-right')
+    ├─ componentRef.setInput('duration', 5000)
+    ├─ componentRef.setInput('autoDismiss', true)
+    ├─ suscribirse a dismissed event
+    ├─ appRef.attachView(componentRef.hostView)
+    └─ document.body.appendChild(element)
+    ↓
+Notification Component ngOnInit()
+    ├─ Espera 10ms para activar animación
+    ├─ isVisible.set(true) - Inicia animación entrada
+    └─ Inicia timer de 5000ms
+    ↓
+Notificación aparece en pantalla con animación
+    ↓
+[Usuario ve la notificación durante 5 segundos]
+    ↓
+Timer vence O usuario hace click en X
+    ↓
+Notification Component onDismiss()
+    ├─ isVisible.set(false) - Inicia animación salida
+    └─ Emite dismissed event después de 300ms
+    ↓
+NotificationService recibe dismissed
+    ├─ removeChild(element)
+    ├─ appRef.detachView(componentRef.hostView)
+    ├─ componentRef.destroy()
+    └─ Remover de array de activas
+    ↓
+Notificación desaparece de pantalla
+```
+
+### Tipos de Notificaciones
+
+#### Success (verde con icono ✓)
+- Duración: 5000ms
+- Uso: Operaciones exitosas
+- Ejemplo: "Guardado correctamente"
+
+#### Error (rojo con icono ✕)
+- Duración: 8000ms (más tiempo para leer)
+- Uso: Errores y fallos
+- Ejemplo: "No se pudo guardar el álbum"
+
+#### Warning (amarillo/naranja con icono ⚠)
+- Duración: 6000ms
+- Uso: Advertencias y precauciones
+- Ejemplo: "Este álbum ya está en favoritos"
+
+#### Info (azul con icono ℹ)
+- Duración: 5000ms
+- Uso: Información general
+- Ejemplo: "Hay 3 álbumes nuevos"
+
+### API de NotificationService
+
+#### show(config: NotificationConfig): void
+
+Método principal para mostrar notificación con configuración completa.
+
+```typescript
+notificationService.show({
+  type: 'success',
+  title: 'Guardado',
+  message: 'Los cambios se guardaron correctamente',
+  position: 'top-right',
+  duration: 5000,
+  autoDismiss: true,
+  icon: '✓'
+});
+```
+
+#### success(title: string, message: string, duration?: number): void
+
+Atajo para notificaciones de éxito.
+
+```typescript
+notificationService.success('Guardado', 'Los cambios se guardaron correctamente');
+```
+
+#### error(title: string, message: string, duration?: number): void
+
+Atajo para notificaciones de error (duración por defecto: 8000ms).
+
+```typescript
+notificationService.error('Error', 'No se pudo guardar el álbum', 10000);
+```
+
+#### warning(title: string, message: string, duration?: number): void
+
+Atajo para advertencias.
+
+```typescript
+notificationService.warning('Atención', 'Este álbum ya está en favoritos');
+```
+
+#### info(title: string, message: string, duration?: number): void
+
+Atajo para información general.
+
+```typescript
+notificationService.info('Actualización', 'Hay 3 álbumes nuevos disponibles');
+```
+
+#### persistent(type, title, message): void
+
+Notificación que NO se cierra automáticamente. El usuario debe cerrarla manualmente.
+
+```typescript
+notificationService.persistent('error', 'Conexión perdida', 'No se puede conectar al servidor');
+```
+
+#### clearAll(): void
+
+Elimina todas las notificaciones activas.
+
+```typescript
+notificationService.clearAll();
+```
+
+#### getActiveCount(): number
+
+Retorna el número de notificaciones actualmente en pantalla.
+
+```typescript
+const count = notificationService.getActiveCount();
+console.log(`${count} notificaciones activas`);
+```
+
+### Interfaz NotificationConfig
+
+```typescript
+interface NotificationConfig {
+  type: 'success' | 'error' | 'warning' | 'info';
+  title: string;
+  message: string;
+  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+  duration?: number;
+  autoDismiss?: boolean;
+  icon?: string;
+}
+```
+
+### Ejemplos de Uso
+
+#### Ejemplo 1: Notificación Simple
+
+```typescript
+export class AlbumComponent {
+  private notificationService = inject(NotificationService);
+
+  onSave() {
+    this.notificationService.success(
+      'Guardado',
+      'El álbum se guardó correctamente'
+    );
+  }
+}
+```
+
+#### Ejemplo 2: Notificación con Manejo de Errores
+
+```typescript
+async onSaveAlbum(albumData: any) {
+  try {
+    await this.albumService.save(albumData);
+    this.notificationService.success(
+      'Guardado',
+      'El álbum se guardó correctamente'
+    );
+  } catch (error: any) {
+    this.notificationService.error(
+      'Error',
+      error.message || 'No se pudo guardar el álbum',
+      10000
+    );
+  }
+}
+```
+
+#### Ejemplo 3: Notificación Persistente
+
+```typescript
+checkConnection() {
+  if (!this.isConnected) {
+    this.notificationService.persistent(
+      'error',
+      'Conexión perdida',
+      'No se puede conectar al servidor. La notificación persistirá hasta que se reconecte.'
+    );
+  }
+}
+```
+
+#### Ejemplo 4: Configuración Avanzada
+
+```typescript
+onAddToFavorites(album: Album) {
+  this.notificationService.show({
+    type: 'success',
+    title: 'Agregado a Favoritos',
+    message: `${album.title} se agregó a tus favoritos`,
+    position: 'bottom-right',
+    duration: 3000,
+    autoDismiss: true,
+    icon: '💿'
+  });
+}
+```
+
+#### Ejemplo 5: Múltiples Notificaciones Secuenciales
+
+```typescript
+async onComplexWorkflow() {
+  this.notificationService.info('Iniciando', 'Procesando datos...');
+  
+  await this.step1();
+  this.notificationService.info('Paso 1', 'Datos procesados');
+  
+  await this.step2();
+  this.notificationService.info('Paso 2', 'Validación completada');
+  
+  await this.step3();
+  this.notificationService.success('Completado', 'Operación exitosa');
+}
+```
+
+#### Ejemplo 6: Limpiar Notificaciones
+
+```typescript
+onLogout() {
+  this.authService.logout();
+  this.notificationService.clearAll();
+  this.router.navigate(['/login']);
+}
+```
+
+#### Ejemplo 7: Integración con AuthService
+
+```typescript
+// En AuthService
+async login(credentials: LoginCredentials): Promise<AuthResponse> {
+  try {
+    const response = await this.http.post('/api/login', credentials).toPromise();
+    
+    this.appState.setUser(response.user);
+    localStorage.setItem('auth-token', response.token);
+    
+    this.notificationService.success(
+      'Bienvenido',
+      `Hola, ${response.user.username}`
+    );
+    
+    return response;
+  } catch (error: any) {
+    this.notificationService.error(
+      'Error de login',
+      error.message || 'Credenciales inválidas',
+      8000
+    );
+    throw error;
+  }
+}
+```
+
+### API de Notification Component
+
+#### Inputs
+
+```typescript
+@Input() type: 'success' | 'error' | 'warning' | 'info' = 'info';
+@Input() title: string = '';
+@Input() message: string = '';
+@Input() icon: string = '';
+@Input() position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+@Input() autoDismiss: boolean = true;
+@Input() duration: number = 5000;
+```
+
+#### Outputs
+
+```typescript
+@Output() dismissed = new EventEmitter<void>();
+```
+
+#### Lifecycle Hooks
+
+**ngOnInit:**
+- Espera 10ms para permitir que Angular renderice
+- Establece isVisible.set(true) para animación de entrada
+- Si autoDismiss, inicia timer de duration ms
+
+**ngOnDestroy:**
+- Limpia timeout para prevenir memory leaks
+
+#### Propiedades Computadas
+
+```typescript
+// Clases CSS dinámicas basadas en tipo y estado
+notificationClasses: string
+
+// Icono por defecto según tipo
+defaultIcon: string
+```
+
+### Testing del Sistema
+
+```typescript
+describe('NotificationService', () => {
+  let service: NotificationService;
+
+  beforeEach(() => {
+    service = new NotificationService(mockAppRef, mockInjector);
+  });
+
+  it('should create notification component', () => {
+    service.show({
+      type: 'success',
+      title: 'Test',
+      message: 'Testing'
+    });
+
+    expect(service.getActiveCount()).toBe(1);
+  });
+
+  it('should remove notification on dismiss', (done) => {
+    service.show({
+      type: 'info',
+      title: 'Test',
+      message: 'Testing'
+    });
+
+    setTimeout(() => {
+      expect(service.getActiveCount()).toBe(0);
+      done();
+    }, 5100);
+  });
+
+  it('should clear all notifications', () => {
+    service.success('Test 1', 'Message 1');
+    service.info('Test 2', 'Message 2');
+    service.warning('Test 3', 'Message 3');
+
+    expect(service.getActiveCount()).toBe(3);
+
+    service.clearAll();
+
+    expect(service.getActiveCount()).toBe(0);
+  });
+});
+```
+
+### Best Practices
+
+**DO:**
+- Usar métodos de conveniencia (success, error, etc.) para casos comunes
+- Mostrar mensajes de error detallados para mejor UX
+- Aumentar duración para errores críticos (8000-10000ms)
+- Usar notificaciones persistentes para conectividad
+- Limpiar notificaciones al hacer logout
+
+**DON'T:**
+- No mostrar múltiples notificaciones del mismo tipo simultáneamente (agruparlas)
+- No usar notificaciones para casos que necesitan acción inmediata (usar Modales)
+- No abusar de los iconos personalizados
+- No cambiar duración sin razón específica
+
+### Características Especiales
+
+#### Observable Stream
+
+El servicio expone un Observable para que otros componentes observen notificaciones:
+
+```typescript
+notificationService.notification$.subscribe(config => {
+  console.log('Notificación mostrada:', config);
+  // Útil para analytics, logging, etc.
+});
+```
+
+#### Posicionamiento Flexible
+
+4 posiciones disponibles:
+- top-right (por defecto)
+- top-left
+- bottom-right
+- bottom-left
+
+#### Iconos Personalizables
+
+```typescript
+notificationService.show({
+  type: 'success',
+  title: 'Música agregada',
+  message: 'Nueva canción en tu playlist',
+  icon: '🎵'
+});
+```
+
+#### Gestión Automática
+
+- El sistema apila notificaciones automáticamente
+- Cada notificación se gestiona independientemente
+- clearAll() permite limpiar todas a la vez
+- Limpieza automática de memory en ngOnDestroy
+
+---
+
+**Última actualización:** 15 de diciembre de 2025
+**Responsable:** Sergio Durán
+**Estado Fase 2:** Completado (Parte 3 - Sistema de Notificaciones)

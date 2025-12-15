@@ -52,6 +52,7 @@
     padding: 0;
     opacity: 0.7;
     transition: all vars.$transicion-rapida;
+    color: currentColor;
 
     &:hover {
       opacity: 1;
