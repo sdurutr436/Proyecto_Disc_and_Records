@@ -96,20 +96,19 @@
   display: contents;
 }
 
-/* --- Botones superiores (mismo estilo que footer) --- */
+/* --- Botones superiores --- */
 .header__btn {
   font-family: vars.$fuente-principal;
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
-  font-weight: 600;
-  padding: vars.$espaciado-xs vars.$espaciado-l;
+  font-weight: 800;
+  padding: vars.$espaciado-s vars.$espaciado-xl;
   border: vars.$borde-brutal-medium;
-  border-radius: vars.$radio-s;
-  background-color: var(--bg-secondary);
+  border-radius: vars.$radio-pildora;
+  background-color: var(--header-bg);
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
   @include mix.text-uppercase;
-  letter-spacing: 0.05em;
   box-shadow: 4px 4px 0px var(--shadow-color);
   position: relative;
   z-index: 2;
@@ -193,6 +192,7 @@
     padding: vars.$espaciado-xs vars.$espaciado-m;
     max-width: 50%;
     z-index: 2;
+    border-radius: vars.$radio-s;
   }
 
   .header__btn--left {
