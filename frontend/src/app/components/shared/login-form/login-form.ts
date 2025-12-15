@@ -1,116 +1,130 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+/**
+ * LoginForm Component
+ *
+ * PROPÓSITO:
+ * Componente de formulario reactivo para autenticación de usuarios.
+ * Implementa validación síncrona con FormBuilder y validadores integrados de Angular.
+ *
+ * ESTRUCTURA:
+ * - FormGroup: loginForm
+ *   - email: requerido + email válido
+ *   - password: requerido + mínimo 8 caracteres
+ *
+ * PATRÓN: FORMULARIOS REACTIVOS
+ * Migración de template-driven (Signals) a formularios reactivos (FormBuilder + FormGroup)
+ *
+ * VENTAJAS:
+ * - Validación centralizada en el componente (no dispersa en templates)
+ * - Mejor control sobre dependencias entre campos
+ * - Más testeable
+ * - Mejor rendimiento en formularios complejos
+ * - Reutilización de validadores
+ *
+ * FLUJO:
+ * 1. Constructor: inicializa FormGroup con FormBuilder
+ * 2. onSubmit(): verifica si es válido antes de procesar
+ * 3. Template: accede a errores mediante loginForm.get('campo')?.errors
+ */
 @Component({
   selector: 'app-login-form',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login-form.html',
   styleUrl: './login-form.scss',
 })
 export class LoginForm {
-  // Valores del formulario
-  email = signal('');
-  password = signal('');
+  /**
+   * FormGroup - Contenedor de controles del formulario
+   * Agrupa email y password en una sola entidad
+   * Proporciona métodos para validar todo el formulario de una vez
+   */
+  loginForm: FormGroup;
 
-  // Estados de validación
-  emailError = signal(false);
-  emailErrorMessage = signal('');
-  passwordError = signal(false);
-  passwordErrorMessage = signal('');
-
-  // Estado del formulario
+  /**
+   * Estado de envío
+   * Signal que indica si el formulario está siendo procesado
+   * Desactiva el botón de submit mientras se envía la solicitud
+   */
   isSubmitting = signal(false);
-  formSubmitted = signal(false);
 
-  // Validación de email
-  validateEmail(email: string): boolean {
-    // Requiere @ y dominio con al menos .xx (dos letras mínimo)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
+  /**
+   * Constructor
+   * Inyecta FormBuilder para crear el FormGroup de forma declarativa
+   */
+  constructor(private formBuilder: FormBuilder) {
+    /**
+     * Inicialización del formulario con FormBuilder
+     * 
+     * Sintaxis:
+     * [valor_inicial, [validadores]]
+     * 
+     * Validadores utilizados:
+     * - Validators.required: campo no puede estar vacío
+     * - Validators.email: debe ser un email válido (RFC5322 simplificado)
+     * - Validators.minLength(8): contraseña debe tener al menos 8 caracteres
+     */
+    this.loginForm = this.formBuilder.group({
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8)
+        ]
+      ]
+    });
   }
 
-  // Validación de contraseña
-  validatePassword(password: string): boolean {
-    return password.length >= 8;
-  }
+  /**
+   * Manejo del submit
+   * 
+   * ANTES (Template-driven):
+   * - Validación manual en cada método onChange
+   * - Estado disperso en múltiples signals
+   * - Lógica repetida para validar
+   * 
+   * DESPUÉS (Reactivo):
+   * - Validación automática en FormGroup
+   * - Un solo check: if (this.loginForm.valid)
+   * - Acceso simplificado a errores: this.loginForm.get('email')?.errors
+   */
+  onSubmit(): void {
+    /**
+     * Marcar todos los campos como tocados
+     * Esto dispara la visualización de errores en el template
+     * (los errores solo se muestran si el campo fue tocado)
+     */
+    this.loginForm.markAllAsTouched();
 
-  // Manejo de cambio en email
-  onEmailChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.email.set(target.value);
-
-    if (this.formSubmitted()) {
-      if (!target.value) {
-        this.emailError.set(true);
-        this.emailErrorMessage.set('El correo electrónico es requerido');
-      } else if (!this.validateEmail(target.value)) {
-        this.emailError.set(true);
-        this.emailErrorMessage.set('Correo inválido. Debe tener @ y dominio terminado en .xx (ej: .es, .com)');
-      } else {
-        this.emailError.set(false);
-        this.emailErrorMessage.set('');
-      }
-    }
-  }
-
-  // Manejo de cambio en contraseña
-  onPasswordChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.password.set(target.value);
-
-    if (this.formSubmitted()) {
-      if (!target.value) {
-        this.passwordError.set(true);
-        this.passwordErrorMessage.set('La contraseña es requerida');
-      } else if (!this.validatePassword(target.value)) {
-        this.passwordError.set(true);
-        this.passwordErrorMessage.set('La contraseña debe tener al menos 8 caracteres');
-      } else {
-        this.passwordError.set(false);
-        this.passwordErrorMessage.set('');
-      }
-    }
-  }
-
-  // Manejo del submit
-  onSubmit(event: Event) {
-    event.preventDefault();
-    this.formSubmitted.set(true);
-
-    // Validar email
-    if (!this.email()) {
-      this.emailError.set(true);
-      this.emailErrorMessage.set('El correo electrónico es requerido');
-    } else if (!this.validateEmail(this.email())) {
-      this.emailError.set(true);
-      this.emailErrorMessage.set('Correo inválido. Debe tener @ y dominio terminado en .xx (ej: .es, .com)');
-    } else {
-      this.emailError.set(false);
-      this.emailErrorMessage.set('');
-    }
-
-    // Validar contraseña
-    if (!this.password()) {
-      this.passwordError.set(true);
-      this.passwordErrorMessage.set('La contraseña es requerida');
-    } else if (!this.validatePassword(this.password())) {
-      this.passwordError.set(true);
-      this.passwordErrorMessage.set('La contraseña debe tener al menos 8 caracteres');
-    } else {
-      this.passwordError.set(false);
-      this.passwordErrorMessage.set('');
-    }
-
-    // Si no hay errores, procesar el formulario
-    if (!this.emailError() && !this.passwordError()) {
+    /**
+     * Validación del formulario completo
+     * El formulario es válido si TODOS los campos son válidos
+     * y NO HAY errores a nivel de grupo (si los hubiera)
+     */
+    if (this.loginForm.valid) {
       this.isSubmitting.set(true);
 
-      // Aquí iría la lógica de autenticación
-      console.log('Login:', {
-        email: this.email(),
-        password: this.password()
-      });
+      /**
+       * Obtener valores del formulario
+       * this.loginForm.value devuelve objeto con todas las propiedades
+       * {
+       *   email: 'usuario@ejemplo.com',
+       *   password: '12345678'
+       * }
+       */
+      const formData = this.loginForm.value;
+
+      // Aquí iría la lógica de autenticación (inyectar AuthService)
+      console.log('Login:', formData);
 
       // Simular llamada a API
       setTimeout(() => {

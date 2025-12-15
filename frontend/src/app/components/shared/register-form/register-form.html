@@ -1,8 +1,8 @@
-<form class="register-form" (submit)="onSubmit($event)" method="post" novalidate>
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form" method="post" novalidate>
   <!-- Fieldset 1: Información de cuenta -->
   <fieldset class="register-form__fieldset">
     <legend class="register-form__legend">Crea tu cuenta</legend>
-    
+
     <!-- Campo de nombre de usuario -->
     <div class="register-form__field">
       <label for="register-username" class="register-form__label">
@@ -12,29 +12,37 @@
       <input
         id="register-username"
         type="text"
-        name="username"
+        [formControl]="registerForm.get('username')"
         placeholder="tunombredeusuario"
-        required
-        [value]="username()"
-        (input)="onUsernameChange($event)"
         class="register-form__input"
-        [class.register-form__input--error]="usernameError()"
-        [attr.aria-invalid]="usernameError()"
-        [attr.aria-describedby]="usernameError() ? 'username-error' : 'username-help'"
+        [class.register-form__input--error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+        [attr.aria-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+        [attr.aria-describedby]="(registerForm.get('username')?.invalid && registerForm.get('username')?.touched) ? 'username-error' : 'username-help'"
         autocomplete="username" />
-      
+
       <!-- Mensaje de error -->
-      @if (usernameError()) {
+      @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
       <p
         id="username-error"
         class="register-form__error"
         role="alert">
-        {{ usernameErrorMessage() }}
+        @if (registerForm.get('username')?.hasError('required')) {
+          Username es requerido
+        }
+        @if (registerForm.get('username')?.hasError('minlength')) {
+          Mínimo 3 caracteres
+        }
+        @if (registerForm.get('username')?.hasError('maxlength')) {
+          Máximo 20 caracteres
+        }
+        @if (registerForm.get('username')?.hasError('pattern')) {
+          Solo letras, números y guiones bajos
+        }
       </p>
       }
-      
+
       <!-- Texto de ayuda -->
-      @if (!usernameError()) {
+      @if (!registerForm.get('username')?.invalid || !registerForm.get('username')?.touched) {
       <p
         id="username-help"
         class="register-form__help">
@@ -42,8 +50,8 @@
       </p>
       }
     </div>
-    
-    <!-- Campo de correo electrónico (reutilizado de login) -->
+
+    <!-- Campo de correo electrónico -->
     <div class="register-form__field">
       <label for="register-email" class="register-form__label">
         Correo electrónico
@@ -52,29 +60,31 @@
       <input
         id="register-email"
         type="email"
-        name="email"
+        [formControl]="registerForm.get('email')"
         placeholder="tu@email.com"
-        required
-        [value]="email()"
-        (input)="onEmailChange($event)"
         class="register-form__input"
-        [class.register-form__input--error]="emailError()"
-        [attr.aria-invalid]="emailError()"
-        [attr.aria-describedby]="emailError() ? 'email-error' : 'email-help'"
+        [class.register-form__input--error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+        [attr.aria-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+        [attr.aria-describedby]="(registerForm.get('email')?.invalid && registerForm.get('email')?.touched) ? 'email-error' : 'email-help'"
         autocomplete="email" />
-      
+
       <!-- Mensaje de error -->
-      @if (emailError()) {
+      @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
       <p
         id="email-error"
         class="register-form__error"
         role="alert">
-        {{ emailErrorMessage() }}
+        @if (registerForm.get('email')?.hasError('required')) {
+          Email es requerido
+        }
+        @if (registerForm.get('email')?.hasError('email')) {
+          Email debe ser válido
+        }
       </p>
       }
-      
+
       <!-- Texto de ayuda -->
-      @if (!emailError()) {
+      @if (!registerForm.get('email')?.invalid || !registerForm.get('email')?.touched) {
       <p
         id="email-help"
         class="register-form__help">
@@ -83,12 +93,12 @@
       }
     </div>
   </fieldset>
-  
+
   <!-- Fieldset 2: Seguridad -->
   <fieldset class="register-form__fieldset">
     <legend class="register-form__legend">Seguridad</legend>
-    
-    <!-- Campo de contraseña (reutilizado de login) -->
+
+    <!-- Campo de contraseña -->
     <div class="register-form__field">
       <label for="register-password" class="register-form__label">
         Contraseña
@@ -97,29 +107,34 @@
       <input
         id="register-password"
         type="password"
-        name="password"
+        [formControl]="registerForm.get('password')"
         placeholder="••••••••"
-        required
-        [value]="password()"
-        (input)="onPasswordChange($event)"
         class="register-form__input"
-        [class.register-form__input--error]="passwordError()"
-        [attr.aria-invalid]="passwordError()"
-        [attr.aria-describedby]="passwordError() ? 'password-error' : 'password-help'"
+        [class.register-form__input--error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+        [attr.aria-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+        [attr.aria-describedby]="(registerForm.get('password')?.invalid && registerForm.get('password')?.touched) ? 'password-error' : 'password-help'"
         autocomplete="new-password" />
-      
+
       <!-- Mensaje de error -->
-      @if (passwordError()) {
+      @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
       <span
         id="password-error"
         class="register-form__error"
         role="alert">
-        {{ passwordErrorMessage() }}
+        @if (registerForm.get('password')?.hasError('required')) {
+          Contraseña es requerida
+        }
+        @if (registerForm.get('password')?.hasError('minlength')) {
+          Mínimo 8 caracteres
+        }
+        @if (registerForm.get('password')?.hasError('pattern')) {
+          Debe contener mayúscula y carácter especial (!@#$%...)
+        }
       </span>
       }
-      
+
       <!-- Texto de ayuda -->
-      @if (!passwordError()) {
+      @if (!registerForm.get('password')?.invalid || !registerForm.get('password')?.touched) {
       <span
         id="password-help"
         class="register-form__help">
@@ -127,7 +142,7 @@
       </span>
       }
     </div>
-    
+
     <!-- Campo de confirmación de contraseña -->
     <div class="register-form__field">
       <label for="register-confirm-password" class="register-form__label">
@@ -137,29 +152,31 @@
       <input
         id="register-confirm-password"
         type="password"
-        name="confirmPassword"
+        [formControl]="registerForm.get('confirmPassword')"
         placeholder="••••••••"
-        required
-        [value]="confirmPassword()"
-        (input)="onConfirmPasswordChange($event)"
         class="register-form__input"
-        [class.register-form__input--error]="confirmPasswordError()"
-        [attr.aria-invalid]="confirmPasswordError()"
-        [attr.aria-describedby]="confirmPasswordError() ? 'confirm-password-error' : 'confirm-password-help'"
+        [class.register-form__input--error]="(registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('confirmPassword')?.touched"
+        [attr.aria-invalid]="(registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('confirmPassword')?.touched"
+        [attr.aria-describedby]="((registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('confirmPassword')?.touched) ? 'confirm-password-error' : 'confirm-password-help'"
         autocomplete="new-password" />
-      
+
       <!-- Mensaje de error -->
-      @if (confirmPasswordError()) {
+      @if ((registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('confirmPassword')?.touched) {
       <span
         id="confirm-password-error"
         class="register-form__error"
         role="alert">
-        {{ confirmPasswordErrorMessage() }}
+        @if (registerForm.get('confirmPassword')?.hasError('required')) {
+          Confirma tu contraseña
+        }
+        @if (registerForm.hasError('passwordMismatch')) {
+          Las contraseñas no coinciden
+        }
       </span>
       }
-      
+
       <!-- Texto de ayuda -->
-      @if (!confirmPasswordError()) {
+      @if ((!registerForm.get('confirmPassword')?.invalid && !registerForm.hasError('passwordMismatch')) || !registerForm.get('confirmPassword')?.touched) {
       <span
         id="confirm-password-help"
         class="register-form__help">
@@ -168,16 +185,16 @@
       }
     </div>
   </fieldset>
-  
+
   <!-- Botón de submit -->
-  <button 
-    type="submit" 
+  <button
+    type="submit"
     class="register-form__submit"
-    [disabled]="isSubmitting()"
+    [disabled]="registerForm.invalid || isSubmitting()"
     [attr.aria-busy]="isSubmitting()">
     {{ isSubmitting() ? 'CREANDO CUENTA...' : 'CREAR CUENTA' }}
   </button>
-  
+
   <!-- Link de inicio de sesión -->
   <div class="register-form__footer">
     <p class="register-form__footer-text">

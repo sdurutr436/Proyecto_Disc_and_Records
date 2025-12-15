@@ -1,222 +1,192 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
+/**
+ * RegisterForm Component
+ *
+ * PROPÓSITO:
+ * Componente de formulario reactivo para registro de nuevos usuarios.
+ * Implementa validación síncrona con FormBuilder, validadores integrados y validadores custom.
+ *
+ * ESTRUCTURA:
+ * FormGroup: registerForm
+ *   - username: requerido + patrón (alfanuméricos + guiones) + 3-20 caracteres
+ *   - email: requerido + email válido
+ *   - password: requerido + mínimo 8 caracteres + patrón (mayúscula + especial)
+ *   - confirmPassword: requerido
+ *   - Validador de grupo: passwordMatchValidator (verifica que password y confirmPassword coincidan)
+ *
+ * PATRÓN: FORMULARIOS REACTIVOS CON VALIDADORES CUSTOM
+ * - Validadores integrados para reglas simples
+ * - Validadores custom para reglas de negocio complejas
+ * - Validador de grupo para validaciones cross-field
+ *
+ * VENTAJAS:
+ * - Separación clara entre campos
+ * - Validación a nivel de grupo (password match)
+ * - Reutilización de validadores
+ * - Mejor UX: errores específicos por campo y error
+ */
 @Component({
   selector: 'app-register-form',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './register-form.html',
   styleUrl: './register-form.scss',
 })
 export class RegisterForm {
-  // Valores del formulario
-  username = signal('');
-  email = signal('');
-  password = signal('');
-  confirmPassword = signal('');
+  /**
+   * FormGroup - Contenedor de controles del formulario de registro
+   */
+  registerForm: FormGroup;
 
-  // Estados de validación
-  usernameError = signal(false);
-  usernameErrorMessage = signal('');
-  emailError = signal(false);
-  emailErrorMessage = signal('');
-  passwordError = signal(false);
-  passwordErrorMessage = signal('');
-  confirmPasswordError = signal(false);
-  confirmPasswordErrorMessage = signal('');
-
-  // Estado del formulario
+  /**
+   * Estado de envío
+   */
   isSubmitting = signal(false);
-  formSubmitted = signal(false);
 
-  // Validación de nombre de usuario
-  validateUsername(username: string): boolean {
-    // Solo letras, números y guiones bajos (sin espacios), entre 3 y 20 caracteres
-    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-    return usernameRegex.test(username) && !/\s/.test(username);
+  /**
+   * Constructor
+   */
+  constructor(private formBuilder: FormBuilder) {
+    this.registerForm = this.buildForm();
   }
 
-  // Validación de email
-  validateEmail(email: string): boolean {
-    // Requiere @ y dominio con al menos .xx (dos letras mínimo)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
+  /**
+   * Construcción del formulario
+   * Separado en método para mayor claridad
+   *
+   * REGLAS DE VALIDACIÓN:
+   * - username: alfanuméricos + guiones bajos, 3-20 caracteres
+   * - email: formato email válido
+   * - password: 8+ caracteres, con mayúscula y carácter especial
+   * - confirmPassword: debe coincidir con password
+   */
+  private buildForm(): FormGroup {
+    return this.formBuilder.group(
+      {
+        username: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(3),
+            Validators.maxLength(20),
+            Validators.pattern(/^[a-zA-Z0-9_]+$/)
+          ]
+        ],
+        email: [
+          '',
+          [
+            Validators.required,
+            Validators.email
+          ]
+        ],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            /**
+             * Patrón de contraseña fuerte
+             * (?=.*[A-Z]) - Lookahead: contiene al menos una mayúscula
+             * (?=.*[!@#$%^&*]) - Lookahead: contiene al menos un carácter especial
+             */
+            Validators.pattern(/^(?=.*[A-Z])(?=.*[!@#$%^&*])/)
+          ]
+        ],
+        confirmPassword: [
+          '',
+          [Validators.required]
+        ]
+      },
+      /**
+       * VALIDADOR DE GRUPO
+       * Se aplica a nivel de FormGroup (no a un campo individual)
+       * Permite validar relaciones entre múltiples campos
+       *
+       * En este caso: validar que password y confirmPassword coincidan
+       */
+      { validators: this.passwordMatchValidator() }
+    );
   }
 
-  // Validación de contraseña
-  validatePassword(password: string): boolean {
-    // Mínimo 8 caracteres, al menos una mayúscula y un carácter especial
-    const hasMinLength = password.length >= 8;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-    return hasMinLength && hasUpperCase && hasSpecialChar;
-  }
+  /**
+   * Validador Custom: Coincidencia de contraseñas
+   *
+   * PROPÓSITO:
+   * Verificar que el campo password y confirmPassword tengan el mismo valor
+   *
+   * TIPO: Validador de grupo (FormGroup level)
+   * Acceso: group.get('password') y group.get('confirmPassword')
+   *
+   * RETORNA:
+   * - null: contraseñas coinciden (válido)
+   * - { passwordMismatch: true }: no coinciden (inválido)
+   *
+   * NOTA: En el template, acceder con:
+   * registerForm.hasError('passwordMismatch')
+   */
+  private passwordMatchValidator(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const password = group.get('password')?.value;
+      const confirmPassword = group.get('confirmPassword')?.value;
 
-  // Validación de confirmación de contraseña
-  validateConfirmPassword(password: string, confirmPassword: string): boolean {
-    return password === confirmPassword && confirmPassword.length > 0;
-  }
-
-  // Manejo de cambio en nombre de usuario
-  onUsernameChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.username.set(target.value);
-
-    if (this.formSubmitted()) {
-      if (!target.value) {
-        this.usernameError.set(true);
-        this.usernameErrorMessage.set('El nombre de usuario es requerido');
-      } else if (!this.validateUsername(target.value)) {
-        this.usernameError.set(true);
-        this.usernameErrorMessage.set('Solo letras, números y guiones bajos, sin espacios (3-20 caracteres)');
-      } else {
-        this.usernameError.set(false);
-        this.usernameErrorMessage.set('');
+      /**
+       * Si alguno de los campos está vacío, no validar
+       * (Validators.required se encargará de eso)
+       */
+      if (!password || !confirmPassword) {
+        return null;
       }
-    }
+
+      /**
+       * Validar coincidencia
+       */
+      return password === confirmPassword
+        ? null
+        : { passwordMismatch: true };
+    };
   }
 
-  // Manejo de cambio en email
-  onEmailChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.email.set(target.value);
+  /**
+   * Manejo del submit
+   * 
+   * FLUJO:
+   * 1. Marcar todos los campos como tocados (para mostrar errores)
+   * 2. Verificar si el formulario es válido (todos los campos + validadores de grupo)
+   * 3. Si es válido: obtener valores y procesar
+   * 4. Si es inválido: mostrar errores (ya están visibles por markAllAsTouched)
+   */
+  onSubmit(): void {
+    /**
+     * Marcar todos los campos como tocados
+     * Esto hace que los errores sean visibles en el template
+     * (los validadores de Angular solo muestran errores en campos "touched")
+     */
+    this.registerForm.markAllAsTouched();
 
-    if (this.formSubmitted()) {
-      if (!target.value) {
-        this.emailError.set(true);
-        this.emailErrorMessage.set('El correo electrónico es requerido');
-      } else if (!this.validateEmail(target.value)) {
-        this.emailError.set(true);
-        this.emailErrorMessage.set('Correo inválido. Debe tener @ y dominio terminado en .xx (ej: .es, .com)');
-      } else {
-        this.emailError.set(false);
-        this.emailErrorMessage.set('');
-      }
-    }
-  }
-
-  // Manejo de cambio en contraseña
-  onPasswordChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.password.set(target.value);
-
-    if (this.formSubmitted()) {
-      if (!target.value) {
-        this.passwordError.set(true);
-        this.passwordErrorMessage.set('La contraseña es requerida');
-      } else if (!this.validatePassword(target.value)) {
-        this.passwordError.set(true);
-        this.passwordErrorMessage.set('Mínimo 8 caracteres, una mayúscula y un carácter especial (!@#$%)');
-      } else {
-        this.passwordError.set(false);
-        this.passwordErrorMessage.set('');
-
-        // Re-validar confirmación si ya tiene valor
-        if (this.confirmPassword()) {
-          if (!this.validateConfirmPassword(target.value, this.confirmPassword())) {
-            this.confirmPasswordError.set(true);
-            this.confirmPasswordErrorMessage.set('Las contraseñas no coinciden');
-          } else {
-            this.confirmPasswordError.set(false);
-            this.confirmPasswordErrorMessage.set('');
-          }
-        }
-      }
-    }
-  }
-
-  // Manejo de cambio en confirmación de contraseña
-  onConfirmPasswordChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.confirmPassword.set(target.value);
-
-    if (this.formSubmitted()) {
-      if (!target.value) {
-        this.confirmPasswordError.set(true);
-        this.confirmPasswordErrorMessage.set('Confirma tu contraseña');
-      } else if (!this.validateConfirmPassword(this.password(), target.value)) {
-        this.confirmPasswordError.set(true);
-        this.confirmPasswordErrorMessage.set('Las contraseñas no coinciden');
-      } else {
-        this.confirmPasswordError.set(false);
-        this.confirmPasswordErrorMessage.set('');
-      }
-    }
-  }
-
-  // Manejo del submit
-  onSubmit(event: Event) {
-    event.preventDefault();
-    this.formSubmitted.set(true);
-
-    let hasErrors = false;
-
-    // Validar nombre de usuario
-    if (!this.username()) {
-      this.usernameError.set(true);
-      this.usernameErrorMessage.set('El nombre de usuario es requerido');
-      hasErrors = true;
-    } else if (!this.validateUsername(this.username())) {
-      this.usernameError.set(true);
-      this.usernameErrorMessage.set('Solo letras, números y guiones bajos, sin espacios (3-20 caracteres)');
-      hasErrors = true;
-    } else {
-      this.usernameError.set(false);
-      this.usernameErrorMessage.set('');
-    }
-
-    // Validar email
-    if (!this.email()) {
-      this.emailError.set(true);
-      this.emailErrorMessage.set('El correo electrónico es requerido');
-      hasErrors = true;
-    } else if (!this.validateEmail(this.email())) {
-      this.emailError.set(true);
-      this.emailErrorMessage.set('Correo inválido. Debe tener @ y dominio terminado en .xx (ej: .es, .com)');
-      hasErrors = true;
-    } else {
-      this.emailError.set(false);
-      this.emailErrorMessage.set('');
-    }
-
-    // Validar contraseña
-    if (!this.password()) {
-      this.passwordError.set(true);
-      this.passwordErrorMessage.set('La contraseña es requerida');
-      hasErrors = true;
-    } else if (!this.validatePassword(this.password())) {
-      this.passwordError.set(true);
-      this.passwordErrorMessage.set('Mínimo 8 caracteres, una mayúscula y un carácter especial (!@#$%)');
-      hasErrors = true;
-    } else {
-      this.passwordError.set(false);
-      this.passwordErrorMessage.set('');
-    }
-
-    // Validar confirmación de contraseña
-    if (!this.confirmPassword()) {
-      this.confirmPasswordError.set(true);
-      this.confirmPasswordErrorMessage.set('Confirma tu contraseña');
-      hasErrors = true;
-    } else if (!this.validateConfirmPassword(this.password(), this.confirmPassword())) {
-      this.confirmPasswordError.set(true);
-      this.confirmPasswordErrorMessage.set('Las contraseñas no coinciden');
-      hasErrors = true;
-    } else {
-      this.confirmPasswordError.set(false);
-      this.confirmPasswordErrorMessage.set('');
-    }
-
-    // Si no hay errores, procesar el formulario
-    if (!hasErrors) {
+    /**
+     * Validar el formulario completo
+     * Verifica:
+     * 1. Todos los campos son válidos
+     * 2. No hay errores a nivel de grupo (ej: passwordMismatch)
+     */
+    if (this.registerForm.valid) {
       this.isSubmitting.set(true);
 
-      // Aquí iría la lógica de registro
-      console.log('Registro:', {
-        username: this.username(),
-        email: this.email(),
-        password: this.password()
-      });
+      /**
+       * Obtener datos del formulario
+       * {
+       *   username: 'usuario123',
+       *   email: 'usuario@ejemplo.com',
+       *   password: 'MiPassword123!',
+       *   confirmPassword: 'MiPassword123!'
+       * }
+       */
+      const formData = this.registerForm.value;
+
+      // Aquí iría la lógica de registro (inyectar AuthService)
+      console.log('Registro:', formData);
 
       // Simular llamada a API
       setTimeout(() => {
