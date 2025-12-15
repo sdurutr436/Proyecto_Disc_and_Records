@@ -41,7 +41,8 @@
   outline: none;
 
   &::placeholder {
-    color: var(--text-secondary);
+    color: var(--text-placeholder);
+    opacity: 1;
   }
 
   &:focus {
@@ -93,6 +94,6 @@
 /* --- Texto de Ayuda --- */
 .form-input__help {
   font-size: vars.$tamanio-fuente-texto-pequeno-xs;
-  color: vars.$color-letra-desactivado;
+  color: var(--text-secondary);
   font-style: italic;
 }

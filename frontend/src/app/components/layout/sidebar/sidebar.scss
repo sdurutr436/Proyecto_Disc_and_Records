@@ -1,4 +1,5 @@
 @use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
 
 /* --- Bloque Sidebar --- */
 .sidebar {
@@ -8,7 +9,7 @@
   border-radius: vars.$radio-s;
   box-shadow: 6px 6px 0px var(--shadow-color);
 
-  @media (min-width: vars.$breakpoint-desktop) {
+  @include mix.desktop-up {
     width: 300px;
     position: sticky;
     top: calc(70px + vars.$espaciado-m); // Altura del header + espaciado
@@ -17,6 +18,28 @@
   }
 }
 
+/* --- Media queries para tablet (reduc gap antes de desktop) --- */
+@include mix.tablet-only {
+  .sidebar__container {
+    gap: vars.$espaciado-m; // Reducir de $espaciado-l a $espaciado-m (2rem en lugar de 3rem)
+  }
+
+  .sidebar__section {
+    gap: vars.$espaciado-xs; // Reducir de $espaciado-s a $espaciado-xs
+  }
+
+  .sidebar__nav {
+    gap: vars.$espaciado-xs; // Reducir de $espaciado-s a $espaciado-xs
+  }
+
+  .sidebar__list {
+    gap: 0; // Reducir de $espaciado-xs a 0 para links más compactos
+  }
+
+  .sidebar__trending {
+    gap: 0; // Reducir items trending
+  }
+}
 /* --- Elemento: Container --- */
 .sidebar__container {
   padding: vars.$espaciado-m;
@@ -121,9 +144,7 @@
   gap: vars.$espaciado-xs;
 }
 
-.sidebar__list-item {
-  // Sin estilos específicos
-}
+// .sidebar__list-item - Sin estilos específicos necesarios
 
 /* --- Elemento: Link --- */
 .sidebar__link {
@@ -159,7 +180,7 @@
 }
 
 .sidebar__link-icon {
-  font-size: 1.25rem;
+  font-size: vars.$icon-sm;
   line-height: 1;
   flex-shrink: 0;
 }

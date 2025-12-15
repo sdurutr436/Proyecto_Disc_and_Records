@@ -235,3 +235,50 @@ $transicion-muy-lenta: 700ms ease-in-out; // Animaciones decorativas
 /* Funciones de timing específicas */
 $ease-brutal: cubic-bezier(0.25, 0.46, 0.45, 0.94);  // Transición "snappy" para neobrutalismo
 $ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); // Efecto rebote retro
+
+/* ========================================
+   Z-INDEX SCALE
+   Escala centralizada para z-index
+   ======================================== */
+$z-base: 1;
+$z-dropdown: 2;
+$z-sticky: 3;
+$z-overlay: 4;
+$z-modal: 5;
+$z-popover: 6;
+$z-tooltip: 7;
+$z-spinner: 9999;
+
+/* ========================================
+   TAMAÑOS DE ICONOS
+   ======================================== */
+$icon-xs: 1rem;
+$icon-sm: 1.25rem;
+$icon-md: 1.5rem;
+$icon-lg: 2rem;
+$icon-xl: 3rem;
+
+/* ========================================
+   ANCHO MÁXIMO DE CONTENEDORES
+   ======================================== */
+$max-width-container: 1440px;
+$max-width-modal: 36rem;
+$max-width-form: 450px;
+$max-width-card: 280px;
+$max-width-card-polaroid: 220px;
+
+/* ========================================
+   TAMAÑOS TOUCH ACCESSIBILITY
+   ======================================== */
+$touch-min-height-sm: 36px;
+$touch-min-height-md: 44px;
+$touch-min-height-lg: 52px;
+
+/* ========================================
+   DURACIONES DE ANIMACIÓN
+   ======================================== */
+$duration-instant: 100ms;
+$duration-fast: 150ms;
+$duration-normal: 300ms;
+$duration-slow: 500ms;
+$duration-very-slow: 700ms;

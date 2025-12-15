@@ -1,4 +1,5 @@
 @use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
 
 
 /* --- Bloque Footer --- */
@@ -195,7 +196,7 @@
 
 
 /* --- Responsive (< 768px) --- */
-@media (max-width: #{vars.$breakpoint-tablet - 1px}) {
+@include mix.mobile-down {
   .footer {
     padding: vars.$espaciado-xs 0;
   }
@@ -212,7 +213,7 @@
     left: auto;
     transform: none;
     order: 1;
-    z-index: 2;
+    z-index: vars.$z-dropdown;
     margin-bottom: vars.$espaciado-xs;
     margin-top: 0;
   }
@@ -250,14 +251,14 @@
   .footer__buttons-left {
     width: 100%;
     order: 2;
-    z-index: 2;
+    z-index: vars.$z-dropdown;
     align-items: stretch;
   }
 
   .footer__buttons-right {
     width: 100%;
     order: 2;
-    z-index: 2;
+    z-index: vars.$z-dropdown;
     align-items: stretch;
   }
 
@@ -265,7 +266,7 @@
     width: 100%;
     min-width: auto;
     padding: vars.$espaciado-xs vars.$espaciado-m;
-    font-size: 0.75rem;
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
     border: vars.$borde-brutal-medium;
     border-radius: 0;
     margin: 0;

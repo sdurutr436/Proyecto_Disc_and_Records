@@ -102,7 +102,7 @@
 /* ========================================
    RESPONSIVE
    ======================================== */
-@media (max-width: vars.$breakpoint-mobile) {
+@include mix.mobile-down {
   .accordion__header {
     padding: vars.$espaciado-s;
   }
@@ -117,7 +117,7 @@
   }
 
   .accordion__icon {
-    width: 1rem;
-    height: 1rem;
+    width: vars.$icon-xs;
+    height: vars.$icon-xs;
   }
 }

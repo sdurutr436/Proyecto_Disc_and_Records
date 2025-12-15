@@ -18,14 +18,7 @@
   background-color: var(--bg-secondary);
   border-bottom: vars.$borde-brutal-medium;
   overflow-x: auto;
-
-  /* Ocultar scrollbar completamente */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  @include mix.hide-scrollbar;
 }
 
 /* --- Tab individual --- */
@@ -110,7 +103,7 @@
 /* ========================================
    RESPONSIVE
    ======================================== */
-@media (max-width: vars.$breakpoint-mobile) {
+@include mix.mobile-down {
   .tabs__tab {
     padding: vars.$espaciado-s vars.$espaciado-m;
     font-size: vars.$tamanio-fuente-texto-pequeno-s;

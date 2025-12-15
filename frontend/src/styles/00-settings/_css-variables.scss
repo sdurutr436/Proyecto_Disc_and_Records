@@ -14,6 +14,7 @@
   /* --- Colores de texto --- */
   --text-primary: #{$color-letra-principal-light};   // #01131B
   --text-secondary: #{$color-letra-desactivado};     // rgba(1, 19, 27, 0.5)
+  --text-placeholder: rgba(1, 19, 27, 0.6);          // Placeholder más visible en modo claro
   --text-white: #{$color-letra-blanca};              // #FBFAF2
   --text-dark: #{$color-letra-oscura};               // #01131B
 
@@ -59,6 +60,7 @@
   /* --- Colores de texto - alto contraste --- */
   --text-primary: #F8F9FA;                           // Casi blanco para mejor legibilidad
   --text-secondary: rgba(248, 249, 250, 0.7);        // Blanco con transparencia
+  --text-placeholder: rgba(248, 249, 250, 0.85);     // Placeholder más visible
   --text-white: #{$color-letra-blanca};              // #FBFAF2 (no cambia)
   --text-dark: #0B1F2A;                              // Azul oscuro (para fondos claros)
 

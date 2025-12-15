@@ -1,23 +1,33 @@
 @use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
+
+/* --- Host del componente (evita overflow en flex parents) --- */
+:host {
+  @include mix.host-block;
+}
 
 .carousel {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   margin-bottom: vars.$espaciado-xl;
-  background-color: var(--bg-secondary);
-  border: vars.$borde-brutal-thick;
-  border-radius: vars.$radio-m;
+  @include mix.brutal-box(var(--bg-secondary), vars.$borde-brutal-thick, 6px 6px 0px var(--shadow-color), vars.$radio-m);
   padding: vars.$espaciado-l;
-  box-shadow: 6px 6px 0px var(--shadow-color);
 
-  @media (max-width: vars.$breakpoint-mobile) {
+  @include mix.mobile-down {
+    padding: vars.$espaciado-m;
+  }
+
+  @include mix.tablet-only {
     padding: vars.$espaciado-m;
   }
 
   &__title {
-    font-family: 'Monoton', cursive;
+    font-family: vars.$fuente-secundaria, cursive;
     font-size: 2.5rem;
     font-weight: 400;
-    text-transform: uppercase;
+    @include mix.text-uppercase;
     letter-spacing: 0.1em;
     margin: 0 0 vars.$espaciado-m 0;
     color: var(--text-primary);
@@ -26,66 +36,71 @@
       6px 6px 0px var(--color-secondary);
     padding-bottom: vars.$espaciado-s;
 
-    @media (max-width: vars.$breakpoint-tablet) {
+    @include mix.mobile-down {
+      font-size: 1.5rem;
+      text-shadow: 2px 2px 0px var(--color-primary);
+    }
+
+    @include mix.tablet-only {
       font-size: 2rem;
       text-shadow:
         2px 2px 0px var(--color-primary),
         4px 4px 0px var(--color-secondary);
     }
-
-    @media (max-width: vars.$breakpoint-mobile) {
-      font-size: 1.5rem;
-      text-shadow:
-        2px 2px 0px var(--color-primary);
-    }
   }
 
   &__container {
     position: relative;
-    display: flex;
+    @include mix.flex-row(vars.$espaciado-s);
     align-items: center;
-    gap: vars.$espaciado-s;
+
+    @include mix.mobile-down {
+      gap: vars.$espaciado-xs;
+    }
   }
 
   &__track {
     flex: 1;
-    display: flex;
-    gap: vars.$espaciado-m;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    @include mix.flex-row(vars.$espaciado-s);
     overflow-x: auto;
     overflow-y: visible;
     scroll-behavior: smooth;
-    min-height: 300px;
+    min-height: 260px;
+    padding: vars.$espaciado-s 0 vars.$espaciado-l 0;
+    @include mix.hide-scrollbar;
 
-    // Ocultar scrollbar pero mantener funcionalidad
-    scrollbar-width: none; // Firefox
-    -ms-overflow-style: none; // IE/Edge
-
-    &::-webkit-scrollbar {
-      display: none; // Chrome/Safari
+    @include mix.tablet-only {
+      gap: vars.$espaciado-xs;
+      padding: vars.$espaciado-xs 0 vars.$espaciado-m 0;
     }
 
-    // Padding para que las sombras no se corten
-    padding: vars.$espaciado-s 0 vars.$espaciado-l 0;
+    @include mix.mobile-down {
+      gap: vars.$espaciado-xs;
+      padding: vars.$espaciado-xs 0 vars.$espaciado-s 0;
+    }
 
-    // Los items (app-card) dentro del track - TAMAÑO FIJO E IGUAL PARA TODAS
+    // Items dentro del track - TAMAÑO FIJO
     > * {
-      flex: 0 0 220px;
-      width: 220px;
-      min-width: 220px;
-      max-width: 220px;
+      flex: 0 0 200px;
+      width: 200px;
+      min-width: 200px;
+      max-width: 200px;
 
-      @media (max-width: vars.$breakpoint-tablet) {
-        flex: 0 0 180px;
-        width: 180px;
-        min-width: 180px;
-        max-width: 180px;
+      @include mix.tablet-only {
+        flex: 0 0 170px;
+        width: 170px;
+        min-width: 170px;
+        max-width: 170px;
       }
 
-      @media (max-width: vars.$breakpoint-mobile) {
-        flex: 0 0 160px;
-        width: 160px;
-        min-width: 160px;
-        max-width: 160px;
+      @include mix.mobile-down {
+        flex: 0 0 150px;
+        width: 150px;
+        min-width: 150px;
+        max-width: 150px;
       }
     }
   }
@@ -94,9 +109,7 @@
     flex-shrink: 0;
     width: 48px;
     height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include mix.flex-center;
     background-color: var(--bg-secondary);
     border: vars.$borde-brutal-medium;
     border-radius: vars.$radio-xs;
@@ -107,7 +120,7 @@
     line-height: 1;
     color: var(--text-primary);
     transition: all vars.$transicion-rapida;
-    z-index: 2;
+    z-index: vars.$z-dropdown;
 
     &:hover {
       background-color: var(--color-primary);
@@ -120,10 +133,7 @@
       box-shadow: 2px 2px 0px var(--shadow-color);
     }
 
-    &:focus {
-      outline: 3px solid var(--border-color);
-      outline-offset: 2px;
-    }
+    @include mix.focus-visible(var(--border-color));
 
     &--prev {
       position: absolute;
@@ -149,7 +159,13 @@
       padding-left: vars.$espaciado-s;
     }
 
-    @media (max-width: vars.$breakpoint-mobile) {
+    @include mix.tablet-only {
+      width: 44px;
+      height: 44px;
+      font-size: 1.75rem;
+    }
+
+    @include mix.mobile-down {
       width: 40px;
       height: 40px;
       font-size: 1.5rem;

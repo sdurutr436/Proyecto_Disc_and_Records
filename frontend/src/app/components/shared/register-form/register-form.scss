@@ -1,162 +1,56 @@
 @use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
 
 .register-form {
-  display: flex;
-  flex-direction: column;
-  gap: vars.$espaciado-m;
-  max-width: 500px;
-  margin: 0 auto;
-  padding: vars.$espaciado-l;
-  background-color: var(--bg-primary);
-  border: vars.$borde-brutal-thick;
-  border-radius: vars.$radio-s;
-  box-shadow: 6px 6px 0px var(--shadow-color);
+  @include mix.form-container(500px);
 }
 
 /* --- Fieldset --- */
 .register-form__fieldset {
-  border: vars.$borde-brutal-thin;
-  border-radius: vars.$radio-xs;
-  padding: vars.$espaciado-m;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: vars.$espaciado-m;
-  background-color: var(--bg-secondary);
+  @include mix.form-fieldset;
 }
 
 /* --- Legend --- */
 .register-form__legend {
-  font-size: vars.$tamanio-fuente-h4;
-  font-weight: 600;
-  color: var(--text-primary);
-  padding: 0 vars.$espaciado-xs;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  @include mix.form-legend;
 }
 
 /* --- Campo individual --- */
 .register-form__field {
-  display: flex;
-  flex-direction: column;
-  gap: vars.$espaciado-xs;
+  @include mix.form-field-wrapper;
 }
 
 /* --- Label --- */
 .register-form__label {
-  font-size: vars.$tamanio-fuente-texto-pequeno-s;
-  font-weight: 500;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  @include mix.form-label;
 }
 
 .register-form__required {
-  color: vars.$color-error;
-  font-weight: 600;
-  font-size: 1.125rem;
-  line-height: 1;
+  @include mix.form-required-indicator;
 }
 
 /* --- Input --- */
 .register-form__input {
-  font-family: vars.$fuente-principal;
-  font-size: vars.$tamanio-fuente-parrafo;
-  padding: vars.$espaciado-xs vars.$espaciado-s;
-  border: vars.$borde-brutal-medium;
-  border-radius: vars.$radio-s;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  box-shadow: 4px 4px 0px var(--shadow-color);
-  transition: all vars.$transicion-rapida;
-  width: 100%;
-  outline: none;
-
-  &::placeholder {
-    color: var(--text-secondary);
-  }
-
-  &:focus {
-    border-color: var(--color-primary);
-    box-shadow: vars.$sombra-brutal-primario-light;
-  }
-
-  &:hover:not(:disabled) {
-    box-shadow: 2px 2px 0px var(--shadow-color);
-    transform: translate(2px, 2px);
-  }
+  @include mix.form-field-base;
 }
 
 .register-form__input--error {
-  border-color: vars.$color-error;
-  box-shadow: 4px 4px 0px vars.$color-error;
-
-  &:focus {
-    box-shadow: 4px 4px 0px vars.$color-error;
-  }
+  @include mix.form-field-error;
 }
 
 /* --- Mensajes --- */
 .register-form__error {
-  font-size: vars.$tamanio-fuente-texto-pequeno-xs;
-  color: vars.$color-error;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-
-  &::before {
-    content: '⚠';
-    font-size: 1rem;
-  }
+  @include mix.form-error-message;
 }
 
 .register-form__help {
-  font-size: vars.$tamanio-fuente-texto-pequeno-xs;
-  color: vars.$color-letra-blanca;
-  font-style: italic;
+  @include mix.form-hint;
 }
 
 /* --- Botón Submit --- */
 .register-form__submit {
-  font-family: vars.$fuente-principal;
-  font-size: vars.$tamanio-fuente-parrafo;
-  font-weight: 600;
-  padding: vars.$espaciado-s vars.$espaciado-m;
-  border: vars.$borde-brutal-medium;
-  border-radius: vars.$radio-s;
-  background-color: var(--color-primary);
-  color: var(--text-dark);
-  box-shadow: 4px 4px 0px var(--shadow-color);
-  transition: all vars.$transicion-rapida;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  width: 100%;
+  @include mix.form-submit-button;
   margin-top: vars.$espaciado-s;
-
-  &:hover:not(:disabled) {
-    box-shadow: 2px 2px 0px var(--shadow-color);
-    transform: translate(2px, 2px);
-  }
-
-  &:active:not(:disabled) {
-    box-shadow: 0px 0px 0px var(--shadow-color);
-    transform: translate(4px, 4px);
-  }
-
-  &:focus-visible {
-    outline: 3px solid var(--color-accent);
-    outline-offset: 2px;
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    box-shadow: 4px 4px 0px var(--shadow-color);
-    transform: none;
-  }
 }
 
 /* --- Footer --- */

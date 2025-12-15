@@ -1070,12 +1070,12 @@
               </app-card>
             </app-carousel>
 
-            <div style="display: flex; gap: 1rem; margin-top: 1rem; align-items: center;">
+            <div class="style-guide__carousel-demo-controls">
               <app-button (clicked)="toggleCarouselHighlight()" variant="secondary" size="sm">
                 Toggle Highlight (boxShadow + border)
               </app-button>
 
-              <label style="display: flex; align-items: center; gap: 0.5rem;">
+              <label class="style-guide__carousel-demo-opacity">
                 <span>Opacidad:</span>
                 <input
                   type="range"
@@ -1084,7 +1084,7 @@
                   step="0.1"
                   [value]="carouselOpacity"
                   (input)="updateCarouselOpacity($event)"
-                  style="width: 150px;"
+                  class="style-guide__carousel-demo-range"
                 />
                 <span>{{ carouselOpacity }}</span>
               </label>

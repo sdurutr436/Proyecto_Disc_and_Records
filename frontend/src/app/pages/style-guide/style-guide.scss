@@ -150,9 +150,11 @@
     flex-direction: column;
     gap: $espaciado-xs;
     align-items: flex-start;
+    min-width: 0; // Evita overflow en flex containers
 
     &--full {
       width: 100%;
+      min-width: 0; // Permite que el contenido se encoja
     }
 
     code {
@@ -165,11 +167,54 @@
       color: var(--text-primary);
       white-space: nowrap;
       overflow: auto;
+      max-width: 100%; // Evita que code desborde
 
       @media (max-width: 768px) {
         font-size: 0.75rem;
         padding: 4px 6px;
       }
     }
+  }
+}
+
+/* --- Fix para app-carousel dentro de flex containers --- */
+app-carousel {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* ========================================
+   DEMO - Carrusel (manipulación de estilos)
+   Evita desbordes en tamaños intermedios
+   ======================================== */
+.style-guide__carousel-demo-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espaciado-s;
+  margin-top: $espaciado-s;
+  align-items: center;
+}
+
+.style-guide__carousel-demo-opacity {
+  display: flex;
+  align-items: center;
+  gap: $espaciado-xs;
+  flex-wrap: wrap;
+}
+
+.style-guide__carousel-demo-range {
+  width: 150px;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .style-guide__carousel-demo-controls {
+    align-items: stretch;
+  }
+
+  .style-guide__carousel-demo-range {
+    width: 100%;
   }
 }

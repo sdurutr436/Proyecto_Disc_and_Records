@@ -1,8 +1,9 @@
 @use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
 
 .notification {
   position: fixed;
-  z-index: 4;
+  z-index: vars.$z-overlay;
   display: flex;
   align-items: flex-start;
   gap: vars.$espaciado-s;
@@ -16,28 +17,18 @@
   transform: translateX(400px);
   transition: all vars.$transicion-base;
 
-  @media (max-width: vars.$breakpoint-tablet) {
+  @include mix.mobile-down {
     min-width: 280px;
     max-width: calc(100vw - 2rem);
   }
 
   &__icon {
-    flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1;
+    @include mix.icon-container(24px);
   }
 
   &__content {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: vars.$espaciado-xs;
+    @include mix.flex-column(vars.$espaciado-xs);
   }
 
   &__title {
@@ -54,32 +45,8 @@
   }
 
   &__dismiss {
-    flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1;
-    padding: 0;
+    @include mix.dismiss-button(24px);
     opacity: 0.8;
-    color: inherit;
-    transition: all vars.$transicion-rapida;
-
-    &:hover {
-      opacity: 1;
-      transform: scale(1.1);
-    }
-
-    &:focus {
-      outline: 2px solid currentColor;
-      outline-offset: 2px;
-    }
   }
 
   // Posiciones
@@ -116,28 +83,20 @@
     }
   }
 
-  // Tipos
+  // Tipos con mixin de colores de estado
   &--success {
-    background-color: vars.$color-exito;
-    border-color: var(--border-color);
-    color: var(--text-dark);
+    @include mix.state-colors('success');
   }
 
   &--error {
-    background-color: vars.$color-error;
-    border-color: var(--border-color);
-    color: var(--text-white);
+    @include mix.state-colors('error');
   }
 
   &--warning {
-    background-color: vars.$color-advertencia-light;
-    border-color: var(--border-color);
-    color: var(--text-dark);
+    @include mix.state-colors('warning');
   }
 
   &--info {
-    background-color: vars.$color-informacion;
-    border-color: var(--border-color);
-    color: var(--text-white);
+    @include mix.state-colors('info');
   }
 }

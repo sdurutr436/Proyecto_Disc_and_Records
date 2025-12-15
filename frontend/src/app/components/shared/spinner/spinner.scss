@@ -8,16 +8,7 @@
 
 /* --- Overlay Global --- */
 .spinner-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+  @include mix.overlay-backdrop(vars.$z-spinner);
   opacity: 0;
   visibility: hidden;
   transition: all vars.$transicion-base;
@@ -29,12 +20,9 @@
 }
 
 .spinner-container {
-  display: flex;
-  flex-direction: column;
+  @include mix.flex-column(vars.$espaciado-m);
   align-items: center;
-  gap: vars.$espaciado-m;
   padding: vars.$espaciado-xl;
-  background-color: var(--bg-primary);
   @include mix.brutal-box(var(--bg-primary), vars.$borde-brutal-medium);
 }
 
@@ -43,16 +31,14 @@
   font-size: vars.$tamanio-fuente-texto-pequeno-m;
   font-weight: 700;
   color: var(--text-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  @include mix.text-uppercase;
   margin: 0;
 }
 
 /* --- Spinner Base --- */
 .spinner {
+  @include mix.flex-center;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* --- Margarita Flower Power SVG --- */
@@ -175,7 +161,7 @@
 /* ========================================
    RESPONSIVE
    ======================================== */
-@media (max-width: vars.$breakpoint-tablet) {
+@include mix.mobile-down {
   .spinner-container {
     padding: vars.$espaciado-l;
   }

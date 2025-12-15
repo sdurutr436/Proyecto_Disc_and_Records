@@ -5,50 +5,29 @@
    MODAL - Overlay y contenido
    ======================================== */
 .modal__overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  @include mix.flex-center;
-  z-index: 4;
+  @include mix.overlay-backdrop(vars.$z-modal);
   padding: vars.$espaciado-m;
-
-  /* Animación de entrada */
-  animation: fadeIn 0.3s ease;
-
-  /* Prevenir interacción con elementos de abajo */
   backdrop-filter: blur(3px);
+  animation: modal-fadeIn vars.$duration-normal ease;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+@keyframes modal-fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* --- Contenido del modal --- */
 .modal__content {
-  background-color: var(--bg-primary);
-  border: vars.$borde-brutal-thick;
-  border-radius: vars.$radio-m;
-  box-shadow: 8px 8px 0px var(--shadow-color);
-  max-width: 36rem;
+  @include mix.brutal-box(var(--bg-primary), vars.$borde-brutal-thick, 8px 8px 0px var(--shadow-color), vars.$radio-m);
+  max-width: vars.$max-width-modal;
   width: 100%;
   max-height: 90vh;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-
-  /* Animación de entrada: slide desde abajo */
-  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  @include mix.flex-column(0);
+  animation: modal-slideUp vars.$duration-normal vars.$ease-brutal;
 }
 
-@keyframes slideUp {
+@keyframes modal-slideUp {
   from {
     transform: translateY(2rem);
     opacity: 0;
@@ -61,13 +40,12 @@
 
 /* --- Header del modal --- */
 .modal__header {
-  display: flex;
+  @include mix.flex-row(vars.$espaciado-m);
   justify-content: space-between;
   align-items: center;
   padding: vars.$espaciado-m;
   border-bottom: vars.$borde-brutal-medium;
   background-color: var(--color-primary);
-  gap: vars.$espaciado-m;
 }
 
 .modal__title {
@@ -80,16 +58,14 @@
 }
 
 .modal__close {
+  @include mix.flex-center;
   background: none;
   border: none;
   cursor: pointer;
   padding: vars.$espaciado-xs;
   color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border-radius: vars.$radio-s;
-  transition: all 0.2s ease;
+  transition: all vars.$transicion-rapida;
   flex-shrink: 0;
 
   &:hover {
@@ -104,8 +80,8 @@
   @include mix.focus-visible;
 
   svg {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: vars.$icon-md;
+    height: vars.$icon-md;
   }
 }
 
@@ -125,11 +101,9 @@
   padding: vars.$espaciado-m;
   border-top: vars.$borde-brutal-medium;
   background-color: var(--bg-secondary);
-  display: flex;
+  @include mix.flex-row(vars.$espaciado-s);
   justify-content: flex-end;
-  gap: vars.$espaciado-s;
 
-  /* Ocultar si está vacío */
   &:empty {
     display: none;
   }
@@ -138,7 +112,7 @@
 /* ========================================
    RESPONSIVE
    ======================================== */
-@media (max-width: vars.$breakpoint-mobile) {
+@include mix.mobile-down {
   .modal__overlay {
     padding: vars.$espaciado-s;
   }
@@ -149,10 +123,6 @@
 
   .modal__header {
     padding: vars.$espaciado-s;
-  }
-
-  .modal__title {
-    font-size: vars.$tamanio-fuente-h5;
   }
 
   .modal__body {

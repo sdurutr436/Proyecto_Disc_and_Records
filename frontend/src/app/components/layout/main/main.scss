@@ -10,7 +10,7 @@
   background-color: var(--nav-bg);
   border-top: vars.$borde-brutal-thick;
   border-bottom: vars.$borde-brutal-thick;
-  z-index: 3;
+  z-index: vars.$z-sticky;
 }
 
 /* --- Desktop: barra horizontal visible --- */
@@ -87,9 +87,9 @@
 }
 
 .main-nav__theme-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  transition: transform 0.3s ease;
+  width: vars.$icon-sm;
+  height: vars.$icon-sm;
+  transition: transform vars.$transicion-base;
   flex-shrink: 0;
 }
 
@@ -199,9 +199,27 @@
 }
 
 /* ========================================
+   RESPONSIVE - TABLET (768px - 1024px)
+   ======================================== */
+@include mix.tablet-only {
+  .main-nav__list {
+    justify-content: center;
+  }
+
+  .main-nav__link {
+    padding: vars.$espaciado-s vars.$espaciado-m;
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  }
+
+  .main-nav__theme-toggle {
+    padding: vars.$espaciado-s vars.$espaciado-m;
+  }
+}
+
+/* ========================================
    RESPONSIVE - MÓVIL (< 768px)
    ======================================== */
-@media (max-width: #{vars.$breakpoint-tablet - 1px}) {
+@include mix.mobile-down {
   /* --- Navegación móvil sticky --- */
   .main-nav__desktop {
     display: none;

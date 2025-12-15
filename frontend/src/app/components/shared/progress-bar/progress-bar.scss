@@ -8,14 +8,12 @@
 
 /* --- Host del componente --- */
 :host {
-  display: block;
-  width: 100%;
+  @include mix.host-block;
 }
 
 .progress-bar {
-  display: flex;
+  @include mix.flex-row(vars.$espaciado-s);
   align-items: center;
-  gap: vars.$espaciado-s;
   width: 100%;
 }
 
