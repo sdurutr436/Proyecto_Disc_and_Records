@@ -2,7 +2,7 @@
 
 .style-guide {
   min-height: 100vh;
-  background-color: $color-fondo-light;
+  background-color: var(--bg-primary);
   padding: $espaciado-xl 0;
 
   &__container {
@@ -19,11 +19,11 @@
     text-align: center;
     margin-bottom: $espaciado-xl;
     padding: $espaciado-xl 0;
-    border-bottom: $borde-brutal-medium solid $color-letra-oscura;
+    border-bottom: $borde-brutal-medium solid var(--text-primary);
 
     h1 {
       font-size: 3rem;
-      color: $color-primario-light;
+      color: var(--color-primary);
       margin-bottom: $espaciado-s;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -36,7 +36,7 @@
 
   &__intro {
     font-size: 1.25rem;
-    color: $color-letra-oscura;
+    color: var(--text-primary);
     max-width: 600px;
     margin: 0 auto;
 
@@ -48,17 +48,17 @@
   &__section {
     margin-bottom: $espaciado-xl;
     padding: $espaciado-l;
-    background-color: $color-fondo-light;
-    border: $borde-brutal-medium solid $color-letra-oscura;
+    background-color: var(--bg-secondary);
+    border: $borde-brutal-medium solid var(--border-color);
     border-radius: $radio-m;
     box-shadow: $sombra-brutal-s;
 
     h2 {
       font-size: 2rem;
-      color: $color-secundario-light;
+      color: var(--color-secondary);
       margin-bottom: $espaciado-l;
       padding-bottom: $espaciado-s;
-      border-bottom: 2px solid $color-letra-oscura;
+      border-bottom: 2px solid var(--text-primary);
       text-transform: uppercase;
 
       @media (max-width: 768px) {
@@ -76,7 +76,7 @@
       }
 
       p {
-        color: $color-letra-oscura;
+        color: var(--text-primary);
         font-size: 1.125rem;
       }
     }
@@ -92,7 +92,7 @@
 
   h3 {
     font-size: 1.5rem;
-    color: $color-letra-oscura;
+    color: var(--text-primary);
     margin-bottom: $espaciado-m;
     text-transform: uppercase;
     letter-spacing: 0.05em;

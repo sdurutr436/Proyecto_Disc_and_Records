@@ -15,8 +15,8 @@ body {
   font-family: vars.$fuente-principal;
   font-size: vars.$tamanio-fuente-parrafo;
   line-height: vars.$altura-linea-parrafo;
-  color: vars.$color-letra-oscura;
-  background-color: vars.$color-fondo-light;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -70,17 +70,17 @@ em, i {
 
 /* --- Enlaces --- */
 a {
-  color: vars.$color-primario-light;
+  color: var(--color-primary);
   text-decoration: none;
   transition: color vars.$transicion-rapida;
   
   &:hover {
-    color: vars.$color-secundario-light;
+    color: var(--color-secondary);
     text-decoration: underline;
   }
   
   &:focus-visible {
-    outline: 3px solid vars.$color-primario-light;
+    outline: 3px solid var(--color-primary);
     outline-offset: 2px;
   }
 }
@@ -94,8 +94,8 @@ button {
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-s;
   padding: vars.$espaciado-xs vars.$espaciado-s;
-  background-color: vars.$color-primario-light;
-  color: vars.$color-letra-oscura;
+  background-color: var(--color-primary);
+  color: var(--text-dark);
   box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   text-transform: uppercase;

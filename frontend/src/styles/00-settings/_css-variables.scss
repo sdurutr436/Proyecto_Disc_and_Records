@@ -47,30 +47,30 @@
    ======================================== */
 
 [data-theme="dark"] {
-  /* --- Colores de fondo --- */
-  --bg-primary: #{$color-fondo-oscuro};              // #01131B
-  --bg-secondary: #{$color-fondo-oscuro-secundario}; // #013946
+  /* --- Colores de fondo - tonos azules más oscuros --- */
+  --bg-primary: #000D14;                             // Azul noche ultra profundo (más oscuro)
+  --bg-secondary: #002333;                           // Azul océano profundo
 
-  /* --- Colores de texto --- */
-  --text-primary: #{$color-letra-principal-dark};    // #FBFAF2
-  --text-secondary: rgba(251, 250, 242, 0.5);        // Blanco con opacidad
+  /* --- Colores de texto - mayor contraste --- */
+  --text-primary: #F8F9FA;                           // Casi blanco para mejor legibilidad
+  --text-secondary: rgba(248, 249, 250, 0.7);        // Blanco con transparencia
   --text-white: #{$color-letra-blanca};              // #FBFAF2 (no cambia)
-  --text-dark: #{$color-letra-oscura};               // #01131B (no cambia)
+  --text-dark: #000D14;                              // Azul oscuro (para fondos claros)
 
-  /* --- Colores principales --- */
-  --color-primary: #{$color-primario-dark};          // #93CFBB
-  --color-secondary: #{$color-secundario-dark};      // #0A9295
-  --color-contrast: #{$color-contraste-dark};        // #015F72
-  --color-accent: #{$color-acentuado-dark};          // #01131B
+  /* --- Colores principales - tonos más saturados --- */
+  --color-primary: #0FA9AC;                          // Teal vibrante (más brillante)
+  --color-secondary: #00D9FF;                        // Cyan brillante para contraste
+  --color-contrast: #93CFBB;                         // Verde menta (más visible)
+  --color-accent: #1FC7CA;                           // Teal brillante para acentos
 
   /* --- Colores de borde --- */
-  --border-color: #{$color-letra-blanca};            // #FBFAF2
+  --border-color: #015F72;                           // Teal profundo para bordes
 
-  /* --- Colores de estado (no cambian en dark) --- */
-  --color-error: #{$color-error};                    // #E04A4A
-  --color-warning: #{$color-advertencia-dark};       // #FEF84A (versión oscura)
-  --color-success: #{$color-exito};                  // #AAD661
-  --color-info: #{$color-informacion};               // #0A9295
+  /* --- Colores de estado (ajustados para dark) --- */
+  --color-error: #FF6B6B;                            // Rojo más brillante
+  --color-warning: #FFD93D;                          // Amarillo dorado (más legible)
+  --color-success: #6BCF7F;                          // Verde más brillante
+  --color-info: #00B4D8;                             // Cyan para información
 
   /* --- Colores de franjas (no cambian) --- */
   --color-stripe-1: #{$color-franja-1};

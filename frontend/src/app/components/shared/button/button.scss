@@ -24,13 +24,13 @@
 
 /* --- Variante: Primary --- */
 .button--primary {
-  background-color: vars.$color-primario-light;
-  color: vars.$color-letra-oscura;
-  border-color: vars.$color-letra-oscura;
+  background-color: var(--color-primary);
+  color: var(--text-dark);
+  border-color: var(--border-color);
   box-shadow: vars.$sombra-brutal-s;
 
   &:hover:not(.button--disabled) {
-    background-color: vars.$color-secundario-light;
+    background-color: var(--color-secondary);
     box-shadow: vars.$sombra-brutal-hover;
     transform: translate(2px, 2px);
   }
@@ -43,9 +43,9 @@
 
 /* --- Variante: Secondary --- */
 .button--secondary {
-  background-color: vars.$color-fondo-light;
-  color: vars.$color-letra-oscura;
-  border-color: vars.$color-letra-oscura;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
   box-shadow: vars.$sombra-brutal-s;
 
   &:hover:not(.button--disabled) {

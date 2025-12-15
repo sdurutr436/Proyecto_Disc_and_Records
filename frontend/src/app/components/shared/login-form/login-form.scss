@@ -65,8 +65,8 @@
   padding: vars.$espaciado-xs vars.$espaciado-s;
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-s;
-  background-color: vars.$color-fondo-light;
-  color: vars.$color-letra-oscura;
+  background-color: var(--bg-primary);
+  color: var(--text-dark);
   box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   width: 100%;
@@ -125,8 +125,8 @@
   padding: vars.$espaciado-s vars.$espaciado-m;
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-s;
-  background-color: vars.$color-primario-light;
-  color: vars.$color-letra-oscura;
+  background-color: var(--color-primary);
+  color: var(--text-dark);
   box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   cursor: pointer;

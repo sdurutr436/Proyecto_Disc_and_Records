@@ -6,7 +6,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: vars.$color-fondo-light;
+  background-color: var(--bg-primary);
   min-height: calc(100vh - 200px); // Ajustar según altura de header/footer
 }
 

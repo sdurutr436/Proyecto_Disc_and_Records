@@ -3,7 +3,7 @@
 /* --- Bloque Sidebar --- */
 .sidebar {
   width: 100%;
-  background-color: vars.$color-fondo-light-secundario;
+  background-color: var(--bg-secondary);
   border: vars.$borde-brutal-thick;
   border-radius: vars.$radio-s;
   box-shadow: vars.$sombra-brutal-m;
@@ -43,7 +43,7 @@
 .sidebar__title {
   font-size: vars.$tamanio-fuente-texto-pequeno-m;
   font-weight: 600;
-  color: vars.$color-letra-oscura;
+  color: var(--text-primary);
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
