@@ -1,0 +1,48 @@
+<div class="accordion">
+  <!-- Iterar sobre cada item del accordion -->
+  <div 
+    *ngFor="let item of items()" 
+    class="accordion__item"
+    [class.accordion__item--open]="isOpen(item.id)">
+    
+    <!-- Header: clickeable para expandir/colapsar -->
+    <button 
+      class="accordion__header"
+      (click)="toggle(item.id)"
+      [attr.aria-expanded]="isOpen(item.id)"
+      [attr.aria-controls]="'accordion-content-' + item.id"
+      type="button">
+      
+      <span class="accordion__title">{{ item.title }}</span>
+      
+      <!-- Icono de flecha que rota al abrir -->
+      <svg 
+        class="accordion__icon"
+        [class.accordion__icon--open]="isOpen(item.id)"
+        width="20" 
+        height="20" 
+        viewBox="0 0 20 20" 
+        fill="none" 
+        stroke="currentColor" 
+        stroke-width="2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        aria-hidden="true">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+
+    <!-- Contenido: se expande/colapsa con animación -->
+    <div 
+      [id]="'accordion-content-' + item.id"
+      class="accordion__content"
+      [class.accordion__content--open]="isOpen(item.id)"
+      role="region"
+      [attr.aria-labelledby]="'accordion-header-' + item.id">
+      
+      <div class="accordion__content-inner">
+        {{ item.content }}
+      </div>
+    </div>
+  </div>
+</div>

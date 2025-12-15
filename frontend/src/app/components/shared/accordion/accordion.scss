@@ -1,0 +1,123 @@
+@use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
+
+/* ========================================
+   ACCORDION - Brutal Neobrutalism
+   ======================================== */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-s;
+  width: 100%;
+}
+
+/* --- Item del accordion --- */
+.accordion__item {
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-s;
+  background-color: var(--bg-primary);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: vars.$sombra-brutal-s;
+  }
+}
+
+.accordion__item--open {
+  box-shadow: vars.$sombra-brutal-m;
+  border-color: var(--color-primary);
+}
+
+/* --- Header clickeable --- */
+.accordion__header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: vars.$espaciado-m;
+  background-color: var(--bg-secondary);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  gap: vars.$espaciado-m;
+
+  .accordion__item--open & {
+    background-color: var(--color-primary);
+    border-bottom: vars.$borde-brutal-thin;
+  }
+
+  &:hover {
+    background-color: var(--color-primary);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  @include mix.focus-visible;
+}
+
+.accordion__title {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-texto-pequeno-m;
+  font-weight: 700;
+  color: var(--text-dark);
+  text-align: left;
+  @include mix.text-uppercase;
+}
+
+/* --- Icono de flecha --- */
+.accordion__icon {
+  color: var(--text-dark);
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion__icon--open {
+  transform: rotate(180deg);
+}
+
+/* --- Contenido expandible --- */
+.accordion__content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.accordion__content--open {
+  max-height: 100rem; /* Suficiente para la mayoría de contenidos */
+  opacity: 1;
+}
+
+.accordion__content-inner {
+  padding: vars.$espaciado-m;
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: vars.$breakpoint-mobile) {
+  .accordion__header {
+    padding: vars.$espaciado-s;
+  }
+
+  .accordion__title {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  }
+
+  .accordion__content-inner {
+    padding: vars.$espaciado-s;
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  }
+
+  .accordion__icon {
+    width: 1rem;
+    height: 1rem;
+  }
+}

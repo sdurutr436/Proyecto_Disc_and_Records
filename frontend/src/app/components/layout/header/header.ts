@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -16,5 +16,31 @@ export class Header {
 
   closeMenu() {
     this.isMenuOpen.set(false);
+  }
+
+  /**
+   * Cerrar menú al presionar ESC
+   */
+  @HostListener('document:keydown.escape')
+  onEscapeKey() {
+    if (this.isMenuOpen()) {
+      this.closeMenu();
+    }
+  }
+
+  /**
+   * Cerrar menú al hacer click fuera del menú móvil
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.isMenuOpen()) return;
+
+    const target = event.target as HTMLElement;
+    const mobileNav = target.closest('.header-nav__mobile');
+    
+    // Si el click NO es dentro de .header-nav__mobile, cerrar
+    if (!mobileNav) {
+      this.closeMenu();
+    }
   }
 }
