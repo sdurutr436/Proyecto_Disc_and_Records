@@ -199,9 +199,9 @@
 }
 
 /* ========================================
-   RESPONSIVE - MÓVIL
+   RESPONSIVE - MÓVIL (< 768px)
    ======================================== */
-@media (max-width: vars.$breakpoint-tablet) {
+@media (max-width: #{vars.$breakpoint-tablet - 1px}) {
   /* --- Navegación móvil sticky --- */
   .main-nav__desktop {
     display: none;

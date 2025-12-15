@@ -194,8 +194,8 @@
 }
 
 
-/* --- Responsive --- */
-@media (max-width: vars.$breakpoint-tablet) {
+/* --- Responsive (< 768px) --- */
+@media (max-width: #{vars.$breakpoint-tablet - 1px}) {
   .footer {
     padding: vars.$espaciado-xs 0;
   }
