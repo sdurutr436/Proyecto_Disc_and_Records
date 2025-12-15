@@ -13,7 +13,7 @@ export class Modal {
    * Se puede pasar desde el componente padre.
    */
   isOpen = input<boolean>(false);
-  
+
   /**
    * Título del modal (opcional)
    */

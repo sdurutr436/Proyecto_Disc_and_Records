@@ -131,6 +131,40 @@
   margin-left: 6px;
 }
 
+/* --- Botón Theme Switcher --- */
+.header__theme-toggle {
+  order: 4;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-redondo;
+  background-color: vars.$color-fondo-light;
+  color: vars.$color-letra-oscura;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: vars.$espaciado-s;
+  box-shadow: vars.$sombra-brutal-s;
+  position: relative;
+  z-index: 4;
+
+  @include mix.brutal-interaction;
+  @include mix.focus-visible;
+
+  &:hover {
+    transform: rotate(180deg);
+  }
+}
+
+.header__theme-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
 /* --- Barra "Opciones" para móvil --- */
 .header__options-bar {
   display: none;
@@ -324,6 +358,20 @@
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     margin-left: -3px;
+  }
+
+  /* --- Theme toggle en móvil --- */
+  .header__theme-toggle {
+    order: 3;
+    width: 3rem;
+    height: 3rem;
+    margin-left: vars.$espaciado-xs;
+    flex-shrink: 0;
+  }
+
+  .header__theme-icon {
+    width: 1.25rem;
+    height: 1.25rem;
   }
 
   /* --- Navegación móvil sticky --- */

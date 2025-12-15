@@ -1,0 +1,30 @@
+<div class="tabs">
+  <!-- Lista de tabs (navegación) -->
+  <div class="tabs__nav" role="tablist">
+    <button
+      *ngFor="let tab of tabs()"
+      class="tabs__tab"
+      [class.tabs__tab--active]="isActive(tab.id)"
+      [class.tabs__tab--disabled]="tab.disabled"
+      [attr.role]="'tab'"
+      [attr.aria-selected]="isActive(tab.id)"
+      [attr.aria-controls]="'tabpanel-' + tab.id"
+      [attr.tabindex]="isActive(tab.id) ? 0 : -1"
+      [disabled]="tab.disabled"
+      (click)="selectTab(tab.id)"
+      type="button">
+      {{ tab.label }}
+    </button>
+  </div>
+
+  <!-- Panel de contenido -->
+  <div
+    class="tabs__panel"
+    role="tabpanel"
+    [attr.id]="'tabpanel-' + activeTabId()"
+    [attr.aria-labelledby]="'tab-' + activeTabId()">
+    <div class="tabs__content">
+      {{ getActiveContent() }}
+    </div>
+  </div>
+</div>

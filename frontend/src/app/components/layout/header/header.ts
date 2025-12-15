@@ -1,5 +1,6 @@
-import { Component, signal, HostListener } from '@angular/core';
+import { Component, signal, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ThemeService } from '../../../services/theme';
 
 @Component({
   selector: 'app-header',
@@ -9,6 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class Header {
   isMenuOpen = signal(false);
+  themeService = inject(ThemeService);
 
   toggleMenu() {
     this.isMenuOpen.set(!this.isMenuOpen());
@@ -16,6 +18,13 @@ export class Header {
 
   closeMenu() {
     this.isMenuOpen.set(false);
+  }
+
+  /**
+   * Toggle entre tema claro y oscuro
+   */
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 
   /**
@@ -37,7 +46,7 @@ export class Header {
 
     const target = event.target as HTMLElement;
     const mobileNav = target.closest('.header-nav__mobile');
-    
+
     // Si el click NO es dentro de .header-nav__mobile, cerrar
     if (!mobileNav) {
       this.closeMenu();
