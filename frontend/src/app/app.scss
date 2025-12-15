@@ -4,8 +4,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: vars.$color-fondo-light;
-  color: vars.$color-letra-oscura;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   font-family: vars.$fuente-principal;
 }
 

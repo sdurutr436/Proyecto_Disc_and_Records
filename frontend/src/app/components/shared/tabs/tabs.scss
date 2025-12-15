@@ -19,16 +19,12 @@
   border-bottom: vars.$borde-brutal-medium;
   overflow-x: auto;
 
-  /* Ocultar scrollbar pero mantener funcionalidad */
-  scrollbar-width: thin;
+  /* Ocultar scrollbar completamente */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--color-primary);
-    border-radius: vars.$radio-xs;
+    display: none;
   }
 }
 

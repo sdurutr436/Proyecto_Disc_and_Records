@@ -7,7 +7,7 @@
   background-color: var(--bg-secondary);
   border: vars.$borde-brutal-thick;
   border-radius: vars.$radio-s;
-  box-shadow: vars.$sombra-brutal-s;
+  box-shadow: 4px 4px 0px var(--shadow-color);
   transition: all vars.$transicion-rapida;
   overflow: hidden;
   width: 100%;
@@ -16,7 +16,7 @@
   /* Variante con efecto hover lift (hundido) - solo para polaroid */
   &--polaroid.card--hover-lift:hover {
     transform: translate(2px, 2px);
-    box-shadow: vars.$sombra-brutal-xs;
+    box-shadow: 2px 2px 0px var(--shadow-color);
   }
 
   /* Variante con sombras multicolor estilo vinilo */

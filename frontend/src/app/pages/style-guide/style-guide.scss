@@ -51,7 +51,7 @@
     background-color: var(--bg-secondary);
     border: $borde-brutal-medium solid var(--border-color);
     border-radius: $radio-m;
-    box-shadow: $sombra-brutal-s;
+    box-shadow: 4px 4px 0px var(--shadow-color);
 
     h2 {
       font-size: 2rem;
@@ -159,10 +159,10 @@
       font-family: 'Courier New', monospace;
       font-size: 0.875rem;
       padding: $espaciado-xs $espaciado-s;
-      background-color: rgba($color-letra-oscura, 0.1);
-      border: 1px solid $color-letra-oscura;
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-color);
       border-radius: $radio-s;
-      color: $color-letra-oscura;
+      color: var(--text-primary);
       white-space: nowrap;
       overflow: auto;
 

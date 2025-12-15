@@ -42,7 +42,7 @@ body {
   --color-secundario: #{$color-secundario-light};
   --color-contraste: #{$color-contraste-light};
   --color-acentuado: #{$color-acentuado-light};
-  --sombra-brutal: #{$sombra-brutal-m};
+  --sombra-brutal: #{6px 6px 0px var(--shadow-color)};
   --borde-brutal: #{$borde-brutal-medium};
 }
 

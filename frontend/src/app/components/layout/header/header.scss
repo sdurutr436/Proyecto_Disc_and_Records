@@ -14,7 +14,7 @@
 /* --- Sección superior (botones + logo) --- */
 .header__top {
   width: 100%;
-  background-color: var(--color-primary);
+  background-color: var(--header-bg);
   padding: vars.$espaciado-m 0;
   position: relative;
   z-index: 1;
@@ -39,7 +39,7 @@
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  background-color: var(--color-primary);
+  background-color: var(--header-bg);
   flex-shrink: 0;
   margin: 0;
   order: 2;
@@ -105,12 +105,12 @@
   padding: vars.$espaciado-s vars.$espaciado-xl;
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-pildora;
-  background-color: var(--bg-secondary);
+  background-color: var(--nav-bg);
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
   @include mix.text-uppercase;
-  box-shadow: vars.$sombra-brutal-s;
+  box-shadow: 4px 4px 0px var(--shadow-color);
   position: relative;
   z-index: 4;
   white-space: nowrap;
@@ -137,7 +137,7 @@
 .header-nav {
   @include mix.sticky-top;
   width: 100%;
-  background-color: var(--color-secondary);
+  background-color: var(--nav-bg);
   border-bottom: vars.$borde-brutal-thick;
 }
 

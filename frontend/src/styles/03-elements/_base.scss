@@ -96,18 +96,18 @@ button {
   padding: vars.$espaciado-xs vars.$espaciado-s;
   background-color: var(--color-primary);
   color: var(--text-dark);
-  box-shadow: vars.$sombra-brutal-s;
+  box-shadow: 4px 4px 0px var(--shadow-color);
   transition: all vars.$transicion-rapida;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 
   &:hover {
-    box-shadow: vars.$sombra-brutal-hover;
+    box-shadow: 2px 2px 0px var(--shadow-color);
     transform: translate(2px, 2px);
   }
 
   &:active {
-    box-shadow: vars.$sombra-brutal-active;
+    box-shadow: 0px 0px 0px var(--shadow-color);
     transform: translate(4px, 4px);
   }
 
@@ -134,7 +134,7 @@ input, textarea, select {
   border-radius: vars.$radio-s;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  box-shadow: vars.$sombra-brutal-s;
+  box-shadow: 4px 4px 0px var(--shadow-color);
   transition: all vars.$transicion-rapida;
   width: 100%;
 
@@ -145,7 +145,7 @@ input, textarea, select {
   &:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: vars.$sombra-brutal-primario-light;
+    box-shadow: 4px 4px 0px var(--color-primary);
   }
 
   &:disabled {
@@ -217,7 +217,7 @@ pre {
   padding: vars.$espaciado-s;
   border-radius: vars.$radio-s;
   border: vars.$borde-brutal-medium;
-  box-shadow: vars.$sombra-brutal-s;
+  box-shadow: 4px 4px 0px var(--shadow-color);
   overflow-x: auto;
 
   code {
@@ -234,7 +234,7 @@ table {
   border-collapse: collapse;
   margin-bottom: vars.$espaciado-m;
   border: vars.$borde-brutal-medium;
-  box-shadow: vars.$sombra-brutal-s;
+  box-shadow: 4px 4px 0px var(--shadow-color);
 }
 
 th, td {

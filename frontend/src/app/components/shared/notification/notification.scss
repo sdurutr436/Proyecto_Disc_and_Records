@@ -9,7 +9,7 @@
   padding: vars.$espaciado-s vars.$espaciado-m;
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-s;
-  box-shadow: vars.$sombra-brutal-m;
+  box-shadow: 6px 6px 0px var(--shadow-color);
   min-width: 300px;
   max-width: 400px;
   opacity: 0;
@@ -67,7 +67,8 @@
     font-weight: 700;
     line-height: 1;
     padding: 0;
-    opacity: 0.7;
+    opacity: 0.8;
+    color: inherit;
     transition: all vars.$transicion-rapida;
 
     &:hover {

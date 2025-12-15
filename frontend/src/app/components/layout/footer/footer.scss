@@ -4,7 +4,7 @@
 /* --- Bloque Footer --- */
 .footer {
   width: 100%;
-  background-color: var(--color-primary);
+  background-color: var(--header-bg);
   border-top: vars.$borde-brutal-thick;
   margin-top: auto;
   padding: vars.$espaciado-xl 0;
@@ -124,18 +124,18 @@
   transition: all vars.$transicion-rapida, border-radius vars.$transicion-base, width vars.$transicion-base, min-width vars.$transicion-base;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  box-shadow: vars.$sombra-brutal-s;
+  box-shadow: 4px 4px 0px var(--shadow-color);
   position: relative;
   white-space: nowrap;
   min-width: 24rem;
 
   &:hover {
-    box-shadow: vars.$sombra-brutal-hover;
+    box-shadow: 2px 2px 0px var(--shadow-color);
     transform: translate(2px, 2px);
   }
 
   &:active {
-    box-shadow: vars.$sombra-brutal-active;
+    box-shadow: 0px 0px 0px var(--shadow-color);
     transform: translate(4px, 4px);
   }
 

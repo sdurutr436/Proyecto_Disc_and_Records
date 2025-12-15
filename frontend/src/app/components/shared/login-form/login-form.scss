@@ -10,24 +10,26 @@
   background-color: var(--bg-primary);
   border: vars.$borde-brutal-thick;
   border-radius: vars.$radio-s;
-  box-shadow: vars.$sombra-brutal-m;
+  box-shadow: 6px 6px 0px var(--shadow-color);
 }
 
 /* --- Fieldset --- */
 .login-form__fieldset {
-  border: none;
-  padding: 0;
+  border: vars.$borde-brutal-thin;
+  border-radius: vars.$radio-xs;
+  padding: vars.$espaciado-m;
   margin: 0;
   display: flex;
   flex-direction: column;
   gap: vars.$espaciado-m;
+  background-color: var(--bg-secondary);
 }
 
 /* --- Legend --- */
 .login-form__legend {
   font-size: vars.$tamanio-fuente-h3;
   font-weight: 600;
-  color: var(--text-dark);
+  color: var(--text-primary);
   margin-bottom: vars.$espaciado-s;
   text-align: center;
   text-transform: uppercase;
@@ -66,8 +68,8 @@
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-s;
   background-color: var(--bg-primary);
-  color: var(--text-dark);
-  box-shadow: vars.$sombra-brutal-s;
+  color: var(--text-primary);
+  box-shadow: 4px 4px 0px var(--shadow-color);
   transition: all vars.$transicion-rapida;
   width: 100%;
   outline: none;
@@ -82,7 +84,7 @@
   }
 
   &:hover:not(:disabled) {
-    box-shadow: vars.$sombra-brutal-hover;
+    box-shadow: 2px 2px 0px var(--shadow-color);
     transform: translate(2px, 2px);
   }
 }
@@ -127,7 +129,7 @@
   border-radius: vars.$radio-s;
   background-color: var(--color-primary);
   color: var(--text-dark);
-  box-shadow: vars.$sombra-brutal-s;
+  box-shadow: 4px 4px 0px var(--shadow-color);
   transition: all vars.$transicion-rapida;
   cursor: pointer;
   text-transform: uppercase;
@@ -136,12 +138,12 @@
   margin-top: vars.$espaciado-s;
 
   &:hover:not(:disabled) {
-    box-shadow: vars.$sombra-brutal-hover;
+    box-shadow: 2px 2px 0px var(--shadow-color);
     transform: translate(2px, 2px);
   }
 
   &:active:not(:disabled) {
-    box-shadow: vars.$sombra-brutal-active;
+    box-shadow: 0px 0px 0px var(--shadow-color);
     transform: translate(4px, 4px);
   }
 
@@ -153,7 +155,7 @@
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    box-shadow: vars.$sombra-brutal-s;
+    box-shadow: 4px 4px 0px var(--shadow-color);
     transform: none;
   }
 }

@@ -36,7 +36,7 @@
   background-color: var(--bg-primary);
   border: vars.$borde-brutal-thick;
   border-radius: vars.$radio-m;
-  box-shadow: vars.$sombra-brutal-l;
+  box-shadow: 8px 8px 0px var(--shadow-color);
   max-width: 36rem;
   width: 100%;
   max-height: 90vh;
@@ -74,7 +74,7 @@
   font-family: vars.$fuente-principal;
   font-size: vars.$tamanio-fuente-h5;
   font-weight: 800;
-  color: var(--text-dark);
+  color: var(--text-primary);
   margin: 0;
   @include mix.text-uppercase;
 }
@@ -84,7 +84,7 @@
   border: none;
   cursor: pointer;
   padding: vars.$espaciado-xs;
-  color: var(--text-dark);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;

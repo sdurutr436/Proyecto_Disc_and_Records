@@ -20,12 +20,12 @@
   transition: box-shadow 0.2s ease;
 
   &:hover {
-    box-shadow: vars.$sombra-brutal-s;
+    box-shadow: 4px 4px 0px var(--shadow-color);
   }
 }
 
 .accordion__item--open {
-  box-shadow: vars.$sombra-brutal-m;
+  box-shadow: 6px 6px 0px var(--shadow-color);
   border-color: var(--color-primary);
 }
 
@@ -62,14 +62,14 @@
   font-family: vars.$fuente-principal;
   font-size: vars.$tamanio-fuente-texto-pequeno-m;
   font-weight: 700;
-  color: var(--text-dark);
+  color: var(--text-primary);
   text-align: left;
   @include mix.text-uppercase;
 }
 
 /* --- Icono de flecha --- */
 .accordion__icon {
-  color: var(--text-dark);
+  color: var(--text-primary);
   flex-shrink: 0;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

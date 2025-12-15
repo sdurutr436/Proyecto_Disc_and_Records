@@ -7,7 +7,7 @@
   border: vars.$borde-brutal-thick;
   border-radius: vars.$radio-m;
   padding: vars.$espaciado-l;
-  box-shadow: vars.$sombra-brutal-m;
+  box-shadow: 6px 6px 0px var(--shadow-color);
 
   @media (max-width: vars.$breakpoint-mobile) {
     padding: vars.$espaciado-m;
@@ -97,27 +97,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-primary);
+    background-color: var(--bg-secondary);
     border: vars.$borde-brutal-medium;
     border-radius: vars.$radio-xs;
-    box-shadow: vars.$sombra-brutal-s;
+    box-shadow: 4px 4px 0px var(--shadow-color);
     cursor: pointer;
     font-size: 2rem;
     font-weight: 700;
     line-height: 1;
-    color: var(--text-dark);
+    color: var(--text-primary);
     transition: all vars.$transicion-rapida;
     z-index: 2;
 
     &:hover {
-      background-color: var(--color-secondary);
+      background-color: var(--color-primary);
       transform: translateY(-2px);
-      box-shadow: vars.$sombra-brutal-m;
+      box-shadow: 6px 6px 0px var(--shadow-color);
     }
 
     &:active {
       transform: translateY(0);
-      box-shadow: vars.$sombra-brutal-xs;
+      box-shadow: 2px 2px 0px var(--shadow-color);
     }
 
     &:focus {

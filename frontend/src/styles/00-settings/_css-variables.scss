@@ -23,8 +23,13 @@
   --color-contrast: #{$color-contraste-light};       // #BB3F03
   --color-accent: #{$color-acentuado-light};         // #9D2227
 
-  /* --- Colores de borde --- */
+  /* --- Colores de borde y sombra --- */
   --border-color: #{$color-letra-oscura};            // #01131B
+  --shadow-color: #{$color-letra-oscura};            // #01131B (para box-shadow)
+
+  /* --- Colores de header/footer/nav --- */
+  --header-bg: #{$color-primario-light};             // #ED9C05 (naranja)
+  --nav-bg: #{$color-secundario-light};              // #CA6703 (naranja oscuro)
 
   /* --- Colores de estado (apoyo) --- */
   --color-error: #{$color-error};                    // #E04A4A
@@ -63,8 +68,13 @@
   --color-contrast: #93CFBB;                         // Verde menta (más visible)
   --color-accent: #28A745;                           // Verde brillante para acentos
 
-  /* --- Colores de borde - blanco para mejor contraste --- */
+  /* --- Colores de borde y sombra - blanco para mejor contraste --- */
   --border-color: #E8E8E8;                           // Gris claro/blanco para bordes
+  --shadow-color: #E8E8E8;                           // Gris claro para box-shadow
+
+  /* --- Colores de header/footer/nav - oscuros en dark mode --- */
+  --header-bg: #154360;                              // Azul océano (oscuro)
+  --nav-bg: #0B1F2A;                                 // Azul más oscuro
 
   /* --- Colores de estado (ajustados para dark) --- */
   --color-error: #FF6B6B;                            // Rojo más brillante
@@ -79,4 +89,12 @@
   --color-stripe-4: #{$color-franja-4};
   --color-stripe-5: #{$color-franja-5};
   --color-stripe-6: #{$color-franja-6};
+
+  /* --- OVERRIDE GLOBAL: Bordes blancos en dark mode --- */
+  /* Esto sobrescribe los bordes hardcodeados de SCSS */
+  *,
+  *::before,
+  *::after {
+    border-color: var(--border-color) !important;
+  }
 }

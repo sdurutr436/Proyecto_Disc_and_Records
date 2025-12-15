@@ -14,18 +14,18 @@
   position: absolute;
   z-index: 9999;
   padding: vars.$espaciado-s vars.$espaciado-m;
-  background-color: var(--text-dark);
-  color: var(--bg-primary);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   font-family: vars.$fuente-principal;
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
   font-weight: 600;
   line-height: 1.4;
   border: vars.$borde-brutal-thin;
   border-radius: vars.$radio-xs;
-  box-shadow: vars.$sombra-brutal-s;
+  box-shadow: 4px 4px 0px var(--shadow-color);
   white-space: nowrap;
   pointer-events: none;
-  
+
   /* Animación de entrada */
   animation: tooltipFadeIn 0.2s ease;
 }
@@ -54,13 +54,13 @@
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  
+
   .tooltip__arrow {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
     border-width: 6px 6px 0 6px;
-    border-color: var(--text-dark) transparent transparent transparent;
+    border-color: var(--bg-secondary) transparent transparent transparent;
   }
 }
 
@@ -69,13 +69,13 @@
   top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  
+
   .tooltip__arrow {
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
     border-width: 0 6px 6px 6px;
-    border-color: transparent transparent var(--text-dark) transparent;
+    border-color: transparent transparent var(--bg-secondary) transparent;
   }
 }
 
@@ -84,13 +84,13 @@
   right: calc(100% + 8px);
   top: 50%;
   transform: translateY(-50%);
-  
+
   .tooltip__arrow {
     left: 100%;
     top: 50%;
     transform: translateY(-50%);
     border-width: 6px 0 6px 6px;
-    border-color: transparent transparent transparent var(--text-dark);
+    border-color: transparent transparent transparent var(--bg-secondary);
   }
 }
 
@@ -99,13 +99,13 @@
   left: calc(100% + 8px);
   top: 50%;
   transform: translateY(-50%);
-  
+
   .tooltip__arrow {
     right: 100%;
     top: 50%;
     transform: translateY(-50%);
     border-width: 6px 6px 6px 0;
-    border-color: transparent var(--text-dark) transparent transparent;
+    border-color: transparent var(--bg-secondary) transparent transparent;
   }
 }
 

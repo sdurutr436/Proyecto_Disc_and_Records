@@ -55,7 +55,7 @@
    ======================================== */
 
 // Efecto hover neobrutalista (hundido)
-@mixin brutal-hover($shadow-hover: vars.$sombra-brutal-hover, $translate: 2px) {
+@mixin brutal-hover($shadow-hover: 2px 2px 0px var(--shadow-color), $translate: 2px) {
   &:hover:not(:disabled):not(.button--disabled) {
     box-shadow: $shadow-hover;
     transform: translate($translate, $translate);
@@ -63,7 +63,7 @@
 }
 
 // Efecto active neobrutalista (más hundido)
-@mixin brutal-active($shadow-active: vars.$sombra-brutal-active, $translate: 4px) {
+@mixin brutal-active($shadow-active: 0px 0px 0px var(--shadow-color), $translate: 4px) {
   &:active:not(:disabled):not(.button--disabled) {
     box-shadow: $shadow-active;
     transform: translate($translate, $translate);
@@ -72,8 +72,8 @@
 
 // Combo hover + active neobrutalista
 @mixin brutal-interaction(
-  $shadow-hover: vars.$sombra-brutal-hover,
-  $shadow-active: vars.$sombra-brutal-active
+  $shadow-hover: 2px 2px 0px var(--shadow-color),
+  $shadow-active: 0px 0px 0px var(--shadow-color)
 ) {
   @include brutal-hover($shadow-hover);
   @include brutal-active($shadow-active);
@@ -105,7 +105,7 @@
   background-color: var(--bg-secondary);
 
   &:hover {
-    box-shadow: vars.$sombra-brutal-s;
+    box-shadow: 4px 4px 0px var(--shadow-color);
     transform: none;
   }
 }
@@ -267,7 +267,7 @@
 @mixin brutal-box(
   $bg: var(--bg-secondary),
   $border: vars.$borde-brutal-thick,
-  $shadow: vars.$sombra-brutal-s,
+  $shadow: 4px 4px 0px var(--shadow-color),
   $radius: vars.$radio-s
 ) {
   background-color: $bg;
