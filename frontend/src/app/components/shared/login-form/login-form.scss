@@ -71,16 +71,16 @@
   transition: all vars.$transicion-rapida;
   width: 100%;
   outline: none;
-  
+
   &::placeholder {
     color: vars.$color-letra-desactivado;
   }
-  
+
   &:focus {
     border-color: vars.$color-primario-light;
     box-shadow: vars.$sombra-brutal-primario-light;
   }
-  
+
   &:hover:not(:disabled) {
     box-shadow: vars.$sombra-brutal-hover;
     transform: translate(2px, 2px);
@@ -90,7 +90,7 @@
 .login-form__input--error {
   border-color: vars.$color-error;
   box-shadow: 4px 4px 0px vars.$color-error;
-  
+
   &:focus {
     box-shadow: 4px 4px 0px vars.$color-error;
   }
@@ -104,7 +104,7 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  
+
   &::before {
     content: '⚠';
     font-size: 1rem;
@@ -134,22 +134,22 @@
   letter-spacing: 0.05em;
   width: 100%;
   margin-top: vars.$espaciado-s;
-  
+
   &:hover:not(:disabled) {
     box-shadow: vars.$sombra-brutal-hover;
     transform: translate(2px, 2px);
   }
-  
+
   &:active:not(:disabled) {
     box-shadow: vars.$sombra-brutal-active;
     transform: translate(4px, 4px);
   }
-  
+
   &:focus-visible {
     outline: 3px solid vars.$color-contraste-light;
     outline-offset: 2px;
   }
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -169,12 +169,12 @@
   color: vars.$color-primario-light;
   text-decoration: none;
   transition: color vars.$transicion-rapida;
-  
+
   &:hover {
     color: vars.$color-secundario-light;
     text-decoration: underline;
   }
-  
+
   &:focus-visible {
     outline: 2px solid vars.$color-primario-light;
     outline-offset: 2px;

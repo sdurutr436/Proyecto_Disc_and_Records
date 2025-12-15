@@ -7,7 +7,7 @@
   border: vars.$borde-brutal-thick;
   border-radius: vars.$radio-s;
   box-shadow: vars.$sombra-brutal-m;
-  
+
   @media (min-width: vars.$breakpoint-desktop) {
     width: 300px;
     position: sticky;
@@ -32,7 +32,7 @@
   gap: vars.$espaciado-s;
   padding-bottom: vars.$espaciado-m;
   border-bottom: vars.$borde-brutal-thin;
-  
+
   &:last-child {
     border-bottom: none;
     padding-bottom: 0;
@@ -60,7 +60,7 @@
   background-color: vars.$color-fondo-light;
   box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
-  
+
   &:hover {
     box-shadow: vars.$sombra-brutal-hover;
     transform: translate(2px, 2px);
@@ -138,13 +138,13 @@
   border-radius: vars.$radio-s;
   background-color: transparent;
   transition: all vars.$transicion-rapida;
-  
+
   &:hover {
     background-color: vars.$color-fondo-light;
     box-shadow: vars.$sombra-brutal-s;
     transform: translate(2px, 2px);
   }
-  
+
   &:focus-visible {
     outline: 3px solid vars.$color-primario-light;
     outline-offset: 2px;
@@ -184,7 +184,7 @@
   border-radius: vars.$radio-s;
   background-color: vars.$color-fondo-light;
   transition: all vars.$transicion-rapida;
-  
+
   &:hover {
     box-shadow: vars.$sombra-brutal-s;
     transform: translate(2px, 2px);
@@ -219,7 +219,7 @@
   background: vars.$color-primario-light;
   border-radius: vars.$radio-xs;
   border: 2px solid vars.$color-fondo-light-secundario;
-  
+
   &:hover {
     background: vars.$color-secundario-light;
   }

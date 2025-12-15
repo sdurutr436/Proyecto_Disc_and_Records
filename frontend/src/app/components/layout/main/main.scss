@@ -19,11 +19,11 @@
   display: flex;
   flex-direction: column;
   gap: vars.$espaciado-l;
-  
+
   @media (min-width: vars.$breakpoint-tablet) {
     padding: vars.$espaciado-xl vars.$espaciado-l;
   }
-  
+
   @media (min-width: vars.$breakpoint-desktop) {
     padding: vars.$espaciado-xl vars.$espaciado-xl;
   }

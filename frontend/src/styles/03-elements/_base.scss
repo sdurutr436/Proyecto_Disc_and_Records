@@ -73,12 +73,12 @@ a {
   color: var(--color-primary);
   text-decoration: none;
   transition: color vars.$transicion-rapida;
-  
+
   &:hover {
     color: var(--color-secondary);
     text-decoration: underline;
   }
-  
+
   &:focus-visible {
     outline: 3px solid var(--color-primary);
     outline-offset: 2px;
@@ -100,22 +100,22 @@ button {
   transition: all vars.$transicion-rapida;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  
+
   &:hover {
     box-shadow: vars.$sombra-brutal-hover;
     transform: translate(2px, 2px);
   }
-  
+
   &:active {
     box-shadow: vars.$sombra-brutal-active;
     transform: translate(4px, 4px);
   }
-  
+
   &:focus-visible {
     outline: 3px solid vars.$color-contraste-light;
     outline-offset: 2px;
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -136,17 +136,17 @@ input, textarea, select {
   box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   width: 100%;
-  
+
   &::placeholder {
     color: vars.$color-letra-desactivado;
   }
-  
+
   &:focus {
     outline: none;
     border-color: vars.$color-primario-light;
     box-shadow: vars.$sombra-brutal-primario-light;
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -218,7 +218,7 @@ pre {
   border: vars.$borde-brutal-medium;
   box-shadow: vars.$sombra-brutal-s;
   overflow-x: auto;
-  
+
   code {
     background: none;
     border: none;
