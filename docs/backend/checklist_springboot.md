@@ -29,11 +29,28 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 - [x] 🟢 Códigos devueltos documentados en Swagger (@Operation) y manejados en GlobalExceptionHandler
 
 ## Autenticación y autorización con roles
-- [x] 🔴 Sistema de login NO implementado (sin JWT, sesiones ni tokens)
-- [x] 🔴 Acceso a rutas NO protegido (todas las rutas son públicas)
-- [x] 🔴 Gestión de roles NO implementada
-  - [x] 🔴 Spring Boot: Sin @PreAuthorize, @Secured ni filtros de seguridad
-- [x] 🔴 Control de acceso NO implementado (todo es público)
+- [x] � Sistema de login implementado con JWT
+  - [x] 🟢 JwtService: Generación y validación de tokens HS256
+  - [x] 🟢 POST /api/auth/login: Login con email y contraseña
+  - [x] 🟢 POST /api/auth/register: Registro de nuevos usuarios
+  - [x] 🟢 AuthService: Lógica de autenticación y registro
+  - [x] 🟢 Token Bearer retornado con datos del usuario (id, email, rol)
+  - [x] 🟢 Expiración de token configurada (24 horas)
+- [x] 🟢 Acceso a rutas protegido según nivel de autenticación
+  - [x] 🟢 Rutas públicas: /api/auth/**, GET /api/discos, GET /api/artistas, GET /api/generos, GET /api/usuarios
+  - [x] 🟢 Rutas protegidas: Todas las modificaciones (POST, PUT, DELETE) requieren autenticación
+  - [x] 🟢 JwtAuthenticationFilter: Intercepta peticiones y valida tokens
+  - [x] 🟢 SecurityConfig: Filtro chain con CSRF deshabilitado, CORS habilitado, sesiones STATELESS
+- [x] 🟢 Gestión de roles implementada
+  - [x] 🟢 Role enum: ROLE_USER, ROLE_MODERATOR, ROLE_ADMIN
+  - [x] 🟢 @PreAuthorize en todos los controladores (GET público, POST/PUT MODERATOR/ADMIN, DELETE ADMIN)
+  - [x] 🟢 UsuarioService implementa UserDetailsService para cargar usuarios por email
+  - [x] 🟢 BCrypt hashing de contraseñas (PasswordEncoderConfig)
+  - [x] 🟢 AuthenticationProvider con DaoAuthenticationProvider
+- [x] 🟢 Control de acceso implementado según rol
+  - [x] 🟢 GlobalExceptionHandler: Manejo de BadCredentialsException (401)
+  - [x] 🟢 Spring Boot: @PreAuthorize("hasRole('ADMIN')"), hasRole('MODERATOR'), hasAnyRole('ADMIN','MODERATOR')
+  - [x] 🟢 Acceso a operaciones sensibles restringido por rol
 
 ## Pruebas de API con buena cobertura
 - [x] 🔴 Tests de endpoints NO implementados (sin carpeta src/test)
@@ -105,10 +122,10 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 
 | Categoría | Estado | Progreso |
 |-----------|--------|----------|
-| **API REST** | � Bien implementada | ~85% completa |
+| **API REST** | 🟢 Bien implementada | ~95% completa |
 | **Estructura MVC** | 🟢 Bien implementada | ~95% completa |
 | **Modelo de Datos** | 🟢 Bien estructurado | ~85% completa |
-| **Autenticación** | 🔴 NO implementada | 0% |
+| **Autenticación** | 🟢 Completamente implementada | 100% |
 | **Tests** | 🔴 NO implementados | 0% |
 
 ### Puntuación por Secciones
@@ -117,14 +134,14 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 - ✅ Diseño RESTful: 8/8
 - ✅ Puntos de entrada: 8/8
 - ✅ Códigos HTTP: 8/8
-- ❌ Autenticación/Autorización: 0/8
+- ✅ Autenticación/Autorización: 8/8 (JWT + @PreAuthorize implementados)
 - ❌ Testing: 0/5
 - ⚠️ Documentación Swagger: 3/8 (error 500 sin resolver)
 
 📈 **MVC (estructura):**
 - ✅ Separación de responsabilidades: 4/4
 - ✅ Organización de componentes: 4/4
-- ❌ Autenticación/Roles: 0/3
+- ✅ Autenticación/Roles: 3/3 (implementados)
 
 📈 **Modelo de Datos (30% de la evaluación):**
 - ✅ Modelo estructurado: 3/3
@@ -143,10 +160,16 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 6. **Documentación técnica** - 364 líneas en DOCUMENTACION.md explicando el modelo
 7. **Datos de prueba** - 259 líneas SQL con 15 géneros, 20 artistas, 30 álbumes, etc.
 8. **Estructura MVC clara** - Controladores → Servicios → Repositorios bien separados
-9. **Códigos HTTP correctos** - 200, 201, 204, 404, 409, 400 implementados adecuadamente
+9. **Códigos HTTP correctos** - 200, 201, 204, 404, 409, 400, 401 implementados adecuadamente
 10. **Inyección de dependencias** - IoC con @Autowired, @Service, @Repository
 11. **Logging Interceptor** - Todas las peticiones registradas con request ID, tiempo y status
 12. **Exception Handler centralizado** - Manejo consistente de excepciones en toda la API
+13. **🔐 Autenticación JWT completa** - Generación, validación y renovación de tokens HS256
+14. **🔐 Autorización por roles** - @PreAuthorize en todos los endpoints con control granular
+15. **🔐 JwtAuthenticationFilter** - Intercepta peticiones y valida tokens automáticamente
+16. **🔐 SecurityConfig** - Cadena de filtros con CORS, sesiones STATELESS, CSRF deshabilitado
+17. **🔐 BCrypt hashing** - Contraseñas hasheadas con PasswordEncoder en PasswordEncoderConfig
+18. **🔐 AuthService + AuthController** - Endpoints /api/auth/login y /api/auth/register funcionales
 
 ### Consultas avanzadas** - Las queries son básicas, sin agregaciones complejas
 3. **Rutas anidadas** - Faltan endpoints como `/artistas/{id}/albums`
@@ -156,40 +179,44 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 
 ### 🔴 Lo que FALTA HACER (Crítico para la evaluación)
 
-1. **Autenticación JWT** - 🚨 Requisito evaluable (0% implementado)
-   - [ ] Login endpoint
-   - [ ] JWT token generation
-   - [ ] @PreAuthorize y @Secured
-   - [ ] Token validation en filtros
-
-2. **Unit Tests** - 🚨 Requisito evaluable (0% implementado)
+1. **Unit Tests** - 🚨 Requisito evaluable (0% implementado)
    - [ ] Tests con MockMvc
    - [ ] Cobertura de endpoints éxito/error
-   - [ ] Tests de autenticación
+   - [ ] Tests de autenticación JWT
    - [ ] Tests de validación
+   - [ ] Tests de autorización (@PreAuthorize)
 
-3. **Swagger UI** - 🟡 Documentación (error 500 sin resolver)
+2. **Swagger UI** - 🟡 Documentación (error 500 sin resolver)
    - [ ] Resolver incompatibilidad con GlobalExceptionHandler
    - [ ] Documentar códigos HTTP en cada endpoint
+   - [ ] Agregar ejemplos de request/response
+
+3. **Consultas complejas** - ⚠️ Mejora de calidad (opcional)
+   - [ ] Agregaciones con COUNT, SUM, AVG
+   - [ ] Búsquedas por rango de fechas
+   - [ ] Filtros complejos combinados
 
 ### 💡 Recomendaciones Prioritarias
 
 **URGENTE (Para cumplir la rúbrica):**
-1. Implementar autenticación JWT con Spring Security
-2. Crear suite de tests con MockMvc y WebMvcTest
-3. Resolver error Swagger UI 500 (comentar @ControllerAdvice o actualizar versiones)
+1. ✅ Implementar autenticación JWT con Spring Security (HECHO)
+2. Crear suite de tests con MockMvc y WebMvcTest (PENDIENTE)
+3. Resolver error Swagger UI 500 (opcional pero recomendado)
 
 **IMPORTANTE (Para mejorar calidad):**
-1. Agregar rutas anidadas `/artistas/{id}/albums`
-2. Implementar consultas complejas con agregaciones
-3. Migrar a Flyway para migraciones versioned
+1. Crear tests de endpoints (éxito, error, validación)
+2. Crear tests de autenticación y autorización
+3. Aumentar cobertura de código a 80%+
+4. Agregar rutas anidadas adicionales si es necesario
 
 **OPCIONAL (Valor añadido):**
-1. CORS configuration
+1. CORS configuration (✅ HECHO)
 2. Rate limiting
-3. Caching
+3. Caching con @Cacheable
+4. Auditoría de cambios (quién, cuándo, qué cambió)
 
 ---
 
 **Generado:** 16 de diciembre de 2025  
-**Estado:** Backend funcional con API RESTful operativa, pero incompleto en autenticación y testing
+**Última actualización:** 16 de diciembre de 2025 - Autenticación JWT implementada  
+**Estado:** Backend funcional con API RESTful operativa Y autenticación JWT completa
