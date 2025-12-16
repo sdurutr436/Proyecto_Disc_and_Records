@@ -1,0 +1,206 @@
+@use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mixins;
+
+// ============================================
+// RESPONSIVE TABS - Tabs en desktop, Accordion en móvil
+// ============================================
+
+.responsive-tabs {
+  width: 100%;
+
+  // ==========================================
+  // MODO TABS (Desktop > 768px)
+  // ==========================================
+  &--desktop {
+    display: block;
+
+    @include mixins.respond-to('tablet') {
+      display: none;
+    }
+  }
+
+  &__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: var(--color-bg-secondary);
+
+    border: 3px solid var(--color-border);
+    border-radius: vars.$radio-s;
+    box-shadow: 4px 4px 0 var(--shadow-color);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-bottom: -3px; // Overlap con el contenido
+    position: relative;
+    z-index: 1;
+  }
+
+  &__tab {
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-primary);
+    border: 3px solid var(--color-border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-accent-primary);
+      color: var(--color-text-on-accent);
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 0 var(--color-border);
+    }
+
+    &:focus-visible {
+      @include mixins.focus-visible();
+    }
+
+    &--active {
+      background-color: var(--color-accent-primary);
+      color: var(--color-text-on-accent);
+      box-shadow: 4px 4px 0 var(--color-border);
+      transform: translateY(-3px);
+      position: relative;
+      z-index: 2;
+    }
+
+    &--disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__content {
+    padding: 2rem;
+    background-color: var(--color-bg-primary);
+    min-height: 300px;
+
+    border: 3px solid var(--color-border);
+    border-radius: vars.$radio-s;
+    box-shadow: 4px 4px 0 var(--shadow-color);
+  }
+
+  // ==========================================
+  // MODO ACCORDION (Tablet/Móvil <= 768px)
+  // ==========================================
+  &--mobile {
+    display: none;
+
+    @include mixins.respond-to('tablet') {
+      display: block;
+    }
+  }
+
+  &__accordion-item {
+    margin-bottom: 0;
+
+    &:first-child .responsive-tabs__accordion-header {
+      border-top-left-radius: 0.25rem;
+      border-top-right-radius: 0.25rem;
+    }
+
+    &:not(:first-child) .responsive-tabs__accordion-header {
+      border-top: none;
+    }
+  }
+
+  &__accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    text-align: left;
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 3px solid var(--color-border);
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-accent-primary);
+      color: var(--color-text-on-accent);
+    }
+
+    &:focus-visible {
+      @include mixins.focus-visible();
+    }
+
+    &--active {
+      background-color: var(--color-accent-primary);
+      color: var(--color-text-on-accent);
+    }
+
+    &--disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__accordion-title {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__accordion-number {
+    font-weight: 700;
+    opacity: 0.7;
+  }
+
+  &__accordion-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    transition: transform 0.3s ease;
+
+    &--open {
+      transform: rotate(180deg);
+    }
+
+    svg {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
+  &__accordion-panels {
+    border: 3px solid var(--color-border);
+    border-top: none;
+    background-color: var(--color-bg-primary);
+    padding: 1.5rem;
+  }
+}
+
+// ==========================================
+// PANEL DE CONTENIDO (Tab Panel)
+// ==========================================
+.tab-panel {
+  display: none;
+  animation: fadeIn 0.3s ease;
+
+  &--active {
+    display: block;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

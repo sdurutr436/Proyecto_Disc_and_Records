@@ -218,3 +218,258 @@ app-carousel {
     width: 100%;
   }
 }
+
+/* ========================================
+   FUNDAMENTOS - Color Swatches
+   ======================================== */
+.color-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $espaciado-xs;
+  padding: $espaciado-l;
+  min-height: 100px;
+  border: 3px solid var(--border-color);
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &__name {
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+  }
+
+  code {
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 2px 6px;
+    border-radius: 2px;
+    color: #000;
+  }
+
+  &--primary {
+    background-color: var(--color-accent-primary);
+    color: var(--color-text-on-accent);
+  }
+
+  &--secondary {
+    background-color: var(--color-accent-secondary);
+    color: var(--color-text-primary);
+  }
+
+  &--bg {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+  }
+
+  &--bg-secondary {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+  }
+
+  &--text {
+    background-color: var(--color-text-primary);
+    color: var(--color-bg-primary);
+  }
+
+  &--border {
+    background-color: var(--color-border);
+    color: var(--color-bg-primary);
+  }
+
+  &--success {
+    background-color: var(--color-success);
+    color: #fff;
+  }
+
+  &--warning {
+    background-color: var(--color-warning);
+    color: #000;
+  }
+
+  &--error {
+    background-color: var(--color-error);
+    color: #fff;
+  }
+
+  &--info {
+    background-color: var(--color-info);
+    color: #fff;
+  }
+}
+
+.showcase__grid--colors {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+/* ========================================
+   FUNDAMENTOS - Shadow Samples
+   ======================================== */
+.shadow-sample {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  background-color: var(--color-bg-primary);
+  border: 3px solid var(--color-border);
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &--sm {
+    box-shadow: 2px 2px 0 var(--color-border);
+  }
+
+  &--md {
+    box-shadow: 4px 4px 0 var(--color-border);
+  }
+
+  &--lg {
+    box-shadow: 6px 6px 0 var(--color-border);
+  }
+}
+
+/* ========================================
+   FUNDAMENTOS - Spacing Samples
+   ======================================== */
+.spacing-samples {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-s;
+  width: 100%;
+}
+
+.spacing-sample {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  min-width: 40px;
+  background-color: var(--color-accent-primary);
+  color: var(--color-text-on-accent);
+  font-weight: 600;
+  font-size: 0.75rem;
+  border: 2px solid var(--color-border);
+
+  span {
+    white-space: nowrap;
+  }
+}
+
+/* ========================================
+   FUNDAMENTOS - Typography Sample
+   ======================================== */
+.typography-sample {
+  background-color: var(--color-bg-primary);
+  padding: $espaciado-l;
+  border: 2px solid var(--color-border);
+
+  h1, h2, h3, h4 {
+    margin-bottom: $espaciado-s;
+  }
+
+  p {
+    margin-bottom: $espaciado-xs;
+  }
+}
+
+/* ========================================
+   LAYOUT - Diagrama
+   ======================================== */
+.layout-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 3px solid var(--color-border);
+  background-color: var(--color-border);
+  max-width: 600px;
+  margin: 0 auto;
+
+  &__header,
+  &__footer {
+    background-color: var(--color-accent-primary);
+    color: var(--color-text-on-accent);
+    padding: $espaciado-m;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  &__body {
+    display: flex;
+    gap: 2px;
+    min-height: 200px;
+  }
+
+  &__sidebar {
+    flex: 0 0 150px;
+    background-color: var(--color-bg-secondary);
+    padding: $espaciado-m;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+
+    @media (max-width: 768px) {
+      flex: 0 0 80px;
+      font-size: 0.75rem;
+    }
+  }
+
+  &__main {
+    flex: 1;
+    background-color: var(--color-bg-primary);
+    padding: $espaciado-m;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+}
+
+/* ========================================
+   LAYOUT - Breakpoint Cards
+   ======================================== */
+.showcase__grid--breakpoints {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.breakpoint-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $espaciado-xs;
+  padding: $espaciado-m;
+  background-color: var(--color-bg-primary);
+  border: 3px solid var(--color-border);
+  text-align: center;
+
+  &__name {
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+  }
+
+  &__value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-accent-primary);
+  }
+
+  code {
+    font-size: 0.75rem;
+  }
+}
+
+/* ========================================
+   SHOWCASE - Centered items (for forms)
+   ======================================== */
+.showcase__item--centered {
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}

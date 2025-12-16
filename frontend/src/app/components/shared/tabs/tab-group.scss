@@ -1,0 +1,122 @@
+@use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
+
+/* ========================================
+   TAB GROUP - Con proyección de contenido
+   ======================================== */
+
+:host {
+  @include mix.host-block;
+}
+
+.tab-group {
+  width: 100%;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-s;
+  background-color: var(--bg-primary);
+  overflow: hidden;
+}
+
+/* --- Navegación de tabs --- */
+.tab-group__nav {
+  display: flex;
+  background-color: var(--bg-secondary);
+  border-bottom: vars.$borde-brutal-medium;
+}
+
+/* Modo scroll (horizontal) */
+.tab-group__nav--scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  @include mix.hide-scrollbar;
+
+  &.active {
+    cursor: grabbing;
+    user-select: none;
+  }
+}
+
+/* Modo wrap (flex-wrap) */
+.tab-group__nav--wrap {
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+/* --- Tab individual --- */
+.tab-group__tab {
+  flex: 0 0 auto;
+  padding: vars.$espaciado-s vars.$espaciado-m;
+  border: none;
+  border-right: vars.$borde-brutal-thin;
+  border-bottom: vars.$borde-brutal-thin;
+  background-color: transparent;
+  color: var(--text-primary);
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  white-space: nowrap;
+  @include mix.text-uppercase;
+
+  &:hover:not(.tab-group__tab--disabled):not(.tab-group__tab--active) {
+    background-color: var(--color-primary);
+    color: var(--text-dark);
+  }
+
+  @include mix.focus-visible;
+}
+
+/* --- Tab activo --- */
+.tab-group__tab--active {
+  background-color: var(--color-primary);
+  color: var(--text-dark);
+  font-weight: 800;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--color-primary);
+  }
+}
+
+/* --- Tab deshabilitado --- */
+.tab-group__tab--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* --- Panel de contenido --- */
+.tab-group__content {
+  padding: vars.$espaciado-l;
+  min-height: 12rem;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@include mix.respond-to('tablet') {
+  .tab-group__tab {
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  }
+
+  .tab-group__content {
+    padding: vars.$espaciado-m;
+  }
+}
+
+@include mix.respond-to('mobile') {
+  .tab-group__tab {
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  }
+}
