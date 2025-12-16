@@ -23,8 +23,9 @@ import { CommonModule } from '@angular/common';
   template: `
     <div
       class="tab-panel"
-      [class.tab-panel--active]="isActive()"
+      [class.tab-panel--active]="_isActive()"
       [attr.id]="'panel-' + id()"
+      [style.display]="_isActive() ? 'block' : 'none'"
       role="tabpanel"
       [attr.aria-labelledby]="'tab-' + id()">
       <ng-content></ng-content>
@@ -32,12 +33,7 @@ import { CommonModule } from '@angular/common';
   `,
   styles: [`
     .tab-panel {
-      display: none;
       animation: fadeIn 0.3s ease;
-    }
-
-    .tab-panel--active {
-      display: block;
     }
 
     @keyframes fadeIn {
@@ -62,10 +58,10 @@ export class TabPanel {
   /** Si la pestaña está deshabilitada */
   disabled = input<boolean>(false);
 
-  /** Signal interno para controlar visibilidad (controlado por el padre) */
-  private _isActive: WritableSignal<boolean> = signal(false);
+  /** Signal para controlar visibilidad (controlado por el padre) */
+  _isActive: WritableSignal<boolean> = signal(false);
 
-  /** Getter público para el estado activo */
+  /** Getter público para el estado activo (readonly) */
   isActive = this._isActive.asReadonly();
 
   /** Método para que el padre controle la visibilidad */

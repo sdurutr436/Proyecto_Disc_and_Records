@@ -1,12 +1,23 @@
 @use '../../../../styles/00-settings/variables' as vars;
-@use '../../../../styles/01-tools/mixins' as mixins;
+@use '../../../../styles/01-tools/mixins' as mix;
 
 // ============================================
-// RESPONSIVE TABS - Tabs en desktop, Accordion en móvil
+// RESPONSIVE TABS - Tabs en desktop, Accordion en movil
 // ============================================
+
+:host {
+  @include mix.host-block;
+  display: block;
+  width: 100%;
+}
 
 .responsive-tabs {
   width: 100%;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-s;
+  background-color: var(--bg-primary);
+  box-shadow: vars.$sombra-brutal-s;
+  overflow: hidden;
 
   // ==========================================
   // MODO TABS (Desktop > 768px)
@@ -14,7 +25,7 @@
   &--desktop {
     display: block;
 
-    @include mixins.respond-to('tablet') {
+    @include mix.respond-to('tablet') {
       display: none;
     }
   }
@@ -22,75 +33,60 @@
   &__nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 1rem;
-    background-color: var(--color-bg-secondary);
-
-    border: 3px solid var(--color-border);
-    border-radius: vars.$radio-s;
-    box-shadow: 4px 4px 0 var(--shadow-color);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    margin-bottom: -3px; // Overlap con el contenido
-    position: relative;
-    z-index: 1;
+    background-color: var(--bg-secondary);
+    border-bottom: vars.$borde-brutal-medium;
   }
 
   &__tab {
-    padding: 0.75rem 1.25rem;
-    font-family: var(--font-family-base);
-    font-size: var(--font-size-base);
+    flex: 0 0 auto;
+    padding: vars.$espaciado-m vars.$espaciado-l;
+    border: none;
+    border-right: vars.$borde-brutal-thin;
+    border-bottom: vars.$borde-brutal-thin;
+    background-color: transparent;
+    color: var(--text-primary);
+    font-family: vars.$fuente-principal;
+    font-size: vars.$tamanio-fuente-texto-pequeno-m;
     font-weight: 600;
-    color: var(--color-text-primary);
-    background-color: var(--color-bg-primary);
-    border: 3px solid var(--color-border);
     cursor: pointer;
     transition: all 0.2s ease;
+    position: relative;
     white-space: nowrap;
+    @include mix.text-uppercase;
 
-    &:hover:not(:disabled) {
-      background-color: var(--color-accent-primary);
-      color: var(--color-text-on-accent);
-      transform: translateY(-2px);
-      box-shadow: 3px 3px 0 var(--color-border);
+    &:hover:not(:disabled):not(.responsive-tabs__tab--active) {
+      background-color: var(--color-primary);
+      color: var(--text-dark);
     }
 
-    &:focus-visible {
-      @include mixins.focus-visible();
-    }
+    @include mix.focus-visible;
 
     &--active {
-      background-color: var(--color-accent-primary);
-      color: var(--color-text-on-accent);
-      box-shadow: 4px 4px 0 var(--color-border);
-      transform: translateY(-3px);
-      position: relative;
-      z-index: 2;
+      background-color: var(--color-primary);
+      color: var(--text-dark);
+      font-weight: 800;
+      box-shadow: inset 0 -4px 0 0 var(--text-dark);
     }
 
     &--disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
+      pointer-events: none;
     }
   }
 
   &__content {
-    padding: 2rem;
-    background-color: var(--color-bg-primary);
-    min-height: 300px;
-
-    border: 3px solid var(--color-border);
-    border-radius: vars.$radio-s;
-    box-shadow: 4px 4px 0 var(--shadow-color);
+    padding: vars.$espaciado-l;
+    min-height: 12rem;
   }
 
   // ==========================================
-  // MODO ACCORDION (Tablet/Móvil <= 768px)
+  // MODO ACCORDION (Tablet/Movil <= 768px)
   // ==========================================
   &--mobile {
     display: none;
 
-    @include mixins.respond-to('tablet') {
+    @include mix.respond-to('tablet') {
       display: block;
     }
   }
@@ -99,8 +95,8 @@
     margin-bottom: 0;
 
     &:first-child .responsive-tabs__accordion-header {
-      border-top-left-radius: 0.25rem;
-      border-top-right-radius: 0.25rem;
+      border-top-left-radius: vars.$radio-s;
+      border-top-right-radius: vars.$radio-s;
     }
 
     &:not(:first-child) .responsive-tabs__accordion-header {
@@ -113,34 +109,34 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 1rem 1.25rem;
-    font-family: var(--font-family-base);
-    font-size: var(--font-size-base);
+    padding: vars.$espaciado-s vars.$espaciado-m;
+    font-family: vars.$fuente-principal;
+    font-size: vars.$tamanio-fuente-texto-pequeno-m;
     font-weight: 600;
     text-align: left;
-    color: var(--color-text-primary);
-    background-color: var(--color-bg-secondary);
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 3px solid var(--color-border);
+    border: vars.$borde-brutal-medium;
+    @include mix.text-uppercase;
 
     &:hover:not(:disabled) {
-      background-color: var(--color-accent-primary);
-      color: var(--color-text-on-accent);
+      background-color: var(--color-primary);
+      color: var(--text-dark);
     }
 
-    &:focus-visible {
-      @include mixins.focus-visible();
-    }
+    @include mix.focus-visible;
 
     &--active {
-      background-color: var(--color-accent-primary);
-      color: var(--color-text-on-accent);
+      background-color: var(--color-primary);
+      color: var(--text-dark);
     }
 
     &--disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
+      pointer-events: none;
     }
   }
 
@@ -148,7 +144,7 @@
     flex: 1;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: vars.$espaciado-xs;
   }
 
   &__accordion-number {
@@ -162,7 +158,7 @@
     justify-content: center;
     width: 1.5rem;
     height: 1.5rem;
-    transition: transform 0.3s ease;
+    transition: transform vars.$transicion-base;
 
     &--open {
       transform: rotate(180deg);
@@ -175,10 +171,10 @@
   }
 
   &__accordion-panels {
-    border: 3px solid var(--color-border);
+    border: vars.$borde-brutal-medium;
     border-top: none;
-    background-color: var(--color-bg-primary);
-    padding: 1.5rem;
+    background-color: var(--bg-primary);
+    padding: vars.$espaciado-l;
   }
 }
 

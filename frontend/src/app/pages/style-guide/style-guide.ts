@@ -16,12 +16,14 @@ import { ForgotPasswordForm } from '../../components/shared/forgot-password-form
 import { Modal } from '../../components/shared/modal/modal';
 import { Accordion, AccordionItem } from '../../components/shared/accordion/accordion';
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
-import { ResponsiveTabs, TabPanel } from '../../components/shared/tabs';
 import { Tooltip } from '../../components/shared/tooltip/tooltip';
 import { Spinner } from '../../components/shared/spinner/spinner';
 import { ProgressBar } from '../../components/shared/progress-bar/progress-bar';
 import { NotificationService } from '../../services/notification';
 import { LoadingService } from '../../services/loading';
+
+// Tipo para las secciones del menu
+type StyleGuideSection = 'foundations' | 'atoms' | 'molecules' | 'organisms' | 'layout';
 
 @Component({
   selector: 'app-style-guide',
@@ -44,8 +46,6 @@ import { LoadingService } from '../../services/loading';
     Modal,
     Accordion,
     Tabs,
-    ResponsiveTabs,
-    TabPanel,
     Tooltip,
     Spinner,
     ProgressBar
@@ -58,7 +58,33 @@ export class StyleGuide {
   private notificationService = inject(NotificationService);
   private loadingService = inject(LoadingService);
 
-  // Referencias a carouseles para manipulación DOM
+  // Menu lateral - seccion activa
+  activeSection = signal<StyleGuideSection>('foundations');
+  menuOpen = signal<boolean>(false);
+
+  // Opciones del menu
+  menuItems: { id: StyleGuideSection; label: string }[] = [
+    { id: 'foundations', label: 'Fundamentos' },
+    { id: 'atoms', label: 'Atomos' },
+    { id: 'molecules', label: 'Moleculas' },
+    { id: 'organisms', label: 'Organismos' },
+    { id: 'layout', label: 'Layout' }
+  ];
+
+  // Metodos del menu
+  toggleMenu(): void {
+    this.menuOpen.update(v => !v);
+  }
+
+  selectSection(section: StyleGuideSection): void {
+    this.activeSection.set(section);
+    // Cierra el menú automáticamente si está abierto (útil en móvil)
+    if (this.menuOpen()) {
+      this.menuOpen.set(false);
+    }
+  }
+
+  // Referencias a carouseles para manipulacion DOM
   @ViewChild('demoCarousel') demoCarousel?: any;
   carouselOpacity: number = 1;
 

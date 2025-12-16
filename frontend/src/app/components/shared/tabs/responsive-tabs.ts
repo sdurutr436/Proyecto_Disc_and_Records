@@ -152,10 +152,15 @@ export class ResponsiveTabs implements AfterContentInit, AfterViewInit, OnDestro
         });
       }
     }
+
+    // Sincronizar visibilidad de paneles despues del render
+    setTimeout(() => {
+      this.syncPanelVisibility(this.displayMode(), this.activeTabId(), this.openAccordions());
+    }, 0);
   }
 
   /**
-   * Seleccionar una pestaña (modo tabs)
+   * Seleccionar una pestana (modo tabs)
    */
   selectTab(tabId: string) {
     if (this.isDragging) return;
@@ -163,6 +168,8 @@ export class ResponsiveTabs implements AfterContentInit, AfterViewInit, OnDestro
     const tab = this.tabs().find(t => t.id === tabId);
     if (tab && !tab.disabled) {
       this.activeTabId.set(tabId);
+      // Sincronizar visibilidad inmediatamente
+      this.syncPanelVisibility(this.displayMode(), tabId, this.openAccordions());
     }
   }
 

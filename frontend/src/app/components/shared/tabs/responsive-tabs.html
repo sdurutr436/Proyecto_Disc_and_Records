@@ -1,65 +1,52 @@
-<!-- MODO TABS (Desktop) -->
-@if (displayMode() === 'tabs') {
-  <div class="responsive-tabs responsive-tabs--desktop">
-    <!-- Navegación de tabs con flex-wrap -->
-    <nav class="responsive-tabs__nav" role="tablist" #tabsNav>
-      @for (tab of tabs(); track tab.id) {
-        <button
-          class="responsive-tabs__tab"
-          [class.responsive-tabs__tab--active]="isActive(tab.id)"
-          [class.responsive-tabs__tab--disabled]="tab.disabled"
-          [attr.id]="'tab-' + tab.id"
-          role="tab"
-          [attr.aria-selected]="isActive(tab.id)"
-          [attr.aria-controls]="'panel-' + tab.id"
-          [attr.tabindex]="isActive(tab.id) ? 0 : -1"
-          [disabled]="tab.disabled"
-          (click)="selectTab(tab.id)"
-          type="button">
-          {{ tab.label }}
-        </button>
-      }
-    </nav>
-
-    <!-- Panel de contenido - Los TabPanel controlan su propia visibilidad -->
-    <div class="responsive-tabs__content">
-      <ng-content></ng-content>
-    </div>
-  </div>
-}
-
-<!-- MODO ACCORDION (Tablet/Móvil) -->
-@if (displayMode() === 'accordion') {
-  <div class="responsive-tabs responsive-tabs--mobile">
-    @for (tab of tabs(); track tab.id; let i = $index) {
-      <div class="responsive-tabs__accordion-item">
-        <!-- Header del accordion -->
-        <button
-          class="responsive-tabs__accordion-header"
-          [class.responsive-tabs__accordion-header--active]="isAccordionOpen(tab.id)"
-          [class.responsive-tabs__accordion-header--disabled]="tab.disabled"
-          [attr.aria-expanded]="isAccordionOpen(tab.id)"
-          [attr.aria-controls]="'accordion-panel-' + tab.id"
-          [disabled]="tab.disabled"
-          (click)="toggleAccordion(tab.id)"
-          type="button">
-          <span class="responsive-tabs__accordion-title">
-            <span class="responsive-tabs__accordion-number">{{ i + 1 }}.</span>
-            {{ tab.label }}
-          </span>
-          <span class="responsive-tabs__accordion-icon"
-                [class.responsive-tabs__accordion-icon--open]="isAccordionOpen(tab.id)">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" fill="none"/>
-            </svg>
-          </span>
-        </button>
-      </div>
+<div class="responsive-tabs">
+  <!-- NAVEGACION TABS (Desktop) - Se oculta en movil via CSS -->
+  <nav class="responsive-tabs__nav" role="tablist" #tabsNav>
+    @for (tab of tabs(); track tab.id) {
+      <button
+        class="responsive-tabs__tab"
+        [class.responsive-tabs__tab--active]="isActive(tab.id)"
+        [class.responsive-tabs__tab--disabled]="tab.disabled"
+        [attr.id]="'tab-' + tab.id"
+        role="tab"
+        [attr.aria-selected]="isActive(tab.id)"
+        [attr.aria-controls]="'panel-' + tab.id"
+        [attr.tabindex]="isActive(tab.id) ? 0 : -1"
+        [disabled]="tab.disabled"
+        (click)="selectTab(tab.id)"
+        type="button">
+        {{ tab.label }}
+      </button>
     }
+  </nav>
 
-    <!-- Contenido proyectado - Los TabPanel controlan su propia visibilidad -->
-    <div class="responsive-tabs__accordion-panels">
-      <ng-content></ng-content>
-    </div>
+  <!-- NAVEGACION ACCORDION (Movil) - Se oculta en desktop via CSS -->
+  <div class="responsive-tabs__accordion-nav">
+    @for (tab of tabs(); track tab.id; let i = $index) {
+      <button
+        class="responsive-tabs__accordion-header"
+        [class.responsive-tabs__accordion-header--active]="isAccordionOpen(tab.id)"
+        [class.responsive-tabs__accordion-header--disabled]="tab.disabled"
+        [attr.aria-expanded]="isAccordionOpen(tab.id)"
+        [attr.aria-controls]="'accordion-panel-' + tab.id"
+        [disabled]="tab.disabled"
+        (click)="toggleAccordion(tab.id)"
+        type="button">
+        <span class="responsive-tabs__accordion-title">
+          <span class="responsive-tabs__accordion-number">{{ i + 1 }}.</span>
+          {{ tab.label }}
+        </span>
+        <span class="responsive-tabs__accordion-icon"
+              [class.responsive-tabs__accordion-icon--open]="isAccordionOpen(tab.id)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" fill="none"/>
+          </svg>
+        </span>
+      </button>
+    }
   </div>
-}
+
+  <!-- CONTENIDO - Siempre presente, visibilidad controlada por TabPanel -->
+  <div class="responsive-tabs__content">
+    <ng-content></ng-content>
+  </div>
+</div>

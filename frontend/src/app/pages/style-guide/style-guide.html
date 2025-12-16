@@ -1,930 +1,427 @@
 <div class="style-guide">
+  <!-- Overlay para oscurecer el fondo -->
+  <div
+    class="style-guide__overlay"
+    [class.style-guide__overlay--visible]="menuOpen()"
+    (click)="toggleMenu()">
+  </div>
+
+  <!-- MENU LATERAL FIXED/STICKY OVERLAY -->
+  <aside class="style-guide__sidebar" [class.style-guide__sidebar--open]="menuOpen()">
+    <button class="style-guide__sidebar-toggle" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()">
+      <span class="style-guide__sidebar-toggle-icon">☰</span>
+      <span class="style-guide__sidebar-toggle-label">Secciones</span>
+    </button>
+    <ul class="style-guide__sidebar-menu">
+      @for (item of menuItems; track item.id) {
+        <li class="style-guide__sidebar-item">
+          <button
+            class="style-guide__sidebar-link"
+            [class.style-guide__sidebar-link--active]="activeSection() === item.id"
+            (click)="selectSection(item.id)">
+            {{ item.label }}
+          </button>
+        </li>
+      }
+    </ul>
+  </aside>
+
   <div class="style-guide__container">
     <header class="style-guide__header">
       <h1>Guía de Estilo</h1>
       <p class="style-guide__intro">Sistema de componentes reutilizables para Disc and Records</p>
     </header>
 
-    <!-- NAVEGACIÓN POR TABS RESPONSIVE -->
-    <app-responsive-tabs [breakpoint]="768" initialActiveTab="foundations">
+    <!-- ============================================ -->
+    <!-- SECCIÓN 1: FUNDAMENTOS -->
+    <!-- ============================================ -->
+    @if (activeSection() === 'foundations') {
+      <section class="style-guide__section">
+        <h2>Fundamentos del Sistema de Diseño</h2>
+        <p class="showcase__description">
+          Variables CSS, tipografía, colores y espaciado que definen la identidad visual de Disc and Records.
+        </p>
 
-      <!-- ============================================ -->
-      <!-- TAB 1: FUNDAMENTOS (Foundations) -->
-      <!-- ============================================ -->
-      <app-tab-panel id="foundations" label="🎨 Fundamentos">
-        <section class="style-guide__section">
-          <h2>Fundamentos del Sistema de Diseño</h2>
+        <!-- Tipografía -->
+        <div class="showcase">
+          <h3>Tipografía</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full typography-sample">
+              <h1>Heading 1 - Títulos principales</h1>
+              <h2>Heading 2 - Secciones</h2>
+              <h3>Heading 3 - Subsecciones</h3>
+              <h4>Heading 4 - Elementos</h4>
+              <p>Párrafo con texto normal. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              <p><strong>Texto en negrita</strong> y <em>texto en cursiva</em></p>
+              <p><small>Texto pequeño para notas y subtítulos</small></p>
+            </div>
+            <code>font-family: var(--font-family-base) | font-family: var(--font-family-headings)</code>
+          </div>
+        </div>
+
+        <!-- Colores -->
+        <div class="showcase">
+          <h3>Paleta de Colores</h3>
+          <div class="showcase__grid showcase__grid--colors">
+            <div class="color-swatch color-swatch--primary">
+              <span class="color-swatch__name">Primary</span>
+              <code>--color-accent-primary</code>
+            </div>
+            <div class="color-swatch color-swatch--secondary">
+              <span class="color-swatch__name">Secondary</span>
+              <code>--color-accent-secondary</code>
+            </div>
+            <div class="color-swatch color-swatch--bg">
+              <span class="color-swatch__name">Background</span>
+              <code>--color-bg-primary</code>
+            </div>
+            <div class="color-swatch color-swatch--bg-secondary">
+              <span class="color-swatch__name">Bg Secondary</span>
+              <code>--color-bg-secondary</code>
+            </div>
+            <div class="color-swatch color-swatch--text">
+              <span class="color-swatch__name">Text</span>
+              <code>--color-text-primary</code>
+            </div>
+            <div class="color-swatch color-swatch--border">
+              <span class="color-swatch__name">Border</span>
+              <code>--color-border</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colores semánticos -->
+        <div class="showcase">
+          <h3>Colores Semánticos</h3>
+          <div class="showcase__grid showcase__grid--colors">
+            <div class="color-swatch color-swatch--success">
+              <span class="color-swatch__name">Success</span>
+              <code>--color-success</code>
+            </div>
+            <div class="color-swatch color-swatch--warning">
+              <span class="color-swatch__name">Warning</span>
+              <code>--color-warning</code>
+            </div>
+            <div class="color-swatch color-swatch--error">
+              <span class="color-swatch__name">Error</span>
+              <code>--color-error</code>
+            </div>
+            <div class="color-swatch color-swatch--info">
+              <span class="color-swatch__name">Info</span>
+              <code>--color-info</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sombras -->
+        <div class="showcase">
+          <h3>Sombras (Brutal Style)</h3>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <div class="shadow-sample shadow-sample--sm">Small</div>
+              <code>brutal-shadow-sm</code>
+            </div>
+            <div class="showcase__item">
+              <div class="shadow-sample shadow-sample--md">Medium</div>
+              <code>brutal-shadow-md</code>
+            </div>
+            <div class="showcase__item">
+              <div class="shadow-sample shadow-sample--lg">Large</div>
+              <code>brutal-shadow-lg</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Espaciado -->
+        <div class="showcase">
+          <h3>Espaciado</h3>
+          <div class="showcase__column">
+            <div class="spacing-samples">
+              <div class="spacing-sample" style="width: var(--spacing-xs);">
+                <span>xs</span>
+              </div>
+              <div class="spacing-sample" style="width: var(--spacing-sm);">
+                <span>sm</span>
+              </div>
+              <div class="spacing-sample" style="width: var(--spacing-md);">
+                <span>md</span>
+              </div>
+              <div class="spacing-sample" style="width: var(--spacing-lg);">
+                <span>lg</span>
+              </div>
+              <div class="spacing-sample" style="width: var(--spacing-xl);">
+                <span>xl</span>
+              </div>
+            </div>
+            <code>--spacing-xs | --spacing-sm | --spacing-md | --spacing-lg | --spacing-xl</code>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ============================================ -->
+    <!-- SECCIÓN 2: ÁTOMOS -->
+    <!-- ============================================ -->
+    @if (activeSection() === 'atoms') {
+      <section class="style-guide__section">
+        <h2>Átomos</h2>
+        <p class="showcase__description">
+          Los elementos más básicos: botones, spinners, barras de progreso y badges.
+        </p>
+
+        <!-- Botones: Variantes -->
+        <div class="showcase">
+          <h3>Botones - Variantes</h3>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <app-button variant="primary" (clicked)="onButtonClick('primary', 'md')">
+                Primary
+              </app-button>
+              <code>variant="primary"</code>
+            </div>
+            <div class="showcase__item">
+              <app-button variant="secondary" (clicked)="onButtonClick('secondary', 'md')">
+                Secondary
+              </app-button>
+              <code>variant="secondary"</code>
+            </div>
+            <div class="showcase__item">
+              <app-button variant="ghost" (clicked)="onButtonClick('ghost', 'md')">
+                Ghost
+              </app-button>
+              <code>variant="ghost"</code>
+            </div>
+            <div class="showcase__item">
+              <app-button variant="danger" (clicked)="onButtonClick('danger', 'md')">
+                Danger
+              </app-button>
+              <code>variant="danger"</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones: Tamaños -->
+        <div class="showcase">
+          <h3>Botones - Tamaños</h3>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <app-button size="sm" (clicked)="onButtonClick('primary', 'sm')">
+                Small
+              </app-button>
+              <code>size="sm"</code>
+            </div>
+            <div class="showcase__item">
+              <app-button size="md" (clicked)="onButtonClick('primary', 'md')">
+                Medium
+              </app-button>
+              <code>size="md"</code>
+            </div>
+            <div class="showcase__item">
+              <app-button size="lg" (clicked)="onButtonClick('primary', 'lg')">
+                Large
+              </app-button>
+              <code>size="lg"</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones: Estados -->
+        <div class="showcase">
+          <h3>Botones - Estados</h3>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <app-button>Normal</app-button>
+              <code>Estado por defecto</code>
+            </div>
+            <div class="showcase__item">
+              <app-button [disabled]="true">Disabled</app-button>
+              <code>[disabled]="true"</code>
+            </div>
+            <div class="showcase__item">
+              <app-button href="#">Como enlace</app-button>
+              <code>href="#"</code>
+            </div>
+            <div class="showcase__item">
+              <app-button [loading]="true">Loading</app-button>
+              <code>[loading]="true"</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones: Full Width -->
+        <div class="showcase">
+          <h3>Botones - Full Width</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-button [fullWidth]="true" (clicked)="onButtonClick('primary', 'md')">
+                Botón a ancho completo
+              </app-button>
+              <code>[fullWidth]="true"</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spinner -->
+        <div class="showcase">
+          <h3>Spinner</h3>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <app-spinner [show]="true" mode="inline" size="sm"></app-spinner>
+              <code>size="sm"</code>
+            </div>
+            <div class="showcase__item">
+              <app-spinner [show]="true" mode="inline" size="md"></app-spinner>
+              <code>size="md"</code>
+            </div>
+            <div class="showcase__item">
+              <app-spinner [show]="true" mode="inline" size="lg"></app-spinner>
+              <code>size="lg"</code>
+            </div>
+          </div>
+          <div class="showcase__row" style="margin-top: 1rem;">
+            <div class="showcase__item">
+              <app-spinner [show]="true" mode="inline" color="primary"></app-spinner>
+              <code>color="primary"</code>
+            </div>
+            <div class="showcase__item">
+              <app-spinner [show]="true" mode="inline" color="secondary"></app-spinner>
+              <code>color="secondary"</code>
+            </div>
+            <div class="showcase__item" style="background: var(--color-border); padding: 1rem;">
+              <app-spinner [show]="true" mode="inline" color="white"></app-spinner>
+              <code style="color: white;">color="white"</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spinner Global -->
+        <div class="showcase">
+          <h3>Spinner Global</h3>
           <p class="showcase__description">
-            Variables CSS, tipografía, colores y espaciado que definen la identidad visual de Disc and Records.
+            El spinner global muestra un overlay sobre toda la aplicación.
           </p>
-
-          <!-- Tipografía -->
-          <div class="showcase">
-            <h3>Tipografía</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full typography-sample">
-                <h1>Heading 1 - Títulos principales</h1>
-                <h2>Heading 2 - Secciones</h2>
-                <h3>Heading 3 - Subsecciones</h3>
-                <h4>Heading 4 - Elementos</h4>
-                <p>Párrafo con texto normal. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                <p><strong>Texto en negrita</strong> y <em>texto en cursiva</em></p>
-                <p><small>Texto pequeño para notas y subtítulos</small></p>
-              </div>
-              <code>font-family: var(--font-family-base) | font-family: var(--font-family-headings)</code>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <app-button (clicked)="showGlobalSpinner()">
+                Mostrar Spinner Global (2s)
+              </app-button>
+              <code>loadingService.start()</code>
             </div>
           </div>
+        </div>
 
-          <!-- Colores -->
-          <div class="showcase">
-            <h3>Paleta de Colores</h3>
-            <div class="showcase__grid showcase__grid--colors">
-              <div class="color-swatch color-swatch--primary">
-                <span class="color-swatch__name">Primary</span>
-                <code>--color-accent-primary</code>
-              </div>
-              <div class="color-swatch color-swatch--secondary">
-                <span class="color-swatch__name">Secondary</span>
-                <code>--color-accent-secondary</code>
-              </div>
-              <div class="color-swatch color-swatch--bg">
-                <span class="color-swatch__name">Background</span>
-                <code>--color-bg-primary</code>
-              </div>
-              <div class="color-swatch color-swatch--bg-secondary">
-                <span class="color-swatch__name">Bg Secondary</span>
-                <code>--color-bg-secondary</code>
-              </div>
-              <div class="color-swatch color-swatch--text">
-                <span class="color-swatch__name">Text</span>
-                <code>--color-text-primary</code>
-              </div>
-              <div class="color-swatch color-swatch--border">
-                <span class="color-swatch__name">Border</span>
-                <code>--color-border</code>
-              </div>
+        <!-- Progress Bar -->
+        <div class="showcase">
+          <h3>Barra de Progreso</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-progress-bar [value]="25" size="sm"></app-progress-bar>
+              <code>value="25" size="sm"</code>
+            </div>
+            <div class="showcase__item showcase__item--full">
+              <app-progress-bar [value]="50" size="md" [showLabel]="true"></app-progress-bar>
+              <code>value="50" size="md" showLabel</code>
+            </div>
+            <div class="showcase__item showcase__item--full">
+              <app-progress-bar [value]="75" size="lg" [showLabel]="true"></app-progress-bar>
+              <code>value="75" size="lg" showLabel</code>
             </div>
           </div>
+        </div>
 
-          <!-- Colores semánticos -->
-          <div class="showcase">
-            <h3>Colores Semánticos</h3>
-            <div class="showcase__grid showcase__grid--colors">
-              <div class="color-swatch color-swatch--success">
-                <span class="color-swatch__name">Success</span>
-                <code>--color-success</code>
-              </div>
-              <div class="color-swatch color-swatch--warning">
-                <span class="color-swatch__name">Warning</span>
-                <code>--color-warning</code>
-              </div>
-              <div class="color-swatch color-swatch--error">
-                <span class="color-swatch__name">Error</span>
-                <code>--color-error</code>
-              </div>
-              <div class="color-swatch color-swatch--info">
-                <span class="color-swatch__name">Info</span>
-                <code>--color-info</code>
-              </div>
+        <!-- Progress Bar Variantes -->
+        <div class="showcase">
+          <h3>Progress Bar - Variantes de Color</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-progress-bar [value]="60" variant="primary" [showLabel]="true"></app-progress-bar>
+              <code>variant="primary"</code>
+            </div>
+            <div class="showcase__item showcase__item--full">
+              <app-progress-bar [value]="60" variant="success" [showLabel]="true"></app-progress-bar>
+              <code>variant="success"</code>
+            </div>
+            <div class="showcase__item showcase__item--full">
+              <app-progress-bar [value]="60" variant="warning" [showLabel]="true"></app-progress-bar>
+              <code>variant="warning"</code>
+            </div>
+            <div class="showcase__item showcase__item--full">
+              <app-progress-bar [value]="60" variant="error" [showLabel]="true"></app-progress-bar>
+              <code>variant="error"</code>
             </div>
           </div>
+        </div>
 
-          <!-- Sombras -->
-          <div class="showcase">
-            <h3>Sombras (Brutal Style)</h3>
-            <div class="showcase__row">
-              <div class="showcase__item">
-                <div class="shadow-sample shadow-sample--sm">Small</div>
-                <code>brutal-shadow-sm</code>
-              </div>
-              <div class="showcase__item">
-                <div class="shadow-sample shadow-sample--md">Medium</div>
-                <code>brutal-shadow-md</code>
-              </div>
-              <div class="showcase__item">
-                <div class="shadow-sample shadow-sample--lg">Large</div>
-                <code>brutal-shadow-lg</code>
-              </div>
+        <!-- Progress Bar Estados Especiales -->
+        <div class="showcase">
+          <h3>Progress Bar - Estados Especiales</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-progress-bar [indeterminate]="true"></app-progress-bar>
+              <code>indeterminate="true" (animación continua)</code>
+            </div>
+            <div class="showcase__item showcase__item--full">
+              <app-progress-bar [value]="75" [striped]="true" [showLabel]="true"></app-progress-bar>
+              <code>striped="true" (rayas animadas)</code>
             </div>
           </div>
+        </div>
 
-          <!-- Espaciado -->
-          <div class="showcase">
-            <h3>Espaciado</h3>
-            <div class="showcase__column">
-              <div class="spacing-samples">
-                <div class="spacing-sample" style="width: var(--spacing-xs);">
-                  <span>xs</span>
-                </div>
-                <div class="spacing-sample" style="width: var(--spacing-sm);">
-                  <span>sm</span>
-                </div>
-                <div class="spacing-sample" style="width: var(--spacing-md);">
-                  <span>md</span>
-                </div>
-                <div class="spacing-sample" style="width: var(--spacing-lg);">
-                  <span>lg</span>
-                </div>
-                <div class="spacing-sample" style="width: var(--spacing-xl);">
-                  <span>xl</span>
-                </div>
-              </div>
-              <code>--spacing-xs | --spacing-sm | --spacing-md | --spacing-lg | --spacing-xl</code>
-            </div>
-          </div>
-        </section>
-      </app-tab-panel>
-
-      <!-- ============================================ -->
-      <!-- TAB 2: ÁTOMOS (Atoms) -->
-      <!-- ============================================ -->
-      <app-tab-panel id="atoms" label="⚛️ Átomos">
-        <section class="style-guide__section">
-          <h2>Átomos</h2>
+        <!-- Progress Demo Interactivo -->
+        <div class="showcase">
+          <h3>Demo Interactivo</h3>
           <p class="showcase__description">
-            Los elementos más básicos: botones, spinners, barras de progreso y badges.
+            Simula una operación de carga con progreso.
           </p>
-
-          <!-- Botones: Variantes -->
-          <div class="showcase">
-            <h3>Botones - Variantes</h3>
-            <div class="showcase__row">
-              <div class="showcase__item">
-                <app-button variant="primary" (clicked)="onButtonClick('primary', 'md')">
-                  Primary
-                </app-button>
-                <code>variant="primary"</code>
-              </div>
-              <div class="showcase__item">
-                <app-button variant="secondary" (clicked)="onButtonClick('secondary', 'md')">
-                  Secondary
-                </app-button>
-                <code>variant="secondary"</code>
-              </div>
-              <div class="showcase__item">
-                <app-button variant="ghost" (clicked)="onButtonClick('ghost', 'md')">
-                  Ghost
-                </app-button>
-                <code>variant="ghost"</code>
-              </div>
-              <div class="showcase__item">
-                <app-button variant="danger" (clicked)="onButtonClick('danger', 'md')">
-                  Danger
-                </app-button>
-                <code>variant="danger"</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Botones: Tamaños -->
-          <div class="showcase">
-            <h3>Botones - Tamaños</h3>
-            <div class="showcase__row">
-              <div class="showcase__item">
-                <app-button size="sm" (clicked)="onButtonClick('primary', 'sm')">
-                  Small
-                </app-button>
-                <code>size="sm"</code>
-              </div>
-              <div class="showcase__item">
-                <app-button size="md" (clicked)="onButtonClick('primary', 'md')">
-                  Medium
-                </app-button>
-                <code>size="md"</code>
-              </div>
-              <div class="showcase__item">
-                <app-button size="lg" (clicked)="onButtonClick('primary', 'lg')">
-                  Large
-                </app-button>
-                <code>size="lg"</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Botones: Estados -->
-          <div class="showcase">
-            <h3>Botones - Estados</h3>
-            <div class="showcase__row">
-              <div class="showcase__item">
-                <app-button>Normal</app-button>
-                <code>Estado por defecto</code>
-              </div>
-              <div class="showcase__item">
-                <app-button [disabled]="true">Disabled</app-button>
-                <code>[disabled]="true"</code>
-              </div>
-              <div class="showcase__item">
-                <app-button href="#">Como enlace</app-button>
-                <code>href="#"</code>
-              </div>
-              <div class="showcase__item">
-                <app-button [loading]="true">Loading</app-button>
-                <code>[loading]="true"</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Botones: Full Width -->
-          <div class="showcase">
-            <h3>Botones - Full Width</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <app-button [fullWidth]="true" (clicked)="onButtonClick('primary', 'md')">
-                  Botón a ancho completo
-                </app-button>
-                <code>[fullWidth]="true"</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Spinner -->
-          <div class="showcase">
-            <h3>Spinner</h3>
-            <div class="showcase__row">
-              <div class="showcase__item">
-                <app-spinner [show]="true" mode="inline" size="sm"></app-spinner>
-                <code>size="sm"</code>
-              </div>
-              <div class="showcase__item">
-                <app-spinner [show]="true" mode="inline" size="md"></app-spinner>
-                <code>size="md"</code>
-              </div>
-              <div class="showcase__item">
-                <app-spinner [show]="true" mode="inline" size="lg"></app-spinner>
-                <code>size="lg"</code>
-              </div>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-progress-bar
+                [value]="demoProgress"
+                [showLabel]="true"
+                [variant]="demoProgress === 100 ? 'success' : 'primary'"
+                size="lg">
+              </app-progress-bar>
             </div>
             <div class="showcase__row" style="margin-top: 1rem;">
               <div class="showcase__item">
-                <app-spinner [show]="true" mode="inline" color="primary"></app-spinner>
-                <code>color="primary"</code>
-              </div>
-              <div class="showcase__item">
-                <app-spinner [show]="true" mode="inline" color="secondary"></app-spinner>
-                <code>color="secondary"</code>
-              </div>
-              <div class="showcase__item" style="background: var(--color-border); padding: 1rem;">
-                <app-spinner [show]="true" mode="inline" color="white"></app-spinner>
-                <code style="color: white;">color="white"</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Spinner Global -->
-          <div class="showcase">
-            <h3>Spinner Global</h3>
-            <p class="showcase__description">
-              El spinner global muestra un overlay sobre toda la aplicación.
-            </p>
-            <div class="showcase__row">
-              <div class="showcase__item">
-                <app-button (clicked)="showGlobalSpinner()">
-                  Mostrar Spinner Global (2s)
-                </app-button>
-                <code>loadingService.start()</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Progress Bar -->
-          <div class="showcase">
-            <h3>Barra de Progreso</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <app-progress-bar [value]="25" size="sm"></app-progress-bar>
-                <code>value="25" size="sm"</code>
-              </div>
-              <div class="showcase__item showcase__item--full">
-                <app-progress-bar [value]="50" size="md" [showLabel]="true"></app-progress-bar>
-                <code>value="50" size="md" showLabel</code>
-              </div>
-              <div class="showcase__item showcase__item--full">
-                <app-progress-bar [value]="75" size="lg" [showLabel]="true"></app-progress-bar>
-                <code>value="75" size="lg" showLabel</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Progress Bar Variantes -->
-          <div class="showcase">
-            <h3>Progress Bar - Variantes de Color</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <app-progress-bar [value]="60" variant="primary" [showLabel]="true"></app-progress-bar>
-                <code>variant="primary"</code>
-              </div>
-              <div class="showcase__item showcase__item--full">
-                <app-progress-bar [value]="60" variant="success" [showLabel]="true"></app-progress-bar>
-                <code>variant="success"</code>
-              </div>
-              <div class="showcase__item showcase__item--full">
-                <app-progress-bar [value]="60" variant="warning" [showLabel]="true"></app-progress-bar>
-                <code>variant="warning"</code>
-              </div>
-              <div class="showcase__item showcase__item--full">
-                <app-progress-bar [value]="60" variant="error" [showLabel]="true"></app-progress-bar>
-                <code>variant="error"</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Progress Bar Estados Especiales -->
-          <div class="showcase">
-            <h3>Progress Bar - Estados Especiales</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <app-progress-bar [indeterminate]="true"></app-progress-bar>
-                <code>indeterminate="true" (animación continua)</code>
-              </div>
-              <div class="showcase__item showcase__item--full">
-                <app-progress-bar [value]="75" [striped]="true" [showLabel]="true"></app-progress-bar>
-                <code>striped="true" (rayas animadas)</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Progress Demo Interactivo -->
-          <div class="showcase">
-            <h3>Demo Interactivo</h3>
-            <p class="showcase__description">
-              Simula una operación de carga con progreso.
-            </p>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <app-progress-bar
-                  [value]="demoProgress"
-                  [showLabel]="true"
-                  [variant]="demoProgress === 100 ? 'success' : 'primary'"
-                  size="lg">
-                </app-progress-bar>
-              </div>
-              <div class="showcase__row" style="margin-top: 1rem;">
-                <div class="showcase__item">
-                  <app-button
-                    [disabled]="isProgressRunning"
-                    (clicked)="startProgressDemo()">
-                    {{ isProgressRunning ? 'En progreso...' : 'Iniciar Demo' }}
-                  </app-button>
-                </div>
-                <div class="showcase__item">
-                  <app-button
-                    variant="secondary"
-                    (clicked)="resetProgressDemo()"
-                    [disabled]="demoProgress === 0">
-                    Reiniciar
-                  </app-button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </app-tab-panel>
-
-      <!-- ============================================ -->
-      <!-- TAB 3: MOLÉCULAS (Molecules) -->
-      <!-- ============================================ -->
-      <app-tab-panel id="molecules" label="🧬 Moléculas">
-        <section class="style-guide__section">
-          <h2>Moléculas</h2>
-          <p class="showcase__description">
-            Combinaciones de átomos: cards, formularios individuales, breadcrumbs, alerts y tooltips.
-          </p>
-
-          <!-- Cards Polaroid -->
-          <div class="showcase">
-            <h3>Cards - Variante Polaroid</h3>
-            <div class="showcase__row">
-              <div class="showcase__item">
-                <app-card
-                  title="Rumours"
-                  subtitle="Fleetwood Mac"
-                  imageShape="square"
-                  imageSize="medium"
-                  variant="normal"
-                  cardType="polaroid"
-                  titleLink="#album"
-                  subtitleLink="#artist">
-                </app-card>
-                <code>Álbum con placeholder</code>
-              </div>
-
-              <div class="showcase__item">
-                <app-card
-                  title="Bohemian Rhapsody"
-                  subtitle="Queen"
-                  imageShape="circle"
-                  imageSize="medium"
-                  variant="normal"
-                  cardType="polaroid"
-                  titleLink="#song"
-                  subtitleLink="#artist">
-                </app-card>
-                <code>Canción (circular)</code>
-              </div>
-
-              <div class="showcase__item">
-                <app-card
-                  title="Hotel California"
-                  subtitle="Eagles"
-                  imageShape="square"
-                  imageSize="medium"
-                  variant="vinilo"
-                  cardType="polaroid"
-                  titleLink="#album"
-                  subtitleLink="#artist">
-                </app-card>
-                <code>Efecto vinilo</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Cards Profile -->
-          <div class="showcase">
-            <h3>Cards - Variante Profile</h3>
-            <div class="showcase__row">
-              <div class="showcase__item">
-                <app-card
-                  title="JohnDoe"
-                  imageShape="square"
-                  imageSize="large"
-                  variant="normal"
-                  cardType="profile"
-                  layout="vertical"
-                  [badges]="userGenres"
-                  [actions]="profileActions">
-                </app-card>
-                <code>Perfil vertical con géneros</code>
-              </div>
-
-              <div class="showcase__item">
-                <app-card
-                  title="Dark Side of the Moon"
-                  subtitle="Pink Floyd • 1973"
-                  imageShape="square"
-                  imageSize="large"
-                  variant="vinilo"
-                  cardType="profile"
-                  [badges]="['Progressive Rock', 'Psychedelic']"
-                  [actions]="profileActions.slice(0, 2)">
-                </app-card>
-                <code>Álbum con badges y acciones</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Textarea -->
-          <div class="showcase">
-            <h3>Textarea</h3>
-            <div class="showcase__grid showcase__grid--forms">
-              <div class="showcase__item">
-                <app-form-textarea
-                  label="Descripción"
-                  id="textarea-normal"
-                  placeholder="Escribe tu descripción aquí..."
-                  [rows]="4"
-                  hint="Máximo 500 caracteres"
-                ></app-form-textarea>
-                <code>Textarea normal</code>
-              </div>
-
-              <div class="showcase__item">
-                <app-form-textarea
-                  label="Biografía"
-                  id="textarea-error"
-                  placeholder="Escribe tu biografía..."
-                  [rows]="4"
-                  error="Este campo es obligatorio"
-                ></app-form-textarea>
-                <code>Textarea con error</code>
-              </div>
-
-              <div class="showcase__item">
-                <app-form-textarea
-                  label="Comentario"
-                  id="textarea-disabled"
-                  placeholder="No disponible"
-                  [rows]="4"
-                  [disabled]="true"
-                ></app-form-textarea>
-                <code>Textarea deshabilitado</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Select -->
-          <div class="showcase">
-            <h3>Select</h3>
-            <div class="showcase__grid showcase__grid--forms">
-              <div class="showcase__item">
-                <app-form-select
-                  label="Género musical"
-                  id="select-normal"
-                  placeholder="Selecciona tu género favorito"
-                  [options]="genreOptions"
-                  hint="Elige el género que más te gusta"
-                ></app-form-select>
-                <code>Select normal</code>
-              </div>
-
-              <div class="showcase__item">
-                <app-form-select
-                  label="Género musical"
-                  id="select-error"
-                  placeholder="Selecciona tu género favorito"
-                  [options]="genreOptions"
-                  error="Debes seleccionar un género"
-                ></app-form-select>
-                <code>Select con error</code>
-              </div>
-
-              <div class="showcase__item">
-                <app-form-select
-                  label="Género musical"
-                  id="select-disabled"
-                  placeholder="No disponible"
-                  [options]="genreOptions"
-                  [disabled]="true"
-                ></app-form-select>
-                <code>Select deshabilitado</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Checkbox -->
-          <div class="showcase">
-            <h3>Checkbox</h3>
-            <div class="showcase__grid showcase__grid--forms">
-              <div class="showcase__item">
-                <app-form-checkbox
-                  label="Acepto los términos y condiciones"
-                  id="checkbox-normal"
-                ></app-form-checkbox>
-                <code>Checkbox normal</code>
-              </div>
-
-              <div class="showcase__item">
-                <app-form-checkbox
-                  label="Suscribirme al newsletter"
-                  id="checkbox-error"
-                  error="Debes aceptar para continuar"
-                ></app-form-checkbox>
-                <code>Checkbox con error</code>
-              </div>
-
-              <div class="showcase__item">
-                <app-form-checkbox
-                  label="Opción no disponible"
-                  id="checkbox-disabled"
-                  [disabled]="true"
-                ></app-form-checkbox>
-                <code>Checkbox deshabilitado</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Radio Group -->
-          <div class="showcase">
-            <h3>Radio Group</h3>
-            <div class="showcase__grid showcase__grid--forms">
-              <div class="showcase__item">
-                <app-form-radio-group
-                  label="Privacidad del perfil"
-                  name="privacy"
-                  [options]="privacyOptions"
-                ></app-form-radio-group>
-                <code>Radio group normal</code>
-              </div>
-
-              <div class="showcase__item">
-                <app-form-radio-group
-                  label="Privacidad del perfil"
-                  name="privacy-error"
-                  [options]="privacyOptions"
-                  error="Debes seleccionar una opción"
-                ></app-form-radio-group>
-                <code>Radio group con error</code>
-              </div>
-
-              <div class="showcase__item">
-                <app-form-radio-group
-                  label="Privacidad del perfil"
-                  name="privacy-inline"
-                  [options]="privacyOptions"
-                  [inline]="true"
-                ></app-form-radio-group>
-                <code>Radio group inline</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Breadcrumbs -->
-          <div class="showcase">
-            <h3>Breadcrumbs</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <app-breadcrumbs [items]="breadcrumbsSimple"></app-breadcrumbs>
-                <code>Breadcrumbs simple</code>
-              </div>
-
-              <div class="showcase__item showcase__item--full">
-                <app-breadcrumbs [items]="breadcrumbsWithIcons"></app-breadcrumbs>
-                <code>Breadcrumbs con iconos</code>
-              </div>
-
-              <div class="showcase__item showcase__item--full">
-                <app-breadcrumbs [items]="breadcrumbsLong"></app-breadcrumbs>
-                <code>Breadcrumbs largo (con truncado en móvil)</code>
-              </div>
-
-              <div class="showcase__item showcase__item--full">
-                <app-breadcrumbs
-                  [items]="breadcrumbsSimple"
-                  separator="›"
-                ></app-breadcrumbs>
-                <code>Breadcrumbs con separador custom (›)</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Alerts -->
-          <div class="showcase">
-            <h3>Alerts</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <app-alert
-                  type="success"
-                  title="¡Éxito!"
-                  message="Tu álbum se ha agregado correctamente a tu colección."
-                ></app-alert>
-                <code>Alert de éxito</code>
-              </div>
-
-              <div class="showcase__item showcase__item--full">
-                <app-alert
-                  type="error"
-                  title="Error"
-                  message="No se pudo conectar con el servidor. Por favor, inténtalo de nuevo."
-                ></app-alert>
-                <code>Alert de error</code>
-              </div>
-
-              <div class="showcase__item showcase__item--full">
-                <app-alert
-                  type="warning"
-                  title="Advertencia"
-                  message="Tu sesión caducará en 5 minutos. Guarda tus cambios."
-                ></app-alert>
-                <code>Alert de advertencia</code>
-              </div>
-
-              <div class="showcase__item showcase__item--full">
-                <app-alert
-                  type="info"
-                  title="Información"
-                  message="Tenemos nueva música disponible en tu sección de recomendados."
-                ></app-alert>
-                <code>Alert de información</code>
-              </div>
-
-              <div class="showcase__item showcase__item--full">
-                <app-alert
-                  type="warning"
-                  title="Cambios pendientes"
-                  message="Tienes cambios sin guardar. ¿Deseas salir de todas formas?"
-                  [dismissible]="true"
-                ></app-alert>
-                <code>Alert con botón cerrar</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tooltip -->
-          <div class="showcase">
-            <h3>Tooltip - Posiciones</h3>
-            <div class="showcase__grid" style="gap: 3rem; padding: 2rem;">
-              <div class="showcase__item">
-                <app-tooltip text="Tooltip arriba" position="top">
-                  <app-button>Top</app-button>
-                </app-tooltip>
-              </div>
-
-              <div class="showcase__item">
-                <app-tooltip text="Tooltip abajo" position="bottom">
-                  <app-button>Bottom</app-button>
-                </app-tooltip>
-              </div>
-
-              <div class="showcase__item">
-                <app-tooltip text="Tooltip izquierda" position="left">
-                  <app-button>Left</app-button>
-                </app-tooltip>
-              </div>
-
-              <div class="showcase__item">
-                <app-tooltip text="Tooltip derecha" position="right">
-                  <app-button>Right</app-button>
-                </app-tooltip>
-              </div>
-            </div>
-          </div>
-        </section>
-      </app-tab-panel>
-
-      <!-- ============================================ -->
-      <!-- TAB 4: ORGANISMOS (Organisms) -->
-      <!-- ============================================ -->
-      <app-tab-panel id="organisms" label="🦠 Organismos">
-        <section class="style-guide__section">
-          <h2>Organismos</h2>
-          <p class="showcase__description">
-            Componentes complejos: formularios completos, modales, accordions, tabs y carruseles.
-          </p>
-
-          <!-- Notifications Toast -->
-          <div class="showcase">
-            <h3>Notifications (Toast)</h3>
-            <p class="showcase__description">
-              Las notificaciones aparecen flotando en las esquinas de la pantalla.
-            </p>
-            <div class="showcase__row">
-              <div class="showcase__item">
                 <app-button
-                  (click)="showToast('success')"
-                  variant="primary"
-                  size="md"
-                >
-                  Notificación de éxito
+                  [disabled]="isProgressRunning"
+                  (clicked)="startProgressDemo()">
+                  {{ isProgressRunning ? 'En progreso...' : 'Iniciar Demo' }}
                 </app-button>
               </div>
-
               <div class="showcase__item">
                 <app-button
-                  (click)="showToast('error')"
-                  variant="danger"
-                  size="md"
-                >
-                  Notificación de error
-                </app-button>
-              </div>
-
-              <div class="showcase__item">
-                <app-button
-                  (click)="showToast('warning')"
                   variant="secondary"
-                  size="md"
-                >
-                  Notificación de advertencia
-                </app-button>
-              </div>
-
-              <div class="showcase__item">
-                <app-button
-                  (click)="showToast('info')"
-                  variant="ghost"
-                  size="md"
-                >
-                  Notificación de información
+                  (clicked)="resetProgressDemo()"
+                  [disabled]="demoProgress === 0">
+                  Reiniciar
                 </app-button>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+    }
 
-          <!-- Notifications DOM Manipulation -->
-          <div class="showcase">
-            <h3>Notificaciones Dinámicas (Manipulación DOM)</h3>
-            <p class="showcase__description">
-              Notificaciones creadas dinámicamente usando <code>createComponent()</code> y <code>appendChild()</code>.
-            </p>
-            <div class="showcase__row">
-              <div class="showcase__item">
-                <app-button
-                  (click)="showDynamicNotification('success')"
-                  variant="primary"
-                  size="md"
-                >
-                  Crear notificación en el DOM
-                </app-button>
-                <code>createElement + appendChild</code>
-              </div>
+    <!-- ============================================ -->
+    <!-- SECCIÓN 3: MOLÉCULAS -->
+    <!-- ============================================ -->
+    @if (activeSection() === 'molecules') {
+      <section class="style-guide__section">
+        <h2>Moléculas</h2>
+        <p class="showcase__description">
+          Combinaciones de átomos: cards, formularios individuales, breadcrumbs, alerts y tooltips.
+        </p>
 
-              <div class="showcase__item">
-                <app-button
-                  (click)="showDynamicNotification('error')"
-                  variant="danger"
-                  size="md"
-                >
-                  Error con creación dinámica
-                </app-button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Formularios Completos -->
-          <div class="showcase">
-            <h3>Formulario de Login</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--centered">
-                <app-login-form></app-login-form>
-                <code>Formulario de inicio de sesión con validación</code>
-              </div>
-            </div>
-          </div>
-
-          <div class="showcase">
-            <h3>Formulario de Registro</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--centered">
-                <app-register-form></app-register-form>
-                <code>Formulario de registro con validación completa</code>
-              </div>
-            </div>
-          </div>
-
-          <div class="showcase">
-            <h3>Formulario de Recuperación de Contraseña</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--centered">
-                <app-forgot-password-form></app-forgot-password-form>
-                <code>Formulario para recuperar contraseña</code>
-              </div>
-            </div>
-          </div>
-
-          <!-- Modal -->
-          <div class="showcase">
-            <h3>Modal</h3>
-            <p class="showcase__description">
-              Componente modal con overlay, cierre con ESC, click fuera y trap focus.
-            </p>
-            <div class="showcase__row">
-              <div class="showcase__item">
-                <app-button (clicked)="openModal()">
-                  Abrir Modal
-                </app-button>
-                <code>Modal con signal isOpen</code>
-              </div>
-            </div>
-
-            <app-modal
-              [isOpen]="isModalOpen()"
-              title="Confirmar acción"
-              (onClose)="closeModal()">
-              <p>¿Estás seguro de que quieres eliminar este álbum de tu colección?</p>
-              <p>Esta acción no se puede deshacer.</p>
-              <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                <app-button variant="danger" (clicked)="closeModal()">
-                  Eliminar
-                </app-button>
-                <app-button variant="secondary" (clicked)="closeModal()">
-                  Cancelar
-                </app-button>
-              </div>
-            </app-modal>
-          </div>
-
-          <!-- Accordion -->
-          <div class="showcase">
-            <h3>Accordion - Modo Single</h3>
-            <p class="showcase__description">
-              Solo puede haber un item abierto a la vez.
-            </p>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <app-accordion [items]="accordionItems" mode="single"></app-accordion>
-              </div>
-            </div>
-          </div>
-
-          <div class="showcase">
-            <h3>Accordion - Modo Multiple</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <app-accordion [items]="accordionItems" mode="multiple"></app-accordion>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tabs (Original) -->
-          <div class="showcase">
-            <h3>Tabs (Pestañas)</h3>
-            <p class="showcase__description">
-              Navegación por teclado (flechas izquierda/derecha) y soporte para tabs deshabilitados.
-            </p>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <app-tabs [tabs]="tabsExample" [initialActiveTab]="'overview'"></app-tabs>
-              </div>
-            </div>
-          </div>
-
-          <!-- Carrusel -->
-          <div class="showcase">
-            <h3>Carrusel de Álbumes</h3>
-            <app-carousel title="ÁLBUMES EN TENDENCIA">
+        <!-- Cards Polaroid -->
+        <div class="showcase">
+          <h3>Cards - Variante Polaroid</h3>
+          <div class="showcase__row">
+            <div class="showcase__item">
               <app-card
-                *ngFor="let album of trendingAlbums"
-                [title]="album.title"
-                [subtitle]="album.artist + ' • ' + album.year"
+                title="Rumours"
+                subtitle="Fleetwood Mac"
                 imageShape="square"
                 imageSize="medium"
                 variant="normal"
@@ -932,16 +429,13 @@
                 titleLink="#album"
                 subtitleLink="#artist">
               </app-card>
-            </app-carousel>
-          </div>
+              <code>Álbum con placeholder</code>
+            </div>
 
-          <div class="showcase">
-            <h3>Carrusel de Canciones</h3>
-            <app-carousel title="CANCIONES EN TENDENCIA">
+            <div class="showcase__item">
               <app-card
-                *ngFor="let song of trendingSongs"
-                [title]="song.title"
-                [subtitle]="song.artist"
+                title="Bohemian Rhapsody"
+                subtitle="Queen"
                 imageShape="circle"
                 imageSize="medium"
                 variant="normal"
@@ -949,132 +443,660 @@
                 titleLink="#song"
                 subtitleLink="#artist">
               </app-card>
-            </app-carousel>
-          </div>
+              <code>Canción (circular)</code>
+            </div>
 
-          <!-- Carrusel con manipulación DOM -->
-          <div class="showcase">
-            <h3>Manipulación de Estilos Dinámicos (DOM)</h3>
-            <p class="showcase__description">
-              Este carousel demuestra manipulación directa del DOM modificando estilos con <code>nativeElement.style</code>.
-            </p>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <app-carousel #demoCarousel title="DEMO - MANIPULACIÓN DE ESTILOS">
-                  <app-card
-                    *ngFor="let album of trendingAlbums.slice(0, 5)"
-                    [title]="album.title"
-                    [subtitle]="album.artist"
-                    imageShape="square"
-                    imageSize="medium"
-                    variant="normal"
-                    cardType="polaroid"
-                    titleLink="#album"
-                    subtitleLink="#artist">
-                  </app-card>
-                </app-carousel>
-
-                <div class="style-guide__carousel-demo-controls">
-                  <app-button (clicked)="toggleCarouselHighlight()" variant="secondary" size="sm">
-                    Toggle Highlight (boxShadow + border)
-                  </app-button>
-
-                  <label class="style-guide__carousel-demo-opacity">
-                    <span>Opacidad:</span>
-                    <input
-                      type="range"
-                      min="0"
-                      max="1"
-                      step="0.1"
-                      [value]="carouselOpacity"
-                      (input)="updateCarouselOpacity($event)"
-                      class="style-guide__carousel-demo-range"
-                    />
-                    <span>{{ carouselOpacity }}</span>
-                  </label>
-                </div>
-                <code>Modifica: boxShadow, border, opacity con nativeElement.style</code>
-              </div>
+            <div class="showcase__item">
+              <app-card
+                title="Hotel California"
+                subtitle="Eagles"
+                imageShape="square"
+                imageSize="medium"
+                variant="vinilo"
+                cardType="polaroid"
+                titleLink="#album"
+                subtitleLink="#artist">
+              </app-card>
+              <code>Efecto vinilo</code>
             </div>
           </div>
-        </section>
-      </app-tab-panel>
+        </div>
 
-      <!-- ============================================ -->
-      <!-- TAB 5: LAYOUT (Templates) -->
-      <!-- ============================================ -->
-      <app-tab-panel id="layout" label="📐 Layout">
-        <section class="style-guide__section">
-          <h2>Componentes de Layout</h2>
+        <!-- Cards Profile -->
+        <div class="showcase">
+          <h3>Cards - Variante Profile</h3>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <app-card
+                title="JohnDoe"
+                imageShape="square"
+                imageSize="large"
+                variant="normal"
+                cardType="profile"
+                layout="vertical"
+                [badges]="userGenres"
+                [actions]="profileActions">
+              </app-card>
+              <code>Perfil vertical con géneros</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-card
+                title="Dark Side of the Moon"
+                subtitle="Pink Floyd • 1973"
+                imageShape="square"
+                imageSize="large"
+                variant="vinilo"
+                cardType="profile"
+                [badges]="['Progressive Rock', 'Psychedelic']"
+                [actions]="profileActions.slice(0, 2)">
+              </app-card>
+              <code>Álbum con badges y acciones</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Textarea -->
+        <div class="showcase">
+          <h3>Textarea</h3>
+          <div class="showcase__grid showcase__grid--forms">
+            <div class="showcase__item">
+              <app-form-textarea
+                label="Descripción"
+                id="textarea-normal"
+                placeholder="Escribe tu descripción aquí..."
+                [rows]="4"
+                hint="Máximo 500 caracteres"
+              ></app-form-textarea>
+              <code>Textarea normal</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-textarea
+                label="Biografía"
+                id="textarea-error"
+                placeholder="Escribe tu biografía..."
+                [rows]="4"
+                error="Este campo es obligatorio"
+              ></app-form-textarea>
+              <code>Textarea con error</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-textarea
+                label="Comentario"
+                id="textarea-disabled"
+                placeholder="No disponible"
+                [rows]="4"
+                [disabled]="true"
+              ></app-form-textarea>
+              <code>Textarea deshabilitado</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Select -->
+        <div class="showcase">
+          <h3>Select</h3>
+          <div class="showcase__grid showcase__grid--forms">
+            <div class="showcase__item">
+              <app-form-select
+                label="Género musical"
+                id="select-normal"
+                placeholder="Selecciona tu género favorito"
+                [options]="genreOptions"
+                hint="Elige el género que más te gusta"
+              ></app-form-select>
+              <code>Select normal</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-select
+                label="Género musical"
+                id="select-error"
+                placeholder="Selecciona tu género favorito"
+                [options]="genreOptions"
+                error="Debes seleccionar un género"
+              ></app-form-select>
+              <code>Select con error</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-select
+                label="Género musical"
+                id="select-disabled"
+                placeholder="No disponible"
+                [options]="genreOptions"
+                [disabled]="true"
+              ></app-form-select>
+              <code>Select deshabilitado</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkbox -->
+        <div class="showcase">
+          <h3>Checkbox</h3>
+          <div class="showcase__grid showcase__grid--forms">
+            <div class="showcase__item">
+              <app-form-checkbox
+                label="Acepto los términos y condiciones"
+                id="checkbox-normal"
+              ></app-form-checkbox>
+              <code>Checkbox normal</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-checkbox
+                label="Suscribirme al newsletter"
+                id="checkbox-error"
+                error="Debes aceptar para continuar"
+              ></app-form-checkbox>
+              <code>Checkbox con error</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-checkbox
+                label="Opción no disponible"
+                id="checkbox-disabled"
+                [disabled]="true"
+              ></app-form-checkbox>
+              <code>Checkbox deshabilitado</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Radio Group -->
+        <div class="showcase">
+          <h3>Radio Group</h3>
+          <div class="showcase__grid showcase__grid--forms">
+            <div class="showcase__item">
+              <app-form-radio-group
+                label="Privacidad del perfil"
+                name="privacy"
+                [options]="privacyOptions"
+              ></app-form-radio-group>
+              <code>Radio group normal</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-radio-group
+                label="Privacidad del perfil"
+                name="privacy-error"
+                [options]="privacyOptions"
+                error="Debes seleccionar una opción"
+              ></app-form-radio-group>
+              <code>Radio group con error</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-radio-group
+                label="Privacidad del perfil"
+                name="privacy-inline"
+                [options]="privacyOptions"
+                [inline]="true"
+              ></app-form-radio-group>
+              <code>Radio group inline</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Breadcrumbs -->
+        <div class="showcase">
+          <h3>Breadcrumbs</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-breadcrumbs [items]="breadcrumbsSimple"></app-breadcrumbs>
+              <code>Breadcrumbs simple</code>
+            </div>
+
+            <div class="showcase__item showcase__item--full">
+              <app-breadcrumbs [items]="breadcrumbsWithIcons"></app-breadcrumbs>
+              <code>Breadcrumbs con iconos</code>
+            </div>
+
+            <div class="showcase__item showcase__item--full">
+              <app-breadcrumbs [items]="breadcrumbsLong"></app-breadcrumbs>
+              <code>Breadcrumbs largo (con truncado en móvil)</code>
+            </div>
+
+            <div class="showcase__item showcase__item--full">
+              <app-breadcrumbs
+                [items]="breadcrumbsSimple"
+                separator="›"
+              ></app-breadcrumbs>
+              <code>Breadcrumbs con separador custom (›)</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="showcase">
+          <h3>Alerts</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-alert
+                type="success"
+                title="¡Éxito!"
+                message="Tu álbum se ha agregado correctamente a tu colección."
+              ></app-alert>
+              <code>Alert de éxito</code>
+            </div>
+
+            <div class="showcase__item showcase__item--full">
+              <app-alert
+                type="error"
+                title="Error"
+                message="No se pudo conectar con el servidor. Por favor, inténtalo de nuevo."
+              ></app-alert>
+              <code>Alert de error</code>
+            </div>
+
+            <div class="showcase__item showcase__item--full">
+              <app-alert
+                type="warning"
+                title="Advertencia"
+                message="Tu sesión caducará en 5 minutos. Guarda tus cambios."
+              ></app-alert>
+              <code>Alert de advertencia</code>
+            </div>
+
+            <div class="showcase__item showcase__item--full">
+              <app-alert
+                type="info"
+                title="Información"
+                message="Tenemos nueva música disponible en tu sección de recomendados."
+              ></app-alert>
+              <code>Alert de información</code>
+            </div>
+
+            <div class="showcase__item showcase__item--full">
+              <app-alert
+                type="warning"
+                title="Cambios pendientes"
+                message="Tienes cambios sin guardar. ¿Deseas salir de todas formas?"
+                [dismissible]="true"
+              ></app-alert>
+              <code>Alert con botón cerrar</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tooltip -->
+        <div class="showcase">
+          <h3>Tooltip - Posiciones</h3>
+          <div class="showcase__grid" style="gap: 3rem; padding: 2rem;">
+            <div class="showcase__item">
+              <app-tooltip text="Tooltip arriba" position="top">
+                <app-button>Top</app-button>
+              </app-tooltip>
+            </div>
+
+            <div class="showcase__item">
+              <app-tooltip text="Tooltip abajo" position="bottom">
+                <app-button>Bottom</app-button>
+              </app-tooltip>
+            </div>
+
+            <div class="showcase__item">
+              <app-tooltip text="Tooltip izquierda" position="left">
+                <app-button>Left</app-button>
+              </app-tooltip>
+            </div>
+
+            <div class="showcase__item">
+              <app-tooltip text="Tooltip derecha" position="right">
+                <app-button>Right</app-button>
+              </app-tooltip>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ============================================ -->
+    <!-- SECCIÓN 4: ORGANISMOS -->
+    <!-- ============================================ -->
+    @if (activeSection() === 'organisms') {
+      <section class="style-guide__section">
+        <h2>Organismos</h2>
+        <p class="showcase__description">
+          Componentes complejos: formularios completos, modales, accordions, tabs y carruseles.
+        </p>
+
+        <!-- Notifications Toast -->
+        <div class="showcase">
+          <h3>Notifications (Toast)</h3>
           <p class="showcase__description">
-            Los componentes de layout (Header, Footer, Sidebar, Main) están implementados y se utilizan
-            en la estructura general de la aplicación. Se pueden ver en uso en todas las páginas.
+            Las notificaciones aparecen flotando en las esquinas de la pantalla.
           </p>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <app-button
+                (click)="showToast('success')"
+                variant="primary"
+                size="md"
+              >
+                Notificación de éxito
+              </app-button>
+            </div>
 
-          <div class="showcase">
-            <h3>Estructura de la Aplicación</h3>
-            <div class="showcase__column">
-              <div class="showcase__item showcase__item--full">
-                <code>&lt;app-header&gt;</code> - Cabecera de la aplicación con navegación
-              </div>
-              <div class="showcase__item showcase__item--full">
-                <code>&lt;app-sidebar&gt;</code> - Barra lateral con menú de navegación
-              </div>
-              <div class="showcase__item showcase__item--full">
-                <code>&lt;app-main&gt;</code> - Contenedor principal de contenido
-              </div>
-              <div class="showcase__item showcase__item--full">
-                <code>&lt;app-footer&gt;</code> - Pie de página con información adicional
-              </div>
+            <div class="showcase__item">
+              <app-button
+                (click)="showToast('error')"
+                variant="danger"
+                size="md"
+              >
+                Notificación de error
+              </app-button>
+            </div>
+
+            <div class="showcase__item">
+              <app-button
+                (click)="showToast('warning')"
+                variant="secondary"
+                size="md"
+              >
+                Notificación de advertencia
+              </app-button>
+            </div>
+
+            <div class="showcase__item">
+              <app-button
+                (click)="showToast('info')"
+                variant="ghost"
+                size="md"
+              >
+                Notificación de información
+              </app-button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notifications DOM Manipulation -->
+        <div class="showcase">
+          <h3>Notificaciones Dinámicas (Manipulación DOM)</h3>
+          <p class="showcase__description">
+            Notificaciones creadas dinámicamente usando <code>createComponent()</code> y <code>appendChild()</code>.
+          </p>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <app-button
+                (click)="showDynamicNotification('success')"
+                variant="primary"
+                size="md"
+              >
+                Crear notificación en el DOM
+              </app-button>
+              <code>createElement + appendChild</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-button
+                (click)="showDynamicNotification('error')"
+                variant="danger"
+                size="md"
+              >
+                Error con creación dinámica
+              </app-button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formularios Completos -->
+        <div class="showcase">
+          <h3>Formulario de Login</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--centered">
+              <app-login-form></app-login-form>
+              <code>Formulario de inicio de sesión con validación</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="showcase">
+          <h3>Formulario de Registro</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--centered">
+              <app-register-form></app-register-form>
+              <code>Formulario de registro con validación completa</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="showcase">
+          <h3>Formulario de Recuperación de Contraseña</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--centered">
+              <app-forgot-password-form></app-forgot-password-form>
+              <code>Formulario para recuperar contraseña</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="showcase">
+          <h3>Modal</h3>
+          <p class="showcase__description">
+            Componente modal con overlay, cierre con ESC, click fuera y trap focus.
+          </p>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <app-button (clicked)="openModal()">
+                Abrir Modal
+              </app-button>
+              <code>Modal con signal isOpen</code>
             </div>
           </div>
 
-          <div class="showcase">
-            <h3>Diagrama de Layout</h3>
-            <div class="showcase__column">
-              <div class="layout-diagram">
-                <div class="layout-diagram__header">app-header</div>
-                <div class="layout-diagram__body">
-                  <div class="layout-diagram__sidebar">app-sidebar</div>
-                  <div class="layout-diagram__main">app-main</div>
-                </div>
-                <div class="layout-diagram__footer">app-footer</div>
-              </div>
+          <app-modal
+            [isOpen]="isModalOpen()"
+            title="Confirmar acción"
+            (onClose)="closeModal()">
+            <p>¿Estás seguro de que quieres eliminar este álbum de tu colección?</p>
+            <p>Esta acción no se puede deshacer.</p>
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+              <app-button variant="danger" (clicked)="closeModal()">
+                Eliminar
+              </app-button>
+              <app-button variant="secondary" (clicked)="closeModal()">
+                Cancelar
+              </app-button>
+            </div>
+          </app-modal>
+        </div>
+
+        <!-- Accordion -->
+        <div class="showcase">
+          <h3>Accordion - Modo Single</h3>
+          <p class="showcase__description">
+            Solo puede haber un item abierto a la vez.
+          </p>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-accordion [items]="accordionItems" mode="single"></app-accordion>
             </div>
           </div>
+        </div>
 
-          <div class="showcase">
-            <h3>Breakpoints</h3>
-            <p class="showcase__description">
-              El sistema de layout es completamente responsive, adaptándose a diferentes tamaños de pantalla.
-            </p>
-            <div class="showcase__grid showcase__grid--breakpoints">
-              <div class="breakpoint-card">
-                <span class="breakpoint-card__name">Mobile</span>
-                <span class="breakpoint-card__value">320px+</span>
-                <code>$breakpoint-mobile</code>
-              </div>
-              <div class="breakpoint-card">
-                <span class="breakpoint-card__name">Tablet</span>
-                <span class="breakpoint-card__value">768px+</span>
-                <code>$breakpoint-tablet</code>
-              </div>
-              <div class="breakpoint-card">
-                <span class="breakpoint-card__name">Desktop</span>
-                <span class="breakpoint-card__value">1024px+</span>
-                <code>$breakpoint-desktop</code>
-              </div>
-              <div class="breakpoint-card">
-                <span class="breakpoint-card__name">Large Desktop</span>
-                <span class="breakpoint-card__value">1200px+</span>
-                <code>$breakpoint-large-desktop</code>
-              </div>
+        <div class="showcase">
+          <h3>Accordion - Modo Multiple</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-accordion [items]="accordionItems" mode="multiple"></app-accordion>
             </div>
           </div>
-        </section>
-      </app-tab-panel>
+        </div>
 
-    </app-responsive-tabs>
+        <!-- Tabs (Original) -->
+        <div class="showcase">
+          <h3>Tabs (Pestañas)</h3>
+          <p class="showcase__description">
+            Navegación por teclado (flechas izquierda/derecha) y soporte para tabs deshabilitados.
+          </p>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-tabs [tabs]="tabsExample" [initialActiveTab]="'overview'"></app-tabs>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carrusel -->
+        <div class="showcase">
+          <h3>Carrusel de Álbumes</h3>
+          <app-carousel title="ÁLBUMES EN TENDENCIA">
+            <app-card
+              *ngFor="let album of trendingAlbums"
+              [title]="album.title"
+              [subtitle]="album.artist + ' • ' + album.year"
+              imageShape="square"
+              imageSize="medium"
+              variant="normal"
+              cardType="polaroid"
+              titleLink="#album"
+              subtitleLink="#artist">
+            </app-card>
+          </app-carousel>
+        </div>
+
+        <div class="showcase">
+          <h3>Carrusel de Canciones</h3>
+          <app-carousel title="CANCIONES EN TENDENCIA">
+            <app-card
+              *ngFor="let song of trendingSongs"
+              [title]="song.title"
+              [subtitle]="song.artist"
+              imageShape="circle"
+              imageSize="medium"
+              variant="normal"
+              cardType="polaroid"
+              titleLink="#song"
+              subtitleLink="#artist">
+            </app-card>
+          </app-carousel>
+        </div>
+
+        <!-- Carrusel con manipulación DOM -->
+        <div class="showcase">
+          <h3>Manipulación de Estilos Dinámicos (DOM)</h3>
+          <p class="showcase__description">
+            Este carousel demuestra manipulación directa del DOM modificando estilos con <code>nativeElement.style</code>.
+          </p>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-carousel #demoCarousel title="DEMO - MANIPULACIÓN DE ESTILOS">
+                <app-card
+                  *ngFor="let album of trendingAlbums.slice(0, 5)"
+                  [title]="album.title"
+                  [subtitle]="album.artist"
+                  imageShape="square"
+                  imageSize="medium"
+                  variant="normal"
+                  cardType="polaroid"
+                  titleLink="#album"
+                  subtitleLink="#artist">
+                </app-card>
+              </app-carousel>
+
+              <div class="style-guide__carousel-demo-controls">
+                <app-button (clicked)="toggleCarouselHighlight()" variant="secondary" size="sm">
+                  Toggle Highlight (boxShadow + border)
+                </app-button>
+
+                <label class="style-guide__carousel-demo-opacity">
+                  <span>Opacidad:</span>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    [value]="carouselOpacity"
+                    (input)="updateCarouselOpacity($event)"
+                    class="style-guide__carousel-demo-range"
+                  />
+                  <span>{{ carouselOpacity }}</span>
+                </label>
+              </div>
+              <code>Modifica: boxShadow, border, opacity con nativeElement.style</code>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ============================================ -->
+    <!-- SECCIÓN 5: LAYOUT -->
+    <!-- ============================================ -->
+    @if (activeSection() === 'layout') {
+      <section class="style-guide__section">
+        <h2>Componentes de Layout</h2>
+        <p class="showcase__description">
+          Los componentes de layout (Header, Footer, Sidebar, Main) están implementados y se utilizan
+          en la estructura general de la aplicación. Se pueden ver en uso en todas las páginas.
+        </p>
+
+        <div class="showcase">
+          <h3>Estructura de la Aplicación</h3>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <code>&lt;app-header&gt;</code> - Cabecera de la aplicación con navegación
+            </div>
+            <div class="showcase__item showcase__item--full">
+              <code>&lt;app-sidebar&gt;</code> - Barra lateral con menú de navegación
+            </div>
+            <div class="showcase__item showcase__item--full">
+              <code>&lt;app-main&gt;</code> - Contenedor principal de contenido
+            </div>
+            <div class="showcase__item showcase__item--full">
+              <code>&lt;app-footer&gt;</code> - Pie de página con información adicional
+            </div>
+          </div>
+        </div>
+
+        <div class="showcase">
+          <h3>Diagrama de Layout</h3>
+          <div class="showcase__column">
+            <div class="layout-diagram">
+              <div class="layout-diagram__header">app-header</div>
+              <div class="layout-diagram__body">
+                <div class="layout-diagram__sidebar">app-sidebar</div>
+                <div class="layout-diagram__main">app-main</div>
+              </div>
+              <div class="layout-diagram__footer">app-footer</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="showcase">
+          <h3>Breakpoints</h3>
+          <p class="showcase__description">
+            El sistema de layout es completamente responsive, adaptándose a diferentes tamaños de pantalla.
+          </p>
+          <div class="showcase__grid showcase__grid--breakpoints">
+            <div class="breakpoint-card">
+              <span class="breakpoint-card__name">Mobile</span>
+              <span class="breakpoint-card__value">320px+</span>
+              <code>$breakpoint-mobile</code>
+            </div>
+            <div class="breakpoint-card">
+              <span class="breakpoint-card__name">Tablet</span>
+              <span class="breakpoint-card__value">768px+</span>
+              <code>$breakpoint-tablet</code>
+            </div>
+            <div class="breakpoint-card">
+              <span class="breakpoint-card__name">Desktop</span>
+              <span class="breakpoint-card__value">1024px+</span>
+              <code>$breakpoint-desktop</code>
+            </div>
+            <div class="breakpoint-card">
+              <span class="breakpoint-card__name">Large Desktop</span>
+              <span class="breakpoint-card__value">1200px+</span>
+              <code>$breakpoint-large-desktop</code>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
   </div>
 
   <!-- Notificaciones flotantes -->
