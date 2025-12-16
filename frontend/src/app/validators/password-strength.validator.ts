@@ -2,18 +2,18 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 /**
  * Validador: Contraseña Fuerte
- * 
+ *
  * REQUISITOS:
  * - Mínimo 12 caracteres
  * - Al menos una mayúscula
  * - Al menos una minúscula
  * - Al menos un número
  * - Al menos un carácter especial
- * 
+ *
  * RETORNA:
  * - null: contraseña válida
  * - { noUppercase: true, noLowercase: true, ... }: errores específicos
- * 
+ *
  * @example
  * ```typescript
  * password: ['', [Validators.required, passwordStrength()]]
@@ -22,7 +22,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 export function passwordStrength(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const value = control.value;
-    
+
     // Si está vacío, skip (Validators.required lo maneja)
     if (!value) return null;
 
@@ -33,7 +33,7 @@ export function passwordStrength(): ValidatorFn {
     const minLength = value.length >= 12;
 
     const errors: ValidationErrors = {};
-    
+
     if (!hasUpperCase) errors['noUppercase'] = true;
     if (!hasLowerCase) errors['noLowercase'] = true;
     if (!hasNumber) errors['noNumber'] = true;
@@ -46,7 +46,7 @@ export function passwordStrength(): ValidatorFn {
 
 /**
  * Obtener mensaje amigable para errores de contraseña
- * 
+ *
  * @param error - Clave del error
  * @returns Mensaje en español
  */
