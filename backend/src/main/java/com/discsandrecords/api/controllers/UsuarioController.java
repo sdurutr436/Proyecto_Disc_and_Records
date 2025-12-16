@@ -10,11 +10,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
 
+/**
+ * UsuarioController - Controlador de Gestión de Usuarios
+ *
+ * POLÍTICAS DE ACCESO:
+ * - GET (lectura): Público - cualquiera puede ver perfiles
+ * - POST (crear): Solo ADMIN - registro público va por AuthController
+ * - PUT (actualizar): ADMIN o el propio usuario
+ * - DELETE: Solo ADMIN
+ *
+ * @see UsuarioService
+ */
 @RestController
 @RequestMapping("/api/usuarios")
 @Tag(name = "Usuarios", description = "API para gestión de usuarios")
@@ -25,6 +37,10 @@ public class UsuarioController {
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
+
+    // ==========================================
+    // ENDPOINTS PÚBLICOS (LECTURA)
+    // ==========================================
 
     @GetMapping
     @Operation(summary = "Listar todos los usuarios")
@@ -56,8 +72,17 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.obtenerPorNombreUsuario(nombreUsuario));
     }
 
+    // ==========================================
+    // ENDPOINTS PROTEGIDOS (ADMIN)
+    // ==========================================
+
+    /**
+     * Crear usuario - Solo administradores
+     * Para registro público usar POST /api/auth/register
+     */
     @PostMapping
-    @Operation(summary = "Crear un nuevo usuario")
+    @Operation(summary = "Crear un nuevo usuario (Admin)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioResponseDTO> crear(@RequestBody @Valid CreateUsuarioDTO dto) {
         UsuarioResponseDTO creado = usuarioService.crear(dto);
         return ResponseEntity
@@ -65,16 +90,25 @@ public class UsuarioController {
                 .body(creado);
     }
 
+    /**
+     * Actualizar usuario - Admin o el propio usuario
+     * #id se compara con el ID del usuario autenticado
+     */
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un usuario existente")
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
     public ResponseEntity<UsuarioResponseDTO> actualizar(
             @PathVariable Long id,
             @RequestBody @Valid UpdateUsuarioDTO dto) {
         return ResponseEntity.ok(usuarioService.actualizar(id, dto));
     }
 
+    /**
+     * Eliminar usuario - Solo administradores
+     */
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar un usuario")
+    @Operation(summary = "Eliminar un usuario (Admin)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         usuarioService.eliminar(id);
         return ResponseEntity.noContent().build();

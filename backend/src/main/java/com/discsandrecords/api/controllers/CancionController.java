@@ -10,11 +10,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
 
+/**
+ * CancionController - Controlador de Gestión de Canciones
+ *
+ * POLÍTICAS DE ACCESO:
+ * - GET (lectura): Público - cualquiera puede ver canciones
+ * - POST (crear): Solo ADMIN o MODERATOR
+ * - PUT (actualizar): Solo ADMIN o MODERATOR
+ * - DELETE: Solo ADMIN
+ *
+ * @see CancionService
+ */
 @RestController
 @RequestMapping("/api/canciones")
 @Tag(name = "Canciones", description = "API para gestión de canciones")
@@ -25,6 +37,10 @@ public class CancionController {
     public CancionController(CancionService cancionService) {
         this.cancionService = cancionService;
     }
+
+    // ==========================================
+    // ENDPOINTS PÚBLICOS (LECTURA)
+    // ==========================================
 
     @GetMapping
     @Operation(summary = "Listar todas las canciones")
@@ -62,8 +78,13 @@ public class CancionController {
         return ResponseEntity.ok(cancionService.listarPorArtista(idArtista));
     }
 
+    // ==========================================
+    // ENDPOINTS PROTEGIDOS
+    // ==========================================
+
     @PostMapping
-    @Operation(summary = "Crear una nueva canción")
+    @Operation(summary = "Crear una nueva canción (Admin/Moderator)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     public ResponseEntity<CancionResponseDTO> crear(@RequestBody @Valid CreateCancionDTO dto) {
         CancionResponseDTO creada = cancionService.crear(dto);
         return ResponseEntity
@@ -72,7 +93,8 @@ public class CancionController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar una canción existente")
+    @Operation(summary = "Actualizar una canción existente (Admin/Moderator)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     public ResponseEntity<CancionResponseDTO> actualizar(
             @PathVariable Long id,
             @RequestBody @Valid CreateCancionDTO dto) {
@@ -80,7 +102,8 @@ public class CancionController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar una canción")
+    @Operation(summary = "Eliminar una canción (Admin)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         cancionService.eliminar(id);
         return ResponseEntity.noContent().build();

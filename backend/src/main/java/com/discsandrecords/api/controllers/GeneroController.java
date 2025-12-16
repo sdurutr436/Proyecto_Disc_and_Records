@@ -10,11 +10,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
 
+/**
+ * GeneroController - Controlador de Gestión de Géneros Musicales
+ *
+ * POLÍTICAS DE ACCESO:
+ * - GET (lectura): Público - cualquiera puede ver géneros
+ * - POST (crear): Solo ADMIN o MODERATOR
+ * - PUT (actualizar): Solo ADMIN o MODERATOR
+ * - DELETE: Solo ADMIN
+ *
+ * @see GeneroService
+ */
 @RestController
 @RequestMapping("/api/generos")
 @Tag(name = "Géneros", description = "API para gestión de géneros musicales")
@@ -25,6 +37,10 @@ public class GeneroController {
     public GeneroController(GeneroService generoService) {
         this.generoService = generoService;
     }
+
+    // ==========================================
+    // ENDPOINTS PÚBLICOS (LECTURA)
+    // ==========================================
 
     @GetMapping
     @Operation(summary = "Listar todos los géneros")
@@ -56,8 +72,13 @@ public class GeneroController {
         return ResponseEntity.ok(generoService.buscarPorNombre(nombre));
     }
 
+    // ==========================================
+    // ENDPOINTS PROTEGIDOS
+    // ==========================================
+
     @PostMapping
-    @Operation(summary = "Crear un nuevo género")
+    @Operation(summary = "Crear un nuevo género (Admin/Moderator)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     public ResponseEntity<GeneroResponseDTO> crear(@RequestBody @Valid CreateGeneroDTO dto) {
         GeneroResponseDTO creado = generoService.crear(dto);
         return ResponseEntity
@@ -66,7 +87,8 @@ public class GeneroController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar un género existente")
+    @Operation(summary = "Actualizar un género existente (Admin/Moderator)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     public ResponseEntity<GeneroResponseDTO> actualizar(
             @PathVariable Long id,
             @RequestBody @Valid CreateGeneroDTO dto) {
@@ -74,7 +96,8 @@ public class GeneroController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar un género")
+    @Operation(summary = "Eliminar un género (Admin)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         generoService.eliminar(id);
         return ResponseEntity.noContent().build();

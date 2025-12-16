@@ -163,19 +163,26 @@ INSERT INTO canciones (titulo_cancion, anio_salida, id_artista, puntuacion_media
 ('Man in the Mirror', 1988, 12, 4.82);
 
 -- ===========================================
--- USUARIOS (10 usuarios de prueba)
+-- USUARIOS (10 usuarios de prueba + 1 admin + 1 moderator)
+-- NOTA: Las contraseñas están hasheadas con BCrypt
+-- Contraseña original para todos: "password123"
+-- Hash BCrypt: $2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
 -- ===========================================
-INSERT INTO usuarios (nombre_usuario, mail, contrasena, avatar, biografia, fecha_registro) VALUES 
-('musicfan', 'musicfan@example.com', 'password123', 'https://i.pravatar.cc/150?img=1', 'Amante de la música clásica y el rock progresivo. Colecciono vinilos desde hace 20 años.', CURRENT_TIMESTAMP),
-('vinylcollector', 'vinyl@example.com', 'password123', 'https://i.pravatar.cc/150?img=2', 'Coleccionista de vinilos desde 1995. Mi obsesión: primeras ediciones.', CURRENT_TIMESTAMP),
-('jazzhead', 'jazz@example.com', 'password123', 'https://i.pravatar.cc/150?img=3', 'El jazz es vida. Miles Davis es Dios.', CURRENT_TIMESTAMP),
-('rockero70s', 'rock70s@example.com', 'password123', 'https://i.pravatar.cc/150?img=4', 'Nacido en la década equivocada. Vivo en los 70s.', CURRENT_TIMESTAMP),
-('hiphophead', 'hiphop@example.com', 'password123', 'https://i.pravatar.cc/150?img=5', 'Rap underground y golden age. Real hip-hop only.', CURRENT_TIMESTAMP),
-('melomano', 'melomano@example.com', 'password123', 'https://i.pravatar.cc/150?img=6', 'Escucho de todo, menos reggaeton (bueno, a veces también).', CURRENT_TIMESTAMP),
-('indiekid', 'indie@example.com', 'password123', 'https://i.pravatar.cc/150?img=7', 'Bandcamp es mi segundo hogar. Apoyo artistas independientes.', CURRENT_TIMESTAMP),
-('electronicvibes', 'electronic@example.com', 'password123', 'https://i.pravatar.cc/150?img=8', 'Techno, house, IDM. La música electrónica es el futuro.', CURRENT_TIMESTAMP),
-('metalhead666', 'metal@example.com', 'password123', 'https://i.pravatar.cc/150?img=9', 'El metal nunca muere. 🤘 Thrash, death, black... todo vale.', CURRENT_TIMESTAMP),
-('poprocker', 'pop@example.com', 'password123', 'https://i.pravatar.cc/150?img=10', 'Pop comercial sin vergüenza. Taylor Swift fan club president.', CURRENT_TIMESTAMP);
+INSERT INTO usuarios (nombre_usuario, mail, contrasena, avatar, biografia, fecha_registro, role, activo) VALUES 
+-- Usuarios administradores y moderadores
+('admin', 'admin@discsandrecords.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=70', 'Administrador del sistema Discs & Records.', CURRENT_TIMESTAMP, 'ROLE_ADMIN', true),
+('moderator', 'mod@discsandrecords.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=60', 'Moderador de contenido. Mantengo el orden en la comunidad.', CURRENT_TIMESTAMP, 'ROLE_MODERATOR', true),
+-- Usuarios regulares
+('musicfan', 'musicfan@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=1', 'Amante de la música clásica y el rock progresivo. Colecciono vinilos desde hace 20 años.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('vinylcollector', 'vinyl@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=2', 'Coleccionista de vinilos desde 1995. Mi obsesión: primeras ediciones.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('jazzhead', 'jazz@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=3', 'El jazz es vida. Miles Davis es Dios.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('rockero70s', 'rock70s@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=4', 'Nacido en la década equivocada. Vivo en los 70s.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('hiphophead', 'hiphop@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=5', 'Rap underground y golden age. Real hip-hop only.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('melomano', 'melomano@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=6', 'Escucho de todo, menos reggaeton (bueno, a veces también).', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('indiekid', 'indie@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=7', 'Bandcamp es mi segundo hogar. Apoyo artistas independientes.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('electronicvibes', 'electronic@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=8', 'Techno, house, IDM. La música electrónica es el futuro.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('metalhead666', 'metal@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=9', 'El metal nunca muere. 🤘 Thrash, death, black... todo vale.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('poprocker', 'pop@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=10', 'Pop comercial sin vergüenza. Taylor Swift fan club president.', CURRENT_TIMESTAMP, 'ROLE_USER', true);
 
 -- ===========================================
 -- RELACIONES ALBUM-GÉNERO (asociaciones)
@@ -214,42 +221,44 @@ INSERT INTO album_genero (id_album, id_genero) VALUES
 
 -- ===========================================
 -- RESEÑAS DE ÁLBUMES (usuario_album)
+-- NOTA: Los IDs de usuario empiezan en 3 (1=admin, 2=moderator)
 -- ===========================================
 INSERT INTO usuario_album (id_usuario, id_album, escuchado, puntuacion, texto_resena, fecha_agregada, fecha_resena) VALUES 
-(1, 1, true, 5, 'Una obra maestra absoluta. Cada canción fluye perfectamente hacia la siguiente.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(1, 4, true, 5, 'El álbum perfecto. No hay una sola canción que sobre.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(1, 7, true, 5, 'Radiohead en su máximo esplendor. Paranoid Android es simplemente genial.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(2, 1, true, 5, 'Mi vinilo favorito de toda mi colección. Suena increíble.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(2, 19, true, 5, 'Stairway to Heaven en vinilo original. No hay nada mejor.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(3, 23, true, 5, 'El álbum de jazz más importante de la historia. Punto.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(3, 24, true, 4, 'Revolucionario pero difícil de escuchar a veces. Hay que darle varias oportunidades.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(4, 17, true, 5, 'Bowie en su era dorada. Ziggy Stardust cambió todo.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(4, 2, true, 5, 'Pink Floyd contando una historia como nadie más puede.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(5, 10, true, 5, 'Kendrick cambiando el juego del rap narrativo.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(5, 11, true, 5, 'TPAB es la obra más importante del hip-hop moderno. Jazz + rap = perfección.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(6, 26, true, 5, 'El álbum más vendido de la historia por una razón. Cada canción es un hit.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(6, 13, true, 5, 'Discovery me introdujo a la música electrónica. Nostalgia pura.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(7, 21, true, 5, 'El grito de una generación. Smells Like Teen Spirit lo cambió todo.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(7, 28, true, 4, 'Arctic Monkeys maduró perfectamente con este álbum.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(8, 13, true, 5, 'Daft Punk creó el blueprint del french house. Impecable.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(8, 14, true, 5, 'RAM es un homenaje al disco de los 70s y 80s. Get Lucky es adictivo.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(9, 19, true, 5, 'El riff de Black Dog. Necesito decir más?', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(10, 26, true, 5, 'Pop perfecto. Michael Jackson era un genio.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(10, 15, true, 5, 'Bohemian Rhapsody en este álbum. Queen son los reyes.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+(3, 1, true, 5, 'Una obra maestra absoluta. Cada canción fluye perfectamente hacia la siguiente.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(3, 4, true, 5, 'El álbum perfecto. No hay una sola canción que sobre.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(3, 7, true, 5, 'Radiohead en su máximo esplendor. Paranoid Android es simplemente genial.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(4, 1, true, 5, 'Mi vinilo favorito de toda mi colección. Suena increíble.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(4, 19, true, 5, 'Stairway to Heaven en vinilo original. No hay nada mejor.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(5, 23, true, 5, 'El álbum de jazz más importante de la historia. Punto.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(5, 24, true, 4, 'Revolucionario pero difícil de escuchar a veces. Hay que darle varias oportunidades.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(6, 17, true, 5, 'Bowie en su era dorada. Ziggy Stardust cambió todo.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(6, 2, true, 5, 'Pink Floyd contando una historia como nadie más puede.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(7, 10, true, 5, 'Kendrick cambiando el juego del rap narrativo.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(7, 11, true, 5, 'TPAB es la obra más importante del hip-hop moderno. Jazz + rap = perfección.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(8, 26, true, 5, 'El álbum más vendido de la historia por una razón. Cada canción es un hit.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(8, 13, true, 5, 'Discovery me introdujo a la música electrónica. Nostalgia pura.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(9, 21, true, 5, 'El grito de una generación. Smells Like Teen Spirit lo cambió todo.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(9, 28, true, 4, 'Arctic Monkeys maduró perfectamente con este álbum.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(10, 13, true, 5, 'Daft Punk creó el blueprint del french house. Impecable.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(10, 14, true, 5, 'RAM es un homenaje al disco de los 70s y 80s. Get Lucky es adictivo.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(11, 19, true, 5, 'El riff de Black Dog. Necesito decir más?', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(12, 26, true, 5, 'Pop perfecto. Michael Jackson era un genio.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(12, 15, true, 5, 'Bohemian Rhapsody en este álbum. Queen son los reyes.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- ===========================================
 -- RESEÑAS DE CANCIONES (usuario_cancion)
+-- NOTA: Los IDs de usuario empiezan en 3 (1=admin, 2=moderator)
 -- ===========================================
 INSERT INTO usuario_cancion (id_usuario, id_cancion, escuchada, puntuacion, texto_resena, fecha_agregada, fecha_resena) VALUES 
-(1, 3, true, 5, 'El solo de guitarra de Comfortably Numb es el mejor de la historia.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(1, 8, true, 5, 'Here Comes the Sun es pura felicidad en forma de canción.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(2, 33, true, 5, 'Stairway to Heaven: 8 minutos de perfección musical.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(3, 41, true, 5, 'So What definió el cool jazz. Miles Davis era un visionario.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(4, 25, true, 5, 'Bohemian Rhapsody: ópera rock que nunca será superada.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(5, 18, true, 5, 'Alright se convirtió en himno de protesta. Kendrick es poeta.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(6, 46, true, 5, 'Billie Jean tiene el bajo más icónico del pop.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(7, 37, true, 5, 'Smells Like Teen Spirit: el momento en que el grunge explotó.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(8, 21, true, 5, 'One More Time es el himno del new millennium.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(3, 3, true, 5, 'El solo de guitarra de Comfortably Numb es el mejor de la historia.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(3, 8, true, 5, 'Here Comes the Sun es pura felicidad en forma de canción.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(4, 33, true, 5, 'Stairway to Heaven: 8 minutos de perfección musical.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(5, 41, true, 5, 'So What definió el cool jazz. Miles Davis era un visionario.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(6, 25, true, 5, 'Bohemian Rhapsody: ópera rock que nunca será superada.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(7, 18, true, 5, 'Alright se convirtió en himno de protesta. Kendrick es poeta.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(8, 46, true, 5, 'Billie Jean tiene el bajo más icónico del pop.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(9, 37, true, 5, 'Smells Like Teen Spirit: el momento en que el grunge explotó.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(10, 21, true, 5, 'One More Time es el himno del new millennium.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (9, 36, true, 5, 'Black Dog: esos cambios de compás son brutales.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (10, 28, true, 5, 'Dont Stop Me Now es la canción más alegre del rock.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (1, 11, true, 5, 'Paranoid Android es como tres canciones perfectas en una.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),

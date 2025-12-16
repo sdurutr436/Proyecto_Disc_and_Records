@@ -2,6 +2,10 @@ package com.discsandrecords.api.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.discsandrecords.api.dto.*;
 import com.discsandrecords.api.entities.Usuario;
@@ -13,15 +17,74 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * UsuarioService - Servicio de Gestión de Usuarios
+ *
+ * PROPÓSITO:
+ * Centraliza la lógica de negocio para operaciones CRUD de usuarios.
+ * También implementa UserDetailsService para integración con Spring Security.
+ *
+ * RESPONSABILIDADES:
+ * - Listar usuarios (paginado y completo)
+ * - Obtener usuario por ID o nombre
+ * - Crear usuarios con contraseña hasheada
+ * - Actualizar usuarios
+ * - Eliminar usuarios
+ * - Cargar usuarios para autenticación (UserDetailsService)
+ *
+ * SEGURIDAD:
+ * - Todas las contraseñas se hashean con BCrypt antes de guardar
+ * - Implementa UserDetailsService para autenticación JWT
+ * - El email se usa como "username" para login
+ *
+ * @see UserDetailsService
+ * @see AuthService
+ */
 @Service
 @Transactional
-public class UsuarioService {
+public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    /**
+     * Constructor con inyección de dependencias
+     *
+     * @param usuarioRepository Repositorio de usuarios
+     * @param passwordEncoder Encoder BCrypt para contraseñas
+     */
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
+    // ==========================================
+    // IMPLEMENTACIÓN DE UserDetailsService
+    // ==========================================
+
+    /**
+     * Carga un usuario por su "username" (email en este sistema)
+     *
+     * SPRING SECURITY:
+     * Este método es llamado automáticamente por Spring Security durante
+     * la autenticación. El "username" es el email del usuario.
+     *
+     * @param email Email del usuario (usado como username)
+     * @return UserDetails del usuario encontrado
+     * @throws UsernameNotFoundException si el usuario no existe
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return usuarioRepository.findByMail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "Usuario no encontrado con email: " + email
+                ));
+    }
+
+    // ==========================================
+    // OPERACIONES CRUD
+    // ==========================================
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> listarTodos() {
@@ -51,6 +114,22 @@ public class UsuarioService {
         return toResponseDTO(usuario);
     }
 
+    /**
+     * Crea un nuevo usuario con contraseña hasheada
+     *
+     * PROCESO:
+     * 1. Verificar unicidad de nombre de usuario
+     * 2. Verificar unicidad de email
+     * 3. Hashear contraseña con BCrypt
+     * 4. Guardar usuario en base de datos
+     *
+     * NOTA: Este método es para creación administrativa.
+     * Para registro público, usar AuthService.registrar()
+     *
+     * @param dto Datos del nuevo usuario
+     * @return UsuarioResponseDTO con datos del usuario creado
+     * @throws DuplicateResourceException si usuario o email ya existen
+     */
     public UsuarioResponseDTO crear(CreateUsuarioDTO dto) {
         // Verificar si ya existe el nombre de usuario
         if (usuarioRepository.existsByNombreUsuario(dto.nombreUsuario())) {
@@ -62,11 +141,11 @@ public class UsuarioService {
             throw new DuplicateResourceException("Usuario", "mail", dto.mail());
         }
 
-        // TODO: Hashear contraseña con BCrypt cuando se implemente seguridad
+        // Crear usuario con contraseña hasheada
         Usuario usuario = Usuario.builder()
                 .nombreUsuario(dto.nombreUsuario())
                 .mail(dto.mail())
-                .contrasena(dto.contrasena()) // IMPORTANTE: Debe hashearse en producción
+                .contrasena(passwordEncoder.encode(dto.contrasena())) // BCrypt hash
                 .avatar(dto.avatar())
                 .biografia(dto.biografia())
                 .build();

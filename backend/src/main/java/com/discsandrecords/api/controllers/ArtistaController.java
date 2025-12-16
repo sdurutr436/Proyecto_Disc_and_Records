@@ -10,11 +10,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
 
+/**
+ * ArtistaController - Controlador de Gestión de Artistas
+ *
+ * POLÍTICAS DE ACCESO:
+ * - GET (lectura): Público - cualquiera puede ver artistas
+ * - POST (crear): Solo ADMIN o MODERATOR
+ * - PUT (actualizar): Solo ADMIN o MODERATOR
+ * - DELETE: Solo ADMIN
+ *
+ * @see ArtistaService
+ */
 @RestController
 @RequestMapping("/api/artistas")
 @Tag(name = "Artistas", description = "API para gestión de artistas")
@@ -25,6 +37,10 @@ public class ArtistaController {
     public ArtistaController(ArtistaService artistaService) {
         this.artistaService = artistaService;
     }
+
+    // ==========================================
+    // ENDPOINTS PÚBLICOS (LECTURA)
+    // ==========================================
 
     @GetMapping
     @Operation(summary = "Listar todos los artistas")
@@ -56,8 +72,13 @@ public class ArtistaController {
         return ResponseEntity.ok(artistaService.buscarPorNombre(nombre));
     }
 
+    // ==========================================
+    // ENDPOINTS PROTEGIDOS
+    // ==========================================
+
     @PostMapping
-    @Operation(summary = "Crear un nuevo artista")
+    @Operation(summary = "Crear un nuevo artista (Admin/Moderator)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     public ResponseEntity<ArtistaResponseDTO> crear(@RequestBody @Valid CreateArtistaDTO dto) {
         ArtistaResponseDTO creado = artistaService.crear(dto);
         return ResponseEntity
@@ -66,7 +87,8 @@ public class ArtistaController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar un artista existente")
+    @Operation(summary = "Actualizar un artista existente (Admin/Moderator)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     public ResponseEntity<ArtistaResponseDTO> actualizar(
             @PathVariable Long id,
             @RequestBody @Valid CreateArtistaDTO dto) {
@@ -74,13 +96,16 @@ public class ArtistaController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar un artista")
+    @Operation(summary = "Eliminar un artista (Admin)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         artistaService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
 
-    // ===== RUTAS ANIDADAS =====
+    // ==========================================
+    // RUTAS ANIDADAS (PÚBLICAS)
+    // ==========================================
 
     @GetMapping("/{id}/albums")
     @Operation(summary = "Obtener álbumes de un artista")

@@ -10,11 +10,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
 
+/**
+ * AlbumController - Controlador de Gestión de Álbumes
+ *
+ * POLÍTICAS DE ACCESO:
+ * - GET (lectura): Público - cualquiera puede ver álbumes
+ * - POST (crear): Solo ADMIN o MODERATOR
+ * - PUT (actualizar): Solo ADMIN o MODERATOR
+ * - DELETE: Solo ADMIN
+ *
+ * @see AlbumService
+ */
 @RestController
 @RequestMapping("/api/albumes")
 @Tag(name = "Álbumes", description = "API para gestión de álbumes")
@@ -25,6 +37,10 @@ public class AlbumController {
     public AlbumController(AlbumService albumService) {
         this.albumService = albumService;
     }
+
+    // ==========================================
+    // ENDPOINTS PÚBLICOS (LECTURA)
+    // ==========================================
 
     @GetMapping
     @Operation(summary = "Listar todos los álbumes")
@@ -62,8 +78,13 @@ public class AlbumController {
         return ResponseEntity.ok(albumService.listarPorArtista(idArtista));
     }
 
+    // ==========================================
+    // ENDPOINTS PROTEGIDOS
+    // ==========================================
+
     @PostMapping
-    @Operation(summary = "Crear un nuevo álbum")
+    @Operation(summary = "Crear un nuevo álbum (Admin/Moderator)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     public ResponseEntity<AlbumResponseDTO> crear(@RequestBody @Valid CreateAlbumDTO dto) {
         AlbumResponseDTO creado = albumService.crear(dto);
         return ResponseEntity
@@ -72,7 +93,8 @@ public class AlbumController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar un álbum existente")
+    @Operation(summary = "Actualizar un álbum existente (Admin/Moderator)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     public ResponseEntity<AlbumResponseDTO> actualizar(
             @PathVariable Long id,
             @RequestBody @Valid CreateAlbumDTO dto) {
@@ -80,7 +102,8 @@ public class AlbumController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar un álbum")
+    @Operation(summary = "Eliminar un álbum (Admin)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         albumService.eliminar(id);
         return ResponseEntity.noContent().build();

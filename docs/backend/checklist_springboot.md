@@ -16,7 +16,7 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 ## Puntos de entrada bien organizados
 - [x] 🟢 Controladores separados por dominio/lógica de negocio (6 controllers: Artista, Album, Cancion, Genero, Usuario, Resena)
 - [x] 🟢 Rutas agrupadas y estructuradas por funcionalidad (@RequestMapping en cada controller)
-- [x] � Middlewares/interceptores implementados:
+- [x] 🟢 Middlewares/interceptores implementados:
   - [x] 🟢 LoggingInterceptor: loguea todas las peticiones HTTP con request ID, tiempo y status
   - [x] 🟢 WebConfig: registra el interceptor globalmente para /api/**
 - [x] 🟢 Spring Boot: @RestController + @RequestMapping + rutas REST correctas
@@ -24,7 +24,7 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 
 ## Uso correcto de códigos HTTP
 - [x] 🟢 200, 201, 204 implementados correctamente en endpoints (POST devuelve 201 con URI, DELETE devuelve 204)
-- [x] � Códigos de error implementados (404, 400, 409 CONFLICT, manejo centralizado)
+- [x] 🟢 Códigos de error implementados (404, 400, 409 CONFLICT, manejo centralizado)
 - [x] 🟢 Mensajes de error estructurados con Map<String, Object> (error, message, timestamp)
 - [x] 🟢 Códigos devueltos documentados en Swagger (@Operation) y manejados en GlobalExceptionHandler
 
