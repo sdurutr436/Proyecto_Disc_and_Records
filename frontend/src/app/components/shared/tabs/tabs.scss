@@ -4,6 +4,11 @@
 /* ========================================
    TABS - Brutal Neobrutalism
    ======================================== */
+
+:host {
+  @include mix.host-block;
+}
+
 .tabs {
   width: 100%;
   border: vars.$borde-brutal-medium;
@@ -17,9 +22,13 @@
   display: flex;
   background-color: var(--bg-secondary);
   border-bottom: vars.$borde-brutal-medium;
+
   overflow-x: auto;
+  overflow-y: hidden;
   @include mix.hide-scrollbar;
+
 }
+
 
 /* --- Tab individual --- */
 .tabs__tab {

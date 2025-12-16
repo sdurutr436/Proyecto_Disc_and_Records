@@ -1,6 +1,5 @@
 <div class="tabs">
-  <!-- Lista de tabs (navegación) -->
-  <div class="tabs__nav" role="tablist">
+  <div class="tabs__nav" role="tablist" #tabsNav>
     <button
       *ngFor="let tab of tabs()"
       class="tabs__tab"
@@ -17,7 +16,7 @@
     </button>
   </div>
 
-  <!-- Panel de contenido -->
+  <!-- Panel de contenido (sin cambios) -->
   <div
     class="tabs__panel"
     role="tabpanel"
