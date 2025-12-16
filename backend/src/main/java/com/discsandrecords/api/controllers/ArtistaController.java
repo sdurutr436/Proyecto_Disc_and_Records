@@ -79,4 +79,44 @@ public class ArtistaController {
         artistaService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
+
+    // ===== RUTAS ANIDADAS =====
+
+    @GetMapping("/{id}/albums")
+    @Operation(summary = "Obtener álbumes de un artista")
+    public ResponseEntity<List<AlbumResponseDTO>> obtenerAlbumesPorArtista(@PathVariable Long id) {
+        return ResponseEntity.ok(artistaService.obtenerAlbumesPorArtista(id));
+    }
+
+    @GetMapping("/{id}/albums/paginado")
+    @Operation(summary = "Obtener álbumes de un artista con paginación")
+    public ResponseEntity<PageResponseDTO<AlbumResponseDTO>> obtenerAlbumesPorArtistaPaginado(
+            @PathVariable Long id,
+            @Parameter(description = "Número de página (0-indexed)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Tamaño de página") @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Campo por el que ordenar") @RequestParam(defaultValue = "id") String sortBy,
+            @Parameter(description = "Dirección del orden (asc/desc)") @RequestParam(defaultValue = "asc") String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return ResponseEntity.ok(artistaService.obtenerAlbumesPorArtistaPaginado(id, pageable));
+    }
+
+    @GetMapping("/{id}/canciones")
+    @Operation(summary = "Obtener canciones de un artista")
+    public ResponseEntity<List<CancionResponseDTO>> obtenerCancionesPorArtista(@PathVariable Long id) {
+        return ResponseEntity.ok(artistaService.obtenerCancionesPorArtista(id));
+    }
+
+    @GetMapping("/{id}/canciones/paginado")
+    @Operation(summary = "Obtener canciones de un artista con paginación")
+    public ResponseEntity<PageResponseDTO<CancionResponseDTO>> obtenerCancionesPorArtistaPaginado(
+            @PathVariable Long id,
+            @Parameter(description = "Número de página (0-indexed)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Tamaño de página") @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Campo por el que ordenar") @RequestParam(defaultValue = "id") String sortBy,
+            @Parameter(description = "Dirección del orden (asc/desc)") @RequestParam(defaultValue = "asc") String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return ResponseEntity.ok(artistaService.obtenerCancionesPorArtistaPaginado(id, pageable));
+    }
 }
