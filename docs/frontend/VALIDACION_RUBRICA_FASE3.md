@@ -18,7 +18,7 @@
 | `password-strength.validator.ts` | `passwordStrength()` | ✅ Implementado |
 | `password-match.validator.ts` | `passwordMatch(controlName, matchName)` | ✅ Implementado |
 | `spanish-formats.validator.ts` | `nif()`, `telefono()`, `codigoPostal()` | ✅ Implementado |
-| `cross-field.validators.ts` | `totalMinimo()`, `edadMayor()`, `atLeastOneRequired()`, `validDateRange()` | ✅ Implementado |
+| `cross-field.validators.ts` | `atLeastOneRequired()`, `validDateRange()` | ✅ Implementado |
 | `index.ts` | Exportación centralizada | ✅ Implementado |
 
 #### ✅ Validador de Contraseña Fuerte
@@ -83,27 +83,12 @@ export function codigoPostal(): ValidatorFn {
 
 ## Validadores Cross-Field Avanzados
 
-#### ✅ Mínimo Total (precio × cantidad)
-
-```typescript
-export function totalMinimo(minValue: number, priceField: string, quantityField: string): ValidatorFn {
-  // Retorna: null | { totalMinimo: { min, actual } }
-}
-```
-
-#### ✅ Edad Mayor
-
-```typescript
-export function edadMayor(controlName: string, minAgeField: string): ValidatorFn {
-  // Valida que edad calculada >= edad mínima
-}
-```
-
 #### ✅ Al Menos Uno Requerido
 
 ```typescript
 export function atLeastOneRequired(...fields: string[]): ValidatorFn {
   // Valida que al menos uno de los campos tenga valor
+  // Casos de uso: teléfono O email, descripción O notas
   // Retorna: null | { atLeastOneRequired: { fields } }
 }
 ```
@@ -128,7 +113,7 @@ export function validDateRange(startField: string, endField: string): ValidatorF
 | 2. Validadores síncronos integrados | Catálogo de Validators.* | ✅ |
 | 3. Validadores custom de grupo | passwordMatchValidator | ✅ |
 | **4. Validadores personalizados** | **Funciones reutilizables ValidatorFn** | ✅ |
-| **5. Validadores Cross-Field Avanzados** | **totalMinimo, edadMayor, atLeastOneRequired, validDateRange** | ✅ |
+| **5. Validadores Cross-Field Avanzados** | **atLeastOneRequired, validDateRange** | ✅ |
 | 6. FormArray | Listas dinámicas de controles | ✅ |
 | 7. Validación asíncrona | AsyncValidatorFn, debounceTime, pending | ✅ |
 | 8. Catálogo de validadores implementados | Tabla con todos los validadores | ✅ |
@@ -154,8 +139,7 @@ export function validDateRange(startField: string, endField: string): ValidatorF
 | Validador | Tipo | Retorna |
 |-----------|------|---------|
 | `passwordMatch(control, match)` | ValidatorFn | `{ mismatch: true }` |
-| `totalMinimo(min, price, qty)` | ValidatorFn | `{ totalMinimo: { min, actual } }` |
-| `edadMayor(control, minAge)` | ValidatorFn | `{ edadMenor: { minAge, actualAge } }` |
+
 | `atLeastOneRequired(...fields)` | ValidatorFn | `{ atLeastOneRequired: { fields } }` |
 | `validDateRange(start, end)` | ValidatorFn | `{ invalidRange: true }` |
 
@@ -247,7 +231,7 @@ según rúbrica
 - ✅ **passwordStrength()** con requisitos múltiples y errores específicos
 - ✅ **passwordMatch()** como cross-field validator
 - ✅ **Formatos españoles** (NIF, teléfono, código postal) con algoritmo
-- ✅ **Validadores cross-field avanzados** (totalMinimo, edadMayor, atLeastOneRequired, validDateRange)
+- ✅ **Validadores cross-field avanzados** (atLeastOneRequired, validDateRange)
 - ✅ **Helpers para templates** (getPasswordErrorMessage, getFormatErrorMessage, etc.)
 - ✅ **Documentación exhaustiva** (11 secciones, ejemplos completos, tabla de referencia)
 - ✅ **Estructura escalable** (carpeta validators/ con index.ts para fácil importación)
@@ -262,8 +246,7 @@ frontend/src/app/validators/
 ├── password-strength.validator.ts    (passwordStrength + helper)
 ├── password-match.validator.ts       (passwordMatch + helper)
 ├── spanish-formats.validator.ts      (nif, telefono, codigoPostal + helpers)
-└── cross-field.validators.ts         (totalMinimo, edadMayor, atLeastOneRequired, 
-                                       validDateRange + helpers)
+└── cross-field.validators.ts         (atLeastOneRequired, validDateRange + helpers)
 
 docs/frontend/
 └── DOCUMENTACION_FASE3.md            (1318 líneas, 11 secciones)

@@ -23,10 +23,8 @@
   - [4.2 Validador de confirmación de contraseña](#42-validador-de-confirmación-de-contraseña)
   - [4.3 Validador de formatos personalizados (NIF, teléfono, código postal)](#43-validador-de-formatos-personalizados-nif-teléfono-código-postal)
 - [5. Validadores Cross-Field Avanzados](#5-validadores-cross-field-avanzados)
-  - [5.1 Validador: Mínimo Total](#51-validador-mínimo-total)
-  - [5.2 Validador: Edad Mayor](#52-validador-edad-mayor)
-  - [5.3 Validador: Al Menos Uno Requerido](#53-validador-al-menos-uno-requerido)
-  - [5.4 Validador: Rango de Fechas](#54-validador-rango-de-fechas)
+  - [5.1 Validador: Al Menos Uno Requerido](#51-validador-al-menos-uno-requerido)
+  - [5.2 Validador: Rango de Fechas](#52-validador-rango-de-fechas)
 - [6. FormArray - Colecciones dinámicas de controles](#6-formarray---colecciones-dinámicas-de-controles)
   - [6.1 Ejemplo básico - Lista de géneros favoritos](#61-ejemplo-básico---lista-de-géneros-favoritos)
   - [6.2 Validación en FormArray](#62-validación-en-formarray)
@@ -36,11 +34,11 @@
   - [7.3 Uso en template - mostrar estado pendiente](#73-uso-en-template---mostrar-estado-pendiente)
   - [7.4 Estados del FormControl/FormGroup](#74-estados-del-formcontrolformgroup)
 - [8. Catálogo de validadores implementados](#8-catálogo-de-validadores-implementados)
-- [9. Resumen de cambios](#9-resumen-de-cambios)
-- [10. Integración en componentes reales del proyecto](#10-integración-en-componentes-reales-del-proyecto)
-  - [10.1 LoginForm - Formulario reactivo con validación simple](#101-loginform---formulario-reactivo-con-validación-simple)
-  - [10.2 RegisterForm - Validadores custom y grupo](#102-registerform---validadores-custom-y-grupo)
-  - [10.3 Patrón completo - Inyección de ValidationService](#103-patrón-completo---inyección-de-validationservice)
+- [9. Integración en componentes reales del proyecto](#9-integración-en-componentes-reales-del-proyecto)
+  - [9.1 LoginForm - Formulario reactivo con validación simple](#91-loginform---formulario-reactivo-con-validación-simple)
+  - [9.2 RegisterForm - Validadores custom y grupo](#92-registerform---validadores-custom-y-grupo)
+  - [9.3 Patrón completo - Inyección de ValidationService](#93-patrón-completo---inyección-de-validationservice)
+- [10. Resumen de cambios](#10-resumen-de-cambios)
 - [11. Checklist de validación según rúbrica](#11-checklist-de-validación-según-rúbrica)
 
 ---
@@ -631,56 +629,7 @@ Los validadores cross-field se aplican a nivel `FormGroup` para validaciones que
 
 **Ubicación:** `frontend/src/app/validators/cross-field.validators.ts`
 
-### 5.1 Validador: Mínimo Total
-
-```typescript
-export function totalMinimo(
-  minValue: number,
-  priceField: string = 'price',
-  quantityField: string = 'quantity'
-): ValidatorFn {
-  return (group: AbstractControl): ValidationErrors | null => {
-    const price = group.get(priceField)?.value;
-    const quantity = group.get(quantityField)?.value;
-
-    if (!price || !quantity) return null;
-
-    const total = parseFloat(price) * parseFloat(quantity);
-    return total >= minValue ? null : { totalMinimo: { min: minValue, actual: total } };
-  };
-}
-```
-
-**Uso:**
-```typescript
-this.orderForm = this.fb.group({
-  price: [0, [Validators.required, Validators.min(0)]],
-  quantity: [1, [Validators.required, Validators.min(1)]]
-}, {
-  validators: totalMinimo(100) // Mínimo 100€
-});
-```
-
-### 5.2 Validador: Edad Mayor
-
-```typescript
-export function edadMayor(controlName: string, minAgeField: string): ValidatorFn {
-  return (group: AbstractControl): ValidationErrors | null => {
-    const control = group.get(controlName);
-    const minAgeControl = group.get(minAgeField);
-
-    if (!control?.value || !minAgeControl?.value) return null;
-
-    const birthYear = parseInt(control.value.split('-')[0], 10);
-    const age = new Date().getFullYear() - birthYear;
-    const minAge = parseInt(minAgeControl.value, 10);
-
-    return age >= minAge ? null : { edadMenor: { minAge, actualAge: age } };
-  };
-}
-```
-
-### 5.3 Validador: Al Menos Uno Requerido
+### 5.1 Validador: Al Menos Uno Requerido
 
 ```typescript
 export function atLeastOneRequired(...fields: string[]): ValidatorFn {
@@ -714,7 +663,7 @@ this.contactForm = this.fb.group({
 }
 ```
 
-### 5.4 Validador: Rango de Fechas
+### 5.2 Validador: Rango de Fechas
 
 ```typescript
 export function validDateRange(startField: string, endField: string): ValidatorFn {
@@ -734,14 +683,14 @@ export function validDateRange(startField: string, endField: string): ValidatorF
 
 ---
 
-## 5. FormArray - Colecciones dinámicas de controles
+## 6. FormArray - Colecciones dinámicas de controles
 
 FormArray permite gestionar colecciones dinámicas de FormControls o FormGroups, ideal para:
 - Listas de ítems añadibles/eliminables dinámicamente
 - Múltiples direcciones
 - Líneas de un carrito de compras
 
-### 5.1 Ejemplo básico - Lista de géneros favoritos:
+### 6.1 Ejemplo básico - Lista de géneros favoritos:
 
 ```typescript
 /**
@@ -833,7 +782,7 @@ getGenres(): any[] {
 </form>
 ```
 
-### 5.2 Validación en FormArray:
+### 6.2 Validación en FormArray:
 
 ```typescript
 // Validador personalizado para FormArray
@@ -867,11 +816,11 @@ this.musicForm = this.formBuilder.group({
 
 ---
 
-## 6. Validación asíncrona
+## 7. Validación asíncrona
 
 La validación asíncrona permite verificar datos contra un servidor (ej: comprobar si un usuario existe).
 
-### 6.1 Validador asíncrono personalizado:
+### 7.1 Validador asíncrono personalizado:
 
 ```typescript
 /**
@@ -1019,9 +968,9 @@ formGroup.untouched // true si no ha sido tocado
 
 ---
 
-## 10. Integración en componentes reales del proyecto
+## 9. Integración en componentes reales del proyecto
 
-### 10.1 LoginForm - Formulario reactivo con validación simple
+### 9.1 LoginForm - Formulario reactivo con validación simple
 
 **Ubicación:** `frontend/src/app/components/shared/login-form/`
 
@@ -1147,7 +1096,7 @@ export class LoginForm {
 </form>
 ```
 
-### 10.2 RegisterForm - Validadores custom y grupo
+### 9.2 RegisterForm - Validadores custom y grupo
 
 **Ubicación:** `frontend/src/app/components/shared/register-form/`
 
@@ -1239,7 +1188,7 @@ export class RegisterForm {
 }
 ```
 
-### 10.3 Patrón completo - Inyección de ValidationService
+### 9.3 Patrón completo - Inyección de ValidationService
 
 Para reutilizar lógica de validación entre componentes, se recomienda inyectar `ValidationService`:
 
@@ -1304,7 +1253,7 @@ export class MyFormComponent {
 
 ---
 
-## 9. Resumen de cambios
+## 10. Resumen de cambios
 
 - ✅ FormBuilder para construcción declarativa de formularios
 - ✅ FormGroup para agrupar FormControls relacionados
