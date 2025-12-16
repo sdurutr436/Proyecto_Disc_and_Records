@@ -105,8 +105,8 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 
 | Categoría | Estado | Progreso |
 |-----------|--------|----------|
-| **API REST** | 🟡 En desarrollo | ~70% completa |
-| **Estructura MVC** | 🟢 Bien implementada | ~90% completa |
+| **API REST** | � Bien implementada | ~85% completa |
+| **Estructura MVC** | 🟢 Bien implementada | ~95% completa |
 | **Modelo de Datos** | 🟢 Bien estructurado | ~85% completa |
 | **Autenticación** | 🔴 NO implementada | 0% |
 | **Tests** | 🔴 NO implementados | 0% |
@@ -114,9 +114,9 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 ### Puntuación por Secciones
 
 📈 **API REST (70% de la evaluación):**
-- ✅ Diseño RESTful: 7/8
+- ✅ Diseño RESTful: 8/8
 - ✅ Puntos de entrada: 8/8
-- ✅ Códigos HTTP: 7/8
+- ✅ Códigos HTTP: 8/8
 - ❌ Autenticación/Autorización: 0/8
 - ❌ Testing: 0/5
 - ⚠️ Documentación Swagger: 3/8 (error 500 sin resolver)
@@ -137,18 +137,19 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 
 1. **API RESTful correctamente diseñada** - Todos los endpoints siguen convenciones REST
 2. **Paginación implementada** - Todos los endpoints soportan page, size, sort
-3. **Modelo de datos bien estructurado** - Relaciones 1:N y N:M correctamente definidas
-4. **15 DTOs validados** - Validación de datos de entrada con @Valid, @NotBlank, etc.
-5. **Documentación técnica** - 364 líneas en DOCUMENTACION.md explicando el modelo
-6. **Datos de prueba** - 259 líneas SQL con 15 géneros, 20 artistas, 30 álbumes, etc.
-7. **Estructura MVC clara** - Controladores → Servicios → Repositorios bien separados
-8. **Códigos HTTP correctos** - 200, 201, 204, 404 implementados adecuadamente
-9. **Inyección de dependencias** - IoC con @Autowired, @Service, @Repository
+3. **Rutas anidadas** - /artistas/{id}/albums y /artistas/{id}/canciones completamente funcionales
+4. **Modelo de datos bien estructurado** - Relaciones 1:N y N:M correctamente definidas
+5. **15 DTOs validados** - Validación de datos de entrada con @Valid, @NotBlank, etc.
+6. **Documentación técnica** - 364 líneas en DOCUMENTACION.md explicando el modelo
+7. **Datos de prueba** - 259 líneas SQL con 15 géneros, 20 artistas, 30 álbumes, etc.
+8. **Estructura MVC clara** - Controladores → Servicios → Repositorios bien separados
+9. **Códigos HTTP correctos** - 200, 201, 204, 404, 409, 400 implementados adecuadamente
+10. **Inyección de dependencias** - IoC con @Autowired, @Service, @Repository
+11. **Logging Interceptor** - Todas las peticiones registradas con request ID, tiempo y status
+12. **Exception Handler centralizado** - Manejo consistente de excepciones en toda la API
 
-### 🟡 Lo que necesita MEJORA (Parcial)
-
-1. **Swagger/OpenAPI** - Tiene error 500 al cargar (incompatibilidad springdoc-openapi 2.6.0)
-2. **Rutas anidadas** - Faltan endpoints como `/artistas/{id}/albums`
+### Consultas avanzadas** - Las queries son básicas, sin agregaciones complejas
+3. **Rutas anidadas** - Faltan endpoints como `/artistas/{id}/albums`
 3. **Códigos de error** - Falta 401, 403, 422 en ciertos endpoints
 4. **Consultas avanzadas** - Las queries son básicas, sin agregaciones complejas
 5. **Migraciones** - No usa Flyway/Liquibase (usa ddl-auto=create-drop)
