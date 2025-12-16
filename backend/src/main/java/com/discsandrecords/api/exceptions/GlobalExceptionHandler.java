@@ -10,8 +10,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
-// @ControllerAdvice - Deshabilitado temporalmente debido a incompatibilidad con Swagger/springdoc-openapi
-// La gestión de excepciones funcionará solo con las excepciones de Spring
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -50,29 +49,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessRuleException.class)
     public ResponseEntity<Map<String, Object>> handleBusinessRuleException(BusinessRuleException ex) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of(
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
                 "error", ex.getRuleCode(),
                 "message", ex.getMessage(),
                 "timestamp", Instant.now().toString()
         ));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex) {
-        String message = Objects.requireNonNullElse(ex.getMessage(), "Argumento inválido");
-
-        return ResponseEntity.badRequest().body(Map.of(
-                "error", "BAD_REQUEST",
-                "message", message,
-                "timestamp", Instant.now().toString()
-        ));
-    }
-
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
-        return ResponseEntity.internalServerError().body(Map.of(
+    public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                 "error", "INTERNAL_SERVER_ERROR",
-                "message", "Ha ocurrido un error inesperado",
+                "message", "Se ha producido un error inesperado",
                 "timestamp", Instant.now().toString()
         ));
     }
