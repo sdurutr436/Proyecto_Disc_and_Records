@@ -10,7 +10,8 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
-@ControllerAdvice
+// @ControllerAdvice - Deshabilitado temporalmente debido a incompatibilidad con Swagger/springdoc-openapi
+// La gestión de excepciones funcionará solo con las excepciones de Spring
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
