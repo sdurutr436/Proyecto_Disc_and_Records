@@ -18,25 +18,30 @@
   - [2.1 Catálogo de validadores](#21-catálogo-de-validadores)
   - [2.2 Ejemplos por caso de uso](#22-ejemplos-por-caso-de-uso)
 - [3. Validadores custom de grupo](#3-validadores-custom-de-grupo)
-- [4. Validadores personalizados](#4-validadores-personalizados)
+- [4. Validadores personalizados (funciones reutilizables)](#4-validadores-personalizados-funciones-reutilizables)
   - [4.1 Validador de contraseña fuerte](#41-validador-de-contraseña-fuerte)
   - [4.2 Validador de confirmación de contraseña](#42-validador-de-confirmación-de-contraseña)
   - [4.3 Validador de formatos personalizados (NIF, teléfono, código postal)](#43-validador-de-formatos-personalizados-nif-teléfono-código-postal)
-- [5. FormArray - Colecciones dinámicas de controles](#5-formarray---colecciones-dinámicas-de-controles)
-  - [5.1 Ejemplo básico - Lista de géneros favoritos](#51-ejemplo-básico---lista-de-géneros-favoritos)
-  - [5.2 Validación en FormArray](#52-validación-en-formarray)
-- [6. Validación asíncrona](#6-validación-asíncrona)
-  - [6.1 Validador asíncrono personalizado](#61-validador-asíncrono-personalizado)
-  - [6.2 Integración en FormControl](#62-integración-en-formcontrol)
-  - [6.3 Uso en template - mostrar estado pendiente](#63-uso-en-template---mostrar-estado-pendiente)
-  - [6.4 Estados del FormControl/FormGroup](#64-estados-del-formcontrolformgroup)
-- [7. Catálogo de validadores implementados](#7-catálogo-de-validadores-implementados)
-- [8. Resumen de cambios](#8-resumen-de-cambios)
-- [9. Integración en componentes reales del proyecto](#9-integración-en-componentes-reales-del-proyecto)
-  - [9.1 LoginForm - Formulario reactivo con validación simple](#91-loginform---formulario-reactivo-con-validación-simple)
-  - [9.2 RegisterForm - Validadores custom y grupo](#92-registerform---validadores-custom-y-grupo)
-  - [9.3 Patrón completo - Inyección de ValidationService](#93-patrón-completo---inyección-de-validationservice)
-- [10. Checklist de validación según rúbrica](#10-checklist-de-validación-según-rúbrica)
+- [5. Validadores Cross-Field Avanzados](#5-validadores-cross-field-avanzados)
+  - [5.1 Validador: Mínimo Total](#51-validador-mínimo-total)
+  - [5.2 Validador: Edad Mayor](#52-validador-edad-mayor)
+  - [5.3 Validador: Al Menos Uno Requerido](#53-validador-al-menos-uno-requerido)
+  - [5.4 Validador: Rango de Fechas](#54-validador-rango-de-fechas)
+- [6. FormArray - Colecciones dinámicas de controles](#6-formarray---colecciones-dinámicas-de-controles)
+  - [6.1 Ejemplo básico - Lista de géneros favoritos](#61-ejemplo-básico---lista-de-géneros-favoritos)
+  - [6.2 Validación en FormArray](#62-validación-en-formarray)
+- [7. Validación asíncrona](#7-validación-asíncrona)
+  - [7.1 Validador asíncrono personalizado](#71-validador-asíncrono-personalizado)
+  - [7.2 Integración en FormControl](#72-integración-en-formcontrol)
+  - [7.3 Uso en template - mostrar estado pendiente](#73-uso-en-template---mostrar-estado-pendiente)
+  - [7.4 Estados del FormControl/FormGroup](#74-estados-del-formcontrolformgroup)
+- [8. Catálogo de validadores implementados](#8-catálogo-de-validadores-implementados)
+- [9. Resumen de cambios](#9-resumen-de-cambios)
+- [10. Integración en componentes reales del proyecto](#10-integración-en-componentes-reales-del-proyecto)
+  - [10.1 LoginForm - Formulario reactivo con validación simple](#101-loginform---formulario-reactivo-con-validación-simple)
+  - [10.2 RegisterForm - Validadores custom y grupo](#102-registerform---validadores-custom-y-grupo)
+  - [10.3 Patrón completo - Inyección de ValidationService](#103-patrón-completo---inyección-de-validationservice)
+- [11. Checklist de validación según rúbrica](#11-checklist-de-validación-según-rúbrica)
 
 ---
 
@@ -412,355 +417,319 @@ Acceso en el template:
 
 ## 4. Validadores personalizados
 
-Los validadores personalizados permiten implementar lógica de validación específica del negocio que no cubren los validadores predefinidos de Angular.
+Los validadores personalizados son **funciones reutilizables** que retornan `ValidatorFn` y pueden aplicarse a cualquier `FormControl` o `FormGroup`.
 
 ### 4.1 Validador de contraseña fuerte
 
 **Propósito:** Asegurar que las contraseñas cumplan con requisitos mínimos de seguridad.
 
 **Requisitos:**
-- Mínimo 8 caracteres
+- Mínimo 12 caracteres
 - Al menos una letra mayúscula
+- Al menos una letra minúscula
+- Al menos un número
 - Al menos un carácter especial
 
-**Implementación en `ValidationService`:**
+**Ubicación:** `frontend/src/app/validators/password-strength.validator.ts`
+
+**Implementación:**
 ```typescript
-/**
- * VALIDACIÓN: Contraseña
- *
- * REGLAS DE NEGOCIO:
- * - Mínimo 8 caracteres
- * - Al menos una letra mayúscula
- * - Al menos un carácter especial
- *
- * @param password - Contraseña a validar
- * @returns ValidationResult
- */
-validatePassword(password: string): ValidationResult {
-  if (!password || password.length === 0) {
-    return {
-      isValid: false,
-      errorMessage: 'La contraseña es requerida',
-    };
-  }
+// validators/password-strength.validator.ts
+export function passwordStrength(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) return null;
 
-  // Verificar longitud mínima
-  if (password.length < 8) {
-    return {
-      isValid: false,
-      errorMessage: 'La contraseña debe tener al menos 8 caracteres',
-    };
-  }
+    const hasUpper = /[A-Z]/.test(value);
+    const hasLower = /[a-z]/.test(value);
+    const hasNumber = /\d/.test(value);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+    const minLength = value.length >= 12;
 
-  // Verificar mayúscula
-  if (!/[A-Z]/.test(password)) {
-    return {
-      isValid: false,
-      errorMessage: 'La contraseña debe contener al menos una mayúscula',
-    };
-  }
+    const errors: ValidationErrors = {};
+    if (!hasUpper) errors['noUppercase'] = true;
+    if (!hasLower) errors['noLowercase'] = true;
+    if (!hasNumber) errors['noNumber'] = true;
+    if (!hasSpecial) errors['noSpecial'] = true;
+    if (!minLength) errors['minLength'] = { requiredLength: 12, actualLength: value.length };
 
-  // Verificar carácter especial
-  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-    return {
-      isValid: false,
-      errorMessage: 'La contraseña debe contener al menos un carácter especial',
-    };
-  }
-
-  return {
-    isValid: true,
-    errorMessage: '',
+    return Object.keys(errors).length ? errors : null;
   };
 }
 ```
 
-**Uso en formularios:**
+**Uso en FormBuilder:**
 ```typescript
-this.registerForm = this.formBuilder.group({
-  password: [
-    '',
-    [
-      Validators.required,
-      Validators.minLength(8),
-      Validators.pattern(/^(?=.*[A-Z])(?=.*[!@#$%^&*])/)
-    ]
-  ]
+import { passwordStrength, getPasswordErrorMessage } from '@app/validators';
+
+this.form = this.formBuilder.group({
+  password: ['', [Validators.required, passwordStrength()]]
 });
-```
 
-**Feedback de fortaleza en tiempo real:**
-```typescript
-/**
- * VALIDACIÓN: Contraseña con requisitos de fortaleza
- * Proporciona feedback detallado sobre qué falta
- *
- * @param password - Contraseña a validar
- * @returns Objeto con detalles de cada requisito
- */
-getPasswordStrength(password: string): {
-  hasMinLength: boolean;
-  hasUpperCase: boolean;
-  hasLowerCase: boolean;
-  hasNumber: boolean;
-  hasSpecialChar: boolean;
-  score: number; // 0-5
-} {
-  return {
-    hasMinLength: password.length >= 8,
-    hasUpperCase: /[A-Z]/.test(password),
-    hasLowerCase: /[a-z]/.test(password),
-    hasNumber: /[0-9]/.test(password),
-    hasSpecialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
-    score: [
-      password.length >= 8,
-      /[A-Z]/.test(password),
-      /[a-z]/.test(password),
-      /[0-9]/.test(password),
-      /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
-    ].filter(Boolean).length,
-  };
-}
-```
-
-### 4.2 Validador de confirmación de contraseña
-
-**Propósito:** Garantizar que el usuario confirme correctamente su contraseña al registrarse.
-
-**Implementación como validador de grupo:**
-```typescript
-/**
- * Validador Custom: Coincidencia de contraseñas
- * 
- * PROPÓSITO:
- * Verificar que password y confirmPassword tengan el mismo valor
- * 
- * TIPO: Validador de grupo (FormGroup level)
- * 
- * RETORNA:
- * - null: contraseñas coinciden (válido)
- * - { passwordMismatch: true }: no coinciden (inválido)
- */
-private passwordMatchValidator(): ValidatorFn {
-  return (group: AbstractControl): ValidationErrors | null => {
-    const password = group.get('password')?.value;
-    const confirmPassword = group.get('confirmPassword')?.value;
-
-    // Si alguno está vacío, Validators.required se encarga
-    if (!password || !confirmPassword) {
-      return null;
-    }
-
-    return password === confirmPassword
-      ? null
-      : { passwordMismatch: true };
-  };
-}
-```
-
-**Servicio de validación (nivel campo):**
-```typescript
-/**
- * VALIDACIÓN: Confirmación de contraseña
- *
- * REGLAS DE NEGOCIO:
- * - Debe ser igual a la contraseña original
- * - No puede estar vacía
- *
- * @param password - Contraseña original
- * @param confirmPassword - Confirmación de contraseña
- * @returns ValidationResult
- */
-validatePasswordConfirmation(
-  password: string,
-  confirmPassword: string
-): ValidationResult {
-  if (!confirmPassword || confirmPassword.length === 0) {
-    return {
-      isValid: false,
-      errorMessage: 'Debe confirmar la contraseña',
-    };
-  }
-
-  if (password !== confirmPassword) {
-    return {
-      isValid: false,
-      errorMessage: 'Las contraseñas no coinciden',
-    };
-  }
-
-  return {
-    isValid: true,
-    errorMessage: '',
-  };
+// En el componente - obtener errores de contraseña
+getPasswordErrors(): string[] {
+  const errors = this.form.get('password')?.errors;
+  return errors ? Object.keys(errors) : [];
 }
 ```
 
 **Uso en template:**
 ```html
-<!-- Error a nivel de FormGroup -->
-@if (registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched) {
-  <p class="error">Las contraseñas no coinciden</p>
+<form [formGroup]="form">
+  <input formControlName="password" type="password">
+
+  <!-- Mostrar errores específicos -->
+  @for (error of getPasswordErrors(); track error) {
+    <div class="error">
+      {{ getPasswordErrorMessage(error) }}
+    </div>
+  }
+</form>
+
+<!-- Template detail -->
+@if (form.get('password')?.errors?.['noUppercase']) {
+  <div class="error">Debe contener mayúsculas</div>
 }
+@if (form.get('password')?.errors?.['noLowercase']) {
+  <div class="error">Debe contener minúsculas</div>
+}
+@if (form.get('password')?.errors?.['noNumber']) {
+  <div class="error">Debe contener números</div>
+}
+@if (form.get('password')?.errors?.['noSpecial']) {
+  <div class="error">Debe contener caracteres especiales (!@#$%)</div>
+}
+@if (form.get('password')?.errors?.['minLength']) {
+  <div class="error">Mínimo 12 caracteres</div>
+}
+```
+
+### 4.2 Validador de confirmación de contraseña
+
+**Propósito:** Garantizar que el usuario confirme correctamente su contraseña (cross-field validation).
+
+**Ubicación:** `frontend/src/app/validators/password-match.validator.ts`
+
+**Implementación:**
+```typescript
+// validators/password-match.validator.ts
+export function passwordMatch(controlName: string, matchControlName: string): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const control = group.get(controlName);
+    const matchControl = group.get(matchControlName);
+
+    if (!control || !matchControl) return null;
+    if (matchControl.errors && !matchControl.touched) return null;
+
+    return control.value === matchControl.value
+      ? null
+      : { mismatch: true };
+  };
+}
+```
+
+**Uso en FormBuilder:**
+```typescript
+import { passwordMatch, getPasswordMatchErrorMessage } from '@app/validators';
+
+this.registerForm = this.formBuilder.group({
+  password: ['', [Validators.required, passwordStrength()]],
+  confirmPassword: ['', Validators.required]
+}, { 
+  validators: passwordMatch('password', 'confirmPassword')
+});
+```
+
+**Uso en template:**
+```html
+<form [formGroup]="registerForm">
+  <input formControlName="password" type="password" placeholder="Contraseña">
+  <input formControlName="confirmPassword" type="password" placeholder="Confirmar contraseña">
+
+  <!-- Error a nivel de FormGroup (cross-field) -->
+  @if (registerForm.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched) {
+    <div class="error">{{ getPasswordMatchErrorMessage() }}</div>
+  }
+</form>
 ```
 
 ### 4.3 Validador de formatos personalizados (NIF, teléfono, código postal)
 
-**Propósito:** Validar formatos específicos españoles como NIF/DNI, teléfonos y códigos postales.
+**Ubicación:** `frontend/src/app/validators/spanish-formats.validator.ts`
 
-**Implementación en `ValidationService`:**
-
-#### Validador de NIF/DNI:
+#### Validador NIF/DNI:
 ```typescript
-/**
- * VALIDACIÓN: NIF/DNI Español
- *
- * REGLAS DE NEGOCIO:
- * - Formato: 12345678A (8 dígitos + 1 letra)
- * - Letra calculada según algoritmo mod 23
- *
- * @param nif - NIF a validar
- * @returns ValidationResult
- */
-validateNIF(nif: string): ValidationResult {
-  if (!nif || nif.trim().length === 0) {
-    return {
-      isValid: false,
-      errorMessage: 'El NIF es requerido',
-    };
-  }
+export function nif(): ValidatorFn {
+  return (control): ValidationErrors | null => {
+    const nifUpper = control.value?.toUpperCase();
+    const nifRegex = /^[0-9]{8}[TRWAGMYFPDXBCSQVJHZTKB]$/;
+    if (!nifRegex.test(nifUpper)) return { invalidNif: true };
 
-  // Formato básico: 8 dígitos + 1 letra
-  const nifRegex = /^[0-9]{8}[A-Z]$/;
-  if (!nifRegex.test(nif.toUpperCase())) {
-    return {
-      isValid: false,
-      errorMessage: 'Formato NIF inválido (ej: 12345678A)',
-    };
-  }
-
-  // Validar letra según algoritmo
-  const number = parseInt(nif.substring(0, 8), 10);
-  const letters = 'TRWAGMYFPDXBNJZSQVHLCKE';
-  const expectedLetter = letters[number % 23];
-
-  if (nif.charAt(8).toUpperCase() !== expectedLetter) {
-    return {
-      isValid: false,
-      errorMessage: 'Letra de NIF incorrecta',
-    };
-  }
-
-  return {
-    isValid: true,
-    errorMessage: '',
+    const letters = 'TRWAGMYFPDXBCSQVJHZTKB';
+    const position = parseInt(nifUpper.substring(0, 8)) % 23;
+    return letters[position] === nifUpper[8] ? null : { invalidNif: true };
   };
 }
 ```
 
-#### Validador de Teléfono:
+#### Validador Teléfono:
 ```typescript
-/**
- * VALIDACIÓN: Teléfono móvil español
- *
- * REGLAS DE NEGOCIO:
- * - Formato: +34 6XX XXX XXX o 6XX XXX XXX
- * - Comienza con 6 (móvil) o 9 (fijo)
- * - 9 dígitos sin prefijo
- *
- * @param phone - Teléfono a validar
- * @returns ValidationResult
- */
-validatePhoneNumber(phone: string): ValidationResult {
-  if (!phone || phone.trim().length === 0) {
-    return {
-      isValid: false,
-      errorMessage: 'El teléfono es requerido',
-    };
-  }
-
-  // Remover espacios, guiones, paréntesis y +34
-  const cleanedPhone = phone
-    .replace(/[\s\-().]/g, '')
-    .replace(/^(34|\+34)/, '');
-
-  // Validar formato: 9 dígitos comenzando con 6 o 9
-  const phoneRegex = /^[69]\d{8}$/;
-  if (!phoneRegex.test(cleanedPhone)) {
-    return {
-      isValid: false,
-      errorMessage: 'Teléfono inválido (ej: 612 345 678 o +34 612 345 678)',
-    };
-  }
-
-  return {
-    isValid: true,
-    errorMessage: '',
+export function telefono(): ValidatorFn {
+  return (control): ValidationErrors | null => {
+    return /^[67][0-9]{8}$/.test(control.value) ? null : { invalidTelefono: true };
   };
 }
 ```
 
-#### Validador de Código Postal:
+#### Validador Código Postal:
 ```typescript
-/**
- * VALIDACIÓN: Código postal español
- *
- * REGLAS DE NEGOCIO:
- * - Formato: 5 dígitos (00000-52999)
- * - Válido solo para provincias existentes
- *
- * @param zipCode - Código postal a validar
- * @returns ValidationResult
- */
-validateZipCode(zipCode: string): ValidationResult {
-  if (!zipCode || zipCode.trim().length === 0) {
-    return {
-      isValid: false,
-      errorMessage: 'El código postal es requerido',
-    };
-  }
-
-  // Formato: exactamente 5 dígitos
-  const zipCodeRegex = /^\d{5}$/;
-  if (!zipCodeRegex.test(zipCode)) {
-    return {
-      isValid: false,
-      errorMessage: 'Código postal inválido (debe ser 5 dígitos, ej: 28001)',
-    };
-  }
-
-  // Validar rango: códigos españoles válidos (00000-52999)
-  const code = parseInt(zipCode, 10);
-  if (code > 52999) {
-    return {
-      isValid: false,
-      errorMessage: 'Código postal español no válido',
-    };
-  }
-
-  return {
-    isValid: true,
-    errorMessage: '',
+export function codigoPostal(): ValidatorFn {
+  return (control): ValidationErrors | null => {
+    const cp = control.value;
+    if (!/^\d{5}$/.test(cp)) return { invalidCP: true };
+    
+    const numCP = parseInt(cp, 10);
+    return numCP > 52999 ? { invalidCP: true } : null;
   };
 }
 ```
 
-**Uso en formularios reactivos:**
+**Uso en FormBuilder:**
 ```typescript
+import { nif, telefono, codigoPostal, getFormatErrorMessage } from '@app/validators';
+
 this.addressForm = this.formBuilder.group({
-  nif: [
-    '',
-    [Validators.required, Validators.pattern(/^[0-9]{8}[A-Z]$/)]
-  ],
-  phone: [
-    '',
-    [Validators.required, Validators.pattern(/^[69]\d{8}$/)]
-  ],
-  zipCode: [
-    '',
-    [Validators.required, Validators.pattern(/^\d{5}$/)]
-  ]
+  nif: ['', [Validators.required, nif()]],
+  phone: ['', [Validators.required, telefono()]],
+  zipCode: ['', [Validators.required, codigoPostal()]]
 });
+```
+
+**Uso en template:**
+```html
+<input formControlName="nif">
+@if (form.get('nif')?.errors?.['invalidNif']) {
+  <div class="error">{{ getFormatErrorMessage('invalidNif') }}</div>
+}
+
+<input formControlName="phone">
+@if (form.get('phone')?.errors?.['invalidTelefono']) {
+  <div class="error">{{ getFormatErrorMessage('invalidTelefono') }}</div>
+}
+
+<input formControlName="zipCode">
+@if (form.get('zipCode')?.errors?.['invalidCP']) {
+  <div class="error">{{ getFormatErrorMessage('invalidCP') }}</div>
+}
+```
+
+---
+
+## 5. Validadores Cross-Field Avanzados
+
+Los validadores cross-field se aplican a nivel `FormGroup` para validaciones que involucran múltiples campos.
+
+**Ubicación:** `frontend/src/app/validators/cross-field.validators.ts`
+
+### 5.1 Validador: Mínimo Total
+
+```typescript
+export function totalMinimo(
+  minValue: number,
+  priceField: string = 'price',
+  quantityField: string = 'quantity'
+): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const price = group.get(priceField)?.value;
+    const quantity = group.get(quantityField)?.value;
+
+    if (!price || !quantity) return null;
+
+    const total = parseFloat(price) * parseFloat(quantity);
+    return total >= minValue ? null : { totalMinimo: { min: minValue, actual: total } };
+  };
+}
+```
+
+**Uso:**
+```typescript
+this.orderForm = this.fb.group({
+  price: [0, [Validators.required, Validators.min(0)]],
+  quantity: [1, [Validators.required, Validators.min(1)]]
+}, {
+  validators: totalMinimo(100) // Mínimo 100€
+});
+```
+
+### 5.2 Validador: Edad Mayor
+
+```typescript
+export function edadMayor(controlName: string, minAgeField: string): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const control = group.get(controlName);
+    const minAgeControl = group.get(minAgeField);
+
+    if (!control?.value || !minAgeControl?.value) return null;
+
+    const birthYear = parseInt(control.value.split('-')[0], 10);
+    const age = new Date().getFullYear() - birthYear;
+    const minAge = parseInt(minAgeControl.value, 10);
+
+    return age >= minAge ? null : { edadMenor: { minAge, actualAge: age } };
+  };
+}
+```
+
+### 5.3 Validador: Al Menos Uno Requerido
+
+```typescript
+export function atLeastOneRequired(...fields: string[]): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const hasOne = fields.some(field => {
+      const control = group.get(field);
+      return control && control.value && control.value.toString().trim().length > 0;
+    });
+
+    return hasOne ? null : { atLeastOneRequired: { fields } };
+  };
+}
+```
+
+**Uso:**
+```typescript
+this.contactForm = this.fb.group({
+  phone: [''],
+  email: ['']
+}, {
+  validators: atLeastOneRequired('phone', 'email')
+});
+```
+
+**Template:**
+```html
+@if (contactForm.errors?.['atLeastOneRequired']) {
+  <div class="error">
+    Complete al menos: {{ contactForm.errors['atLeastOneRequired'].fields.join(', ') }}
+  </div>
+}
+```
+
+### 5.4 Validador: Rango de Fechas
+
+```typescript
+export function validDateRange(startField: string, endField: string): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const startControl = group.get(startField);
+    const endControl = group.get(endField);
+
+    if (!startControl?.value || !endControl?.value) return null;
+
+    const startDate = new Date(startControl.value);
+    const endDate = new Date(endControl.value);
+
+    return startDate < endDate ? null : { invalidRange: true };
+  };
+}
 ```
 
 ---
@@ -933,7 +902,7 @@ validateUsernameAsync(): AsyncValidatorFn {
 }
 ```
 
-### 6.2 Integración en FormControl:
+### 7.2 Integración en FormControl:
 
 ```typescript
 /**
@@ -967,7 +936,7 @@ this.registerForm = this.formBuilder.group({
 });
 ```
 
-### 6.3 Uso en template - mostrar estado pendiente:
+### 7.3 Uso en template - mostrar estado pendiente:
 
 ```html
 <form [formGroup]="registerForm">
@@ -999,7 +968,7 @@ this.registerForm = this.formBuilder.group({
 </form>
 ```
 
-### 6.4 Estados del FormControl/FormGroup:
+### 7.4 Estados del FormControl/FormGroup:
 
 ```typescript
 /**
@@ -1019,7 +988,7 @@ formGroup.untouched // true si no ha sido tocado
 
 ---
 
-## 7. Catálogo de validadores implementados
+## 8. Catálogo de validadores implementados
 
 ### Ubicación: `frontend/src/app/services/validation.ts`
 
@@ -1050,9 +1019,9 @@ formGroup.untouched // true si no ha sido tocado
 
 ---
 
-## 9. Integración en componentes reales del proyecto
+## 10. Integración en componentes reales del proyecto
 
-### 9.1 LoginForm - Formulario reactivo con validación simple
+### 10.1 LoginForm - Formulario reactivo con validación simple
 
 **Ubicación:** `frontend/src/app/components/shared/login-form/`
 
@@ -1178,7 +1147,7 @@ export class LoginForm {
 </form>
 ```
 
-### 9.2 RegisterForm - Validadores custom y grupo
+### 10.2 RegisterForm - Validadores custom y grupo
 
 **Ubicación:** `frontend/src/app/components/shared/register-form/`
 
@@ -1270,7 +1239,7 @@ export class RegisterForm {
 }
 ```
 
-### 9.3 Patrón completo - Inyección de ValidationService
+### 10.3 Patrón completo - Inyección de ValidationService
 
 Para reutilizar lógica de validación entre componentes, se recomienda inyectar `ValidationService`:
 
@@ -1309,7 +1278,7 @@ export class MyFormComponent {
 
 ---
 
-## 10. Checklist de validación según rúbrica
+## 11. Checklist de validación según rúbrica
 
 ✅ **Validadores personalizados:**
 - ✅ Validador de contraseña fuerte (8+ caracteres, mayúscula, especial)
@@ -1335,7 +1304,7 @@ export class MyFormComponent {
 
 ---
 
-## 8. Resumen de cambios
+## 9. Resumen de cambios
 
 - ✅ FormBuilder para construcción declarativa de formularios
 - ✅ FormGroup para agrupar FormControls relacionados
