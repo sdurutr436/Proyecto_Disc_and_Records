@@ -17,6 +17,8 @@
 - [2. Validadores síncronos integrados](#2-validadores-síncronos-integrados)
   - [2.1 Catálogo de validadores](#21-catálogo-de-validadores)
   - [2.2 Ejemplos por caso de uso](#22-ejemplos-por-caso-de-uso)
+- [3. Validadores custom de grupo](#3-validadores-custom-de-grupo)
+- [4. Resumen de cambios](#4-resumen-de-cambios)
 
 ---
 
@@ -338,34 +340,62 @@ this.forgotForm = this.formBuilder.group({
 
 ---
 
-## Integración con ValidationService
+## 3. Validadores custom de grupo
 
-Los validadores custom más complejos se extraen a `ValidationService` para reutilización:
+Los validadores de grupo se aplican a nivel de FormGroup y permiten validar relaciones entre campos:
 
 ```typescript
-// En ValidationService (validadores custom)
-passwordMatchValidator(): ValidatorFn {
+/**
+ * Validador Custom: Coincidencia de contraseñas
+ * 
+ * PROPÓSITO:
+ * Verificar que password y confirmPassword tengan el mismo valor
+ * 
+ * TIPO: Validador de grupo (FormGroup level)
+ * 
+ * RETORNA:
+ * - null: contraseñas coinciden (válido)
+ * - { passwordMismatch: true }: no coinciden (inválido)
+ */
+private passwordMatchValidator(): ValidatorFn {
   return (group: AbstractControl): ValidationErrors | null => {
     const password = group.get('password')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
-    return password === confirmPassword ? null : { passwordMismatch: true };
+
+    // Si alguno está vacío, Validators.required se encarga
+    if (!password || !confirmPassword) {
+      return null;
+    }
+
+    return password === confirmPassword
+      ? null
+      : { passwordMismatch: true };
   };
 }
 
-// En RegisterForm
+// Aplicar al FormGroup
 this.registerForm = this.formBuilder.group({
-  // ... otros campos ...
+  password: ['', [Validators.required, Validators.minLength(8)]],
+  confirmPassword: ['', [Validators.required]]
 }, { 
-  validators: inject(ValidationService).passwordMatchValidator()
+  validators: this.passwordMatchValidator()  // ← Validador de grupo
 });
+```
+
+Acceso en el template:
+```html
+<!-- Verificar error a nivel de FormGroup -->
+@if (registerForm.hasError('passwordMismatch')) {
+  <p class="error">Las contraseñas no coinciden</p>
+}
 ```
 
 ---
 
-## Resumen de cambios
+## 4. Resumen de cambios
 
 - ✅ FormBuilder para construcción declarativa de formularios
 - ✅ FormGroup para agrupar FormControls relacionados
 - ✅ FormControl para campos individuales con validación integrada
 - ✅ Validadores síncronos predefinidos de Angular (`required`, `email`, `minLength`, `maxLength`, `pattern`)
-- ✅ Validadores custom extraídos a ValidationService para reutilización
+- ✅ Validadores custom a nivel de grupo (passwordMatchValidator)
