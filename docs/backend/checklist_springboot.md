@@ -29,28 +29,10 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 - [x] 🟢 Códigos devueltos documentados en Swagger (@Operation) y manejados en GlobalExceptionHandler
 
 ## Autenticación y autorización con roles
-- [x] � Sistema de login implementado con JWT
-  - [x] 🟢 JwtService: Generación y validación de tokens HS256
-  - [x] 🟢 POST /api/auth/login: Login con email y contraseña
-  - [x] 🟢 POST /api/auth/register: Registro de nuevos usuarios
-  - [x] 🟢 AuthService: Lógica de autenticación y registro
-  - [x] 🟢 Token Bearer retornado con datos del usuario (id, email, rol)
-  - [x] 🟢 Expiración de token configurada (24 horas)
+- [x] 🟢 Sistema de login implementado con JWT
 - [x] 🟢 Acceso a rutas protegido según nivel de autenticación
-  - [x] 🟢 Rutas públicas: /api/auth/**, GET /api/discos, GET /api/artistas, GET /api/generos, GET /api/usuarios
-  - [x] 🟢 Rutas protegidas: Todas las modificaciones (POST, PUT, DELETE) requieren autenticación
-  - [x] 🟢 JwtAuthenticationFilter: Intercepta peticiones y valida tokens
-  - [x] 🟢 SecurityConfig: Filtro chain con CSRF deshabilitado, CORS habilitado, sesiones STATELESS
 - [x] 🟢 Gestión de roles implementada
-  - [x] 🟢 Role enum: ROLE_USER, ROLE_MODERATOR, ROLE_ADMIN
-  - [x] 🟢 @PreAuthorize en todos los controladores (GET público, POST/PUT MODERATOR/ADMIN, DELETE ADMIN)
-  - [x] 🟢 UsuarioService implementa UserDetailsService para cargar usuarios por email
-  - [x] 🟢 BCrypt hashing de contraseñas (PasswordEncoderConfig)
-  - [x] 🟢 AuthenticationProvider con DaoAuthenticationProvider
 - [x] 🟢 Control de acceso implementado según rol
-  - [x] 🟢 GlobalExceptionHandler: Manejo de BadCredentialsException (401)
-  - [x] 🟢 Spring Boot: @PreAuthorize("hasRole('ADMIN')"), hasRole('MODERATOR'), hasAnyRole('ADMIN','MODERATOR')
-  - [x] 🟢 Acceso a operaciones sensibles restringido por rol
 
 ## Pruebas de API con buena cobertura
 - [x] 🔴 Tests de endpoints NO implementados (sin carpeta src/test)
@@ -136,7 +118,7 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 - ✅ Códigos HTTP: 8/8
 - ✅ Autenticación/Autorización: 8/8 (JWT + @PreAuthorize implementados)
 - ❌ Testing: 0/5
-- ⚠️ Documentación Swagger: 3/8 (error 500 sin resolver)
+- ⚠️ Documentación Swagger: 4/8 (error 500 resuelto)
 
 📈 **MVC (estructura):**
 - ✅ Separación de responsabilidades: 4/4
@@ -216,7 +198,3 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 4. Auditoría de cambios (quién, cuándo, qué cambió)
 
 ---
-
-**Generado:** 16 de diciembre de 2025  
-**Última actualización:** 16 de diciembre de 2025 - Autenticación JWT implementada  
-**Estado:** Backend funcional con API RESTful operativa Y autenticación JWT completa

@@ -1,16 +1,31 @@
 package com.discsandrecords.api.services;
 
-import com.discsandrecords.api.dto.*;
-import com.discsandrecords.api.entities.*;
-import com.discsandrecords.api.exceptions.BusinessRuleException;
-import com.discsandrecords.api.exceptions.DuplicateResourceException;
-import com.discsandrecords.api.exceptions.ResourceNotFoundException;
-import com.discsandrecords.api.repositories.*;
+import java.time.Instant;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.List;
+import com.discsandrecords.api.dto.CreateResenaAlbumDTO;
+import com.discsandrecords.api.dto.CreateResenaCancionDTO;
+import com.discsandrecords.api.dto.ResenaAlbumResponseDTO;
+import com.discsandrecords.api.dto.ResenaCancionResponseDTO;
+import com.discsandrecords.api.dto.UpdateResenaDTO;
+import com.discsandrecords.api.entities.Album;
+import com.discsandrecords.api.entities.Cancion;
+import com.discsandrecords.api.entities.Usuario;
+import com.discsandrecords.api.entities.UsuarioAlbum;
+import com.discsandrecords.api.entities.UsuarioAlbumId;
+import com.discsandrecords.api.entities.UsuarioCancion;
+import com.discsandrecords.api.entities.UsuarioCancionId;
+import com.discsandrecords.api.exceptions.BusinessRuleException;
+import com.discsandrecords.api.exceptions.DuplicateResourceException;
+import com.discsandrecords.api.exceptions.ResourceNotFoundException;
+import com.discsandrecords.api.repositories.AlbumRepository;
+import com.discsandrecords.api.repositories.CancionRepository;
+import com.discsandrecords.api.repositories.UsuarioAlbumRepository;
+import com.discsandrecords.api.repositories.UsuarioCancionRepository;
+import com.discsandrecords.api.repositories.UsuarioRepository;
 
 @Service
 @Transactional
@@ -168,7 +183,7 @@ public class ResenaService {
             throw new ResourceNotFoundException("Usuario", "id", usuarioId);
         }
 
-        return usuarioCancionRepository.findResenasCancipnesByUsuarioId(usuarioId).stream()
+        return usuarioCancionRepository.findResenasCancionesByUsuarioId(usuarioId).stream()
                 .map(this::toResenaCancionDTO)
                 .toList();
     }
