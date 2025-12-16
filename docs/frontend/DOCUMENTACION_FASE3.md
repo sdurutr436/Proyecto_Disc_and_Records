@@ -29,11 +29,19 @@
   - [6.1 Ejemplo básico - Lista de géneros favoritos](#61-ejemplo-básico---lista-de-géneros-favoritos)
   - [6.2 Validación en FormArray](#62-validación-en-formarray)
 - [7. Validación asíncrona](#7-validación-asíncrona)
-  - [7.1 Validador asíncrono personalizado](#71-validador-asíncrono-personalizado)
-  - [7.2 Integración en FormControl](#72-integración-en-formcontrol)
-  - [7.3 Uso en template - mostrar estado pendiente](#73-uso-en-template---mostrar-estado-pendiente)
-  - [7.4 Estados del FormControl/FormGroup](#74-estados-del-formcontrolformgroup)
+  - [7.1 Validador de Email Único](#71-validador-de-email-único)
+  - [7.2 Validador de Username Disponible](#72-validador-de-username-disponible)
+  - [7.3 Servicio AsyncValidatorsService](#73-servicio-asyncvalidatorsservice-inyectable)
+  - [7.4 Uso en FormBuilder con updateOn: 'blur'](#74-uso-en-formbuilder-con-updateon-blur)
+  - [7.5 Template con Estados de Loading](#75-template-con-estados-de-loading)
+  - [7.6 Configuración Avanzada y Mejores Prácticas](#76-configuración-avanzada-y-mejores-prácticas)
+  - [7.7 Estados del FormControl/FormGroup](#77-estados-del-formcontrolformgroup)
 - [8. Catálogo de validadores implementados](#8-catálogo-de-validadores-implementados)
+  - [8.1 Ubicación de archivos](#81-ubicación-de-archivos)
+  - [8.2 Validadores Síncronos](#82-validadores-síncronos)
+  - [8.3 Validadores Cross-Field](#83-validadores-cross-field)
+  - [8.4 Validadores Asíncronos](#84-validadores-asíncronos)
+  - [8.5 Helpers para Templates](#85-helpers-para-templates)
 - [9. Integración en componentes reales del proyecto](#9-integración-en-componentes-reales-del-proyecto)
   - [9.1 LoginForm - Formulario reactivo con validación simple](#91-loginform---formulario-reactivo-con-validación-simple)
   - [9.2 RegisterForm - Validadores custom y grupo](#92-registerform---validadores-custom-y-grupo)
@@ -820,111 +828,277 @@ this.musicForm = this.formBuilder.group({
 
 La validación asíncrona permite verificar datos contra un servidor (ej: comprobar si un usuario existe).
 
-### 7.1 Validador asíncrono personalizado:
+**Archivos implementados:**
+- `frontend/src/app/validators/async.validators.ts` - Funciones ValidatorFn asíncronas
+- `frontend/src/app/services/async-validators.service.ts` - Servicio inyectable
+
+### 7.1 Validador de Email Único
+
+**Ubicación:** `frontend/src/app/validators/async.validators.ts`
 
 ```typescript
-/**
- * Validador Asíncrono: Verificar disponibilidad de username
- * 
- * PROPÓSITO:
- * Hacer una llamada HTTP para verificar si un nombre de usuario ya existe
- * 
- * RETORNA:
- * - Observable<null>: usuario disponible (válido)
- * - Observable<{ usernameTaken: true }>: usuario en uso (inválido)
- */
-validateUsernameAsync(): AsyncValidatorFn {
-  return (control: AbstractControl): Observable<ValidationErrors | null> => {
-    if (!control.value) {
-      return of(null); // Si está vacío, skipear validación asíncrona
-    }
+import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
+import { Observable, of, timer } from 'rxjs';
+import { map, switchMap, take, catchError } from 'rxjs/operators';
 
-    return this.apiService.checkUsernameAvailability(control.value).pipe(
-      map(response => {
-        return response.isAvailable ? null : { usernameTaken: true };
+/**
+ * Validador Asíncrono: Email Único
+ *
+ * Verifica que el email no esté ya registrado en el sistema.
+ * Incluye debounce de 500ms para evitar spam de llamadas API.
+ *
+ * @param excludeUserId - ID del usuario actual (para edición de perfil)
+ * @returns AsyncValidatorFn
+ */
+export function emailUnique(excludeUserId?: string): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    const email = control.value?.trim().toLowerCase();
+
+    if (!email) return of(null);
+
+    return timer(500).pipe( // Debounce de 500ms
+      switchMap(() => {
+        // PRODUCCIÓN: llamada HTTP real
+        // return this.http.get<boolean>(`/api/users/email-exists/${email}`)
+
+        // SIMULACIÓN: emails ya registrados
+        const registeredEmails = ['admin@discandrecords.com', 'test@example.com'];
+        return of(registeredEmails.includes(email)).pipe(
+          map(exists => exists ? { emailTaken: true } : null),
+          catchError(() => of(null)) // Error de red no bloquea
+        );
       }),
-      debounceTime(300), // Esperar 300ms después del último evento
-      first(), // Completar después del primer resultado
-      catchError(() => of(null)) // Si hay error de red, permitir
+      take(1)
     );
   };
 }
 ```
 
-### 7.2 Integración en FormControl:
+### 7.2 Validador de Username Disponible
 
 ```typescript
 /**
- * Añadir validador asíncrono al FormControl
- * 
- * SINTAXIS:
- * formBuilder.control(
- *   valor_inicial,
- *   [validadores_síncronos],
- *   [validadores_asíncronos]  ← AsyncValidatorFn[]
- * )
+ * Validador Asíncrono: Username Disponible
+ *
+ * Verifica que el nombre de usuario esté disponible.
+ * Solo valida si el username tiene al menos 3 caracteres.
  */
-this.registerForm = this.formBuilder.group({
-  username: [
-    '',
-    // Validadores síncronos
-    [
-      Validators.required,
-      Validators.minLength(3),
-      Validators.maxLength(20),
-      Validators.pattern(/^[a-zA-Z0-9_]+$/)
-    ],
-    // Validadores asíncronos
-    [this.validateUsernameAsync()]
-  ],
-  email: [
-    '',
-    [Validators.required, Validators.email],
-    [this.validateEmailAsync()] // Verificar si email ya está registrado
-  ]
-});
+export function usernameAvailable(): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    const username = control.value?.trim().toLowerCase();
+
+    if (!username || username.length < 3) return of(null);
+
+    return timer(300).pipe( // Debounce de 300ms
+      switchMap(() => {
+        const takenUsernames = ['admin', 'root', 'superuser', 'moderator'];
+        return of(takenUsernames.includes(username)).pipe(
+          map(isTaken => isTaken ? { usernameTaken: true } : null),
+          catchError(() => of(null))
+        );
+      }),
+      take(1)
+    );
+  };
+}
 ```
 
-### 7.3 Uso en template - mostrar estado pendiente:
+### 7.3 Servicio AsyncValidatorsService (Inyectable)
+
+**Ubicación:** `frontend/src/app/services/async-validators.service.ts`
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class AsyncValidatorsService {
+  private readonly defaultDebounceTime = 500;
+
+  /**
+   * Validador de Email Único como método del servicio
+   */
+  emailUnique(excludeUserId?: string, debounceMs?: number): AsyncValidatorFn {
+    const debounce = debounceMs ?? this.defaultDebounceTime;
+
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      const email = control.value?.trim().toLowerCase();
+      if (!email) return of(null);
+
+      return defer(() => timer(debounce)).pipe(
+        switchMap(() => this.checkEmailAvailability(email, excludeUserId)),
+        take(1)
+      );
+    };
+  }
+
+  /**
+   * Validador de Username Disponible como método del servicio
+   */
+  usernameAvailable(debounceMs?: number): AsyncValidatorFn {
+    const debounce = debounceMs ?? this.defaultDebounceTime;
+
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      const username = control.value?.trim().toLowerCase();
+      if (!username || username.length < 3) return of(null);
+
+      return defer(() => timer(debounce)).pipe(
+        switchMap(() => this.checkUsernameAvailability(username)),
+        take(1)
+      );
+    };
+  }
+
+  private checkEmailAvailability(email: string, excludeUserId?: string): Observable<ValidationErrors | null> {
+    // En producción: this.http.get<boolean>(`/api/users/email-exists/${email}`)
+    const registeredEmails = ['admin@discandrecords.com', 'test@example.com'];
+    return of(registeredEmails.includes(email)).pipe(
+      delay(300 + Math.random() * 500),
+      map(exists => exists ? { emailTaken: true } : null),
+      catchError(() => of(null))
+    );
+  }
+
+  private checkUsernameAvailability(username: string): Observable<ValidationErrors | null> {
+    const takenUsernames = ['admin', 'root', 'superuser'];
+    return of(takenUsernames.includes(username)).pipe(
+      delay(200 + Math.random() * 400),
+      map(isTaken => isTaken ? { usernameTaken: true } : null),
+      catchError(() => of(null))
+    );
+  }
+}
+```
+
+### 7.4 Uso en FormBuilder con updateOn: 'blur'
+
+```typescript
+// register-form.component.ts
+import { AsyncValidatorsService } from '../../services/async-validators.service';
+import { emailUnique, usernameAvailable } from '../../validators';
+
+export class RegisterFormComponent {
+  registerForm: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    private asyncValidators: AsyncValidatorsService
+  ) {
+    this.registerForm = this.fb.group({
+      // Usando funciones directas
+      email: ['', {
+        validators: [Validators.required, Validators.email],
+        asyncValidators: [emailUnique()],
+        updateOn: 'blur' // Solo valida al salir del campo
+      }],
+
+      // Usando servicio inyectable
+      username: ['', {
+        validators: [Validators.required, Validators.minLength(3)],
+        asyncValidators: [this.asyncValidators.usernameAvailable()],
+        updateOn: 'blur'
+      }]
+    });
+  }
+
+  // Helpers para template
+  get email() { return this.registerForm.get('email'); }
+  get username() { return this.registerForm.get('username'); }
+}
+```
+
+### 7.5 Template con Estados de Loading
 
 ```html
-<form [formGroup]="registerForm">
-  <!-- Input con estado pendiente (validación asíncrona en curso) -->
-  <input 
-    type="text" 
-    formControlName="username" 
-    placeholder="Nombre de usuario">
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <!-- Email con validación asíncrona -->
+  <div class="field">
+    <label for="email">Email</label>
+    <input 
+      type="email" 
+      id="email"
+      formControlName="email" 
+      placeholder="tu@email.com">
 
-  <!-- Estados de validación -->
-  @if (registerForm.get('username')?.pending) {
-    <span class="validating">
-      ⏳ Verificando disponibilidad...
-    </span>
-  }
+    @if (email?.pending) {
+      <span class="loading">⏳ Verificando email...</span>
+    }
 
-  @if (registerForm.get('username')?.hasError('required')) {
-    <span class="error">Username es requerido</span>
-  }
+    @if (email?.errors?.['emailTaken'] && !email?.pending) {
+      <span class="error">
+        Este email ya está registrado. ¿Olvidaste tu contraseña?
+      </span>
+    }
+  </div>
 
-  @if (registerForm.get('username')?.hasError('usernameTaken')) {
-    <span class="error">Este usuario ya está en uso</span>
-  }
+  <!-- Username con validación asíncrona -->
+  <div class="field">
+    <label for="username">Nombre de usuario</label>
+    <input 
+      type="text" 
+      id="username"
+      formControlName="username" 
+      placeholder="tu_usuario">
 
-  <!-- El submit está deshabilitado mientras hay validación asíncrona pendiente -->
-  <button [disabled]="registerForm.invalid || registerForm.pending">
-    Registrarse
+    @if (username?.pending) {
+      <span class="loading">⏳ Comprobando disponibilidad...</span>
+    }
+
+    @if (username?.errors?.['usernameTaken'] && !username?.pending) {
+      <span class="error">
+        Este nombre de usuario no está disponible. Prueba otro.
+      </span>
+    }
+  </div>
+
+  <!-- Submit deshabilitado mientras hay validación pendiente -->
+  <button 
+    type="submit" 
+    [disabled]="registerForm.invalid || registerForm.pending">
+    Crear cuenta
   </button>
 </form>
 ```
 
-### 7.4 Estados del FormControl/FormGroup:
+### 7.6 Configuración Avanzada y Mejores Prácticas
+
+| Propiedad | Efecto | Recomendado |
+|-----------|--------|-------------|
+| `updateOn: 'blur'` | Valida al salir del campo | ✅ Async validators |
+| `updateOn: 'submit'` | Solo al enviar form | Performance crítico |
+| `debounceTime: 500` | Espera escritura | 300-800ms |
+| `pending: true` | Muestra loading | Durante async |
+
+**CSS para feedback visual:**
+
+```scss
+.field {
+  .loading {
+    color: var(--color-info);
+    font-style: italic;
+    font-size: 0.875rem;
+  }
+
+  .error {
+    color: var(--color-danger);
+    font-size: 0.875rem;
+  }
+
+  input.ng-invalid.ng-dirty.ng-touched + .error {
+    display: block;
+  }
+
+  input.ng-pending {
+    border-color: var(--color-info);
+  }
+}
+```
+
+### 7.7 Estados del FormControl/FormGroup
 
 ```typescript
 /**
  * Estados de validación en tiempo real
  */
-control.status // 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED'
-control.pending // boolean - Hay validación asíncrona en curso
+control.status   // 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED'
+control.pending  // boolean - Hay validación asíncrona en curso
 
 formGroup.valid     // false si hay algún control inválido
 formGroup.invalid   // true si hay algún control inválido
@@ -939,32 +1113,54 @@ formGroup.untouched // true si no ha sido tocado
 
 ## 8. Catálogo de validadores implementados
 
-### Ubicación: `frontend/src/app/services/validation.ts`
+### 8.1 Ubicación de archivos
 
-#### Validadores de campo simple:
+| Archivo | Tipo | Descripción |
+|---------|------|-------------|
+| `validators/password-strength.validator.ts` | Síncrono | Validador de contraseña fuerte |
+| `validators/password-match.validator.ts` | Cross-field | Confirmación de contraseña |
+| `validators/spanish-formats.validator.ts` | Síncrono | NIF, teléfono, código postal |
+| `validators/cross-field.validators.ts` | Cross-field | atLeastOneRequired, validDateRange |
+| `validators/async.validators.ts` | Asíncrono | emailUnique, usernameAvailable |
+| `validators/index.ts` | Export | Exportación centralizada |
+| `services/async-validators.service.ts` | Servicio | Validadores asíncronos inyectables |
 
-| Método | Propósito | Ejemplo |
-|--------|-----------|---------|
-| `validateEmail()` | Valida formato de email | `usuario@dominio.com` |
-| `validatePassword()` | Verifica fortaleza (8 caracteres, mayúscula, especial) | `MiPass123!` |
-| `validateUsername()` | 3-20 caracteres, solo alfanuméricos y guiones | `usuario_123` |
-| `validatePasswordConfirmation()` | Comprueba coincidencia de contraseñas | Iguales a password |
-| `validateNIF()` | Valida NIF/DNI español | `12345678A` |
-| `validatePhoneNumber()` | Teléfono móvil español (6XX XXX XXX) | `612345678` |
-| `validateZipCode()` | Código postal español (5 dígitos) | `28001` |
+### 8.2 Validadores Síncronos
 
-#### Validadores de formulario completo:
+| Función | Propósito | Retorna |
+|---------|-----------|---------|
+| `passwordStrength()` | 12+ chars, mayúscula, minúscula, número, especial | `{ noUppercase, noLowercase, noNumber, noSpecial, minLength }` |
+| `nif()` | NIF/DNI español con algoritmo mod-23 | `{ invalidNif: true }` |
+| `telefono()` | Teléfono móvil español (6XX/7XX) | `{ invalidPhone: true }` |
+| `codigoPostal()` | Código postal español (00000-52999) | `{ invalidPostalCode: true }` |
 
-| Método | Propósito | Retorna |
-|--------|-----------|---------|
-| `validateLoginForm()` | Valida email y contraseña juntos | `{ isValid: boolean, errors: { email, password } }` |
-| `validateRegisterForm()` | Valida todos los campos de registro | `{ isValid: boolean, errors: { username, email, password, confirmPassword } }` |
+### 8.3 Validadores Cross-Field
 
-#### Utilidades:
+| Función | Propósito | Retorna |
+|---------|-----------|---------|
+| `passwordMatch(control, match)` | Verifica coincidencia de contraseñas | `{ mismatch: true }` |
+| `atLeastOneRequired(...fields)` | Al menos un campo con valor | `{ atLeastOneRequired: { fields } }` |
+| `validDateRange(start, end)` | Fecha inicio < fecha fin | `{ invalidRange: true }` |
 
-| Método | Propósito | Retorna |
-|--------|-----------|---------|
-| `getPasswordStrength()` | Análisis detallado de fortaleza | `{ hasMinLength, hasUpperCase, hasNumber, hasSpecialChar, score: 0-5 }` |
+### 8.4 Validadores Asíncronos
+
+| Función | Propósito | Retorna |
+|---------|-----------|---------|
+| `emailUnique(excludeId?)` | Verifica email no registrado | `{ emailTaken: true }` |
+| `usernameAvailable()` | Verifica username disponible | `{ usernameTaken: true }` |
+| `AsyncValidatorsService.emailUnique()` | Versión inyectable | `{ emailTaken: true }` |
+| `AsyncValidatorsService.usernameAvailable()` | Versión inyectable | `{ usernameTaken: true }` |
+| `AsyncValidatorsService.artistNameAvailable()` | Nombre de artista único | `{ artistExists: true }` |
+
+### 8.5 Helpers para Templates
+
+| Función | Propósito | Uso |
+|---------|-----------|-----|
+| `getPasswordErrorMessage(error)` | Mensaje para errores de password | Templates |
+| `getPasswordMatchErrorMessage(error)` | Mensaje para mismatch | Templates |
+| `getFormatErrorMessage(error)` | Mensaje para NIF/teléfono/CP | Templates |
+| `getCrossFieldErrorMessage(error, obj?)` | Mensaje para cross-field | Templates |
+| `getAsyncErrorMessage(error)` | Mensaje para async validators | Templates |
 
 ---
 
@@ -1230,25 +1426,26 @@ export class MyFormComponent {
 ## 11. Checklist de validación según rúbrica
 
 ✅ **Validadores personalizados:**
-- ✅ Validador de contraseña fuerte (8+ caracteres, mayúscula, especial)
+- ✅ Validador de contraseña fuerte (12+ caracteres, mayúscula, minúscula, número, especial)
 - ✅ Validador de confirmación de contraseña (coincidencia)
-- ✅ Validadores de formato (NIF, teléfono, código postal)
+- ✅ Validadores de formato (NIF con mod-23, teléfono 6XX/7XX, código postal 00000-52999)
 
 ✅ **FormArray:**
 - ✅ Implementación con métodos add/remove
 - ✅ Validación a nivel de array
-- ✅ Ejemplos con lista de géneros y direcciones
+- ✅ Ejemplos con lista de géneros musicales
 
 ✅ **Validación asíncrona:**
-- ✅ AsyncValidatorFn personalizado
-- ✅ Integración con debounceTime
-- ✅ Manejo de estado pendiente (pending)
-- ✅ Ejemplo: verificar disponibilidad de username
+- ✅ `emailUnique()` - Verificar email no registrado con debounce 500ms
+- ✅ `usernameAvailable()` - Verificar disponibilidad de username con debounce 300ms
+- ✅ `AsyncValidatorsService` - Servicio inyectable para validadores async
+- ✅ Manejo de estado `pending` en templates
+- ✅ Configuración `updateOn: 'blur'` para optimización
 
 ✅ **Documentación:**
-- ✅ Catálogo completo de validadores implementados
+- ✅ Catálogo completo de validadores (síncronos, cross-field, async)
 - ✅ Guía de uso de FormArray con ejemplos
-- ✅ Ejemplos de validación asíncrona
+- ✅ Ejemplos detallados de validación asíncrona
 - ✅ Patrones de integración en componentes reales
 
 ---

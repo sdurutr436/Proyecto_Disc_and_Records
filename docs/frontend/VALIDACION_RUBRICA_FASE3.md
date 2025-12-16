@@ -19,6 +19,7 @@
 | `password-match.validator.ts` | `passwordMatch(controlName, matchName)` | ✅ Implementado |
 | `spanish-formats.validator.ts` | `nif()`, `telefono()`, `codigoPostal()` | ✅ Implementado |
 | `cross-field.validators.ts` | `atLeastOneRequired()`, `validDateRange()` | ✅ Implementado |
+| `async.validators.ts` | `emailUnique()`, `usernameAvailable()` | ✅ Implementado |
 | `index.ts` | Exportación centralizada | ✅ Implementado |
 
 #### ✅ Validador de Contraseña Fuerte
@@ -139,9 +140,18 @@ export function validDateRange(startField: string, endField: string): ValidatorF
 | Validador | Tipo | Retorna |
 |-----------|------|---------|
 | `passwordMatch(control, match)` | ValidatorFn | `{ mismatch: true }` |
-
 | `atLeastOneRequired(...fields)` | ValidatorFn | `{ atLeastOneRequired: { fields } }` |
 | `validDateRange(start, end)` | ValidatorFn | `{ invalidRange: true }` |
+
+### Validadores Asíncronos
+
+| Validador | Tipo | Retorna |
+|-----------|------|---------|
+| `emailUnique(excludeId?)` | AsyncValidatorFn | `{ emailTaken: true }` |
+| `usernameAvailable()` | AsyncValidatorFn | `{ usernameTaken: true }` |
+| `AsyncValidatorsService.emailUnique()` | AsyncValidatorFn (inyectable) | `{ emailTaken: true }` |
+| `AsyncValidatorsService.usernameAvailable()` | AsyncValidatorFn (inyectable) | `{ usernameTaken: true }` |
+| `AsyncValidatorsService.artistNameAvailable()` | AsyncValidatorFn (inyectable) | `{ artistExists: true }` |
 
 ---
 
