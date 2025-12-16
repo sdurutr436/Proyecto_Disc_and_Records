@@ -98,6 +98,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Spring Security Test - MockMvc con JWT y autenticación -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- OpenAPI / Swagger Documentation -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
