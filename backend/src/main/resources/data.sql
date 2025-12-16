@@ -166,23 +166,23 @@ INSERT INTO canciones (titulo_cancion, anio_salida, id_artista, puntuacion_media
 -- USUARIOS (10 usuarios de prueba + 1 admin + 1 moderator)
 -- NOTA: Las contraseñas están hasheadas con BCrypt
 -- Contraseña original para todos: "password123"
--- Hash BCrypt: $2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
+-- Hash BCrypt generado con BCryptPasswordEncoder (strength=10)
 -- ===========================================
 INSERT INTO usuarios (nombre_usuario, mail, contrasena, avatar, biografia, fecha_registro, role, activo) VALUES 
 -- Usuarios administradores y moderadores
-('admin', 'admin@discsandrecords.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=70', 'Administrador del sistema Discs & Records.', CURRENT_TIMESTAMP, 'ROLE_ADMIN', true),
-('moderator', 'mod@discsandrecords.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=60', 'Moderador de contenido. Mantengo el orden en la comunidad.', CURRENT_TIMESTAMP, 'ROLE_MODERATOR', true),
+('admin', 'admin@discsandrecords.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=70', 'Administrador del sistema Discs & Records.', CURRENT_TIMESTAMP, 'ROLE_ADMIN', true),
+('moderator', 'mod@discsandrecords.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=60', 'Moderador de contenido. Mantengo el orden en la comunidad.', CURRENT_TIMESTAMP, 'ROLE_MODERATOR', true),
 -- Usuarios regulares
-('musicfan', 'musicfan@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=1', 'Amante de la música clásica y el rock progresivo. Colecciono vinilos desde hace 20 años.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
-('vinylcollector', 'vinyl@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=2', 'Coleccionista de vinilos desde 1995. Mi obsesión: primeras ediciones.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
-('jazzhead', 'jazz@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=3', 'El jazz es vida. Miles Davis es Dios.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
-('rockero70s', 'rock70s@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=4', 'Nacido en la década equivocada. Vivo en los 70s.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
-('hiphophead', 'hiphop@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=5', 'Rap underground y golden age. Real hip-hop only.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
-('melomano', 'melomano@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=6', 'Escucho de todo, menos reggaeton (bueno, a veces también).', CURRENT_TIMESTAMP, 'ROLE_USER', true),
-('indiekid', 'indie@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=7', 'Bandcamp es mi segundo hogar. Apoyo artistas independientes.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
-('electronicvibes', 'electronic@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=8', 'Techno, house, IDM. La música electrónica es el futuro.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
-('metalhead666', 'metal@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=9', 'El metal nunca muere. 🤘 Thrash, death, black... todo vale.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
-('poprocker', 'pop@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'https://i.pravatar.cc/150?img=10', 'Pop comercial sin vergüenza. Taylor Swift fan club president.', CURRENT_TIMESTAMP, 'ROLE_USER', true);
+('musicfan', 'musicfan@example.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=1', 'Amante de la música clásica y el rock progresivo. Colecciono vinilos desde hace 20 años.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('vinylcollector', 'vinyl@example.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=2', 'Coleccionista de vinilos desde 1995. Mi obsesión: primeras ediciones.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('jazzhead', 'jazz@example.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=3', 'El jazz es vida. Miles Davis es Dios.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('rockero70s', 'rock70s@example.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=4', 'Nacido en la década equivocada. Vivo en los 70s.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('hiphophead', 'hiphop@example.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=5', 'Rap underground y golden age. Real hip-hop only.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('melomano', 'melomano@example.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=6', 'Escucho de todo, menos reggaeton (bueno, a veces también).', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('indiekid', 'indie@example.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=7', 'Bandcamp es mi segundo hogar. Apoyo artistas independientes.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('electronicvibes', 'electronic@example.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=8', 'Techno, house, IDM. La música electrónica es el futuro.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('metalhead666', 'metal@example.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=9', 'El metal nunca muere. 🤘 Thrash, death, black... todo vale.', CURRENT_TIMESTAMP, 'ROLE_USER', true),
+('poprocker', 'pop@example.com', '$2a$10$4YjRWCyaah5J8G.lmgLUluIH4ormT9qjPzJHCiN2bBrSx6SctLiDG', 'https://i.pravatar.cc/150?img=10', 'Pop comercial sin vergüenza. Taylor Swift fan club president.', CURRENT_TIMESTAMP, 'ROLE_USER', true);
 
 -- ===========================================
 -- RELACIONES ALBUM-GÉNERO (asociaciones)
