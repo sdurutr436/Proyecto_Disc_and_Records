@@ -1,8 +1,9 @@
 package com.discsandrecords.api.controllers;
 
 import com.discsandrecords.api.dto.*;
-import com.discsandrecords.api.entities.Usuario;
-import com.discsandrecords.api.repositories.UsuarioRepository;
+import com.discsandrecords.api.services.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,82 +13,54 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@Tag(name = "Usuarios", description = "API para gestión de usuarios")
 public class UsuarioController {
 
-    private final UsuarioRepository repository;
+    private final UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioRepository repository) {
-        this.repository = repository;
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
     @GetMapping
+    @Operation(summary = "Listar todos los usuarios")
     public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
-        List<UsuarioResponseDTO> usuarios = repository.findAll().stream()
-                .map(this::toResponseDTO)
-                .toList();
-        return ResponseEntity.ok(usuarios);
+        return ResponseEntity.ok(usuarioService.listarTodos());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtener usuario por ID")
     public ResponseEntity<UsuarioResponseDTO> obtenerPorId(@PathVariable Long id) {
-        return repository.findById(id)
-                .map(this::toResponseDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(usuarioService.obtenerPorId(id));
     }
 
     @GetMapping("/username/{nombreUsuario}")
+    @Operation(summary = "Obtener usuario por nombre de usuario")
     public ResponseEntity<UsuarioResponseDTO> obtenerPorNombreUsuario(@PathVariable String nombreUsuario) {
-        return repository.findByNombreUsuario(nombreUsuario)
-                .map(this::toResponseDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(usuarioService.obtenerPorNombreUsuario(nombreUsuario));
     }
 
     @PostMapping
+    @Operation(summary = "Crear un nuevo usuario")
     public ResponseEntity<UsuarioResponseDTO> crear(@RequestBody @Valid CreateUsuarioDTO dto) {
-        // Verificar si ya existe el usuario o email
-        if (repository.existsByNombreUsuario(dto.nombreUsuario())) {
-            throw new IllegalArgumentException("El nombre de usuario ya existe");
-        }
-        if (repository.existsByMail(dto.mail())) {
-            throw new IllegalArgumentException("El email ya está registrado");
-        }
-
-        // TODO: Hashear contraseña con BCrypt antes de guardar
-        Usuario usuario = Usuario.builder()
-                .nombreUsuario(dto.nombreUsuario())
-                .mail(dto.mail())
-                .contrasena(dto.contrasena()) // IMPORTANTE: Debe hashearse
-                .avatar(dto.avatar())
-                .biografia(dto.biografia())
-                .build();
-
-        Usuario guardado = repository.save(usuario);
-
+        UsuarioResponseDTO creado = usuarioService.crear(dto);
         return ResponseEntity
-                .created(URI.create("/api/usuarios/" + guardado.getId()))
-                .body(toResponseDTO(guardado));
+                .created(URI.create("/api/usuarios/" + creado.id()))
+                .body(creado);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar un usuario existente")
+    public ResponseEntity<UsuarioResponseDTO> actualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid UpdateUsuarioDTO dto) {
+        return ResponseEntity.ok(usuarioService.actualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar un usuario")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (!repository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        repository.deleteById(id);
+        usuarioService.eliminar(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private UsuarioResponseDTO toResponseDTO(Usuario usuario) {
-        return new UsuarioResponseDTO(
-                usuario.getId(),
-                usuario.getNombreUsuario(),
-                usuario.getMail(),
-                usuario.getAvatar(),
-                usuario.getBiografia(),
-                usuario.getFechaRegistro()
-        );
     }
 }

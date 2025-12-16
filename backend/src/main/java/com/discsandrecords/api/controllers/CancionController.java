@@ -1,10 +1,9 @@
 package com.discsandrecords.api.controllers;
 
 import com.discsandrecords.api.dto.*;
-import com.discsandrecords.api.entities.Cancion;
-import com.discsandrecords.api.entities.Artista;
-import com.discsandrecords.api.repositories.CancionRepository;
-import com.discsandrecords.api.repositories.ArtistaRepository;
+import com.discsandrecords.api.services.CancionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,91 +13,60 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/canciones")
+@Tag(name = "Canciones", description = "API para gestión de canciones")
 public class CancionController {
 
-    private final CancionRepository cancionRepository;
-    private final ArtistaRepository artistaRepository;
+    private final CancionService cancionService;
 
-    public CancionController(CancionRepository cancionRepository, ArtistaRepository artistaRepository) {
-        this.cancionRepository = cancionRepository;
-        this.artistaRepository = artistaRepository;
+    public CancionController(CancionService cancionService) {
+        this.cancionService = cancionService;
     }
 
     @GetMapping
+    @Operation(summary = "Listar todas las canciones")
     public ResponseEntity<List<CancionResponseDTO>> listarTodas() {
-        List<CancionResponseDTO> canciones = cancionRepository.findAll().stream()
-                .map(this::toResponseDTO)
-                .toList();
-        return ResponseEntity.ok(canciones);
+        return ResponseEntity.ok(cancionService.listarTodas());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtener canción por ID")
     public ResponseEntity<CancionResponseDTO> obtenerPorId(@PathVariable Long id) {
-        return cancionRepository.findById(id)
-                .map(this::toResponseDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(cancionService.obtenerPorId(id));
     }
 
     @GetMapping("/buscar")
+    @Operation(summary = "Buscar canciones por título")
     public ResponseEntity<List<CancionResponseDTO>> buscarPorTitulo(@RequestParam String titulo) {
-        List<CancionResponseDTO> canciones = cancionRepository.findByTituloCancionContainingIgnoreCase(titulo)
-                .stream()
-                .map(this::toResponseDTO)
-                .toList();
-        return ResponseEntity.ok(canciones);
+        return ResponseEntity.ok(cancionService.buscarPorTitulo(titulo));
     }
 
     @GetMapping("/artista/{idArtista}")
+    @Operation(summary = "Listar canciones de un artista")
     public ResponseEntity<List<CancionResponseDTO>> listarPorArtista(@PathVariable Long idArtista) {
-        List<CancionResponseDTO> canciones = cancionRepository.findByArtistaId(idArtista)
-                .stream()
-                .map(this::toResponseDTO)
-                .toList();
-        return ResponseEntity.ok(canciones);
+        return ResponseEntity.ok(cancionService.listarPorArtista(idArtista));
     }
 
     @PostMapping
+    @Operation(summary = "Crear una nueva canción")
     public ResponseEntity<CancionResponseDTO> crear(@RequestBody @Valid CreateCancionDTO dto) {
-        Artista artista = artistaRepository.findById(dto.idArtista())
-                .orElseThrow(() -> new IllegalArgumentException("Artista no encontrado"));
-
-        Cancion cancion = Cancion.builder()
-                .tituloCancion(dto.tituloCancion())
-                .anioSalida(dto.anioSalida())
-                .artista(artista)
-                .build();
-
-        Cancion guardada = cancionRepository.save(cancion);
-
+        CancionResponseDTO creada = cancionService.crear(dto);
         return ResponseEntity
-                .created(URI.create("/api/canciones/" + guardada.getId()))
-                .body(toResponseDTO(guardada));
+                .created(URI.create("/api/canciones/" + creada.id()))
+                .body(creada);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar una canción existente")
+    public ResponseEntity<CancionResponseDTO> actualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid CreateCancionDTO dto) {
+        return ResponseEntity.ok(cancionService.actualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar una canción")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (!cancionRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        cancionRepository.deleteById(id);
+        cancionService.eliminar(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private CancionResponseDTO toResponseDTO(Cancion cancion) {
-        ArtistaResponseDTO artistaDTO = new ArtistaResponseDTO(
-                cancion.getArtista().getId(),
-                cancion.getArtista().getNombreArtista(),
-                cancion.getArtista().getPuntuacionMedia()
-        );
-
-        return new CancionResponseDTO(
-                cancion.getId(),
-                cancion.getTituloCancion(),
-                cancion.getAnioSalida(),
-                cancion.getPuntuacionMedia(),
-                artistaDTO
-        );
     }
 }

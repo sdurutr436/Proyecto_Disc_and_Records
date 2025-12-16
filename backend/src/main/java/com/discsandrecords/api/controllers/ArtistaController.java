@@ -1,8 +1,9 @@
 package com.discsandrecords.api.controllers;
 
 import com.discsandrecords.api.dto.*;
-import com.discsandrecords.api.entities.Artista;
-import com.discsandrecords.api.repositories.ArtistaRepository;
+import com.discsandrecords.api.services.ArtistaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,67 +13,54 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/artistas")
+@Tag(name = "Artistas", description = "API para gestión de artistas")
 public class ArtistaController {
 
-    private final ArtistaRepository repository;
+    private final ArtistaService artistaService;
 
-    public ArtistaController(ArtistaRepository repository) {
-        this.repository = repository;
+    public ArtistaController(ArtistaService artistaService) {
+        this.artistaService = artistaService;
     }
 
     @GetMapping
+    @Operation(summary = "Listar todos los artistas")
     public ResponseEntity<List<ArtistaResponseDTO>> listarTodos() {
-        List<ArtistaResponseDTO> artistas = repository.findAll().stream()
-                .map(this::toResponseDTO)
-                .toList();
-        return ResponseEntity.ok(artistas);
+        return ResponseEntity.ok(artistaService.listarTodos());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtener artista por ID")
     public ResponseEntity<ArtistaResponseDTO> obtenerPorId(@PathVariable Long id) {
-        return repository.findById(id)
-                .map(this::toResponseDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(artistaService.obtenerPorId(id));
     }
 
     @GetMapping("/buscar")
+    @Operation(summary = "Buscar artistas por nombre")
     public ResponseEntity<List<ArtistaResponseDTO>> buscarPorNombre(@RequestParam String nombre) {
-        List<ArtistaResponseDTO> artistas = repository.findByNombreArtistaContainingIgnoreCase(nombre)
-                .stream()
-                .map(this::toResponseDTO)
-                .toList();
-        return ResponseEntity.ok(artistas);
+        return ResponseEntity.ok(artistaService.buscarPorNombre(nombre));
     }
 
     @PostMapping
+    @Operation(summary = "Crear un nuevo artista")
     public ResponseEntity<ArtistaResponseDTO> crear(@RequestBody @Valid CreateArtistaDTO dto) {
-        Artista artista = Artista.builder()
-                .nombreArtista(dto.nombreArtista())
-                .build();
-
-        Artista guardado = repository.save(artista);
-
+        ArtistaResponseDTO creado = artistaService.crear(dto);
         return ResponseEntity
-                .created(URI.create("/api/artistas/" + guardado.getId()))
-                .body(toResponseDTO(guardado));
+                .created(URI.create("/api/artistas/" + creado.id()))
+                .body(creado);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar un artista existente")
+    public ResponseEntity<ArtistaResponseDTO> actualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid CreateArtistaDTO dto) {
+        return ResponseEntity.ok(artistaService.actualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar un artista")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (!repository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        repository.deleteById(id);
+        artistaService.eliminar(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private ArtistaResponseDTO toResponseDTO(Artista artista) {
-        return new ArtistaResponseDTO(
-                artista.getId(),
-                artista.getNombreArtista(),
-                artista.getPuntuacionMedia()
-        );
     }
 }
