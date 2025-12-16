@@ -2,11 +2,14 @@ package com.discsandrecords.api.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.discsandrecords.api.dto.ArtistaResponseDTO;
 import com.discsandrecords.api.dto.CreateArtistaDTO;
+import com.discsandrecords.api.dto.PageResponseDTO;
 import com.discsandrecords.api.entities.Artista;
 import com.discsandrecords.api.exceptions.BusinessRuleException;
 import com.discsandrecords.api.exceptions.DuplicateResourceException;
@@ -31,6 +34,13 @@ public class ArtistaService {
         return artistaRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponseDTO<ArtistaResponseDTO> listarTodosPaginado(Pageable pageable) {
+        Page<ArtistaResponseDTO> page = artistaRepository.findAll(pageable)
+                .map(this::toResponseDTO);
+        return PageResponseDTO.from(page);
     }
 
     @Transactional(readOnly = true)

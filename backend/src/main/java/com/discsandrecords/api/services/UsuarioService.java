@@ -1,5 +1,8 @@
 package com.discsandrecords.api.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.discsandrecords.api.dto.*;
 import com.discsandrecords.api.entities.Usuario;
 import com.discsandrecords.api.exceptions.DuplicateResourceException;
@@ -25,6 +28,13 @@ public class UsuarioService {
         return usuarioRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponseDTO<UsuarioResponseDTO> listarTodosPaginado(Pageable pageable) {
+        Page<UsuarioResponseDTO> page = usuarioRepository.findAll(pageable)
+                .map(this::toResponseDTO);
+        return PageResponseDTO.from(page);
     }
 
     @Transactional(readOnly = true)

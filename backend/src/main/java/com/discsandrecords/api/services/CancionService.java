@@ -4,12 +4,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.discsandrecords.api.dto.ArtistaResponseDTO;
 import com.discsandrecords.api.dto.CancionResponseDTO;
 import com.discsandrecords.api.dto.CreateCancionDTO;
+import com.discsandrecords.api.dto.PageResponseDTO;
 import com.discsandrecords.api.entities.Artista;
 import com.discsandrecords.api.entities.Cancion;
 import com.discsandrecords.api.exceptions.BusinessRuleException;
@@ -39,6 +42,13 @@ public class CancionService {
         return cancionRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponseDTO<CancionResponseDTO> listarTodasPaginado(Pageable pageable) {
+        Page<CancionResponseDTO> page = cancionRepository.findAll(pageable)
+                .map(this::toResponseDTO);
+        return PageResponseDTO.from(page);
     }
 
     @Transactional(readOnly = true)

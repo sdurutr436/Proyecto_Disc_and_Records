@@ -2,11 +2,14 @@ package com.discsandrecords.api.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.discsandrecords.api.dto.CreateGeneroDTO;
 import com.discsandrecords.api.dto.GeneroResponseDTO;
+import com.discsandrecords.api.dto.PageResponseDTO;
 import com.discsandrecords.api.entities.Genero;
 import com.discsandrecords.api.exceptions.DuplicateResourceException;
 import com.discsandrecords.api.exceptions.ResourceNotFoundException;
@@ -27,6 +30,13 @@ public class GeneroService {
         return generoRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponseDTO<GeneroResponseDTO> listarTodosPaginado(Pageable pageable) {
+        Page<GeneroResponseDTO> page = generoRepository.findAll(pageable)
+                .map(this::toResponseDTO);
+        return PageResponseDTO.from(page);
     }
 
     @Transactional(readOnly = true)
