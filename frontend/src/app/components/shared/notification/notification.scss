@@ -51,17 +51,35 @@
     opacity: 0.8;
   }
 
-  // Posiciones horizontales (el servicio controla top/bottom con inline styles)
-  &--top-right,
-  &--bottom-right {
-    right: 20px; // Margen derecho fijo
+  // Posiciones - para notificaciones estáticas (no creadas por el servicio)
+  // El servicio controla top/bottom con inline styles para las dinámicas
+  &--top-right {
+    top: 20px;
+    right: 20px;
     left: auto;
+    bottom: auto;
   }
 
-  &--top-left,
-  &--bottom-left {
-    left: 20px; // Margen izquierdo fijo
+  &--top-left {
+    top: 20px;
+    left: 20px;
     right: auto;
+    bottom: auto;
+    transform: translateX(-100%); // Sale por la izquierda
+  }
+
+  &--bottom-right {
+    bottom: 20px;
+    right: 20px;
+    left: auto;
+    top: auto;
+  }
+
+  &--bottom-left {
+    bottom: 20px;
+    left: 20px;
+    right: auto;
+    top: auto;
     transform: translateX(-100%); // Sale por la izquierda
   }
 

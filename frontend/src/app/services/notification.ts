@@ -256,37 +256,33 @@ export class NotificationService {
       Object.keys(grouped).forEach(posKey => {
         const group = grouped[posKey];
         // Margen inicial desde el borde de la pantalla
-        let activeOffset = 20;
-        const gap = 16; // Espacio entre notificaciones
-        const safetyGap = 8; // Gap extra de seguridad
+        // Para bottom, usamos un offset mayor para evitar solapamiento con elementos fijos
+        let activeOffset = posKey.startsWith('bottom') ? 24 : 20;
+        const gap = 12; // Espacio entre notificaciones
 
         // Iteramos sobre las notificaciones activas de este grupo
         group.forEach((ref) => {
           const domElem = (ref.hostView as any).rootNodes[0] as HTMLElement;
 
           // LEER ALTURA REAL
-          // scrollHeight suele ser más fiable que offsetHeight si hay overflow o transform
-          const elementHeight = domElem.scrollHeight || domElem.offsetHeight || 80;
+          // offsetHeight es más fiable para elementos fixed
+          const elementHeight = domElem.offsetHeight || 80;
 
-          // APLICAR POSICIÓN
-          domElem.style.transition = 'top 0.3s ease, bottom 0.3s ease, transform 0.3s ease';
-
-          // Resetear estilos conflictivos
-          domElem.style.transform = ''; // Quitar transforms que muevan la posición base
+          // APLICAR POSICIÓN con transición suave
+          domElem.style.transition = 'top 0.3s ease, bottom 0.3s ease, opacity 0.3s ease, transform 0.3s ease';
 
           if (posKey.startsWith('top')) {
             // Desde arriba hacia abajo
             domElem.style.top = `${activeOffset}px`;
-            domElem.style.bottom = 'auto'; // Importante limpiar
+            domElem.style.bottom = 'auto';
           } else {
             // Desde abajo hacia arriba
             domElem.style.bottom = `${activeOffset}px`;
-            domElem.style.top = 'auto'; // Importante limpiar
+            domElem.style.top = 'auto';
           }
 
           // ACUMULAR PARA LA SIGUIENTE
-          // Sumamos altura real + gap + safety gap
-          activeOffset += elementHeight + gap + safetyGap;
+          activeOffset += elementHeight + gap;
         });
       });
     });
