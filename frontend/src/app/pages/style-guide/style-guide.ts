@@ -326,7 +326,8 @@ export class StyleGuide {
     this.notificationService.show({
       type,
       ...messages[type],
-      duration: 5000,
+      duration: 0,
+      autoDismiss: false,
       position: 'bottom-right'
     });
   }

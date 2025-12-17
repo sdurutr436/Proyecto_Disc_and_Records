@@ -1720,7 +1720,7 @@
       title="¡Guardado!"
       message="Tu lista de reproducción se ha actualizado."
       position="top-right"
-      [autoDismiss]="true"
+      [autoDismiss]="false"
       (dismissed)="hideNotification('success')"
     ></app-notification>
   }
@@ -1731,7 +1731,7 @@
       title="Error de conexión"
       message="No se pudo cargar la información del álbum."
       position="top-right"
-      [autoDismiss]="true"
+      [autoDismiss]="false"
       (dismissed)="hideNotification('error')"
     ></app-notification>
   }
@@ -1742,7 +1742,7 @@
       title="Sesión próxima a expirar"
       message="Tu sesión caducará en 2 minutos."
       position="top-right"
-      [autoDismiss]="true"
+      [autoDismiss]="false"
       (dismissed)="hideNotification('warning')"
     ></app-notification>
   }
@@ -1753,7 +1753,7 @@
       title="Nueva funcionalidad"
       message="Ahora puedes exportar tus listas de reproducción."
       position="top-right"
-      [autoDismiss]="true"
+      [autoDismiss]="false"
       (dismissed)="hideNotification('info')"
     ></app-notification>
   }

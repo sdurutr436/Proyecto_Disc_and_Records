@@ -51,17 +51,17 @@
     opacity: 0.8;
   }
 
-  // Posiciones - para notificaciones estáticas (no creadas por el servicio)
-  // El servicio controla top/bottom con inline styles para las dinámicas
+  // Posiciones - valores por defecto
+  // El servicio sobreescribe top/bottom con inline styles para apilado dinámico
   &--top-right {
-    top: 20px;
+    top: 20px; // Valor por defecto, el servicio lo sobreescribe
     right: 20px;
     left: auto;
     bottom: auto;
   }
 
   &--top-left {
-    top: 20px;
+    top: 20px; // Valor por defecto, el servicio lo sobreescribe
     left: 20px;
     right: auto;
     bottom: auto;
@@ -69,14 +69,14 @@
   }
 
   &--bottom-right {
-    bottom: 20px;
+    bottom: 20px; // Valor por defecto, el servicio lo sobreescribe
     right: 20px;
     left: auto;
     top: auto;
   }
 
   &--bottom-left {
-    bottom: 20px;
+    bottom: 20px; // Valor por defecto, el servicio lo sobreescribe
     left: 20px;
     right: auto;
     top: auto;

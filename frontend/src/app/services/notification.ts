@@ -168,19 +168,24 @@ export class NotificationService {
 
     // 7. Guardar referencia para poder eliminarlo después
     this.notifications.push(componentRef);
+    console.log(`[NotificationService] Notificación añadida. Total activas: ${this.notifications.length}`);
 
     // 8. CALCULAR POSICIÓN Y MOSTRAR
-    // Usamos setTimeout para salir del ciclo actual y esperar renderizado
-    setTimeout(() => {
+    // Usamos doble requestAnimationFrame para asegurar que el DOM está pintado
+    requestAnimationFrame(() => {
       // Forzar detección de cambios para asegurar que el componente procesó el ngOnInit
       componentRef.changeDetectorRef.detectChanges();
 
-      // Calcular posiciones
-      this.updatePositions();
+      // Segundo frame para asegurar que las alturas están calculadas
+      requestAnimationFrame(() => {
+        console.log(`[NotificationService] Calculando posiciones para ${this.notifications.length} notificaciones`);
+        // Calcular posiciones de todas las notificaciones
+        this.updatePositions();
 
-      // Hacer visible
-      domElem.style.visibility = 'visible';
-    }, 10); // Un pequeño delay de 10ms es imperceptible pero seguro
+        // Hacer visible con una pequeña transición
+        domElem.style.visibility = 'visible';
+      });
+    });
   }
 
   /**
@@ -216,10 +221,11 @@ export class NotificationService {
       this.notifications.splice(index, 1);
     }
 
-    // 6. Actualizar posiciones del resto de notificaciones
-    setTimeout(() => {
+    // 6. Actualizar posiciones del resto de notificaciones inmediatamente
+    // Esto hace que las notificaciones restantes se desplacen hacia arriba/abajo
+    if (this.notifications.length > 0) {
       this.updatePositions();
-    }, 0);
+    }
   }
 
   /**
@@ -241,49 +247,65 @@ export class NotificationService {
    * 3. Aplicar offset como inline style al DOM
    */
   private updatePositions(): void {
-    // Esperar un frame para asegurar que el DOM se ha pintado si acabamos de añadir algo
-    requestAnimationFrame(() => {
+    // Agrupar notificaciones por posición
+    const grouped: { [key: string]: ComponentRef<Notification>[] } = {};
 
-      const grouped: { [key: string]: ComponentRef<Notification>[] } = {};
-      // Agrupar
-      this.notifications.forEach(ref => {
-        // Accedemos a la instancia del componente para leer la posición
-        const position = ref.instance.position || 'top-right';
-        if (!grouped[position]) grouped[position] = [];
-        grouped[position].push(ref);
-      });
+    this.notifications.forEach(ref => {
+      const position = ref.instance.position || 'top-right';
+      if (!grouped[position]) grouped[position] = [];
+      grouped[position].push(ref);
+    });
 
-      Object.keys(grouped).forEach(posKey => {
-        const group = grouped[posKey];
-        // Margen inicial desde el borde de la pantalla
-        // Para bottom, usamos un offset mayor para evitar solapamiento con elementos fijos
-        let activeOffset = posKey.startsWith('bottom') ? 24 : 20;
-        const gap = 12; // Espacio entre notificaciones
+    // Constantes de posicionamiento
+    const INITIAL_OFFSET = 20; // Margen inicial desde el borde
+    const GAP = 12; // Espacio entre notificaciones
+    const DEFAULT_HEIGHT = 80; // Altura por defecto si no se puede leer
 
-        // Iteramos sobre las notificaciones activas de este grupo
-        group.forEach((ref) => {
-          const domElem = (ref.hostView as any).rootNodes[0] as HTMLElement;
+    Object.keys(grouped).forEach(posKey => {
+      const group = grouped[posKey];
+      let currentOffset = INITIAL_OFFSET;
 
-          // LEER ALTURA REAL
-          // offsetHeight es más fiable para elementos fixed
-          const elementHeight = domElem.offsetHeight || 80;
+      console.log(`[NotificationService] Grupo "${posKey}" tiene ${group.length} notificaciones`);
 
-          // APLICAR POSICIÓN con transición suave
-          domElem.style.transition = 'top 0.3s ease, bottom 0.3s ease, opacity 0.3s ease, transform 0.3s ease';
+      group.forEach((ref, index) => {
+        const hostElem = (ref.hostView as any).rootNodes[0] as HTMLElement;
 
-          if (posKey.startsWith('top')) {
-            // Desde arriba hacia abajo
-            domElem.style.top = `${activeOffset}px`;
-            domElem.style.bottom = 'auto';
-          } else {
-            // Desde abajo hacia arriba
-            domElem.style.bottom = `${activeOffset}px`;
-            domElem.style.top = 'auto';
-          }
+        if (!hostElem) {
+          console.warn(`[NotificationService] hostElem es null para índice ${index}`);
+          return;
+        }
 
-          // ACUMULAR PARA LA SIGUIENTE
-          activeOffset += elementHeight + gap;
-        });
+        // Obtener el elemento .notification interno (el que tiene position: fixed)
+        const domElem = hostElem.querySelector('.notification') as HTMLElement;
+
+        if (!domElem) {
+          console.warn(`[NotificationService] .notification interno no encontrado para índice ${index}`);
+          return;
+        }
+
+        // Forzar lectura de altura - getBoundingClientRect es más preciso
+        const rect = domElem.getBoundingClientRect();
+        const elementHeight = rect.height > 0 ? rect.height : DEFAULT_HEIGHT;
+
+        console.log(`[NotificationService] Notificación ${index}: altura=${elementHeight}px, offset actual=${currentOffset}px`);
+
+        // APLICAR POSICIÓN con transición suave
+        domElem.style.transition = 'top 0.3s ease, bottom 0.3s ease';
+
+        if (posKey.startsWith('top')) {
+          // Desde arriba hacia abajo
+          domElem.style.top = `${currentOffset}px`;
+          domElem.style.bottom = 'auto';
+          console.log(`[NotificationService] Aplicado top: ${currentOffset}px`);
+        } else {
+          // Desde abajo hacia arriba
+          domElem.style.bottom = `${currentOffset}px`;
+          domElem.style.top = 'auto';
+          console.log(`[NotificationService] Aplicado bottom: ${currentOffset}px`);
+        }
+
+        // Acumular offset para la siguiente notificación
+        currentOffset += elementHeight + GAP;
       });
     });
   }
