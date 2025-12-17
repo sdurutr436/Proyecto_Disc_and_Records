@@ -3,7 +3,7 @@
 
 .notification {
   position: fixed;
-  z-index: vars.$z-notification;
+  z-index: 10000; // Z-Index EXTREMO para asegurar que se vea sobre todo
   display: flex;
   align-items: flex-start;
   gap: vars.$espaciado-s;
@@ -13,8 +13,10 @@
   box-shadow: 6px 6px 0px var(--shadow-color);
   min-width: 300px;
   max-width: 400px;
+  min-height: 60px; // Dimensión base para evitar colapso
+  margin: 0; // Limpiar márgenes que puedan afectar al cálculo de JS
   opacity: 0;
-  transform: translateX(400px);
+  transform: translateX(100%);
   transition: all vars.$transicion-base;
 
   @include mix.mobile-down {
@@ -49,38 +51,24 @@
     opacity: 0.8;
   }
 
-  // Posiciones
-  &--top-right {
-    top: vars.$espaciado-m;
-    right: vars.$espaciado-m;
-  }
-
-  &--top-left {
-    top: vars.$espaciado-m;
-    left: vars.$espaciado-m;
-    transform: translateX(-400px);
-  }
-
+  // Posiciones horizontales (el servicio controla top/bottom con inline styles)
+  &--top-right,
   &--bottom-right {
-    bottom: vars.$espaciado-m;
-    right: vars.$espaciado-m;
+    right: 20px; // Margen derecho fijo
+    left: auto;
   }
 
+  &--top-left,
   &--bottom-left {
-    bottom: vars.$espaciado-m;
-    left: vars.$espaciado-m;
-    transform: translateX(-400px);
+    left: 20px; // Margen izquierdo fijo
+    right: auto;
+    transform: translateX(-100%); // Sale por la izquierda
   }
 
-  // Estado visible
+  // Estado visible - animación de entrada
   &--visible {
     opacity: 1;
     transform: translateX(0);
-
-    &.notification--top-left,
-    &.notification--bottom-left {
-      transform: translateX(0);
-    }
   }
 
   // Tipos con mixin de colores de estado
@@ -98,5 +86,32 @@
 
   &--info {
     @include mix.state-colors('info');
+  }
+
+  // Barra de progreso
+  &__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background-color: currentColor;
+    opacity: 0.3;
+    transform-origin: left;
+    animation: notification-progress var(--notification-duration, 5000ms) linear forwards;
+  }
+
+  &__progress--paused {
+    animation-play-state: paused;
+  }
+}
+
+// Animación de la barra de progreso
+@keyframes notification-progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
   }
 }

@@ -95,10 +95,28 @@ export class Notification implements OnInit, OnDestroy {
   isVisible = signal(false);
 
   /**
+   * ESTADO INTERNO: Control de pausa del timer
+   * True cuando el mouse está sobre la notificación
+   */
+  isPaused = signal(false);
+
+  /**
    * TIMER: ID del timeout para auto-dismiss
    * Lo guardamos para poder cancelarlo si se cierra manualmente
    */
   private timeoutId?: number;
+
+  /**
+   * TIMER: Tiempo restante en ms
+   * Se usa para reanudar el timer después de pausar
+   */
+  private remainingTime: number = 0;
+
+  /**
+   * TIMER: Timestamp cuando se pausa
+   * Se usa para calcular el tiempo transcurrido
+   */
+  private pausedAt: number = 0;
 
   /**
    * LIFECYCLE: Inicialización del componente
@@ -115,11 +133,12 @@ export class Notification implements OnInit, OnDestroy {
       this.isVisible.set(true);
     }, 10);
 
+    // Inicializar tiempo restante
+    this.remainingTime = this.duration;
+
     // Configurar auto-dismiss si está activado
     if (this.autoDismiss && this.duration > 0) {
-      this.timeoutId = window.setTimeout(() => {
-        this.onDismiss();
-      }, this.duration);
+      this.startTimer();
     }
   }
 
@@ -206,6 +225,65 @@ export class Notification implements OnInit, OnDestroy {
         return 'ℹ'; // Info symbol
       default:
         return 'ℹ';
+    }
+  }
+
+  /**
+   * MÉTODO PRIVADO: Iniciar timer de auto-dismiss
+   */
+  private startTimer(): void {
+    this.timeoutId = window.setTimeout(() => {
+      this.onDismiss();
+    }, this.remainingTime);
+  }
+
+  /**
+   * MÉTODO PRIVADO: Pausar timer
+   * Guarda el tiempo restante para poder reanudar después
+   */
+  private pauseTimer(): void {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = undefined;
+      this.pausedAt = Date.now();
+    }
+  }
+
+  /**
+   * MÉTODO PRIVADO: Reanudar timer
+   * Calcula el tiempo que pasó desde la pausa y ajusta remainingTime
+   */
+  private resumeTimer(): void {
+    if (this.pausedAt > 0) {
+      const elapsed = Date.now() - this.pausedAt;
+      this.remainingTime = Math.max(0, this.remainingTime - elapsed);
+      this.pausedAt = 0;
+
+      if (this.remainingTime > 0) {
+        this.startTimer();
+      }
+    }
+  }
+
+  /**
+   * HANDLER: Mouse entra en la notificación
+   * Pausa el timer de auto-dismiss
+   */
+  onMouseEnter(): void {
+    if (this.autoDismiss) {
+      this.isPaused.set(true);
+      this.pauseTimer();
+    }
+  }
+
+  /**
+   * HANDLER: Mouse sale de la notificación
+   * Reanuda el timer de auto-dismiss
+   */
+  onMouseLeave(): void {
+    if (this.autoDismiss) {
+      this.isPaused.set(false);
+      this.resumeTimer();
     }
   }
 }

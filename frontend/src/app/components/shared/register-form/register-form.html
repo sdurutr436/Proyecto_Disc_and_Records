@@ -155,18 +155,18 @@
         [formControl]="confirmPasswordControl"
         placeholder="••••••••"
         class="register-form__input"
-        [class.register-form__input--error]="(confirmPasswordControl?.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl?.touched"
-        [attr.aria-invalid]="(confirmPasswordControl?.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl?.touched"
-        [attr.aria-describedby]="((confirmPasswordControl?.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl?.touched) ? 'confirm-password-error' : 'confirm-password-help'"
+        [class.register-form__input--error]="(confirmPasswordControl.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl.touched"
+        [attr.aria-invalid]="(confirmPasswordControl.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl.touched"
+        [attr.aria-describedby]="((confirmPasswordControl.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl.touched) ? 'confirm-password-error' : 'confirm-password-help'"
         autocomplete="new-password" />
 
       <!-- Mensaje de error -->
-      @if ((confirmPasswordControl?.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl?.touched) {
+      @if ((confirmPasswordControl.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl.touched) {
       <span
         id="confirm-password-error"
         class="register-form__error"
         role="alert">
-        @if (confirmPasswordControl?.hasError('required')) {
+        @if (confirmPasswordControl.hasError('required')) {
           Confirma tu contraseña
         }
         @if (registerForm.hasError('passwordMismatch')) {
@@ -176,7 +176,7 @@
       }
 
       <!-- Texto de ayuda -->
-      @if ((!confirmPasswordControl?.invalid && !registerForm.hasError('passwordMismatch')) || !confirmPasswordControl?.touched) {
+      @if ((!confirmPasswordControl.invalid && !registerForm.hasError('passwordMismatch')) || !confirmPasswordControl.touched) {
       <span
         id="confirm-password-help"
         class="register-form__help">

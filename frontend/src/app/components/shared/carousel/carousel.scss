@@ -51,35 +51,35 @@
 
   &__container {
     position: relative;
-    @include mix.flex-row(vars.$espaciado-s);
-    align-items: center;
+    width: 100%;
+    overflow: visible;
 
     @include mix.mobile-down {
-      gap: vars.$espaciado-xs;
+      overflow: visible;
     }
   }
 
   &__track {
-    flex: 1;
-    min-width: 0;
-    max-width: 100%;
-    box-sizing: border-box;
+    width: 100%;
     @include mix.flex-row(vars.$espaciado-s);
     overflow-x: auto;
     overflow-y: visible;
     scroll-behavior: smooth;
-    min-height: 260px;
-    padding: vars.$espaciado-s 0 vars.$espaciado-l 0;
+    min-height: 280px;
+    padding: vars.$espaciado-s vars.$espaciado-xs vars.$espaciado-l vars.$espaciado-xs;
     @include mix.hide-scrollbar;
+    align-items: flex-start;
 
     @include mix.tablet-only {
       gap: vars.$espaciado-xs;
-      padding: vars.$espaciado-xs 0 vars.$espaciado-m 0;
+      padding: vars.$espaciado-xs vars.$espaciado-xs vars.$espaciado-m vars.$espaciado-xs;
+      min-height: 250px;
     }
 
     @include mix.mobile-down {
       gap: vars.$espaciado-xs;
-      padding: vars.$espaciado-xs 0 vars.$espaciado-s 0;
+      padding: vars.$espaciado-xs vars.$espaciado-xs vars.$espaciado-s vars.$espaciado-xs;
+      min-height: 230px;
     }
 
     // Items dentro del track - TAMAÑO FIJO
@@ -106,13 +106,15 @@
   }
 
   &__nav {
-    flex-shrink: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 48px;
     height: 48px;
     @include mix.flex-center;
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-primary);
     border: vars.$borde-brutal-medium;
-    border-radius: vars.$radio-xs;
+    border-radius: vars.$radio-s;
     box-shadow: 4px 4px 0px var(--shadow-color);
     cursor: pointer;
     font-size: 2rem;
@@ -124,39 +126,23 @@
 
     &:hover {
       background-color: var(--color-primary);
-      transform: translateY(-2px);
+      transform: translateY(-50%) translateY(-2px);
       box-shadow: 6px 6px 0px var(--shadow-color);
     }
 
     &:active {
-      transform: translateY(0);
+      transform: translateY(-50%) translateY(0);
       box-shadow: 2px 2px 0px var(--shadow-color);
     }
 
     @include mix.focus-visible(var(--border-color));
 
     &--prev {
-      position: absolute;
-      left: 0;
-      background: linear-gradient(
-        to right,
-        var(--bg-primary) 0%,
-        var(--bg-primary) 80%,
-        transparent 100%
-      );
-      padding-right: vars.$espaciado-s;
+      left: vars.$espaciado-xs;
     }
 
     &--next {
-      position: absolute;
-      right: 0;
-      background: linear-gradient(
-        to left,
-        var(--bg-primary) 0%,
-        var(--bg-primary) 80%,
-        transparent 100%
-      );
-      padding-left: vars.$espaciado-s;
+      right: vars.$espaciado-xs;
     }
 
     @include mix.tablet-only {

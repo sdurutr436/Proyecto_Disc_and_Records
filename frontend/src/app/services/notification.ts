@@ -147,6 +147,20 @@ export class NotificationService {
 
     // 5. MANIPULACIÓN DIRECTA DEL DOM: Obtener el elemento HTML y añadirlo al body
     const domElem = (componentRef.hostView as any).rootNodes[0] as HTMLElement;
+
+    // Configurar la duración como CSS custom property para la animación
+    domElem.style.setProperty('--notification-duration', `${config.duration || 5000}ms`);
+
+    // IMPORTANTE: Asegurar posición inicial para que no se vea antes de calcular
+    domElem.style.position = 'fixed';
+    if (config.position?.includes('right')) {
+      domElem.style.right = '2rem';
+    } else {
+      domElem.style.left = '2rem';
+    }
+    // Oculto hasta que se calcule la posición
+    domElem.style.visibility = 'hidden';
+
     document.body.appendChild(domElem);
 
     // 6. Emitir evento para observadores externos
@@ -154,6 +168,19 @@ export class NotificationService {
 
     // 7. Guardar referencia para poder eliminarlo después
     this.notifications.push(componentRef);
+
+    // 8. CALCULAR POSICIÓN Y MOSTRAR
+    // Usamos setTimeout para salir del ciclo actual y esperar renderizado
+    setTimeout(() => {
+      // Forzar detección de cambios para asegurar que el componente procesó el ngOnInit
+      componentRef.changeDetectorRef.detectChanges();
+
+      // Calcular posiciones
+      this.updatePositions();
+
+      // Hacer visible
+      domElem.style.visibility = 'visible';
+    }, 10); // Un pequeño delay de 10ms es imperceptible pero seguro
   }
 
   /**
@@ -188,6 +215,81 @@ export class NotificationService {
     if (index !== -1) {
       this.notifications.splice(index, 1);
     }
+
+    // 6. Actualizar posiciones del resto de notificaciones
+    setTimeout(() => {
+      this.updatePositions();
+    }, 0);
+  }
+
+  /**
+   * MÉTODO PRIVADO: Actualizar posiciones de todas las notificaciones
+   *
+   * LÓGICA DE APILAMIENTO:
+   * - Top positions (top-right, top-left):
+   *   * Más antigua arriba (índice 0)
+   *   * Más nueva abajo (último índice)
+   *   * Cada notificación se desplaza hacia abajo sumando alturas
+   * - Bottom positions (bottom-right, bottom-left):
+   *   * Más antigua abajo (índice 0)
+   *   * Más nueva arriba (último índice)
+   *   * Cada notificación se desplaza hacia arriba sumando alturas
+   *
+   * WORKFLOW:
+   * 1. Agrupar notificaciones por posición
+   * 2. Para cada grupo, calcular offset acumulativo
+   * 3. Aplicar offset como inline style al DOM
+   */
+  private updatePositions(): void {
+    // Esperar un frame para asegurar que el DOM se ha pintado si acabamos de añadir algo
+    requestAnimationFrame(() => {
+
+      const grouped: { [key: string]: ComponentRef<Notification>[] } = {};
+      // Agrupar
+      this.notifications.forEach(ref => {
+        // Accedemos a la instancia del componente para leer la posición
+        const position = ref.instance.position || 'top-right';
+        if (!grouped[position]) grouped[position] = [];
+        grouped[position].push(ref);
+      });
+
+      Object.keys(grouped).forEach(posKey => {
+        const group = grouped[posKey];
+        // Margen inicial desde el borde de la pantalla
+        let activeOffset = 20;
+        const gap = 16; // Espacio entre notificaciones
+        const safetyGap = 8; // Gap extra de seguridad
+
+        // Iteramos sobre las notificaciones activas de este grupo
+        group.forEach((ref) => {
+          const domElem = (ref.hostView as any).rootNodes[0] as HTMLElement;
+
+          // LEER ALTURA REAL
+          // scrollHeight suele ser más fiable que offsetHeight si hay overflow o transform
+          const elementHeight = domElem.scrollHeight || domElem.offsetHeight || 80;
+
+          // APLICAR POSICIÓN
+          domElem.style.transition = 'top 0.3s ease, bottom 0.3s ease, transform 0.3s ease';
+
+          // Resetear estilos conflictivos
+          domElem.style.transform = ''; // Quitar transforms que muevan la posición base
+
+          if (posKey.startsWith('top')) {
+            // Desde arriba hacia abajo
+            domElem.style.top = `${activeOffset}px`;
+            domElem.style.bottom = 'auto'; // Importante limpiar
+          } else {
+            // Desde abajo hacia arriba
+            domElem.style.bottom = `${activeOffset}px`;
+            domElem.style.top = 'auto'; // Importante limpiar
+          }
+
+          // ACUMULAR PARA LA SIGUIENTE
+          // Sumamos altura real + gap + safety gap
+          activeOffset += elementHeight + gap + safetyGap;
+        });
+      });
+    });
   }
 
   /**

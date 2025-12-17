@@ -1,4 +1,4 @@
-<div [class]="notificationClasses" role="alert">
+<div [class]="notificationClasses" role="alert" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
   <div class="notification__icon">{{ defaultIcon }}</div>
 
   <div class="notification__content">
@@ -18,4 +18,8 @@
   >
     ✕
   </button>
+
+  @if (autoDismiss && duration > 0) {
+  <div class="notification__progress" [class.notification__progress--paused]="isPaused()"></div>
+  }
 </div>
