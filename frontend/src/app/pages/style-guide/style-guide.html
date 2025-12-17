@@ -1,4 +1,52 @@
 <div class="style-guide">
+  <!-- ============================================ -->
+  <!-- SIDEBAR FLOTANTE PARA NAVEGACIÓN DE SECCIONES -->
+  <!-- ============================================ -->
+  <aside class="style-guide__sidebar" [class.style-guide__sidebar--open]="sidebarOpen()">
+    <!-- Botón toggle -->
+    <button class="style-guide__sidebar-toggle"
+            (click)="toggleSidebar(); $event.stopPropagation()"
+            [attr.aria-expanded]="sidebarOpen()"
+            aria-haspopup="menu"
+            aria-label="Menú de secciones de la guía de estilos">
+      <span class="style-guide__sidebar-icon" aria-hidden="true">☰</span>
+    </button>
+
+    <!-- Menú desplegable -->
+    <ul class="style-guide__sidebar-menu" role="menu">
+      <li class="style-guide__sidebar-item" role="none">
+        <button type="button" role="menuitem"
+                class="style-guide__sidebar-link"
+                [class.style-guide__sidebar-link--active]="activeSection() === 'foundations'"
+                (click)="selectSection('foundations'); closeSidebar()">Fundamentos</button>
+      </li>
+      <li class="style-guide__sidebar-item" role="none">
+        <button type="button" role="menuitem"
+                class="style-guide__sidebar-link"
+                [class.style-guide__sidebar-link--active]="activeSection() === 'atoms'"
+                (click)="selectSection('atoms'); closeSidebar()">Átomos</button>
+      </li>
+      <li class="style-guide__sidebar-item" role="none">
+        <button type="button" role="menuitem"
+                class="style-guide__sidebar-link"
+                [class.style-guide__sidebar-link--active]="activeSection() === 'molecules'"
+                (click)="selectSection('molecules'); closeSidebar()">Moléculas</button>
+      </li>
+      <li class="style-guide__sidebar-item" role="none">
+        <button type="button" role="menuitem"
+                class="style-guide__sidebar-link"
+                [class.style-guide__sidebar-link--active]="activeSection() === 'organisms'"
+                (click)="selectSection('organisms'); closeSidebar()">Organismos</button>
+      </li>
+      <li class="style-guide__sidebar-item" role="none">
+        <button type="button" role="menuitem"
+                class="style-guide__sidebar-link"
+                [class.style-guide__sidebar-link--active]="activeSection() === 'layout'"
+                (click)="selectSection('layout'); closeSidebar()">Layout</button>
+      </li>
+    </ul>
+  </aside>
+
   <div class="style-guide__container">
     <header class="style-guide__header">
       <h1>Guía de Estilo</h1>

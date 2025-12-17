@@ -6,6 +6,126 @@ $header-height: 70px;
 $header-height-mobile: 60px;
 
 .style-guide {
+  position: relative;
+
+  // =============================================
+  // SIDEBAR FLOTANTE PARA NAVEGACIÓN DE SECCIONES
+  // =============================================
+  &__sidebar {
+    position: fixed;
+    left: $espaciado-m;
+    bottom: $espaciado-m;
+    z-index: $z-fixed;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: $espaciado-s;
+    pointer-events: none;
+
+    @media (max-width: 768px) {
+      left: $espaciado-s;
+      bottom: $espaciado-s;
+    }
+  }
+
+  &__sidebar-toggle {
+    @include mixins.brutal-button-base;
+    background-color: var(--color-primary);
+    border: $borde-brutal-thick;
+    box-shadow: 6px 6px 0px var(--shadow-color);
+    width: 60px;
+    height: 60px;
+    min-height: $touch-min-height-md;
+    padding: 0;
+    font-size: 1.75rem;
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;
+
+    &:hover {
+      background-color: var(--color-secondary);
+      box-shadow: 3px 3px 0px var(--shadow-color);
+      transform: translate(3px, 3px);
+    }
+
+    &:active {
+      box-shadow: 0px 0px 0px var(--shadow-color);
+      transform: translate(6px, 6px);
+    }
+
+    @include mixins.focus-visible($color-contraste-light, 4px);
+  }
+
+  &__sidebar-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  &__sidebar-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $espaciado-xs;
+    pointer-events: auto;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.9);
+    transform-origin: bottom left;
+
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+      visibility 0.3s;
+
+    .style-guide__sidebar--open & {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  &__sidebar-item {
+    list-style: none;
+  }
+
+  &__sidebar-link {
+    @include mixins.brutal-button-base;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: $borde-brutal-medium;
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    min-width: 180px;
+    padding: $espaciado-s $espaciado-m;
+    font-size: $tamanio-fuente-texto-pequeno-s;
+    min-height: $touch-min-height-md;
+    position: relative;
+
+    &:hover {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      box-shadow: 2px 2px 0px var(--shadow-color);
+      transform: translate(2px, 2px);
+    }
+
+    &:active {
+      box-shadow: 0px 0px 0px var(--shadow-color);
+      transform: translate(4px, 4px);
+    }
+
+    @include mixins.focus-visible($color-contraste-light, 2px);
+
+    &--active {
+      background-color: var(--color-primary);
+      color: var(--text-primary);
+      font-weight: 700;
+      border-color: var(--text-primary);
+    }
+  }
   min-height: 100vh;
   background-color: var(--bg-primary);
   padding-top: 0; // Sin padding, el nav sticky lo maneja

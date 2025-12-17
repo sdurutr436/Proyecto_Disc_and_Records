@@ -132,35 +132,4 @@
   </main>
 </div>
 
-<!-- ============================================ -->
-<!-- BOTÓN FLOTANTE BRUTALISTA (Sidebar)         -->
-<!-- ============================================ -->
-<aside class="main-sidebar" [class.main-sidebar--open]="sidebarOpen()">
-  <!-- Botón toggle (1º en HTML = abajo con column-reverse) -->
-  <button class="main-sidebar__toggle"
-          (click)="toggleSidebar(); $event.stopPropagation()"
-          [attr.aria-expanded]="sidebarOpen()"
-          aria-haspopup="menu"
-          aria-label="Menú de navegación">
-    <span class="main-sidebar__toggle-icon" aria-hidden="true">☰</span>
-  </button>
 
-  <!-- Menú desplegable (2º en HTML = arriba con column-reverse) -->
-  <ul class="main-sidebar__menu" role="menu">
-    <li class="main-sidebar__item" role="none">
-      <button type="button" role="menuitem" class="main-sidebar__link" (click)="navigateToSection('foundations')">Fundamentos</button>
-    </li>
-    <li class="main-sidebar__item" role="none">
-      <button type="button" role="menuitem" class="main-sidebar__link" (click)="navigateToSection('atoms')">Átomos</button>
-    </li>
-    <li class="main-sidebar__item" role="none">
-      <button type="button" role="menuitem" class="main-sidebar__link" (click)="navigateToSection('molecules')">Moléculas</button>
-    </li>
-    <li class="main-sidebar__item" role="none">
-      <button type="button" role="menuitem" class="main-sidebar__link" (click)="navigateToSection('organisms')">Organismos</button>
-    </li>
-    <li class="main-sidebar__item" role="none">
-      <button type="button" role="menuitem" class="main-sidebar__link" (click)="navigateToSection('layout')">Layout</button>
-    </li>
-  </ul>
-</aside>

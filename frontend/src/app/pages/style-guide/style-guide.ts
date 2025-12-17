@@ -64,6 +64,17 @@ export class StyleGuide {
   // Usar el signal del servicio compartido
   activeSection = this.styleGuideNav.activeSection;
 
+  // Sidebar para navegación de secciones
+  sidebarOpen = signal(false);
+
+  toggleSidebar(): void {
+    this.sidebarOpen.update((open) => !open);
+  }
+
+  closeSidebar(): void {
+    this.sidebarOpen.set(false);
+  }
+
   // Opciones del menu
   menuItems: { id: StyleGuideSection; label: string }[] = [
     { id: 'foundations', label: 'Fundamentos' },
