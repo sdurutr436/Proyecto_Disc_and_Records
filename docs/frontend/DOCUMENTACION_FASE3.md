@@ -2,8 +2,8 @@
 
 **Proyecto:** Disc and Records  \
 **Fase:** 3 - Formularios Reactivos Avanzados  \
-**Versión:** 1.0  \
-**Última actualización:** 16 de diciembre de 2025  \
+**Versión:** 1.1  \
+**Última actualización:** 17 de diciembre de 2025  \
 **Responsable:** Sergio Durán  \
 
 ---
@@ -48,6 +48,25 @@
   - [9.3 Patrón completo - Inyección de ValidationService](#93-patrón-completo---inyección-de-validationservice)
 - [10. Resumen de cambios](#10-resumen-de-cambios)
 - [11. Checklist de validación según rúbrica](#11-checklist-de-validación-según-rúbrica)
+- [12. Validacion de elementos de array](#12-validacion-de-elementos-de-array)
+  - [12.1 Validadores de coleccion](#121-validadores-de-coleccion)
+  - [12.2 Validadores de elemento individual](#122-validadores-de-elemento-individual)
+  - [12.3 Mensajes de error para validadores de array](#123-mensajes-de-error-para-validadores-de-array)
+- [13. Gestion de estados de formulario](#13-gestion-de-estados-de-formulario)
+  - [13.1 FormStateService](#131-formstateservice)
+  - [13.2 Mostrar errores solo despues de touched/dirty](#132-mostrar-errores-solo-despues-de-toucheddirty)
+  - [13.3 Deshabilitar submit si formulario invalido](#133-deshabilitar-submit-si-formulario-invalido)
+  - [13.4 Loading states durante validacion asincrona](#134-loading-states-durante-validacion-asincrona)
+  - [13.5 Feedback visual de validacion](#135-feedback-visual-de-validacion)
+  - [13.6 Estilos CSS para feedback visual](#136-estilos-css-para-feedback-visual)
+- [14. Gestion de FormArray con FormStateService](#14-gestion-de-formarray-con-formstateservice)
+  - [14.1 Metodos especificos para FormArray](#141-metodos-especificos-para-formarray)
+  - [14.2 Ejemplo completo de FormArray con validacion](#142-ejemplo-completo-de-formarray-con-validacion)
+- [15. Catalogo actualizado de validadores](#15-catalogo-actualizado-de-validadores)
+  - [15.1 Ubicacion de archivos](#151-ubicacion-de-archivos)
+  - [15.2 Validadores de Array](#152-validadores-de-array)
+  - [15.3 Servicios relacionados](#153-servicios-relacionados)
+- [16. Componente de demostracion](#16-componente-de-demostracion)
 
 ---
 
@@ -1461,3 +1480,667 @@ export class MyFormComponent {
 - ✅ FormArray para colecciones dinámicas de controles
 - ✅ Validación asíncrona con AsyncValidatorFn
 - ✅ Integración con observables y debounceTime para optimización
+
+---
+
+## 12. Validacion de elementos de array
+
+### 12.1 Validadores de coleccion
+
+Los validadores de coleccion se aplican al FormArray completo y validan propiedades de la coleccion en su conjunto.
+
+**Ubicacion:** `frontend/src/app/validators/array-item.validators.ts`
+
+#### minArrayLength
+
+Valida que el FormArray tenga un numero minimo de elementos.
+
+```typescript
+import { minArrayLength } from '@app/validators';
+
+// Al menos 1 direccion requerida
+addresses: this.fb.array(
+  [this.createAddressGroup()],
+  [minArrayLength(1)]
+)
+
+// Error generado: { minArrayLength: { required: 1, actual: 0 } }
+```
+
+#### maxArrayLength
+
+Valida que el FormArray no exceda un numero maximo de elementos.
+
+```typescript
+import { maxArrayLength } from '@app/validators';
+
+// Maximo 5 telefonos
+phones: this.fb.array([], [maxArrayLength(5)])
+
+// Error generado: { maxArrayLength: { max: 5, actual: 6 } }
+```
+
+#### arrayLengthRange
+
+Valida que el FormArray tenga entre min y max elementos.
+
+```typescript
+import { arrayLengthRange } from '@app/validators';
+
+// Entre 1 y 3 direcciones
+addresses: this.fb.array([], [arrayLengthRange(1, 3)])
+```
+
+#### uniqueItems
+
+Valida que no haya elementos duplicados en el array.
+
+```typescript
+import { uniqueItems } from '@app/validators';
+
+// Telefonos unicos (FormArray de FormControl)
+phones: this.fb.array([], [uniqueItems()])
+
+// Emails unicos dentro de FormGroups
+contacts: this.fb.array([], [uniqueItems('email')])
+```
+
+#### atLeastOneValidItem
+
+Valida que al menos un elemento del array tenga un valor valido.
+
+```typescript
+import { atLeastOneValidItem } from '@app/validators';
+
+genres: this.fb.array([
+  this.fb.control(''),
+  this.fb.control('')
+], [atLeastOneValidItem()])
+```
+
+### 12.2 Validadores de elemento individual
+
+Los validadores de elemento se aplican a cada FormGroup dentro del FormArray.
+
+#### completeAddress
+
+Valida que un FormGroup de direccion tenga todos los campos requeridos.
+
+```typescript
+import { completeAddress } from '@app/validators';
+
+private createAddressGroup(): FormGroup {
+  return this.fb.group({
+    street: ['', Validators.required],
+    city: ['', Validators.required],
+    postalCode: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]]
+  }, { validators: completeAddress() });
+}
+
+// Error: { completeAddress: { missingFields: ['calle', 'ciudad'], message: 'Faltan: calle, ciudad' } }
+```
+
+#### validInvoiceItem
+
+Valida que un item de factura tenga descripcion, cantidad y precio validos.
+
+```typescript
+import { validInvoiceItem } from '@app/validators';
+
+private createInvoiceItem(): FormGroup {
+  return this.fb.group({
+    description: ['', Validators.required],
+    quantity: [1, [Validators.required, Validators.min(1)]],
+    price: [0, [Validators.required, Validators.min(0)]]
+  }, { validators: validInvoiceItem() });
+}
+```
+
+#### validContact
+
+Valida que un contacto tenga nombre y al menos un metodo de contacto (telefono o email).
+
+```typescript
+import { validContact } from '@app/validators';
+
+private createContactGroup(): FormGroup {
+  return this.fb.group({
+    name: ['', Validators.required],
+    phone: [''],
+    email: ['', Validators.email]
+  }, { validators: validContact() });
+}
+
+// Error: { missingContactMethod: { message: 'Se requiere telefono o email' } }
+```
+
+### 12.3 Mensajes de error para validadores de array
+
+```typescript
+import { getArrayValidatorErrorMessage } from '@app/validators';
+
+// En el componente
+getArrayError(array: FormArray): string {
+  if (!array.errors) return '';
+
+  const errorKey = Object.keys(array.errors)[0];
+  return getArrayValidatorErrorMessage(errorKey, array.errors[errorKey]);
+}
+
+// En el template
+@if (addressesArray.errors && addressesArray.touched) {
+  <p class="error">{{ getArrayError(addressesArray) }}</p>
+}
+```
+
+---
+
+## 13. Gestion de estados de formulario
+
+### 13.1 FormStateService
+
+Servicio centralizado para gestionar estados de validacion, interaccion y feedback visual.
+
+**Ubicacion:** `frontend/src/app/services/form-state.ts`
+
+#### Inyeccion del servicio
+
+```typescript
+import { FormStateService } from '@app/services/form-state';
+
+export class MyComponent {
+  formState = inject(FormStateService);
+
+  myForm: FormGroup;
+}
+```
+
+### 13.2 Mostrar errores solo despues de touched/dirty
+
+Los errores solo deben mostrarse cuando el usuario ha interactuado con el campo.
+
+#### Metodo shouldShowErrors
+
+```typescript
+/**
+ * Determina si se deben mostrar errores para un control
+ *
+ * LOGICA:
+ * Los errores solo se muestran cuando:
+ * 1. El control tiene errores (invalid)
+ * 2. El usuario ha interactuado (touched) O ha modificado el valor (dirty)
+ */
+shouldShowErrors(control: AbstractControl | null): boolean {
+  if (!control) return false;
+  return control.invalid && (control.touched || control.dirty);
+}
+```
+
+#### Uso en el componente
+
+```typescript
+// En el componente
+shouldShowError(controlName: string): boolean {
+  const control = this.myForm.get(controlName);
+  return this.formState.shouldShowErrors(control);
+}
+
+// Combinado con estado de submit
+shouldShowErrorCombined(control: FormControl): boolean {
+  return this.formState.shouldShowErrorsCombined(control, this.formSubmitted());
+}
+```
+
+#### Uso en el template
+
+```html
+<!-- Solo muestra error si touched o dirty -->
+@if (formState.shouldShowErrors(emailControl)) {
+  <p class="error" role="alert">
+    @if (emailControl.hasError('required')) {
+      El email es requerido
+    }
+  </p>
+}
+
+<!-- Muestra error si touched, dirty O si se intento submit -->
+@if (shouldShowErrorCombined(emailControl)) {
+  <p class="error" role="alert">...</p>
+}
+```
+
+### 13.3 Deshabilitar submit si formulario invalido
+
+#### Metodo isSubmitDisabled
+
+```typescript
+/**
+ * Determina si el boton de submit debe estar deshabilitado
+ *
+ * LOGICA:
+ * El submit se deshabilita si:
+ * 1. El formulario es invalido
+ * 2. Hay validaciones asincronas pendientes (pending)
+ * 3. Se esta procesando un envio (isSubmitting)
+ */
+isSubmitDisabled(form: FormGroup, isSubmitting: boolean = false): boolean {
+  return form.invalid || form.pending || isSubmitting;
+}
+```
+
+#### Uso en el template
+
+```html
+<button
+  type="submit"
+  [disabled]="formState.isSubmitDisabled(myForm, isSubmitting())"
+  [attr.aria-busy]="isSubmitting()">
+  @if (isSubmitting()) {
+    <span class="spinner"></span>
+    Guardando...
+  } @else {
+    Guardar
+  }
+</button>
+```
+
+### 13.4 Loading states durante validacion asincrona
+
+#### Detectar estado pending
+
+```typescript
+/**
+ * Verifica si un control tiene validacion asincrona pendiente
+ */
+isValidationPending(control: AbstractControl | null): boolean {
+  if (!control) return false;
+  return control.status === 'PENDING';
+}
+```
+
+#### Template con indicador de carga
+
+```html
+<div class="form-field">
+  <input
+    type="email"
+    formControlName="email"
+    [class.input--pending]="emailControl.status === 'PENDING'" />
+
+  <!-- Indicador de validacion asincrona -->
+  @if (emailControl.status === 'PENDING') {
+    <span class="loading-indicator" aria-live="polite">
+      <span class="spinner spinner--small"></span>
+      Verificando disponibilidad...
+    </span>
+  }
+
+  <!-- Indicador de exito (solo si valido y no pending) -->
+  @if (emailControl.valid && emailControl.touched && emailControl.status !== 'PENDING') {
+    <span class="success-icon" aria-label="Valido">&#10003;</span>
+  }
+</div>
+```
+
+### 13.5 Feedback visual de validacion
+
+#### Metodo getValidationClasses
+
+```typescript
+/**
+ * Obtiene las clases CSS para feedback visual de un control
+ */
+getValidationClasses(control: AbstractControl | null, baseClass: string): Record<string, boolean> {
+  if (!control) return {};
+
+  const showError = this.shouldShowErrors(control);
+  const showSuccess = this.isValidAndTouched(control);
+  const isPending = this.isValidationPending(control);
+
+  return {
+    [`${baseClass}--error`]: showError,
+    [`${baseClass}--success`]: showSuccess && !isPending,
+    [`${baseClass}--pending`]: isPending,
+    [`${baseClass}--touched`]: control.touched,
+    [`${baseClass}--dirty`]: control.dirty
+  };
+}
+```
+
+#### Metodo getFeedbackState
+
+```typescript
+/**
+ * Obtiene el estado de feedback para un control
+ * @returns 'error' | 'success' | 'pending' | 'neutral'
+ */
+getFeedbackState(control: AbstractControl | null): 'error' | 'success' | 'pending' | 'neutral' {
+  if (!control) return 'neutral';
+
+  if (this.isValidationPending(control)) return 'pending';
+  if (this.shouldShowErrors(control)) return 'error';
+  if (this.isValidAndTouched(control)) return 'success';
+  return 'neutral';
+}
+```
+
+#### Uso en el template
+
+```html
+<!-- Usando ngClass con getValidationClasses -->
+<input
+  type="email"
+  formControlName="email"
+  class="form-input"
+  [ngClass]="formState.getValidationClasses(emailControl, 'form-input')" />
+
+<!-- Usando getFeedbackState para iconos -->
+@switch (formState.getFeedbackState(emailControl)) {
+  @case ('pending') {
+    <span class="spinner"></span>
+  }
+  @case ('error') {
+    <span class="icon-error">!</span>
+  }
+  @case ('success') {
+    <span class="icon-success">&#10003;</span>
+  }
+}
+```
+
+### 13.6 Estilos CSS para feedback visual
+
+```scss
+// Variables de colores
+$color-success: #28a745;
+$color-error: #dc3545;
+$color-pending: #6c757d;
+$transition: 0.15s ease-in-out;
+
+.form-input {
+  border: 2px solid #ced4da;
+  transition: border-color $transition, box-shadow $transition;
+
+  &:focus {
+    border-color: #3d5a80;
+    box-shadow: 0 0 0 3px rgba(#3d5a80, 0.1);
+  }
+
+  // Estado de error
+  &--error {
+    border-color: $color-error;
+    background-color: rgba($color-error, 0.02);
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($color-error, 0.1);
+    }
+  }
+
+  // Estado de exito
+  &--success {
+    border-color: $color-success;
+    background-color: rgba($color-success, 0.02);
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($color-success, 0.1);
+    }
+  }
+
+  // Estado de validacion pendiente
+  &--pending {
+    border-color: $color-pending;
+    background-color: rgba($color-pending, 0.02);
+  }
+}
+
+// Mensajes de error
+.form-error {
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8125rem;
+  color: $color-error;
+  background-color: rgba($color-error, 0.05);
+  border-left: 3px solid $color-error;
+}
+
+// Indicador de carga
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: $color-pending;
+}
+
+// Icono de exito
+.success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: $color-success;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.75rem;
+}
+```
+
+---
+
+## 14. Gestion de FormArray con FormStateService
+
+### 14.1 Metodos especificos para FormArray
+
+#### shouldShowArrayItemErrors
+
+```typescript
+/**
+ * Verifica si un elemento de FormArray debe mostrar errores
+ */
+shouldShowArrayItemErrors(formArray: FormArray, index: number): boolean {
+  const control = formArray.at(index);
+  return this.shouldShowErrors(control);
+}
+```
+
+#### getArrayItemsState
+
+```typescript
+/**
+ * Obtiene el estado de todos los elementos de un FormArray
+ */
+getArrayItemsState(formArray: FormArray): ArrayItemState[] {
+  return formArray.controls.map((control, index) => ({
+    index,
+    valid: control.valid,
+    invalid: control.invalid,
+    touched: control.touched,
+    dirty: control.dirty,
+    pending: control.pending,
+    showError: this.shouldShowErrors(control),
+    errors: control.errors
+  }));
+}
+```
+
+#### markArrayAsTouched
+
+```typescript
+/**
+ * Marca todos los elementos de un FormArray como touched
+ * Util para mostrar todos los errores al intentar submit
+ */
+markArrayAsTouched(formArray: FormArray): void {
+  formArray.controls.forEach(control => {
+    control.markAsTouched();
+    if (control instanceof FormGroup) {
+      Object.values(control.controls).forEach(c => c.markAsTouched());
+    }
+  });
+}
+```
+
+### 14.2 Ejemplo completo de FormArray con validacion
+
+```typescript
+@Component({
+  selector: 'app-addresses-form',
+  template: `
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Error a nivel de array -->
+      @if (addressesArray.errors && addressesArray.touched) {
+        <p class="error">{{ getArrayError(addressesArray) }}</p>
+      }
+
+      <div formArrayName="addresses">
+        @for (address of addressesArray.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="address-item">
+            <span>Direccion {{ i + 1 }}</span>
+
+            <input formControlName="street" placeholder="Calle"
+              [class.input--error]="shouldShowError(getControl(i, 'street'))" />
+
+            @if (shouldShowError(getControl(i, 'street'))) {
+              <span class="error">La calle es requerida</span>
+            }
+
+            <input formControlName="city" placeholder="Ciudad"
+              [class.input--error]="shouldShowError(getControl(i, 'city'))" />
+
+            <button type="button" (click)="removeAddress(i)"
+              [disabled]="addressesArray.length <= 1">
+              Eliminar
+            </button>
+          </div>
+        }
+      </div>
+
+      <button type="button" (click)="addAddress()"
+        [disabled]="addressesArray.length >= 3">
+        + Agregar direccion
+      </button>
+
+      <button type="submit"
+        [disabled]="formState.isSubmitDisabled(form, isSubmitting())">
+        Guardar
+      </button>
+    </form>
+  `
+})
+export class AddressesFormComponent {
+  formState = inject(FormStateService);
+  private fb = inject(FormBuilder);
+
+  form = this.fb.group({
+    addresses: this.fb.array(
+      [this.createAddress()],
+      [minArrayLength(1), maxArrayLength(3)]
+    )
+  });
+
+  formSubmitted = signal(false);
+  isSubmitting = signal(false);
+
+  get addressesArray(): FormArray {
+    return this.form.get('addresses') as FormArray;
+  }
+
+  private createAddress(): FormGroup {
+    return this.fb.group({
+      street: ['', Validators.required],
+      city: ['', Validators.required]
+    }, { validators: completeAddress() });
+  }
+
+  getControl(index: number, field: string): FormControl {
+    return this.addressesArray.at(index).get(field) as FormControl;
+  }
+
+  shouldShowError(control: FormControl): boolean {
+    return this.formState.shouldShowErrorsCombined(control, this.formSubmitted());
+  }
+
+  addAddress(): void {
+    this.addressesArray.push(this.createAddress());
+  }
+
+  removeAddress(index: number): void {
+    this.addressesArray.removeAt(index);
+  }
+
+  onSubmit(): void {
+    this.formSubmitted.set(true);
+    this.form.markAllAsTouched();
+    this.formState.markArrayAsTouched(this.addressesArray);
+
+    if (this.form.valid) {
+      this.isSubmitting.set(true);
+      // Logica de envio...
+    }
+  }
+}
+```
+
+---
+
+## 15. Catalogo actualizado de validadores
+
+### 15.1 Ubicacion de archivos
+
+| Archivo | Descripcion |
+|---------|-------------|
+| `validators/index.ts` | Indice de exportaciones |
+| `validators/password-strength.validator.ts` | Validador de fuerza de contrasena |
+| `validators/password-match.validator.ts` | Validador de coincidencia de contrasenas |
+| `validators/spanish-formats.validator.ts` | NIF, telefono, codigo postal |
+| `validators/cross-field.validators.ts` | Validadores de grupo |
+| `validators/async.validators.ts` | Validadores asincronos |
+| `validators/array-item.validators.ts` | Validadores de elementos de array |
+
+### 15.2 Validadores de Array
+
+| Validador | Tipo | Descripcion |
+|-----------|------|-------------|
+| `minArrayLength(n)` | Coleccion | Minimo n elementos |
+| `maxArrayLength(n)` | Coleccion | Maximo n elementos |
+| `arrayLengthRange(min, max)` | Coleccion | Entre min y max elementos |
+| `atLeastOneValidItem()` | Coleccion | Al menos un elemento valido |
+| `allItemsValid()` | Coleccion | Todos los elementos validos |
+| `uniqueItems(field?)` | Coleccion | Sin elementos duplicados |
+| `completeAddress()` | Elemento | Direccion con todos los campos |
+| `validInvoiceItem()` | Elemento | Item de factura valido |
+| `validContact()` | Elemento | Contacto con nombre y medio de contacto |
+
+### 15.3 Servicios relacionados
+
+| Servicio | Descripcion |
+|----------|-------------|
+| `FormStateService` | Gestion de estados de formulario |
+| `AsyncValidatorsService` | Validadores asincronos inyectables |
+| `ValidationService` | Validacion de campos individuales |
+| `LoadingService` | Estados de carga global y local |
+
+---
+
+## 16. Componente de demostracion
+
+Se ha implementado un componente de demostracion que integra todos los conceptos:
+
+**Ubicacion:** `frontend/src/app/components/shared/dynamic-form-demo/`
+
+**Archivos:**
+- `dynamic-form-demo.ts` - Logica del componente
+- `dynamic-form-demo.html` - Template con todos los patrones
+- `dynamic-form-demo.scss` - Estilos con feedback visual
+
+**Caracteristicas demostradas:**
+- FormArray de direcciones con validacion individual
+- FormArray de telefonos con validacion de formato
+- FormArray de contactos de emergencia con validacion de grupo
+- Validacion asincrona de email y username
+- Feedback visual completo (error, success, pending)
+- Deshabilitar submit cuando invalido o pending
+- Mostrar errores solo despues de interaccion
+
+

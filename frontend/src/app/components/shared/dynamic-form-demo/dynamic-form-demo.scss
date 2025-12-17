@@ -1,0 +1,461 @@
+/**
+ * DynamicFormDemo Component Styles
+ *
+ * Estilos para el componente de demostracion de FormArray
+ * con feedback visual de validacion
+ */
+
+// Variables locales
+$color-primary: #3d5a80;
+$color-primary-light: #4a6fa5;
+$color-success: #28a745;
+$color-error: #dc3545;
+$color-warning: #ffc107;
+$color-pending: #6c757d;
+$color-border: #ced4da;
+$color-bg-light: #f8f9fa;
+$color-text: #333;
+$color-text-muted: #6c757d;
+
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+
+$border-radius: 0.375rem;
+$transition-fast: 0.15s ease-in-out;
+
+// =============================================================================
+// FORMULARIO PRINCIPAL
+// =============================================================================
+
+.dynamic-form {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+
+  &__fieldset {
+    border: 1px solid $color-border;
+    border-radius: $border-radius;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    background-color: white;
+  }
+
+  &__legend {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $color-primary;
+    padding: 0 $spacing-sm;
+  }
+
+  &__legend-info {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: $color-text-muted;
+  }
+
+  &__empty-message {
+    color: $color-text-muted;
+    font-style: italic;
+    padding: $spacing-md;
+    text-align: center;
+    background-color: $color-bg-light;
+    border-radius: $border-radius;
+  }
+}
+
+// =============================================================================
+// CAMPOS DE FORMULARIO
+// =============================================================================
+
+.form-field {
+  margin-bottom: $spacing-md;
+
+  &__label {
+    display: block;
+    margin-bottom: $spacing-xs;
+    font-weight: 500;
+    color: $color-text;
+    font-size: 0.875rem;
+  }
+
+  &__required {
+    color: $color-error;
+    margin-left: 2px;
+  }
+
+  &__input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+
+  &__input {
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    font-size: 1rem;
+    border: 2px solid $color-border;
+    border-radius: $border-radius;
+    transition: border-color $transition-fast, box-shadow $transition-fast;
+    background-color: white;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    }
+
+    &:disabled {
+      background-color: $color-bg-light;
+      cursor: not-allowed;
+    }
+
+    // Estados de validacion
+    &--error {
+      border-color: $color-error;
+      background-color: rgba($color-error, 0.02);
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($color-error, 0.1);
+      }
+    }
+
+    &--success {
+      border-color: $color-success;
+      background-color: rgba($color-success, 0.02);
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($color-success, 0.1);
+      }
+    }
+
+    &--pending {
+      border-color: $color-pending;
+      background-color: rgba($color-pending, 0.02);
+    }
+  }
+
+  &__inline-group {
+    display: flex;
+    gap: $spacing-sm;
+    align-items: flex-start;
+  }
+
+  // Indicador de carga
+  &__loading {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: 0.75rem;
+    color: $color-pending;
+    white-space: nowrap;
+  }
+
+  // Indicador de exito
+  &__success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: $color-success;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  // Mensajes de error
+  &__error {
+    margin: $spacing-xs 0 0;
+    padding: $spacing-xs $spacing-sm;
+    font-size: 0.8125rem;
+    color: $color-error;
+    background-color: rgba($color-error, 0.05);
+    border-left: 3px solid $color-error;
+    border-radius: 0 $border-radius $border-radius 0;
+
+    &--array {
+      margin-bottom: $spacing-md;
+    }
+
+    &--group {
+      margin-top: $spacing-sm;
+      border-left-color: $color-warning;
+      color: darken($color-warning, 30%);
+      background-color: rgba($color-warning, 0.1);
+    }
+  }
+}
+
+// =============================================================================
+// FORMARRAY
+// =============================================================================
+
+.dynamic-form__array {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  &--inline {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.dynamic-form__array-item {
+  border: 1px solid $color-border;
+  border-radius: $border-radius;
+  background-color: $color-bg-light;
+  overflow: hidden;
+
+  &--inline {
+    flex: 1 1 200px;
+    max-width: 280px;
+    padding: $spacing-md;
+    border: none;
+    background: transparent;
+  }
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-sm $spacing-md;
+    background-color: rgba($color-primary, 0.05);
+    border-bottom: 1px solid $color-border;
+  }
+
+  &-title {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: $color-primary;
+  }
+
+  &-content {
+    padding: $spacing-md;
+    background-color: white;
+
+    .form-field:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Botones
+.dynamic-form__add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  margin-top: $spacing-sm;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $color-primary;
+  background-color: transparent;
+  border: 2px dashed $color-primary;
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: rgba($color-primary, 0.05);
+    border-style: solid;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.dynamic-form__remove-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: $color-error;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: rgba($color-error, 0.1);
+    border-color: $color-error;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  &--inline {
+    flex-shrink: 0;
+  }
+}
+
+// =============================================================================
+// RESULTADO Y ACCIONES
+// =============================================================================
+
+.dynamic-form__result {
+  padding: $spacing-md;
+  margin-bottom: $spacing-lg;
+  border-radius: $border-radius;
+  text-align: center;
+  font-weight: 500;
+
+  &--success {
+    background-color: rgba($color-success, 0.1);
+    color: darken($color-success, 10%);
+    border: 1px solid $color-success;
+  }
+
+  &--error {
+    background-color: rgba($color-error, 0.1);
+    color: $color-error;
+    border: 1px solid $color-error;
+  }
+}
+
+.dynamic-form__actions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: flex-end;
+  padding-top: $spacing-md;
+  border-top: 1px solid $color-border;
+}
+
+.dynamic-form__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-lg;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background-color: $color-primary;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: $color-primary-light;
+    }
+  }
+
+  &--secondary {
+    background-color: transparent;
+    color: $color-text-muted;
+    border: 1px solid $color-border;
+
+    &:hover:not(:disabled) {
+      background-color: $color-bg-light;
+      color: $color-text;
+    }
+  }
+}
+
+// =============================================================================
+// SPINNER
+// =============================================================================
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-rotate 0.75s linear infinite;
+
+  &--small {
+    width: 14px;
+    height: 14px;
+    border-width: 2px;
+  }
+
+  &--white {
+    border-color: white;
+    border-right-color: transparent;
+  }
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// =============================================================================
+// DEBUG
+// =============================================================================
+
+.dynamic-form__debug {
+  margin-top: $spacing-xl;
+  padding: $spacing-md;
+  background-color: $color-bg-light;
+  border: 1px solid $color-border;
+  border-radius: $border-radius;
+  font-size: 0.75rem;
+
+  summary {
+    cursor: pointer;
+    font-weight: 500;
+    color: $color-text-muted;
+  }
+
+  pre {
+    margin: $spacing-sm 0 0;
+    font-family: monospace;
+    white-space: pre-wrap;
+  }
+}
+
+// =============================================================================
+// RESPONSIVE
+// =============================================================================
+
+@media (max-width: 600px) {
+  .dynamic-form {
+    padding: $spacing-md;
+
+    &__fieldset {
+      padding: $spacing-md;
+    }
+
+    &__actions {
+      flex-direction: column;
+    }
+
+    &__btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .dynamic-form__array--inline {
+    flex-direction: column;
+  }
+
+  .dynamic-form__array-item--inline {
+    max-width: none;
+  }
+}

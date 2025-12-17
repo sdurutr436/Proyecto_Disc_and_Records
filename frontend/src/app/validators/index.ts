@@ -36,3 +36,20 @@ export {
   usernameAvailable,
   getAsyncErrorMessage
 } from './async.validators';
+
+// Validadores de Elementos de Array (FormArray)
+export {
+  // Validadores de colección
+  minArrayLength,
+  maxArrayLength,
+  arrayLengthRange,
+  atLeastOneValidItem,
+  allItemsValid,
+  uniqueItems,
+  // Validadores de elemento individual
+  completeAddress,
+  validInvoiceItem,
+  validContact,
+  // Helper de mensajes
+  getArrayValidatorErrorMessage
+} from './array-item.validators';

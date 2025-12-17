@@ -1,0 +1,410 @@
+<form
+  [formGroup]="profileForm"
+  (ngSubmit)="onSubmit()"
+  class="dynamic-form"
+  novalidate>
+
+  <!-- ===================================================================== -->
+  <!-- SECCION: DATOS BASICOS CON VALIDACION ASINCRONA                       -->
+  <!-- ===================================================================== -->
+  <fieldset class="dynamic-form__fieldset">
+    <legend class="dynamic-form__legend">Datos de cuenta</legend>
+
+    <!-- Email con validacion asincrona -->
+    <div class="form-field">
+      <label for="email" class="form-field__label">
+        Email
+        <span class="form-field__required">*</span>
+      </label>
+      <div class="form-field__input-wrapper">
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-field__input"
+          [ngClass]="getInputClasses(emailControl)"
+          placeholder="tu@email.com"
+          [attr.aria-invalid]="shouldShowError(emailControl)"
+          [attr.aria-describedby]="shouldShowError(emailControl) ? 'email-error' : null" />
+
+        <!-- Indicador de validacion asincrona -->
+        @if (emailControl.status === 'PENDING') {
+          <span class="form-field__loading" aria-live="polite">
+            <span class="spinner spinner--small"></span>
+            Verificando...
+          </span>
+        }
+
+        <!-- Indicador de exito -->
+        @if (emailControl.valid && emailControl.touched && emailControl.status !== 'PENDING') {
+          <span class="form-field__success-icon" aria-label="Valido">&#10003;</span>
+        }
+      </div>
+
+      <!-- Mensajes de error -->
+      @if (shouldShowError(emailControl)) {
+        <p id="email-error" class="form-field__error" role="alert">
+          @if (emailControl.hasError('required')) {
+            El email es requerido
+          } @else if (emailControl.hasError('email')) {
+            Formato de email invalido
+          } @else if (emailControl.hasError('emailTaken')) {
+            Este email ya esta registrado
+          }
+        </p>
+      }
+    </div>
+
+    <!-- Username con validacion asincrona -->
+    <div class="form-field">
+      <label for="username" class="form-field__label">
+        Nombre de usuario
+        <span class="form-field__required">*</span>
+      </label>
+      <div class="form-field__input-wrapper">
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          class="form-field__input"
+          [ngClass]="getInputClasses(usernameControl)"
+          placeholder="mi_usuario"
+          [attr.aria-invalid]="shouldShowError(usernameControl)" />
+
+        @if (usernameControl.status === 'PENDING') {
+          <span class="form-field__loading" aria-live="polite">
+            <span class="spinner spinner--small"></span>
+            Verificando...
+          </span>
+        }
+
+        @if (usernameControl.valid && usernameControl.touched && usernameControl.status !== 'PENDING') {
+          <span class="form-field__success-icon" aria-label="Valido">&#10003;</span>
+        }
+      </div>
+
+      @if (shouldShowError(usernameControl)) {
+        <p class="form-field__error" role="alert">
+          @if (usernameControl.hasError('required')) {
+            El nombre de usuario es requerido
+          } @else if (usernameControl.hasError('minlength')) {
+            Minimo 3 caracteres
+          } @else if (usernameControl.hasError('maxlength')) {
+            Maximo 20 caracteres
+          } @else if (usernameControl.hasError('usernameTaken')) {
+            Este nombre de usuario no esta disponible
+          }
+        </p>
+      }
+    </div>
+  </fieldset>
+
+  <!-- ===================================================================== -->
+  <!-- SECCION: LISTA DE DIRECCIONES (FormArray con FormGroup)               -->
+  <!-- ===================================================================== -->
+  <fieldset class="dynamic-form__fieldset">
+    <legend class="dynamic-form__legend">
+      Direcciones
+      <span class="dynamic-form__legend-info">(1-3 direcciones)</span>
+    </legend>
+
+    <!-- Error a nivel de array -->
+    @if (addressesArray.errors && addressesArray.touched) {
+      <p class="form-field__error form-field__error--array" role="alert">
+        {{ getArrayError(addressesArray) }}
+      </p>
+    }
+
+    <div formArrayName="addresses" class="dynamic-form__array">
+      @for (address of addressesArray.controls; track $index; let i = $index) {
+        <div class="dynamic-form__array-item" [formGroupName]="i">
+          <div class="dynamic-form__array-item-header">
+            <span class="dynamic-form__array-item-title">Direccion {{ i + 1 }}</span>
+            <button
+              type="button"
+              class="dynamic-form__remove-btn"
+              (click)="removeAddress(i)"
+              [disabled]="addressesArray.length <= 1"
+              aria-label="Eliminar direccion">
+              &times;
+            </button>
+          </div>
+
+          <div class="dynamic-form__array-item-content">
+            <!-- Calle -->
+            <div class="form-field">
+              <label [for]="'street-' + i" class="form-field__label">Calle</label>
+              <input
+                [id]="'street-' + i"
+                type="text"
+                formControlName="street"
+                class="form-field__input"
+                [ngClass]="getInputClasses(getAddressControl(i, 'street'))"
+                placeholder="Nombre de la calle, numero..." />
+              @if (shouldShowError(getAddressControl(i, 'street'))) {
+                <p class="form-field__error" role="alert">La calle es requerida</p>
+              }
+            </div>
+
+            <!-- Ciudad -->
+            <div class="form-field">
+              <label [for]="'city-' + i" class="form-field__label">Ciudad</label>
+              <input
+                [id]="'city-' + i"
+                type="text"
+                formControlName="city"
+                class="form-field__input"
+                [ngClass]="getInputClasses(getAddressControl(i, 'city'))"
+                placeholder="Ciudad" />
+              @if (shouldShowError(getAddressControl(i, 'city'))) {
+                <p class="form-field__error" role="alert">La ciudad es requerida</p>
+              }
+            </div>
+
+            <!-- Codigo postal -->
+            <div class="form-field">
+              <label [for]="'postalCode-' + i" class="form-field__label">Codigo postal</label>
+              <input
+                [id]="'postalCode-' + i"
+                type="text"
+                formControlName="postalCode"
+                class="form-field__input"
+                [ngClass]="getInputClasses(getAddressControl(i, 'postalCode'))"
+                placeholder="12345"
+                maxlength="5" />
+              @if (shouldShowError(getAddressControl(i, 'postalCode'))) {
+                <p class="form-field__error" role="alert">
+                  @if (getAddressControl(i, 'postalCode').hasError('required')) {
+                    El codigo postal es requerido
+                  } @else if (getAddressControl(i, 'postalCode').hasError('pattern')) {
+                    Formato: 5 digitos
+                  }
+                </p>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <button
+      type="button"
+      class="dynamic-form__add-btn"
+      (click)="addAddress()"
+      [disabled]="addressesArray.length >= 3">
+      + Agregar direccion
+    </button>
+  </fieldset>
+
+  <!-- ===================================================================== -->
+  <!-- SECCION: LISTA DE TELEFONOS (FormArray de FormControl)                -->
+  <!-- ===================================================================== -->
+  <fieldset class="dynamic-form__fieldset">
+    <legend class="dynamic-form__legend">
+      Telefonos
+      <span class="dynamic-form__legend-info">(sin duplicados)</span>
+    </legend>
+
+    @if (phonesArray.errors && phonesArray.touched) {
+      <p class="form-field__error form-field__error--array" role="alert">
+        {{ getArrayError(phonesArray) }}
+      </p>
+    }
+
+    <div formArrayName="phones" class="dynamic-form__array dynamic-form__array--inline">
+      @for (phone of phonesArray.controls; track $index; let i = $index) {
+        <div class="dynamic-form__array-item dynamic-form__array-item--inline">
+          <div class="form-field">
+            <label [for]="'phone-' + i" class="form-field__label">
+              Telefono {{ i + 1 }}
+            </label>
+            <div class="form-field__inline-group">
+              <input
+                [id]="'phone-' + i"
+                type="tel"
+                [formControlName]="i"
+                class="form-field__input"
+                [ngClass]="getInputClasses(getPhoneControl(i))"
+                placeholder="612345678"
+                maxlength="9" />
+              <button
+                type="button"
+                class="dynamic-form__remove-btn dynamic-form__remove-btn--inline"
+                (click)="removePhone(i)"
+                [disabled]="phonesArray.length <= 1"
+                aria-label="Eliminar telefono">
+                &times;
+              </button>
+            </div>
+            @if (shouldShowError(getPhoneControl(i))) {
+              <p class="form-field__error" role="alert">
+                @if (getPhoneControl(i).hasError('required')) {
+                  El telefono es requerido
+                } @else if (getPhoneControl(i).hasError('invalidTelefono')) {
+                  Formato: 6XX o 7XX seguido de 6 digitos
+                }
+              </p>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <button
+      type="button"
+      class="dynamic-form__add-btn"
+      (click)="addPhone()">
+      + Agregar telefono
+    </button>
+  </fieldset>
+
+  <!-- ===================================================================== -->
+  <!-- SECCION: CONTACTOS DE EMERGENCIA (FormArray opcional)                 -->
+  <!-- ===================================================================== -->
+  <fieldset class="dynamic-form__fieldset">
+    <legend class="dynamic-form__legend">
+      Contactos de emergencia
+      <span class="dynamic-form__legend-info">(opcional, max 2)</span>
+    </legend>
+
+    @if (emergencyContactsArray.errors && emergencyContactsArray.touched) {
+      <p class="form-field__error form-field__error--array" role="alert">
+        {{ getArrayError(emergencyContactsArray) }}
+      </p>
+    }
+
+    @if (emergencyContactsArray.length === 0) {
+      <p class="dynamic-form__empty-message">
+        No hay contactos de emergencia. Agrega uno si lo deseas.
+      </p>
+    }
+
+    <div formArrayName="emergencyContacts" class="dynamic-form__array">
+      @for (contact of emergencyContactsArray.controls; track $index; let i = $index) {
+        <div class="dynamic-form__array-item" [formGroupName]="i">
+          <div class="dynamic-form__array-item-header">
+            <span class="dynamic-form__array-item-title">Contacto {{ i + 1 }}</span>
+            <button
+              type="button"
+              class="dynamic-form__remove-btn"
+              (click)="removeEmergencyContact(i)"
+              aria-label="Eliminar contacto">
+              &times;
+            </button>
+          </div>
+
+          <div class="dynamic-form__array-item-content">
+            <!-- Nombre -->
+            <div class="form-field">
+              <label [for]="'contact-name-' + i" class="form-field__label">
+                Nombre
+                <span class="form-field__required">*</span>
+              </label>
+              <input
+                [id]="'contact-name-' + i"
+                type="text"
+                formControlName="name"
+                class="form-field__input"
+                [ngClass]="getInputClasses(getContactControl(i, 'name'))"
+                placeholder="Nombre del contacto" />
+              @if (shouldShowError(getContactControl(i, 'name'))) {
+                <p class="form-field__error" role="alert">El nombre es requerido</p>
+              }
+            </div>
+
+            <!-- Telefono -->
+            <div class="form-field">
+              <label [for]="'contact-phone-' + i" class="form-field__label">Telefono</label>
+              <input
+                [id]="'contact-phone-' + i"
+                type="tel"
+                formControlName="phone"
+                class="form-field__input"
+                [ngClass]="getInputClasses(getContactControl(i, 'phone'))"
+                placeholder="612345678" />
+              @if (shouldShowError(getContactControl(i, 'phone'))) {
+                <p class="form-field__error" role="alert">Formato: 6XX o 7XX</p>
+              }
+            </div>
+
+            <!-- Email -->
+            <div class="form-field">
+              <label [for]="'contact-email-' + i" class="form-field__label">Email</label>
+              <input
+                [id]="'contact-email-' + i"
+                type="email"
+                formControlName="email"
+                class="form-field__input"
+                [ngClass]="getInputClasses(getContactControl(i, 'email'))"
+                placeholder="contacto@email.com" />
+              @if (shouldShowError(getContactControl(i, 'email'))) {
+                <p class="form-field__error" role="alert">Formato de email invalido</p>
+              }
+            </div>
+
+            <!-- Error de grupo: requiere telefono o email -->
+            @if (emergencyContactsArray.at(i).hasError('missingContactMethod') &&
+                 emergencyContactsArray.at(i).touched) {
+              <p class="form-field__error form-field__error--group" role="alert">
+                Se requiere al menos un telefono o email
+              </p>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <button
+      type="button"
+      class="dynamic-form__add-btn"
+      (click)="addEmergencyContact()"
+      [disabled]="emergencyContactsArray.length >= 2">
+      + Agregar contacto de emergencia
+    </button>
+  </fieldset>
+
+  <!-- ===================================================================== -->
+  <!-- RESULTADO Y BOTONES                                                   -->
+  <!-- ===================================================================== -->
+  @if (submitResult()) {
+    <div
+      class="dynamic-form__result"
+      [class.dynamic-form__result--success]="submitResult()?.success"
+      [class.dynamic-form__result--error]="!submitResult()?.success"
+      role="alert">
+      {{ submitResult()?.message }}
+    </div>
+  }
+
+  <div class="dynamic-form__actions">
+    <button
+      type="button"
+      class="dynamic-form__btn dynamic-form__btn--secondary"
+      (click)="resetForm()"
+      [disabled]="isSubmitting()">
+      Resetear
+    </button>
+
+    <button
+      type="submit"
+      class="dynamic-form__btn dynamic-form__btn--primary"
+      [disabled]="formState.isSubmitDisabled(profileForm, isSubmitting())"
+      [attr.aria-busy]="isSubmitting()">
+      @if (isSubmitting()) {
+        <span class="spinner spinner--small spinner--white"></span>
+        Guardando...
+      } @else {
+        Guardar perfil
+      }
+    </button>
+  </div>
+
+  <!-- Debug info (solo desarrollo) -->
+  <details class="dynamic-form__debug">
+    <summary>Estado del formulario (debug)</summary>
+    <pre>{{ profileForm.status }}</pre>
+    <pre>Valid: {{ profileForm.valid }}</pre>
+    <pre>Pending: {{ profileForm.pending }}</pre>
+    <pre>Touched: {{ profileForm.touched }}</pre>
+  </details>
+</form>
