@@ -103,12 +103,5 @@
   --vinyl-shadow-layer-2: #{$color-secundario-dark}; // #0A9295 (teal vibrante)
   --vinyl-shadow-layer-3: #{$color-contraste-dark};  // #015F72 (teal profundo)
   --vinyl-shadow-layer-4: #{$color-acentuado-dark};  // #01131B (azul noche)
-
-  /* --- OVERRIDE GLOBAL: Bordes blancos en dark mode --- */
-  /* Esto sobrescribe los bordes hardcodeados de SCSS */
-  *,
-  *::before,
-  *::after {
-    border-color: var(--border-color) !important;
-  }
 }
+

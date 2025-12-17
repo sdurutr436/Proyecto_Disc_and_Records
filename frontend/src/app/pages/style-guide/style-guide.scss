@@ -137,6 +137,38 @@ $header-height-mobile: 60px;
         width: 100%;
       }
     }
+
+    // Fila específica para cards polaroid - mantiene mismo tamaño
+    &--cards-polaroid {
+      justify-content: flex-start;
+
+      .showcase__item--card-polaroid {
+        flex: 0 0 auto;
+        width: auto;
+
+        app-card {
+          display: block;
+          width: 220px;
+          max-width: 220px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        justify-content: center;
+      }
+
+      @media (max-width: 480px) {
+        .showcase__item--card-polaroid {
+          width: 100%;
+          max-width: 100%;
+
+          app-card {
+            width: 100%;
+            max-width: 100%;
+          }
+        }
+      }
+    }
   }
 
   &__column {

@@ -945,8 +945,8 @@
         <!-- Cards Polaroid -->
         <div class="showcase">
           <h3>Cards - Variante Polaroid</h3>
-          <div class="showcase__row">
-            <div class="showcase__item">
+          <div class="showcase__row showcase__row--cards-polaroid">
+            <div class="showcase__item showcase__item--card-polaroid">
               <app-card
                 title="Rumours"
                 subtitle="Fleetwood Mac"
@@ -960,7 +960,7 @@
               <code>Álbum con placeholder</code>
             </div>
 
-            <div class="showcase__item">
+            <div class="showcase__item showcase__item--card-polaroid">
               <app-card
                 title="Bohemian Rhapsody"
                 subtitle="Queen"
@@ -974,7 +974,7 @@
               <code>Canción (circular)</code>
             </div>
 
-            <div class="showcase__item">
+            <div class="showcase__item showcase__item--card-polaroid">
               <app-card
                 title="Hotel California"
                 subtitle="Eagles"
@@ -993,6 +993,9 @@
         <!-- Cards Profile -->
         <div class="showcase">
           <h3>Cards - Variante Profile</h3>
+
+          <!-- Profile Vertical -->
+          <h4 style="margin-bottom: 1rem; font-size: 1.125rem; color: var(--text-secondary);">Layout Vertical</h4>
           <div class="showcase__row">
             <div class="showcase__item">
               <app-card
@@ -1016,10 +1019,45 @@
                 imageSize="large"
                 variant="vinilo"
                 cardType="profile"
+                layout="vertical"
                 [badges]="['Progressive Rock', 'Psychedelic']"
                 [actions]="profileActions.slice(0, 2)">
               </app-card>
               <code>Álbum con badges y acciones</code>
+            </div>
+          </div>
+
+          <!-- Profile Horizontal -->
+          <h4 style="margin: 2rem 0 1rem; font-size: 1.125rem; color: var(--text-secondary);">Layout Horizontal (Responsive)</h4>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-card
+                title="Led Zeppelin IV"
+                subtitle="Led Zeppelin • 1971"
+                imageShape="square"
+                imageSize="large"
+                variant="normal"
+                cardType="profile"
+                layout="horizontal"
+                [badges]="['Hard Rock', 'Blues Rock', 'Heavy Metal']"
+                [actions]="profileActions">
+              </app-card>
+              <code>Card horizontal con múltiples badges y acciones (se vuelve vertical en móvil)</code>
+            </div>
+
+            <div class="showcase__item showcase__item--full">
+              <app-card
+                title="Abbey Road"
+                subtitle="The Beatles • 1969"
+                imageShape="square"
+                imageSize="large"
+                variant="vinilo"
+                cardType="profile"
+                layout="horizontal"
+                [badges]="['Rock', 'Pop Rock']"
+                [actions]="profileActions.slice(0, 2)">
+              </app-card>
+              <code>Card horizontal con efecto vinilo</code>
             </div>
           </div>
         </div>

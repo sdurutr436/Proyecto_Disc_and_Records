@@ -50,7 +50,10 @@
     box-shadow: vars.$sombra-brutal-primario-light;
   }
 
-  @include mix.brutal-hover;
+  &:hover:not(:disabled):not(.form-input__field--error):not(.form-input__field--success) {
+    box-shadow: 2px 2px 0px var(--shadow-color);
+    transform: translate(2px, 2px);
+  }
 }
 
 /* --- Estados del Input --- */
@@ -58,8 +61,14 @@
   border-color: vars.$color-error;
   box-shadow: 4px 4px 0px vars.$color-error;
 
+  &:hover:not(:disabled) {
+    box-shadow: 2px 2px 0px vars.$color-error;
+    transform: translate(2px, 2px);
+  }
+
   &:focus {
     box-shadow: 4px 4px 0px vars.$color-error;
+    transform: none;
   }
 }
 
@@ -67,8 +76,14 @@
   border-color: vars.$color-exito;
   box-shadow: 4px 4px 0px vars.$color-exito;
 
+  &:hover:not(:disabled) {
+    box-shadow: 2px 2px 0px vars.$color-exito;
+    transform: translate(2px, 2px);
+  }
+
   &:focus {
     box-shadow: 4px 4px 0px vars.$color-exito;
+    transform: none;
   }
 }
 

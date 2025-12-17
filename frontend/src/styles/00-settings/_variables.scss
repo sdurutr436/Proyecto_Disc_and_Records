@@ -204,9 +204,9 @@ $sombra-neon-pulso: 0px 0px 5px currentColor, 0px 0px 10px currentColor;
 /* ========================================
    VARIABLES DE BORDES (complemento neobrutalist)
    ======================================== */
-$borde-brutal-thin: 2px solid $color-letra-oscura;
-$borde-brutal-medium: 3px solid $color-letra-oscura;
-$borde-brutal-thick: 4px solid $color-letra-oscura;
+$borde-brutal-thin: 2px solid var(--border-color);
+$borde-brutal-medium: 3px solid var(--border-color);
+$borde-brutal-thick: 4px solid var(--border-color);
 
 /* Bordes con colores de la paleta */
 $borde-primario-light: 3px solid $color-primario-light;
