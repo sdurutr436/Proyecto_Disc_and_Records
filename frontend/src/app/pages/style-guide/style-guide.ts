@@ -1,4 +1,4 @@
-import { Component, signal, inject, ViewChild, effect } from '@angular/core';
+import { Component, signal, inject, ViewChild, ViewChildren, QueryList, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Button } from '../../components/shared/button/button';
 import { Card, CardAction } from '../../components/shared/card/card';
@@ -248,6 +248,20 @@ export class StyleGuide {
   }> = [];
   private notificationIdCounter = 0;
 
+  // Referencia a las notificaciones renderizadas para medir alturas
+  @ViewChildren(Notification) notificationComponents!: QueryList<Notification>;
+
+  /**
+   * Callback para obtener la altura real de una notificación por su índice.
+   * Usado para el cálculo dinámico del apilado.
+   */
+  getNotificationHeight = (index: number): number => {
+    if (!this.notificationComponents) return 92;
+    const components = this.notificationComponents.toArray();
+    if (index < 0 || index >= components.length) return 92;
+    return components[index].getHeight();
+  };
+
   // Control para Modal
   isModalOpen = signal(false);
 
@@ -287,17 +301,25 @@ export class StyleGuide {
   // Cada llamada añade una nueva notificación al array
   showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
     const messages = {
-      success: { title: '¡Guardado!', message: 'Tu lista de reproducción se ha actualizado.' },
-      error: { title: 'Error de conexión', message: 'No se pudo cargar la información del álbum.' },
-      warning: { title: 'Sesión próxima a expirar', message: 'Tu sesión caducará en 2 minutos.' },
-      info: { title: 'Nueva funcionalidad', message: 'Ahora puedes exportar tus listas de reproducción.' }
+      success: { title: '¡Guardado!', message: 'Tu lista de reproducción se ha actualizado.', duration: 3000 },
+      error: { title: 'Error de conexión', message: 'No se pudo cargar la información del álbum.', duration: 5000 },
+      warning: { title: 'Sesión próxima a expirar', message: 'Tu sesión caducará en 2 minutos.', duration: 7000 },
+      info: { title: 'Nueva funcionalidad', message: 'Ahora puedes exportar tus listas de reproducción.', duration: 4000 }
     };
 
+    const notificationId = ++this.notificationIdCounter;
+    const { duration, ...messageData } = messages[type];
+
     this.staticNotifications.push({
-      id: ++this.notificationIdCounter,
+      id: notificationId,
       type,
-      ...messages[type]
+      ...messageData
     });
+
+    // Auto-eliminar después del tiempo especificado
+    setTimeout(() => {
+      this.removeStaticNotification(notificationId);
+    }, duration);
   }
 
   // Elimina una notificación específica por su ID
@@ -320,8 +342,7 @@ export class StyleGuide {
     this.notificationService.show({
       type,
       ...messages[type],
-      duration: 0,
-      autoDismiss: false,
+      duration: 5000,
       position: 'bottom-right'
     });
   }

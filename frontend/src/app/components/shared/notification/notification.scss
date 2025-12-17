@@ -3,7 +3,7 @@
 
 .notification {
   position: fixed;
-  z-index: 10000; // Z-Index EXTREMO para asegurar que se vea sobre todo
+  z-index: vars.$z-notification; // Usar escala centralizada (9)
   display: flex;
   align-items: flex-start;
   gap: vars.$espaciado-s;

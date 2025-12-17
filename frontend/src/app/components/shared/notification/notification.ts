@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, signal, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 /**
@@ -55,7 +55,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './notification.html',
   styleUrl: './notification.scss'
 })
-export class Notification implements OnInit, OnDestroy {
+export class Notification implements OnInit, OnDestroy, AfterViewInit {
   /**
    * INPUTS: Configuración de la notificación
    * Estos valores son inyectados por NotificationService con setInput()
@@ -90,6 +90,12 @@ export class Notification implements OnInit, OnDestroy {
   @Input() stackIndex: number = -1;
 
   /**
+   * Callback para obtener la altura real de esta notificación
+   * Usado por el sistema de apilado para cálculos dinámicos
+   */
+  @Input() getHeightAt?: (index: number) => number;
+
+  /**
    * OUTPUT: Evento emitido cuando se cierra la notificación
    * NotificationService se subscribe a este evento para eliminar del DOM
    */
@@ -108,6 +114,11 @@ export class Notification implements OnInit, OnDestroy {
   isPaused = signal(false);
 
   /**
+   * Altura real del elemento (medida después del render)
+   */
+  private measuredHeight: number = 0;
+
+  /**
    * TIMER: ID del timeout para auto-dismiss
    * Lo guardamos para poder cancelarlo si se cierra manualmente
    */
@@ -124,6 +135,27 @@ export class Notification implements OnInit, OnDestroy {
    * Se usa para calcular el tiempo transcurrido
    */
   private pausedAt: number = 0;
+
+  constructor(private elementRef: ElementRef) {}
+
+  /**
+   * LIFECYCLE: Después de que la vista se renderice
+   * Medimos la altura real del elemento
+   */
+  ngAfterViewInit(): void {
+    // Medir altura real después del render
+    const notificationEl = this.elementRef.nativeElement.querySelector('.notification');
+    if (notificationEl) {
+      this.measuredHeight = notificationEl.getBoundingClientRect().height;
+    }
+  }
+
+  /**
+   * Obtener la altura medida del elemento
+   */
+  getHeight(): number {
+    return this.measuredHeight || 92; // Fallback a altura estimada
+  }
 
   /**
    * LIFECYCLE: Inicialización del componente
@@ -222,10 +254,21 @@ export class Notification implements OnInit, OnDestroy {
     }
 
     const INITIAL_OFFSET = 20; // Margen inicial desde el borde
-    const NOTIFICATION_HEIGHT = 92; // Altura real de notificación (min-height 60 + padding + border)
     const GAP = 12; // Espacio entre notificaciones
 
-    const offset = INITIAL_OFFSET + (this.stackIndex * (NOTIFICATION_HEIGHT + GAP));
+    // Calcular offset sumando alturas de notificaciones anteriores
+    let offset = INITIAL_OFFSET;
+
+    if (this.getHeightAt) {
+      // Usar callback para obtener alturas dinámicas
+      for (let i = 0; i < this.stackIndex; i++) {
+        offset += this.getHeightAt(i) + GAP;
+      }
+    } else {
+      // Fallback: usar altura estimada
+      const ESTIMATED_HEIGHT = 92;
+      offset = INITIAL_OFFSET + (this.stackIndex * (ESTIMATED_HEIGHT + GAP));
+    }
 
     // Aplicar al eje vertical según la posición
     if (this.position.startsWith('top')) {

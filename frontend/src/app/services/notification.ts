@@ -168,7 +168,6 @@ export class NotificationService {
 
     // 7. Guardar referencia para poder eliminarlo después
     this.notifications.push(componentRef);
-    console.log(`[NotificationService] Notificación añadida. Total activas: ${this.notifications.length}`);
 
     // 8. CALCULAR POSICIÓN Y MOSTRAR
     // Usamos doble requestAnimationFrame para asegurar que el DOM está pintado
@@ -178,7 +177,6 @@ export class NotificationService {
 
       // Segundo frame para asegurar que las alturas están calculadas
       requestAnimationFrame(() => {
-        console.log(`[NotificationService] Calculando posiciones para ${this.notifications.length} notificaciones`);
         // Calcular posiciones de todas las notificaciones
         this.updatePositions();
 
@@ -265,13 +263,10 @@ export class NotificationService {
       const group = grouped[posKey];
       let currentOffset = INITIAL_OFFSET;
 
-      console.log(`[NotificationService] Grupo "${posKey}" tiene ${group.length} notificaciones`);
-
       group.forEach((ref, index) => {
         const hostElem = (ref.hostView as any).rootNodes[0] as HTMLElement;
 
         if (!hostElem) {
-          console.warn(`[NotificationService] hostElem es null para índice ${index}`);
           return;
         }
 
@@ -279,15 +274,12 @@ export class NotificationService {
         const domElem = hostElem.querySelector('.notification') as HTMLElement;
 
         if (!domElem) {
-          console.warn(`[NotificationService] .notification interno no encontrado para índice ${index}`);
           return;
         }
 
         // Forzar lectura de altura - getBoundingClientRect es más preciso
         const rect = domElem.getBoundingClientRect();
         const elementHeight = rect.height > 0 ? rect.height : DEFAULT_HEIGHT;
-
-        console.log(`[NotificationService] Notificación ${index}: altura=${elementHeight}px, offset actual=${currentOffset}px`);
 
         // APLICAR POSICIÓN con transición suave
         domElem.style.transition = 'top 0.3s ease, bottom 0.3s ease';
@@ -296,12 +288,10 @@ export class NotificationService {
           // Desde arriba hacia abajo
           domElem.style.top = `${currentOffset}px`;
           domElem.style.bottom = 'auto';
-          console.log(`[NotificationService] Aplicado top: ${currentOffset}px`);
         } else {
           // Desde abajo hacia arriba
           domElem.style.bottom = `${currentOffset}px`;
           domElem.style.top = 'auto';
-          console.log(`[NotificationService] Aplicado bottom: ${currentOffset}px`);
         }
 
         // Acumular offset para la siguiente notificación

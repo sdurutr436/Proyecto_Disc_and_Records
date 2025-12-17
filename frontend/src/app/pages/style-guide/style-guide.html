@@ -1721,7 +1721,9 @@
       [message]="notification.message"
       position="top-right"
       [stackIndex]="i"
-      [autoDismiss]="false"
+      [getHeightAt]="getNotificationHeight"
+      [autoDismiss]="true"
+      [duration]="5000"
       (dismissed)="removeStaticNotification(notification.id)"
     ></app-notification>
   }
