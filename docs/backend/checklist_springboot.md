@@ -1,4 +1,3 @@
-
 Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 
 # API REST (70%)

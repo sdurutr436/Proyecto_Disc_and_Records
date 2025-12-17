@@ -1,26 +1,23 @@
-# Modelo Entidad-Relación: Discs & Records
+# Modelo Entidad-Relación y Backend Implementado: Discs & Records
 
-> **Proyecto:** Discs & Records  
-> **Tipo:** Aplicación web estilo Letterboxd para música  
+> **Proyecto:** Discs & Records
+> **Tipo:** Aplicación web estilo Letterboxd para música
 > **Fecha:** 15 de diciembre de 2025
 
 ---
 
 ## Resumen del Sistema
-
 Sistema de catalogación, valoración y reseña de música donde los usuarios pueden:
-- Marcar canciones y álbumes como "escuchados"
-- Asignar puntuaciones (1-5)
-- Escribir reseñas
-- Ver estadísticas personales de géneros favoritos
-- Explorar contenido por artista, género, trending, etc.
+- Marcar canciones y álbumes como "escuchados".
+- Asignar puntuaciones (1-5).
+- Escribir reseñas.
+- Explorar contenido por artista, género y endpoints de consulta (búsqueda/paginación).
 
 ---
 
 ## Entidades Principales
 
 ### 1. Usuario
-
 | Atributo | Tipo | Restricciones |
 |----------|------|---------------|
 | ID_Usuario | INT | PK, AUTO_INCREMENT |
@@ -31,30 +28,24 @@ Sistema de catalogación, valoración y reseña de música donde los usuarios pu
 | Biografia | TEXT | NULL (opcional) |
 | Fecha_registro | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
 
-**Descripción:**  
-Representa a los usuarios registrados de la plataforma. Cada usuario puede mantener listas personales de canciones y álbumes escuchados con sus respectivas valoraciones.
+**Descripción:**
+Representa a los usuarios registrados. La API incluye endpoints de lectura pública y operaciones protegidas con roles (ADMIN/MODERATOR) o restricciones por usuario autenticado, según el controlador.
 
 ---
 
 ### 2. Artista
-
 | Atributo | Tipo | Restricciones |
 |----------|------|---------------|
 | ID_Artista | INT | PK, AUTO_INCREMENT |
 | Nombre_artista | VARCHAR(100) | NOT NULL |
 | Puntuacion_media | DECIMAL(3,2) | NULL (calculado) |
 
-**Descripción:**  
-Representa artistas musicales. La puntuación media se calcula a partir de las valoraciones de todas las canciones y álbumes asociados al artista.
-
-**Notas de diseño:**
-- No se permiten colaboraciones múltiples en una misma canción/álbum
-- Si un tema es un cover o colaboración, se crea una entrada separada con diferente ID
+**Descripción:**
+Representa artistas musicales. Existen endpoints para listado, búsqueda por nombre, detalle por ID y rutas anidadas para acceder a álbumes y canciones del artista.
 
 ---
 
 ### 3. Canción
-
 | Atributo | Tipo | Restricciones |
 |----------|------|---------------|
 | ID_Cancion | INT | PK, AUTO_INCREMENT |
@@ -63,13 +54,12 @@ Representa artistas musicales. La puntuación media se calcula a partir de las v
 | Puntuacion_media | DECIMAL(3,2) | NULL (calculado) |
 | ID_Artista | INT | FK → Artista, NOT NULL |
 
-**Descripción:**  
-Representa canciones individuales. Cada canción pertenece a un único artista y puede estar en múltiples álbumes (recopilatorios, ediciones especiales, etc.).
+**Descripción:**
+Representa canciones individuales. Se observan endpoints con búsqueda por título, consulta por artista y operaciones CRUD protegidas por roles.
 
 ---
 
 ### 4. Álbum
-
 | Atributo | Tipo | Restricciones |
 |----------|------|---------------|
 | ID_Album | INT | PK, AUTO_INCREMENT |
@@ -79,13 +69,12 @@ Representa canciones individuales. Cada canción pertenece a un único artista y
 | Puntuacion_media | DECIMAL(3,2) | NULL (calculado) |
 | ID_Artista | INT | FK → Artista, NOT NULL |
 
-**Descripción:**  
-Representa álbumes musicales completos. Cada álbum pertenece a un único artista y contiene múltiples canciones.
+**Descripción:**
+Representa álbumes musicales. La API incluye endpoints de búsqueda por título, consulta por artista y operaciones de creación/actualización/borrado protegidas por roles.
 
 ---
 
 ### 5. Género
-
 | Atributo | Tipo | Restricciones |
 |----------|------|---------------|
 | ID_Genero | INT | PK, AUTO_INCREMENT |
@@ -93,17 +82,14 @@ Representa álbumes musicales completos. Cada álbum pertenece a un único artis
 | Descripcion | TEXT | NULL (opcional) |
 | Color | VARCHAR(7) | NULL (hex color para UI) |
 
-**Descripción:**  
-Catálogo predefinido de géneros musicales. Se utiliza para clasificación, filtros y estadísticas de usuario.
-
-**Ejemplos:** Rock, Pop, Jazz, Hip-Hop, Electronic, Classical, Blues, Reggae, Metal, Folk, etc.
+**Descripción:**
+Catálogo de géneros musicales con endpoints públicos de lectura y endpoints protegidos para operaciones de mantenimiento (según roles).
 
 ---
 
 ## Tablas de Relación (Intermedias)
 
 ### 6. Usuario_Cancion
-
 | Atributo | Tipo | Restricciones |
 |----------|------|---------------|
 | ID_Usuario | INT | FK → Usuario, NOT NULL |
@@ -116,13 +102,12 @@ Catálogo predefinido de géneros musicales. Se utiliza para clasificación, fil
 
 **PK Compuesta:** (ID_Usuario, ID_Cancion)
 
-**Descripción:**  
-Representa la "lista de canciones" de cada usuario. Cuando un usuario marca una canción como escuchada, opcionalmente puede asignarle puntuación y escribir una reseña.
+**Descripción:**
+Representa la lista de canciones escuchadas/reseñadas por usuario.
 
 ---
 
 ### 7. Usuario_Album
-
 | Atributo | Tipo | Restricciones |
 |----------|------|---------------|
 | ID_Usuario | INT | FK → Usuario, NOT NULL |
@@ -135,13 +120,12 @@ Representa la "lista de canciones" de cada usuario. Cuando un usuario marca una 
 
 **PK Compuesta:** (ID_Usuario, ID_Album)
 
-**Descripción:**  
-Representa la "lista de álbumes" de cada usuario. Funciona igual que Usuario_Cancion pero para álbumes completos.
+**Descripción:**
+Representa la lista de álbumes escuchados/reseñados por usuario.
 
 ---
 
 ### 8. Cancion_Genero
-
 | Atributo | Tipo | Restricciones |
 |----------|------|---------------|
 | ID_Cancion | INT | FK → Cancion, NOT NULL |
@@ -149,13 +133,9 @@ Representa la "lista de álbumes" de cada usuario. Funciona igual que Usuario_Ca
 
 **PK Compuesta:** (ID_Cancion, ID_Genero)
 
-**Descripción:**  
-Relación N:M entre canciones y géneros. Una canción puede pertenecer a múltiples géneros (ej: "Bohemian Rhapsody" → Rock, Progressive Rock, Opera).
-
 ---
 
 ### 9. Album_Genero
-
 | Atributo | Tipo | Restricciones |
 |----------|------|---------------|
 | ID_Album | INT | FK → Album, NOT NULL |
@@ -163,13 +143,9 @@ Relación N:M entre canciones y géneros. Una canción puede pertenecer a múlti
 
 **PK Compuesta:** (ID_Album, ID_Genero)
 
-**Descripción:**  
-Relación N:M entre álbumes y géneros. Un álbum puede tener múltiples géneros asociados.
-
 ---
 
 ### 10. Album_Cancion
-
 | Atributo | Tipo | Restricciones |
 |----------|------|---------------|
 | ID_Album | INT | FK → Album, NOT NULL |
@@ -177,9 +153,6 @@ Relación N:M entre álbumes y géneros. Un álbum puede tener múltiples géner
 | Numero_pista | TINYINT | NULL (orden en el álbum) |
 
 **PK Compuesta:** (ID_Album, ID_Cancion)
-
-**Descripción:**  
-Relación N:M entre álbumes y canciones. Permite que una canción aparezca en múltiples álbumes (recopilatorios, ediciones especiales, etc.).
 
 ---
 
@@ -286,22 +259,68 @@ LIMIT 10;
 
 ---
 
+## Implementación Backend (según código existente)
+
+### API REST: controladores y endpoints
+El backend está organizado por controladores REST por dominio (Artista, Álbum, Canción, Usuario, Género, Reseñas) con endpoints de lectura pública, paginación y endpoints protegidos por roles.
+
+Ejemplo de control de acceso por roles (patrón observado en controladores):
+```java
+@PreAuthorize("hasAnyRole("ADMIN", "MODERATOR")")
+public ResponseEntity<AlbumResponseDTO> crear(@Valid @RequestBody CreateAlbumDTO dto) {
+    AlbumResponseDTO creado = albumService.crear(dto);
+    return ResponseEntity.created(URI.create("/api/albumes/" + creado.id())).body(creado);
+}
+```
+
+### Autenticación y autorización (Spring Security + JWT)
+El backend incorpora autenticación con JWT, con endpoints de login/registro y tests automatizados que validan respuestas exitosas y errores típicos (validación y credenciales).
+
+Ejemplo de comportamiento esperado en tests (MockMvc):
+```java
+mockMvc.perform(post("/api/auth/login")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(loginValido)))
+    .andExpect(status().isOk())
+    .andExpect(jsonPath("$.token").value("jwt.token.aqui"));
+```
+
+### Observabilidad mínima (Actuator + healthchecks)
+El proyecto incluye Spring Boot Actuator y expone `/actuator/health`, utilizado por los healthchecks de Docker Compose y por el Dockerfile del backend para validación de readiness.
+
+Ejemplo de healthcheck en contenedor (Dockerfile):
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=10 \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1
+```
+
+### Logging de peticiones HTTP (Interceptor)
+Existe un interceptor `LoggingInterceptor` que registra información de las peticiones y genera un identificador `X-Request-ID` por request para trazabilidad.
+
+Ejemplo del patrón implementado:
+```java
+private static final String REQUEST_ID_HEADER = "X-Request-ID";
+
+@Override
+public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    String requestId = UUID.randomUUID().toString();
+    request.setAttribute(REQUEST_ID_HEADER, requestId);
+    return true;
+}
+```
+
+### Entorno Docker y perfiles
+El backend soporta perfil `docker` (`SPRING_PROFILES_ACTIVE=docker`) y está preparado para funcionar con MariaDB en contenedores mediante variables de entorno (`SPRING_DATASOURCE_URL`, usuario/contraseña, etc.).
+
+---
+
 ## Decisiones de Diseño
 
-### ✅ Simplificaciones (MVP)
+### Simplificaciones (MVP)
 - **No colaboraciones:** Un artista por canción/álbum
 - **No playlists temáticas:** Solo listas "escuchadas"
 - **No sistema social:** Sin seguidores, likes, comentarios en reseñas
 - **No historial de reproducción:** Solo marca "escuchado" (no registro de cada play)
-
-### 🔮 Posibles Extensiones Futuras
-- Playlists personalizadas con nombre
-- Sistema de seguidores y feed social
-- Likes/reacciones en reseñas
-- Comentarios en reseñas
-- Historial detallado de reproducción
-- Artistas colaborativos (N:M)
-- Recomendaciones basadas en ML
 
 ---
 
@@ -350,14 +369,6 @@ ADD CONSTRAINT chk_anio_album CHECK (Anio_salida BETWEEN 1900 AND YEAR(CURDATE()
 
 ---
 
-## Notas Finales
-
-Este modelo E-R proporciona una base sólida para un MVP estilo Letterboxd enfocado en música, permitiendo:
-- ✅ Gestión de usuarios y perfiles personalizados
-- ✅ Catalogación completa de artistas, álbumes y canciones
-- ✅ Sistema de valoraciones y reseñas opcionales
-- ✅ Clasificación por géneros múltiples
-- ✅ Estadísticas personales de escucha
-- ✅ Feed de reseñas y trending
-
-El diseño es escalable y permite añadir funcionalidades sociales y colaborativas en futuras iteraciones sin necesidad de refactorización importante.
+## Notas
+- Este documento mantiene la estructura del modelo E-R y añade únicamente elementos observados como implementados en el backend según el ingest disponible.
+- Los elementos no implementados (semáforo rojo) quedan fuera de esta documentación por el momento.
