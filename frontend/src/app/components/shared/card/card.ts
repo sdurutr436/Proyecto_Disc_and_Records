@@ -1,5 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 
 // Interfaz para las acciones de los botones
 export interface CardAction {
@@ -16,11 +18,19 @@ export interface CardAction {
   styleUrl: './card.scss',
 })
 export class Card {
+  private sanitizer = inject(DomSanitizer);
+
   // Contenido
   @Input() title: string = '';
   @Input() subtitle: string = '';
   @Input() imageUrl: string = '';
   @Input() imageAlt: string = '';
+  @Input() placeholderIcon: string = ''; // SVG string for custom placeholder
+
+  // Getter para sanitizar el SVG
+  get safePlaceholderIcon(): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(this.placeholderIcon);
+  }
 
   // Configuración de imagen
   @Input() imageShape: 'square' | 'circle' = 'square';

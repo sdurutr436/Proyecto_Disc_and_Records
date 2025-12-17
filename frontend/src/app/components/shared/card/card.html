@@ -6,6 +6,8 @@
       <div [class]="imageClasses">
         @if (imageUrl) {
           <img [src]="imageUrl" [alt]="imageAlt" />
+        } @else if (placeholderIcon) {
+          <span class="card__placeholder card__placeholder--svg" [innerHTML]="safePlaceholderIcon"></span>
         } @else {
           <span class="card__placeholder">🎵</span>
         }
@@ -54,6 +56,8 @@
     <section [class]="imageClasses">
       @if (imageUrl) {
         <img [src]="imageUrl" [alt]="imageAlt" />
+      } @else if (placeholderIcon) {
+        <span class="card__placeholder card__placeholder--svg" [innerHTML]="safePlaceholderIcon"></span>
       } @else {
         <span class="card__placeholder">🎵</span>
       }

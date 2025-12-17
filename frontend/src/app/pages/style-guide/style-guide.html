@@ -1645,67 +1645,231 @@
       <section class="style-guide__section">
         <h2>Componentes de Layout</h2>
         <p class="showcase__description">
-          Los componentes de layout (Header, Footer, Sidebar, Main) están implementados y se utilizan
-          en la estructura general de la aplicación. Se pueden ver en uso en todas las páginas.
+          Estructura principal de la aplicación basada en el sistema de diseño 70s Neobrutalist.
+          Estos componentes heredan las variables, sombras, colores y tipografía de los Fundamentos.
+          Los componentes de layout se visualizan directamente en esta página.
         </p>
 
+        <!-- Componentes de Layout - Listado con SVG Icons -->
         <div class="showcase">
-          <h3>Estructura de la Aplicación</h3>
-          <div class="showcase__column">
-            <div class="showcase__item showcase__item--full">
-              <code>&lt;app-header&gt;</code> - Cabecera de la aplicación con navegación
-            </div>
-            <div class="showcase__item showcase__item--full">
-              <code>&lt;app-sidebar&gt;</code> - Barra lateral con menú de navegación
-            </div>
-            <div class="showcase__item showcase__item--full">
-              <code>&lt;app-main&gt;</code> - Contenedor principal de contenido
-            </div>
-            <div class="showcase__item showcase__item--full">
-              <code>&lt;app-footer&gt;</code> - Pie de página con información adicional
-            </div>
-          </div>
-        </div>
-
-        <div class="showcase">
-          <h3>Diagrama de Layout</h3>
-          <div class="showcase__column">
-            <div class="layout-diagram">
-              <div class="layout-diagram__header">app-header</div>
-              <div class="layout-diagram__body">
-                <div class="layout-diagram__sidebar">app-sidebar</div>
-                <div class="layout-diagram__main">app-main</div>
-              </div>
-              <div class="layout-diagram__footer">app-footer</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="showcase">
-          <h3>Breakpoints</h3>
+          <h3>Componentes Disponibles</h3>
           <p class="showcase__description">
-            El sistema de layout es completamente responsive, adaptándose a diferentes tamaños de pantalla.
+            Cada componente usa mixins y variables del sistema de diseño.
+            Observa la página actual para ver estos componentes en acción.
           </p>
-          <div class="showcase__grid showcase__grid--breakpoints">
-            <div class="breakpoint-card">
-              <span class="breakpoint-card__name">Mobile</span>
-              <span class="breakpoint-card__value">320px+</span>
-              <code>$breakpoint-mobile</code>
+          <div class="showcase__grid showcase__grid--forms">
+            <div class="layout-info-card">
+              <div class="layout-info-card__header">
+                <svg class="layout-info-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="3" y1="9" x2="21" y2="9"></line>
+                </svg>
+                <span class="layout-info-card__name">app-header</span>
+              </div>
+              <p class="layout-info-card__desc">Cabecera con logo central, franjas 70s y botones de autenticación.</p>
+              <div class="layout-info-card__vars">
+                <code>--header-bg</code>
+                <code>$borde-brutal-thick</code>
+              </div>
             </div>
-            <div class="breakpoint-card">
-              <span class="breakpoint-card__name">Tablet</span>
-              <span class="breakpoint-card__value">768px+</span>
-              <code>$breakpoint-tablet</code>
+
+            <div class="layout-info-card">
+              <div class="layout-info-card__header">
+                <svg class="layout-info-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+                <span class="layout-info-card__name">main-nav</span>
+              </div>
+              <p class="layout-info-card__desc">Barra de navegación sticky con enlaces y toggle de tema.</p>
+              <div class="layout-info-card__vars">
+                <code>--nav-bg</code>
+                <code>$z-nav</code>
+              </div>
             </div>
-            <div class="breakpoint-card">
-              <span class="breakpoint-card__name">Desktop</span>
-              <span class="breakpoint-card__value">1024px+</span>
-              <code>$breakpoint-desktop</code>
+
+            <div class="layout-info-card">
+              <div class="layout-info-card__header">
+                <svg class="layout-info-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="3" y1="15" x2="21" y2="15"></line>
+                </svg>
+                <span class="layout-info-card__name">app-footer</span>
+              </div>
+              <p class="layout-info-card__desc">Pie de página simétrico con logo central y botones de navegación.</p>
+              <div class="layout-info-card__vars">
+                <code>--header-bg</code>
+                <code>$radio-pildora</code>
+              </div>
             </div>
-            <div class="breakpoint-card">
-              <span class="breakpoint-card__name">Large Desktop</span>
-              <span class="breakpoint-card__value">1200px+</span>
-              <code>$breakpoint-large-desktop</code>
+          </div>
+        </div>
+
+        <!-- Breakpoints con Cards Polaroid -->
+        <div class="showcase">
+          <h3>Sistema de Breakpoints</h3>
+          <p class="showcase__description">
+            Puntos de quiebre responsive definidos en <code>_variables.scss</code>.
+            El layout se adapta automáticamente a cada tamaño de pantalla.
+          </p>
+          <div class="showcase__row showcase__row--wrap">
+            <div class="showcase__item showcase__item--breakpoint">
+              <app-card
+                title="Mobile"
+                subtitle="320px+"
+                imageShape="square"
+                imageSize="medium"
+                variant="normal"
+                cardType="polaroid"
+                [placeholderIcon]="'<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><rect x=&quot;5&quot; y=&quot;2&quot; width=&quot;14&quot; height=&quot;20&quot; rx=&quot;2&quot; ry=&quot;2&quot;></rect><line x1=&quot;12&quot; y1=&quot;18&quot; x2=&quot;12.01&quot; y2=&quot;18&quot;></line></svg>'">
+              </app-card>
+              <code class="showcase__code">$breakpoint-mobile</code>
+            </div>
+
+            <div class="showcase__item showcase__item--breakpoint">
+              <app-card
+                title="Tablet"
+                subtitle="768px+"
+                imageShape="square"
+                imageSize="medium"
+                variant="normal"
+                cardType="polaroid"
+                [placeholderIcon]="'<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><rect x=&quot;4&quot; y=&quot;2&quot; width=&quot;16&quot; height=&quot;20&quot; rx=&quot;2&quot; ry=&quot;2&quot;></rect><line x1=&quot;12&quot; y1=&quot;18&quot; x2=&quot;12.01&quot; y2=&quot;18&quot;></line></svg>'">
+              </app-card>
+              <code class="showcase__code">$breakpoint-tablet</code>
+            </div>
+
+            <div class="showcase__item showcase__item--breakpoint">
+              <app-card
+                title="Desktop"
+                subtitle="1024px+"
+                imageShape="square"
+                imageSize="medium"
+                variant="vinilo"
+                cardType="polaroid"
+                [placeholderIcon]="'<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><rect x=&quot;2&quot; y=&quot;3&quot; width=&quot;20&quot; height=&quot;14&quot; rx=&quot;2&quot; ry=&quot;2&quot;></rect><line x1=&quot;8&quot; y1=&quot;21&quot; x2=&quot;16&quot; y2=&quot;21&quot;></line><line x1=&quot;12&quot; y1=&quot;17&quot; x2=&quot;12&quot; y2=&quot;21&quot;></line></svg>'">
+              </app-card>
+              <code class="showcase__code">$breakpoint-desktop</code>
+            </div>
+
+            <div class="showcase__item showcase__item--breakpoint">
+              <app-card
+                title="Large Desktop"
+                subtitle="1200px+"
+                imageShape="square"
+                imageSize="medium"
+                variant="vinilo"
+                cardType="polaroid"
+                [placeholderIcon]="'<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><rect x=&quot;2&quot; y=&quot;3&quot; width=&quot;20&quot; height=&quot;14&quot; rx=&quot;2&quot; ry=&quot;2&quot;></rect><polyline points=&quot;8 21 12 17 16 21&quot;></polyline></svg>'">
+              </app-card>
+              <code class="showcase__code">$breakpoint-large-desktop</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Z-Index Scale -->
+        <div class="showcase">
+          <h3>Escala de Z-Index</h3>
+          <p class="showcase__description">
+            Jerarquía visual controlada para evitar conflictos de superposición.
+            Definida centralmente en <code>$variables.scss</code>.
+          </p>
+          <div class="z-index-scale">
+            <div class="z-index-scale__item z-index-scale__item--10">
+              <span class="z-index-scale__level">10</span>
+              <span class="z-index-scale__name">$z-spinner</span>
+              <span class="z-index-scale__desc">Loading global</span>
+            </div>
+            <div class="z-index-scale__item z-index-scale__item--9">
+              <span class="z-index-scale__level">9</span>
+              <span class="z-index-scale__name">$z-notification</span>
+              <span class="z-index-scale__desc">Toast notifications</span>
+            </div>
+            <div class="z-index-scale__item z-index-scale__item--8">
+              <span class="z-index-scale__level">8</span>
+              <span class="z-index-scale__name">$z-tooltip</span>
+              <span class="z-index-scale__desc">Tooltips</span>
+            </div>
+            <div class="z-index-scale__item z-index-scale__item--7">
+              <span class="z-index-scale__level">7</span>
+              <span class="z-index-scale__name">$z-popover</span>
+              <span class="z-index-scale__desc">Dropdowns, popovers</span>
+            </div>
+            <div class="z-index-scale__item z-index-scale__item--6">
+              <span class="z-index-scale__level">6</span>
+              <span class="z-index-scale__name">$z-modal</span>
+              <span class="z-index-scale__desc">Modales</span>
+            </div>
+            <div class="z-index-scale__item z-index-scale__item--5">
+              <span class="z-index-scale__level">5</span>
+              <span class="z-index-scale__name">$z-overlay</span>
+              <span class="z-index-scale__desc">Backdrops</span>
+            </div>
+            <div class="z-index-scale__item z-index-scale__item--4">
+              <span class="z-index-scale__level">4</span>
+              <span class="z-index-scale__name">$z-nav</span>
+              <span class="z-index-scale__desc">Navegación principal</span>
+            </div>
+            <div class="z-index-scale__item z-index-scale__item--3">
+              <span class="z-index-scale__level">3</span>
+              <span class="z-index-scale__name">$z-fixed</span>
+              <span class="z-index-scale__desc">Sidebar, alertas fijas</span>
+            </div>
+            <div class="z-index-scale__item z-index-scale__item--2">
+              <span class="z-index-scale__level">2</span>
+              <span class="z-index-scale__name">$z-sticky</span>
+              <span class="z-index-scale__desc">Elementos sticky</span>
+            </div>
+            <div class="z-index-scale__item z-index-scale__item--1">
+              <span class="z-index-scale__level">1</span>
+              <span class="z-index-scale__name">$z-dropdown</span>
+              <span class="z-index-scale__desc">Dropdowns simples</span>
+            </div>
+            <div class="z-index-scale__item z-index-scale__item--0">
+              <span class="z-index-scale__level">0</span>
+              <span class="z-index-scale__name">$z-base</span>
+              <span class="z-index-scale__desc">Contenido base</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Variables CSS de Layout -->
+        <div class="showcase">
+          <h3>Variables CSS del Layout</h3>
+          <p class="showcase__description">
+            Variables CSS personalizadas que controlan el tema y se heredan en todos los componentes de layout.
+          </p>
+          <div class="showcase__grid showcase__grid--forms">
+            <div class="css-var-card">
+              <span class="css-var-card__name">--bg-primary</span>
+              <div class="css-var-card__swatch" style="background-color: var(--bg-primary);"></div>
+              <span class="css-var-card__desc">Fondo principal</span>
+            </div>
+            <div class="css-var-card">
+              <span class="css-var-card__name">--bg-secondary</span>
+              <div class="css-var-card__swatch" style="background-color: var(--bg-secondary);"></div>
+              <span class="css-var-card__desc">Fondo secundario</span>
+            </div>
+            <div class="css-var-card">
+              <span class="css-var-card__name">--header-bg</span>
+              <div class="css-var-card__swatch" style="background-color: var(--header-bg);"></div>
+              <span class="css-var-card__desc">Fondo del header</span>
+            </div>
+            <div class="css-var-card">
+              <span class="css-var-card__name">--nav-bg</span>
+              <div class="css-var-card__swatch" style="background-color: var(--nav-bg);"></div>
+              <span class="css-var-card__desc">Fondo de navegación</span>
+            </div>
+            <div class="css-var-card">
+              <span class="css-var-card__name">--color-primary</span>
+              <div class="css-var-card__swatch" style="background-color: var(--color-primary);"></div>
+              <span class="css-var-card__desc">Color de acción principal</span>
+            </div>
+            <div class="css-var-card">
+              <span class="css-var-card__name">--shadow-color</span>
+              <div class="css-var-card__swatch" style="background-color: var(--shadow-color);"></div>
+              <span class="css-var-card__desc">Color de sombras brutales</span>
             </div>
           </div>
         </div>

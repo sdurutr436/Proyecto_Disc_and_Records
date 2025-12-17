@@ -625,40 +625,46 @@ app-breadcrumbs {
 }
 
 /* ========================================
-   LAYOUT - Diagrama
+   LAYOUT - Diagrama (Legacy - Actualizado)
    ======================================== */
 .layout-diagram {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  border: 3px solid var(--color-border);
-  background-color: var(--color-border);
+  gap: 3px;
+  border: $borde-brutal-thick;
+  background-color: var(--border-color);
   max-width: 600px;
   margin: 0 auto;
+  border-radius: $radio-m;
+  overflow: hidden;
+  box-shadow: 4px 4px 0px var(--shadow-color);
 
   &__header,
   &__footer {
-    background-color: var(--color-accent-primary);
-    color: var(--color-text-on-accent);
+    background-color: var(--color-primary);
+    color: var(--text-dark);
     padding: $espaciado-m;
     text-align: center;
-    font-weight: 600;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   &__body {
     display: flex;
-    gap: 2px;
+    gap: 3px;
     min-height: 200px;
   }
 
   &__sidebar {
     flex: 0 0 150px;
-    background-color: var(--color-bg-secondary);
+    background-color: var(--bg-secondary);
     padding: $espaciado-m;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
+    text-transform: uppercase;
 
     @media (max-width: 768px) {
       flex: 0 0 80px;
@@ -668,17 +674,18 @@ app-breadcrumbs {
 
   &__main {
     flex: 1;
-    background-color: var(--color-bg-primary);
+    background-color: var(--bg-primary);
     padding: $espaciado-m;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
+    text-transform: uppercase;
   }
 }
 
 /* ========================================
-   LAYOUT - Breakpoint Cards
+   LAYOUT - Breakpoint Cards (Base)
    ======================================== */
 .showcase__grid--breakpoints {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -690,20 +697,29 @@ app-breadcrumbs {
   align-items: center;
   gap: $espaciado-xs;
   padding: $espaciado-m;
-  background-color: var(--color-bg-primary);
-  border: 3px solid var(--color-border);
+  background-color: var(--bg-primary);
+  border: $borde-brutal-medium;
+  border-radius: $radio-s;
   text-align: center;
+  box-shadow: 3px 3px 0px var(--shadow-color);
+  transition: all $transicion-rapida;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px var(--shadow-color);
+  }
 
   &__name {
     font-weight: 700;
     font-size: 1rem;
     text-transform: uppercase;
+    color: var(--text-primary);
   }
 
   &__value {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--color-accent-primary);
+    color: var(--color-primary);
   }
 
   code {
@@ -1342,4 +1358,223 @@ app-breadcrumbs {
   line-height: $altura-linea-parrafo;
   color: var(--text-primary);
   font-weight: 400;
+}
+
+/* ========================================
+   LAYOUT - Info Cards para Componentes
+   Cards simples con iconos SVG
+   ======================================== */
+.layout-info-card {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-xs;
+  padding: $espaciado-m;
+  background-color: var(--bg-primary);
+  border: $borde-brutal-medium;
+  border-radius: $radio-s;
+  box-shadow: 4px 4px 0px var(--shadow-color);
+  transition: all $transicion-rapida;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--shadow-color);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $espaciado-s;
+    padding-bottom: $espaciado-xs;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  &__icon {
+    width: 32px;
+    height: 32px;
+    stroke: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  &__name {
+    font-family: 'Courier New', monospace;
+    font-size: $tamanio-fuente-texto-pequeno-s;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  &__desc {
+    font-size: $tamanio-fuente-texto-pequeno-s;
+    color: var(--text-secondary);
+    line-height: $altura-linea-parrafo;
+    margin: 0;
+  }
+
+  &__vars {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $espaciado-xs;
+    margin-top: auto;
+
+    code {
+      font-size: $tamanio-fuente-texto-pequeno-xs;
+      padding: 2px $espaciado-xs;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: $radio-xs;
+      color: var(--color-primary);
+    }
+  }
+}
+
+/* ========================================
+   LAYOUT - Breakpoints con Cards Polaroid
+   ======================================== */
+.showcase__row--wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espaciado-l;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.showcase__item--breakpoint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $espaciado-s;
+
+  app-card {
+    width: 180px;
+  }
+
+  code {
+    font-size: $tamanio-fuente-texto-pequeno-xs;
+    padding: $espaciado-xs $espaciado-s;
+    background-color: var(--bg-secondary);
+    border: $borde-brutal-thin;
+    border-radius: $radio-xs;
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+}
+
+.showcase__code {
+  display: block;
+  text-align: center;
+}
+
+/* ========================================
+   LAYOUT - Z-Index Scale Visual
+   ======================================== */
+.z-index-scale {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 600px;
+  margin: 0 auto;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $espaciado-s;
+    padding: $espaciado-xs $espaciado-s;
+    background-color: var(--bg-secondary);
+    border: $borde-brutal-thin;
+    border-radius: $radio-xs;
+    transition: all $transicion-rapida;
+
+    &:hover {
+      transform: translateX(4px);
+      box-shadow: 2px 2px 0px var(--shadow-color);
+    }
+
+    // Gradiente visual de importancia
+    &--10 { background-color: rgba($color-error, 0.3); }
+    &--9 { background-color: rgba($color-error, 0.2); }
+    &--8 { background-color: rgba($color-advertencia-light, 0.3); }
+    &--7 { background-color: rgba($color-advertencia-light, 0.2); }
+    &--6 { background-color: rgba($color-primario-light, 0.3); }
+    &--5 { background-color: rgba($color-primario-light, 0.2); }
+    &--4 { background-color: rgba($color-exito, 0.3); }
+    &--3 { background-color: rgba($color-exito, 0.2); }
+    &--2 { background-color: rgba($color-informacion, 0.2); }
+    &--1 { background-color: rgba($color-informacion, 0.1); }
+    &--0 { background-color: var(--bg-primary); }
+  }
+
+  &__level {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-primary);
+    border: 2px solid var(--border-color);
+    border-radius: $radio-xs;
+    font-weight: 700;
+    font-size: $tamanio-fuente-texto-pequeno-s;
+    color: var(--text-dark);
+    flex-shrink: 0;
+  }
+
+  &__name {
+    flex: 1;
+    font-family: 'Courier New', monospace;
+    font-size: $tamanio-fuente-texto-pequeno-s;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  &__desc {
+    font-size: $tamanio-fuente-texto-pequeno-xs;
+    color: var(--text-secondary);
+    text-align: right;
+
+    @media (max-width: $breakpoint-tablet) {
+      display: none;
+    }
+  }
+}
+
+/* ========================================
+   LAYOUT - CSS Variables Cards
+   ======================================== */
+.css-var-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $espaciado-xs;
+  padding: $espaciado-m;
+  background-color: var(--bg-primary);
+  border: $borde-brutal-medium;
+  border-radius: $radio-s;
+  box-shadow: 3px 3px 0px var(--shadow-color);
+  transition: all $transicion-rapida;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px var(--shadow-color);
+  }
+
+  &__name {
+    font-family: 'Courier New', monospace;
+    font-size: $tamanio-fuente-texto-pequeno-xs;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-align: center;
+  }
+
+  &__swatch {
+    width: 60px;
+    height: 60px;
+    border: $borde-brutal-medium;
+    border-radius: $radio-xs;
+    box-shadow: 2px 2px 0px var(--shadow-color);
+  }
+
+  &__desc {
+    font-size: $tamanio-fuente-texto-pequeno-xs;
+    color: var(--text-secondary);
+    text-align: center;
+  }
 }
