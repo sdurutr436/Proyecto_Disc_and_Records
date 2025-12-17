@@ -1,4 +1,5 @@
-@import '../../../styles/00-settings/variables';
+@use '../../../styles/00-settings/variables' as *;
+@use '../../../styles/01-tools/mixins';
 
 // Define la altura de tu navbar principal aquí
 $header-height: 70px;
@@ -771,17 +772,26 @@ app-breadcrumbs {
       box-shadow: $sombra-brutal-l;
     }
 
-    // Sombras vinilo
+    // Sombras vinilo - usando variables CSS para soporte de dark mode
     &--vinyl-s {
-      box-shadow: $sombra-vinilo-s;
+      box-shadow:
+        2px 2px 0px var(--vinyl-shadow-layer-1),
+        4px 4px 0px var(--vinyl-shadow-layer-2);
     }
 
     &--vinyl-m {
-      box-shadow: $sombra-vinilo-m;
+      box-shadow:
+        2px 2px 0px var(--vinyl-shadow-layer-1),
+        4px 4px 0px var(--vinyl-shadow-layer-2),
+        6px 6px 0px var(--vinyl-shadow-layer-3);
     }
 
     &--vinyl-l {
-      box-shadow: $sombra-vinilo-l;
+      box-shadow:
+        2px 2px 0px var(--vinyl-shadow-layer-1),
+        4px 4px 0px var(--vinyl-shadow-layer-2),
+        6px 6px 0px var(--vinyl-shadow-layer-3),
+        8px 8px 0px var(--vinyl-shadow-layer-4);
     }
   }
 
@@ -865,4 +875,295 @@ app-breadcrumbs {
     border-radius: $radio-xs;
     color: var(--text-primary);
   }
+}
+
+/* ========================================
+   ENLACES / LINKS - Atomic Elements
+   ======================================== */
+.link {
+  font-size: $tamanio-fuente-parrafo;
+  line-height: $altura-linea-parrafo;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: $espaciado-xs;
+  transition: all $transicion-rapida;
+
+  &:hover {
+    color: var(--color-secondary);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: $radio-xs;
+  }
+
+  // Variante primario con mayor peso
+  &--primary {
+    color: var(--color-primary);
+    font-weight: 600;
+
+    &:hover {
+      color: var(--color-secondary);
+    }
+  }
+
+  // Variante con subrayado animado
+  &--underlined {
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--color-primary);
+      transition: width $transicion-rapida;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+  }
+
+  // Variante con flecha (sin usar pseudo-elementos para el texto)
+  &--arrow {
+    &:hover {
+      gap: calc(#{$espaciado-xs} + 2px);
+    }
+  }
+}
+
+/* ========================================
+   TOGGLE SWITCH - Atomic Element
+   ======================================== */
+.toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: $espaciado-s;
+  cursor: pointer;
+  user-select: none;
+
+  &--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.toggle {
+  width: 60px;
+  height: 30px;
+  background-color: var(--bg-secondary);
+  border: $borde-brutal-medium;
+  border-radius: $radio-s;
+  box-shadow: 2px 2px 0px var(--shadow-color);
+  cursor: pointer;
+  position: relative;
+  appearance: none;
+  transition: background-color $transicion-base;
+
+  // El "thumb" interno
+  &::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: $radio-xs;
+    top: 2px;
+    left: 2px;
+    transition: transform $transicion-base $ease-brutal;
+  }
+
+  // Estado checked (activado)
+  &:checked {
+    background-color: var(--color-primary);
+
+    &::after {
+      transform: translateX(30px);
+    }
+  }
+
+  // Focus visible
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  // Hover (solo cuando no está disabled)
+  &:not(:disabled):hover {
+    box-shadow: 3px 3px 0px var(--shadow-color);
+  }
+
+  // Disabled
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.toggle-label {
+  font-size: $tamanio-fuente-parrafo;
+  line-height: $altura-linea-parrafo;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* ========================================
+   CHECKBOX - Atomic Element
+   ======================================== */
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: $espaciado-xs;
+  cursor: pointer;
+  user-select: none;
+
+  &--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.checkbox {
+  width: 24px;
+  height: 24px;
+  border: $borde-brutal-medium;
+  border-radius: $radio-xs;
+  background-color: var(--bg-primary);
+  box-shadow: 2px 2px 0px var(--shadow-color);
+  cursor: pointer;
+  appearance: none;
+  position: relative;
+  transition: all $transicion-rapida;
+  flex-shrink: 0;
+
+  // Checkmark cuando está checked
+  &:checked {
+    background-color: var(--color-primary);
+
+    &::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-dark);
+    }
+  }
+
+  // Focus visible
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  // Hover
+  &:not(:disabled):hover {
+    box-shadow: 3px 3px 0px var(--shadow-color);
+    transform: translate(-1px, -1px);
+  }
+
+  // Disabled
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.checkbox-label {
+  font-size: $tamanio-fuente-parrafo;
+  line-height: $altura-linea-parrafo;
+  color: var(--text-primary);
+  font-weight: 400;
+}
+
+/* ========================================
+   RADIO BUTTON - Atomic Element
+   ======================================== */
+.radio-wrapper {
+  display: flex;
+  align-items: center;
+  gap: $espaciado-xs;
+  cursor: pointer;
+  user-select: none;
+
+  &--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.radio {
+  width: 24px;
+  height: 24px;
+  border: $borde-brutal-medium;
+  border-radius: $radio-redondo;
+  background-color: var(--bg-primary);
+  box-shadow: 2px 2px 0px var(--shadow-color);
+  cursor: pointer;
+  appearance: none;
+  position: relative;
+  transition: all $transicion-rapida;
+  flex-shrink: 0;
+
+  // Punto interno cuando está checked
+  &:checked {
+    background-color: var(--color-primary);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background-color: var(--text-dark);
+      border-radius: $radio-redondo;
+    }
+  }
+
+  // Focus visible
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  // Hover
+  &:not(:disabled):hover {
+    box-shadow: 3px 3px 0px var(--shadow-color);
+    transform: translate(-1px, -1px);
+  }
+
+  // Disabled
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.radio-label {
+  font-size: $tamanio-fuente-parrafo;
+  line-height: $altura-linea-parrafo;
+  color: var(--text-primary);
+  font-weight: 400;
 }

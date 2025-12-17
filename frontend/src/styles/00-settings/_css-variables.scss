@@ -45,6 +45,12 @@
   --color-stripe-4: #{$color-franja-4};              // #CA6703
   --color-stripe-5: #{$color-franja-5};              // #BB3F03
   --color-stripe-6: #{$color-franja-6};              // #9D2227
+
+  /* --- Colores de sombras vinilo (light mode) --- */
+  --vinyl-shadow-layer-1: #{$color-acentuado-light}; // #9D2227 (rojo vino)
+  --vinyl-shadow-layer-2: #{$color-contraste-light}; // #BB3F03 (naranja rojizo)
+  --vinyl-shadow-layer-3: #{$color-secundario-light}; // #CA6703 (naranja quemado)
+  --vinyl-shadow-layer-4: #{$color-primario-light};  // #ED9C05 (naranja dorado)
 }
 
 /* ========================================
@@ -91,6 +97,12 @@
   --color-stripe-4: #{$color-franja-4};
   --color-stripe-5: #{$color-franja-5};
   --color-stripe-6: #{$color-franja-6};
+
+  /* --- Colores de sombras vinilo (dark mode - tonos fríos) --- */
+  --vinyl-shadow-layer-1: #{$color-primario-dark};   // #93CFBB (verde menta)
+  --vinyl-shadow-layer-2: #{$color-secundario-dark}; // #0A9295 (teal vibrante)
+  --vinyl-shadow-layer-3: #{$color-contraste-dark};  // #015F72 (teal profundo)
+  --vinyl-shadow-layer-4: #{$color-acentuado-dark};  // #01131B (azul noche)
 
   /* --- OVERRIDE GLOBAL: Bordes blancos en dark mode --- */
   /* Esto sobrescribe los bordes hardcodeados de SCSS */
