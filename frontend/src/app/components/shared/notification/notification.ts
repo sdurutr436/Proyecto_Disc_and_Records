@@ -83,6 +83,13 @@ export class Notification implements OnInit, OnDestroy {
   @Input() duration: number = 5000;
 
   /**
+   * Índice de apilado para notificaciones estáticas (usadas en templates)
+   * El servicio dinámico NO usa esto - calcula posiciones él mismo
+   * -1 significa que no se usa apilado estático
+   */
+  @Input() stackIndex: number = -1;
+
+  /**
    * OUTPUT: Evento emitido cuando se cierra la notificación
    * NotificationService se subscribe a este evento para eliminar del DOM
    */
@@ -199,6 +206,33 @@ export class Notification implements OnInit, OnDestroy {
       classes += ' notification--visible';
     }
     return classes;
+  }
+
+  /**
+   * COMPUTED: Estilos inline para posicionamiento de apilado estático
+   * Solo se aplica si stackIndex >= 0 (notificaciones en template)
+   * Las notificaciones dinámicas (servicio) no usan esto
+   *
+   * @returns Objeto de estilos para [ngStyle]
+   */
+  get stackStyles(): { [key: string]: string } {
+    // Si no hay stackIndex definido, no aplicar estilos de apilado
+    if (this.stackIndex < 0) {
+      return {};
+    }
+
+    const INITIAL_OFFSET = 20; // Margen inicial desde el borde
+    const NOTIFICATION_HEIGHT = 92; // Altura real de notificación (min-height 60 + padding + border)
+    const GAP = 12; // Espacio entre notificaciones
+
+    const offset = INITIAL_OFFSET + (this.stackIndex * (NOTIFICATION_HEIGHT + GAP));
+
+    // Aplicar al eje vertical según la posición
+    if (this.position.startsWith('top')) {
+      return { 'top': `${offset}px` };
+    } else {
+      return { 'bottom': `${offset}px` };
+    }
   }
 
   /**

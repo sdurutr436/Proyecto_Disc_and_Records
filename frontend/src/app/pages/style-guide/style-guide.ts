@@ -238,11 +238,15 @@ export class StyleGuide {
     { title: 'Hotel California', artist: 'Eagles', duration: '6:30' }
   ];
 
-  // Control para mostrar notificaciones
-  showNotificationSuccess: boolean = false;
-  showNotificationError: boolean = false;
-  showNotificationWarning: boolean = false;
-  showNotificationInfo: boolean = false;
+  // Control para mostrar notificaciones estáticas (Toast)
+  // Array que permite múltiples notificaciones del mismo tipo
+  staticNotifications: Array<{
+    id: number;
+    type: 'success' | 'error' | 'warning' | 'info';
+    title: string;
+    message: string;
+  }> = [];
+  private notificationIdCounter = 0;
 
   // Control para Modal
   isModalOpen = signal(false);
@@ -279,38 +283,28 @@ export class StyleGuide {
     { id: 'similar', label: 'Similares', content: 'Álbumes y artistas similares que te podrían gustar.' }
   ];
 
-  // Métodos para manejar notificaciones (forma antigua - estática)
+  // Métodos para manejar notificaciones estáticas (Toast)
+  // Cada llamada añade una nueva notificación al array
   showToast(type: 'success' | 'error' | 'warning' | 'info'): void {
-    switch(type) {
-      case 'success':
-        this.showNotificationSuccess = true;
-        break;
-      case 'error':
-        this.showNotificationError = true;
-        break;
-      case 'warning':
-        this.showNotificationWarning = true;
-        break;
-      case 'info':
-        this.showNotificationInfo = true;
-        break;
-    }
+    const messages = {
+      success: { title: '¡Guardado!', message: 'Tu lista de reproducción se ha actualizado.' },
+      error: { title: 'Error de conexión', message: 'No se pudo cargar la información del álbum.' },
+      warning: { title: 'Sesión próxima a expirar', message: 'Tu sesión caducará en 2 minutos.' },
+      info: { title: 'Nueva funcionalidad', message: 'Ahora puedes exportar tus listas de reproducción.' }
+    };
+
+    this.staticNotifications.push({
+      id: ++this.notificationIdCounter,
+      type,
+      ...messages[type]
+    });
   }
 
-  hideNotification(type: 'success' | 'error' | 'warning' | 'info'): void {
-    switch(type) {
-      case 'success':
-        this.showNotificationSuccess = false;
-        break;
-      case 'error':
-        this.showNotificationError = false;
-        break;
-      case 'warning':
-        this.showNotificationWarning = false;
-        break;
-      case 'info':
-        this.showNotificationInfo = false;
-        break;
+  // Elimina una notificación específica por su ID
+  removeStaticNotification(id: number): void {
+    const index = this.staticNotifications.findIndex(n => n.id === id);
+    if (index !== -1) {
+      this.staticNotifications.splice(index, 1);
     }
   }
 

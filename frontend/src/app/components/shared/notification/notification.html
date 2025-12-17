@@ -1,4 +1,4 @@
-<div [class]="notificationClasses" role="alert" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+<div [class]="notificationClasses" [ngStyle]="stackStyles" role="alert" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
   <div class="notification__icon">{{ defaultIcon }}</div>
 
   <div class="notification__content">

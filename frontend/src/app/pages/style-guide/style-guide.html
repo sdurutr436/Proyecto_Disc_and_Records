@@ -1713,48 +1713,16 @@
     }
   </div>
 
-  <!-- Notificaciones flotantes -->
-  @if (showNotificationSuccess) {
+  <!-- Notificaciones flotantes estáticas (Toast) -->
+  @for (notification of staticNotifications; track notification.id; let i = $index) {
     <app-notification
-      type="success"
-      title="¡Guardado!"
-      message="Tu lista de reproducción se ha actualizado."
+      [type]="notification.type"
+      [title]="notification.title"
+      [message]="notification.message"
       position="top-right"
+      [stackIndex]="i"
       [autoDismiss]="false"
-      (dismissed)="hideNotification('success')"
-    ></app-notification>
-  }
-
-  @if (showNotificationError) {
-    <app-notification
-      type="error"
-      title="Error de conexión"
-      message="No se pudo cargar la información del álbum."
-      position="top-right"
-      [autoDismiss]="false"
-      (dismissed)="hideNotification('error')"
-    ></app-notification>
-  }
-
-  @if (showNotificationWarning) {
-    <app-notification
-      type="warning"
-      title="Sesión próxima a expirar"
-      message="Tu sesión caducará en 2 minutos."
-      position="top-right"
-      [autoDismiss]="false"
-      (dismissed)="hideNotification('warning')"
-    ></app-notification>
-  }
-
-  @if (showNotificationInfo) {
-    <app-notification
-      type="info"
-      title="Nueva funcionalidad"
-      message="Ahora puedes exportar tus listas de reproducción."
-      position="top-right"
-      [autoDismiss]="false"
-      (dismissed)="hideNotification('info')"
+      (dismissed)="removeStaticNotification(notification.id)"
     ></app-notification>
   }
 </div>
