@@ -6,6 +6,9 @@ $header-height: 70px;
 $header-height-mobile: 60px;
 
 .style-guide {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  padding-top: 0; // Sin padding, el nav sticky lo maneja
   position: relative;
 
   // =============================================
@@ -126,10 +129,6 @@ $header-height-mobile: 60px;
       border-color: var(--text-primary);
     }
   }
-  min-height: 100vh;
-  background-color: var(--bg-primary);
-  padding-top: 0; // Sin padding, el nav sticky lo maneja
-  position: relative;
 
   // =============================================
   // CONTENIDO PRINCIPAL
@@ -373,6 +372,30 @@ app-carousel {
   width: 100%;
   max-width: 100%;
   min-width: 0;
+
+  // Cards DENTRO del carrusel - mantienen su tamaño fijo
+  // El carrusel ya define flex: 0 0 200px para sus hijos
+  .carousel__track > app-card {
+    display: block;
+    flex: 0 0 $max-width-card-polaroid !important;
+    width: $max-width-card-polaroid !important;
+    min-width: $max-width-card-polaroid !important;
+    max-width: $max-width-card-polaroid !important;
+
+    @media (max-width: $breakpoint-tablet) {
+      flex: 0 0 170px !important;
+      width: 170px !important;
+      min-width: 170px !important;
+      max-width: 170px !important;
+    }
+
+    @media (max-width: 480px) {
+      flex: 0 0 150px !important;
+      width: 150px !important;
+      min-width: 150px !important;
+      max-width: 150px !important;
+    }
+  }
 }
 
 /* --- Fix para componentes de formulario --- */
@@ -386,8 +409,10 @@ app-form-radio-group {
   max-width: 100%;
 }
 
-/* --- Fix para cards dentro de grids --- */
-app-card {
+/* --- Fix para cards dentro de grids (NO dentro de carruseles) --- */
+.showcase__row app-card,
+.showcase__column app-card,
+.showcase__item app-card {
   display: block;
   width: 100%;
   max-width: 100%;

@@ -1,1 +1,0 @@
-import{Na as o,fb as m,gb as n,vb as a}from"./chunk-P5X6ZLZ4.js";var s=class t{static \u0275fac=function(e){return new(e||t)};static \u0275cmp=o({type:t,selectors:[["app-home"]],decls:2,vars:0,template:function(e,p){e&1&&(m(0,"p"),a(1,"home works!"),n())},encapsulation:2})};export{s as Home};
