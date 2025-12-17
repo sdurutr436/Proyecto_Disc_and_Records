@@ -9,15 +9,14 @@
 
   <!-- Contenido del modal -->
   <div class="modal__content">
-    <!-- Header del modal -->
+    <!-- Header del modal (solo si hay título) -->
+    @if (title()) {
     <div class="modal__header">
-      @if (title()) {
       <h2
         id="modal-title"
         class="modal__title">
         {{ title() }}
       </h2>
-      }
       <button
         class="modal__close"
         (click)="close()"
@@ -37,6 +36,28 @@
         </svg>
       </button>
     </div>
+    }
+    <!-- Botón cerrar flotante (cuando no hay header) -->
+    @if (!title()) {
+    <button
+      class="modal__close modal__close--floating"
+      (click)="close()"
+      aria-label="Cerrar modal"
+      type="button">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    }
 
     <!-- Body del modal: contenido dinámico proyectado -->
     <div class="modal__body">

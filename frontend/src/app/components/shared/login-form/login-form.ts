@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -16,6 +16,10 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } 
  *
  * PATRÓN: FORMULARIOS REACTIVOS
  * Migración de template-driven (Signals) a formularios reactivos (FormBuilder + FormGroup)
+ *
+ * NAVEGACIÓN ENTRE MODALES:
+ * - onForgotPassword: emite cuando el usuario quiere recuperar contraseña
+ * - onRegister: emite cuando el usuario quiere crear una cuenta
  *
  * VENTAJAS:
  * - Validación centralizada en el componente (no dispersa en templates)
@@ -49,6 +53,20 @@ export class LoginForm {
    * Desactiva el botón de submit mientras se envía la solicitud
    */
   isSubmitting = signal(false);
+
+  // ============================================
+  // OUTPUTS PARA NAVEGACIÓN ENTRE MODALES
+  // ============================================
+
+  /**
+   * Emite cuando el usuario hace click en "¿Olvidaste tu contraseña?"
+   */
+  onForgotPassword = output<void>();
+
+  /**
+   * Emite cuando el usuario hace click en "¿No tienes cuenta? Crea una"
+   */
+  onRegister = output<void>();
 
   /**
    * Constructor

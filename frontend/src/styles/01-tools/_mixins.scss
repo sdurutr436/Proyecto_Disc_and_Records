@@ -197,7 +197,7 @@
   }
 }
 
-// Mensaje de error con icono
+// Mensaje de error con icono (altura fija para evitar resize del formulario)
 @mixin form-error-message {
   font-size: vars.$tamanio-fuente-texto-pequeno-xs;
   color: vars.$color-error;
@@ -205,6 +205,8 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  min-height: 1.5em; /* Altura fija para evitar saltos */
+  margin: 0;
 
   &::before {
     content: '⚠';
@@ -212,12 +214,15 @@
   }
 }
 
-// Texto de ayuda/hint
+// Texto de ayuda/hint (altura fija para evitar resize del formulario)
 @mixin form-hint {
   font-size: vars.$tamanio-fuente-texto-pequeno-xs;
   color: var(--text-secondary);
   font-style: italic;
+  min-height: 1.5em; /* Altura fija para evitar saltos */
   margin: 0;
+  display: flex;
+  align-items: center;
 }
 
 // Contenedor de formulario completo (wrapper externo)

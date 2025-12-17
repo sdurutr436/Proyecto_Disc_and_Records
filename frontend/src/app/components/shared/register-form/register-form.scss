@@ -2,17 +2,27 @@
 @use '../../../../styles/01-tools/mixins' as mix;
 
 .register-form {
-  @include mix.form-container(500px);
+  @include mix.flex-column(vars.$espaciado-s);
+  width: 100%;
 }
 
 /* --- Fieldset --- */
 .register-form__fieldset {
-  @include mix.form-fieldset;
+  border: vars.$borde-brutal-thin;
+  border-radius: vars.$radio-xs;
+  padding: vars.$espaciado-s;
+  margin: 0;
+  @include mix.flex-column(vars.$espaciado-s);
+  background-color: var(--bg-secondary);
 }
 
 /* --- Legend --- */
 .register-form__legend {
-  @include mix.form-legend;
+  font-size: vars.$tamanio-fuente-h5;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 0 vars.$espaciado-xs;
+  @include mix.text-uppercase;
 }
 
 /* --- Campo individual --- */
@@ -61,15 +71,22 @@
 
 .register-form__footer-text {
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   margin: 0;
 }
 
-.register-form__link {
+/* --- Botón de navegación (estilo link) --- */
+.register-form__link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
   color: var(--color-primary);
   text-decoration: none;
-  font-weight: 600;
+  cursor: pointer;
   transition: color vars.$transicion-rapida;
+  font-weight: 600;
 
   &:hover {
     color: var(--color-secondary);

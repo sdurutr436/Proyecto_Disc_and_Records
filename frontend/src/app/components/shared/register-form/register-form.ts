@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
@@ -16,6 +16,9 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators, A
  *   - password: requerido + mínimo 8 caracteres + patrón (mayúscula + especial)
  *   - confirmPassword: requerido
  *   - Validador de grupo: passwordMatchValidator (verifica que password y confirmPassword coincidan)
+ *
+ * NAVEGACIÓN ENTRE MODALES:
+ * - onLogin: emite cuando el usuario quiere ir al login
  *
  * PATRÓN: FORMULARIOS REACTIVOS CON VALIDADORES CUSTOM
  * - Validadores integrados para reglas simples
@@ -44,6 +47,15 @@ export class RegisterForm {
    * Estado de envío
    */
   isSubmitting = signal(false);
+
+  // ============================================
+  // OUTPUTS PARA NAVEGACIÓN ENTRE MODALES
+  // ============================================
+
+  /**
+   * Emite cuando el usuario hace click en "¿Ya tienes cuenta? Inicia sesión"
+   */
+  onLogin = output<void>();
 
   /**
    * Constructor

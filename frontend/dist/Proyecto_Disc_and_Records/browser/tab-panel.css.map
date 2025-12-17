@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/components/shared/tabs/tab-panel.ts"],
+  "sourcesContent": ["\n    .tab-panel {\n      animation: fadeIn 0.3s ease;\n    }\n\n    @keyframes fadeIn {\n      from {\n        opacity: 0;\n        transform: translateY(0.5rem);\n      }\n      to {\n        opacity: 1;\n        transform: translateY(0);\n      }\n    }\n  "],
+  "mappings": ";AACI,CAAA;AACE,aAAA,OAAA,KAAA;;AAGF,WAHE;AAIA;AACE,aAAA;AACA,eAAA,WAAA;;AAEF;AACE,aAAA;AACA,eAAA,WAAA;;;",
+  "names": []
+}

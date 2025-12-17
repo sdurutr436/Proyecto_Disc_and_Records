@@ -46,7 +46,7 @@
       <p
         id="username-help"
         class="register-form__help">
-        Este será tu nombre visible en Discs & Records
+        3-20 caracteres (letras, números, guiones bajos)
       </p>
       }
     </div>
@@ -88,7 +88,7 @@
       <p
         id="email-help"
         class="register-form__help">
-        Lo usaremos para enviarte actualizaciones de tus álbumes favoritos
+        Usaremos este correo para tu cuenta
       </p>
       }
     </div>
@@ -128,7 +128,7 @@
           Mínimo 8 caracteres
         }
         @if (passwordControl?.hasError('pattern')) {
-          Debe contener mayúscula y carácter especial (!@#$%...)
+          Debe tener mayúscula y carácter especial
         }
       </span>
       }
@@ -138,7 +138,7 @@
       <span
         id="password-help"
         class="register-form__help">
-        Mínimo 8 caracteres para proteger tu cuenta
+        8+ caracteres, mayúscula y especial (!@#$%...)
       </span>
       }
     </div>
@@ -199,7 +199,12 @@
   <div class="register-form__footer">
     <p class="register-form__footer-text">
       ¿Ya tienes cuenta?
-      <a href="#" class="register-form__link">Inicia sesión</a>
+      <button
+        type="button"
+        class="register-form__link-btn"
+        (click)="onLogin.emit()">
+        Inicia sesión
+      </button>
     </p>
   </div>
 </form>

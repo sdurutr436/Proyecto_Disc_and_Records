@@ -29,13 +29,19 @@ export class Modal {
    */
   isVisible = signal(false);
 
+  /**
+   * Flag para distinguir cierre por usuario vs cierre por input
+   */
+  private closedByUser = false;
+
   constructor() {
     // Sincronizar isVisible con isOpen usando effect
     effect(() => {
       if (this.isOpen()) {
         this.open();
       } else {
-        this.close();
+        // Cierre por cambio de input, no emitir evento
+        this.closeWithoutEmit();
       }
     });
   }
@@ -45,12 +51,13 @@ export class Modal {
    */
   open() {
     this.isVisible.set(true);
+    this.closedByUser = false;
     // Prevenir scroll del body cuando el modal está abierto
     document.body.style.overflow = 'hidden';
   }
 
   /**
-   * Cerrar modal
+   * Cerrar modal (por acción del usuario)
    */
   close() {
     this.isVisible.set(false);
@@ -58,6 +65,14 @@ export class Modal {
     document.body.style.overflow = '';
     // Emitir evento de cierre al padre
     this.onClose.emit();
+  }
+
+  /**
+   * Cerrar modal sin emitir evento (por cambio de input)
+   */
+  private closeWithoutEmit() {
+    this.isVisible.set(false);
+    document.body.style.overflow = '';
   }
 
   /**

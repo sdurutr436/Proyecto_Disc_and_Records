@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -12,6 +12,9 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } 
  * ESTRUCTURA:
  * FormGroup: forgotForm
  *   - email: requerido + email válido
+ *
+ * NAVEGACIÓN ENTRE MODALES:
+ * - onBackToLogin: emite cuando el usuario quiere volver al login
  *
  * ESTADOS ESPECIALES:
  * - emailSent: indica si el email fue enviado exitosamente
@@ -43,6 +46,15 @@ export class ForgotPasswordForm {
    * Cuando es true, muestra confirmación y opción para enviar otro
    */
   emailSent = signal(false);
+
+  // ============================================
+  // OUTPUTS PARA NAVEGACIÓN ENTRE MODALES
+  // ============================================
+
+  /**
+   * Emite cuando el usuario hace click en "Volver al inicio de sesión"
+   */
+  onBackToLogin = output<void>();
 
   /**
    * Constructor

@@ -12,9 +12,51 @@
 
       <!-- Botones debajo del logo -->
       <div class="header__buttons">
-        <button class="header__btn header__btn--left">REGISTRARSE</button>
-        <button class="header__btn header__btn--right">INICIAR SESIÓN</button>
+        <button
+          class="header__btn header__btn--left"
+          (click)="openRegisterModal()"
+          type="button">
+          REGISTRARSE
+        </button>
+        <button
+          class="header__btn header__btn--right"
+          (click)="openLoginModal()"
+          type="button">
+          INICIAR SESIÓN
+        </button>
       </div>
     </div>
   </div>
 </header>
+
+<!-- ========================================
+     MODALES DE AUTENTICACIÓN
+     ======================================== -->
+
+<!-- Modal de Login -->
+<app-modal
+  [isOpen]="activeModal() === 'login'"
+  (onClose)="closeAuthModal()">
+  <app-login-form
+    (onForgotPassword)="navigateToModal('forgot-password')"
+    (onRegister)="navigateToModal('register')">
+  </app-login-form>
+</app-modal>
+
+<!-- Modal de Registro -->
+<app-modal
+  [isOpen]="activeModal() === 'register'"
+  (onClose)="closeAuthModal()">
+  <app-register-form
+    (onLogin)="navigateToModal('login')">
+  </app-register-form>
+</app-modal>
+
+<!-- Modal de Recuperar Contraseña -->
+<app-modal
+  [isOpen]="activeModal() === 'forgot-password'"
+  (onClose)="closeAuthModal()">
+  <app-forgot-password-form
+    (onBackToLogin)="navigateToModal('login')">
+  </app-forgot-password-form>
+</app-modal>

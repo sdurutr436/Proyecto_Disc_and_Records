@@ -97,8 +97,22 @@
     {{ isSubmitting() ? 'INICIANDO SESIÓN...' : 'INICIAR SESIÓN' }}
   </button>
 
-  <!-- Link de recuperación de contraseña -->
+  <!-- Links de navegación -->
   <div class="login-form__footer">
-    <a href="#" class="login-form__link">¿Olvidaste tu contraseña?</a>
+    <button
+      type="button"
+      class="login-form__link-btn"
+      (click)="onForgotPassword.emit()">
+      ¿Olvidaste tu contraseña?
+    </button>
+    <p class="login-form__footer-text">
+      ¿No tienes cuenta?
+      <button
+        type="button"
+        class="login-form__link-btn"
+        (click)="onRegister.emit()">
+        Crea una
+      </button>
+    </p>
   </div>
 </form>
