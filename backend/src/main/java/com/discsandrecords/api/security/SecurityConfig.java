@@ -124,6 +124,9 @@ public class SecurityConfig {
                         // Autenticación (login, registro)
                         .requestMatchers("/api/auth/**").permitAll()
 
+                        // Actuator (health checks para Docker/Kubernetes)
+                        .requestMatchers("/actuator/**").permitAll()
+
                         // Documentación OpenAPI/Swagger
                         .requestMatchers(
                                 "/v3/api-docs/**",

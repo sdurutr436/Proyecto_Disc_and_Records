@@ -1,0 +1,30 @@
+# Build outputs
+target/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Maven wrapper (se copia explícitamente)
+# .mvn/
+# mvnw
+# mvnw.cmd

@@ -84,6 +84,20 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- MariaDB/MySQL Driver (producción/docker) -->
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<!-- PostgreSQL Driver (opcional) -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- Lombok para reducir boilerplate -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
