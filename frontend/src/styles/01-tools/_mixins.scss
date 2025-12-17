@@ -306,7 +306,7 @@
 }
 
 // Elemento sticky
-@mixin sticky-top($z-index: 3) {
+@mixin sticky-top($z-index: vars.$z-sticky) {
   position: sticky;
   top: 0;
   z-index: $z-index;
@@ -397,7 +397,7 @@
    ======================================== */
 
 // Overlay fullscreen con backdrop
-@mixin overlay-backdrop($z-index: 4, $bg-opacity: 0.7) {
+@mixin overlay-backdrop($z-index: vars.$z-overlay, $bg-opacity: 0.7) {
   position: fixed;
   top: 0;
   left: 0;
@@ -411,7 +411,7 @@
 // Posición fixed en esquina
 @mixin position-fixed($position: 'top-right', $offset: vars.$espaciado-m) {
   position: fixed;
-  z-index: 4;
+  z-index: vars.$z-popover;
 
   @if $position == 'top-right' {
     top: $offset;

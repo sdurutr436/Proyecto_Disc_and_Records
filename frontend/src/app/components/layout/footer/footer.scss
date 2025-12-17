@@ -11,6 +11,7 @@
   padding: vars.$espaciado-xl 0;
   overflow: hidden;
   position: relative;
+  z-index: vars.$z-sticky; // Por debajo del sidebar
   transition: padding vars.$transicion-base;
 }
 

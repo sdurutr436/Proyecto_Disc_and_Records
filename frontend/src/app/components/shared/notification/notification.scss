@@ -3,7 +3,7 @@
 
 .notification {
   position: fixed;
-  z-index: vars.$z-overlay;
+  z-index: vars.$z-notification;
   display: flex;
   align-items: flex-start;
   gap: vars.$espaciado-s;

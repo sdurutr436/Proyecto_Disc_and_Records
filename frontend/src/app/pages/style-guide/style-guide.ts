@@ -1,7 +1,9 @@
-import { Component, signal, inject, ViewChild } from '@angular/core';
+import { Component, signal, inject, ViewChild, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Button } from '../../components/shared/button/button';
 import { Card, CardAction } from '../../components/shared/card/card';
+import { Badge } from '../../components/shared/badge/badge';
+import { FormInput } from '../../components/shared/form-input/form-input';
 import { FormTextarea } from '../../components/shared/form-textarea/form-textarea';
 import { FormSelect, SelectOption } from '../../components/shared/form-select/form-select';
 import { FormCheckbox } from '../../components/shared/form-checkbox/form-checkbox';
@@ -21,9 +23,7 @@ import { Spinner } from '../../components/shared/spinner/spinner';
 import { ProgressBar } from '../../components/shared/progress-bar/progress-bar';
 import { NotificationService } from '../../services/notification';
 import { LoadingService } from '../../services/loading';
-
-// Tipo para las secciones del menu
-type StyleGuideSection = 'foundations' | 'atoms' | 'molecules' | 'organisms' | 'layout';
+import { StyleGuideNavigationService, StyleGuideSection } from '../../services/style-guide-navigation';
 
 @Component({
   selector: 'app-style-guide',
@@ -32,6 +32,8 @@ type StyleGuideSection = 'foundations' | 'atoms' | 'molecules' | 'organisms' | '
     CommonModule,
     Button,
     Card,
+    Badge,
+    FormInput,
     FormTextarea,
     FormSelect,
     FormCheckbox,
@@ -57,10 +59,10 @@ export class StyleGuide {
   // Inyectar servicios
   private notificationService = inject(NotificationService);
   private loadingService = inject(LoadingService);
+  private styleGuideNav = inject(StyleGuideNavigationService);
 
-  // Menu lateral - seccion activa
-  activeSection = signal<StyleGuideSection>('foundations');
-  menuOpen = signal<boolean>(false);
+  // Usar el signal del servicio compartido
+  activeSection = this.styleGuideNav.activeSection;
 
   // Opciones del menu
   menuItems: { id: StyleGuideSection; label: string }[] = [
@@ -71,17 +73,9 @@ export class StyleGuide {
     { id: 'layout', label: 'Layout' }
   ];
 
-  // Metodos del menu
-  toggleMenu(): void {
-    this.menuOpen.update(v => !v);
-  }
-
+  // Cambiar sección
   selectSection(section: StyleGuideSection): void {
     this.activeSection.set(section);
-    // Cierra el menú automáticamente si está abierto (útil en móvil)
-    if (this.menuOpen()) {
-      this.menuOpen.set(false);
-    }
   }
 
   // Referencias a carouseles para manipulacion DOM

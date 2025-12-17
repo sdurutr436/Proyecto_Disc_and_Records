@@ -1,0 +1,89 @@
+@use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
+
+/* ========================================
+   COMPONENTE: BADGE
+   Etiquetas y chips neobrutalistas
+   ======================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: vars.$espaciado-xs;
+  font-family: vars.$fuente-principal;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: vars.$borde-brutal-thin;
+  white-space: nowrap;
+  transition: all vars.$transicion-rapida;
+
+  // Tamaño por defecto (md)
+  padding: 4px vars.$espaciado-s;
+  font-size: 0.75rem;
+  border-radius: vars.$radio-xs;
+  box-shadow: 2px 2px 0px var(--shadow-color);
+}
+
+/* ========================================
+   TAMAÑOS
+   ======================================== */
+
+.badge--sm {
+  padding: 2px vars.$espaciado-xs;
+  font-size: 0.625rem;
+  box-shadow: 1px 1px 0px var(--shadow-color);
+}
+
+.badge--md {
+  padding: 4px vars.$espaciado-s;
+  font-size: 0.75rem;
+  box-shadow: 2px 2px 0px var(--shadow-color);
+}
+
+.badge--lg {
+  padding: vars.$espaciado-xs vars.$espaciado-m;
+  font-size: 0.875rem;
+  box-shadow: 3px 3px 0px var(--shadow-color);
+}
+
+/* ========================================
+   VARIANTES DE COLOR
+   ======================================== */
+
+.badge--primary {
+  background-color: var(--color-primary);
+  color: var(--text-dark);
+  border-color: var(--border-color);
+}
+
+.badge--secondary {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.badge--success {
+  background-color: var(--color-success);
+  color: #fff;
+  border-color: var(--border-color);
+}
+
+.badge--warning {
+  background-color: var(--color-warning);
+  color: #000;
+  border-color: var(--border-color);
+}
+
+.badge--error {
+  background-color: var(--color-error);
+  color: #fff;
+  border-color: var(--border-color);
+}
+
+.badge--info {
+  background-color: var(--color-info);
+  color: #fff;
+  border-color: var(--border-color);
+}

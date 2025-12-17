@@ -238,16 +238,19 @@ $ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); // Efecto rebote retro
 
 /* ========================================
    Z-INDEX SCALE
-   Escala centralizada para z-index
+   Escala centralizada para z-index (1-10)
    ======================================== */
-$z-base: 1;
-$z-dropdown: 2;
-$z-sticky: 3;
-$z-overlay: 4;
-$z-modal: 5;
-$z-popover: 6;
-$z-tooltip: 7;
-$z-spinner: 9999;
+$z-base: 0;
+$z-dropdown: 1;
+$z-sticky: 2;
+$z-fixed: 3;        // Elementos fixed genéricos (sidebar, alertas)
+$z-nav: 4;          // Navegación principal
+$z-overlay: 5;      // Overlays y backdrops
+$z-modal: 6;        // Modales
+$z-popover: 7;      // Popovers y dropdowns flotantes
+$z-tooltip: 8;      // Tooltips
+$z-notification: 9; // Notificaciones toast
+$z-spinner: 10;     // Spinner de carga global
 
 /* ========================================
    TAMAÑOS DE ICONOS
@@ -263,7 +266,7 @@ $icon-xl: 3rem;
    ======================================== */
 $max-width-container: 1440px;
 $max-width-modal: 36rem;
-$max-width-form: 450px;
+$max-width-form: 520px;
 $max-width-card: 280px;
 $max-width-card-polaroid: 220px;
 

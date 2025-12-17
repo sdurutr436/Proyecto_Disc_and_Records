@@ -1,31 +1,4 @@
 <div class="style-guide">
-  <!-- Overlay para oscurecer el fondo -->
-  <div
-    class="style-guide__overlay"
-    [class.style-guide__overlay--visible]="menuOpen()"
-    (click)="toggleMenu()">
-  </div>
-
-  <!-- MENU LATERAL FIXED/STICKY OVERLAY -->
-  <aside class="style-guide__sidebar" [class.style-guide__sidebar--open]="menuOpen()">
-    <button class="style-guide__sidebar-toggle" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()">
-      <span class="style-guide__sidebar-toggle-icon">☰</span>
-      <span class="style-guide__sidebar-toggle-label">Secciones</span>
-    </button>
-    <ul class="style-guide__sidebar-menu">
-      @for (item of menuItems; track item.id) {
-        <li class="style-guide__sidebar-item">
-          <button
-            class="style-guide__sidebar-link"
-            [class.style-guide__sidebar-link--active]="activeSection() === item.id"
-            (click)="selectSection(item.id)">
-            {{ item.label }}
-          </button>
-        </li>
-      }
-    </ul>
-  </aside>
-
   <div class="style-guide__container">
     <header class="style-guide__header">
       <h1>Guía de Estilo</h1>
@@ -45,47 +18,197 @@
         <!-- Tipografía -->
         <div class="showcase">
           <h3>Tipografía</h3>
-          <div class="showcase__column">
-            <div class="showcase__item showcase__item--full typography-sample">
-              <h1>Heading 1 - Títulos principales</h1>
-              <h2>Heading 2 - Secciones</h2>
-              <h3>Heading 3 - Subsecciones</h3>
-              <h4>Heading 4 - Elementos</h4>
-              <p>Párrafo con texto normal. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-              <p><strong>Texto en negrita</strong> y <em>texto en cursiva</em></p>
-              <p><small>Texto pequeño para notas y subtítulos</small></p>
+
+          <!-- Space Grotesk - Fuente principal -->
+          <div class="font-showcase">
+            <div class="font-showcase__header">
+              <h4>Space Grotesk</h4>
+              <span class="font-showcase__tag">Fuente Principal</span>
             </div>
-            <code>font-family: var(--font-family-base) | font-family: var(--font-family-headings)</code>
+            <div class="font-showcase__samples" style="font-family: 'Space Grotesk', sans-serif;">
+              <div class="font-showcase__sample">
+                <span class="font-showcase__label">Heading 1 (68px)</span>
+                <h1>Disc and Records</h1>
+              </div>
+              <div class="font-showcase__sample">
+                <span class="font-showcase__label">Heading 2 (42px)</span>
+                <h2>La música que marcó una época</h2>
+              </div>
+              <div class="font-showcase__sample">
+                <span class="font-showcase__label">Heading 3 (26px)</span>
+                <h3>Explora nuestra colección</h3>
+              </div>
+              <div class="font-showcase__sample">
+                <span class="font-showcase__label">Párrafo (16px)</span>
+                <p>Textos de cuerpo, descripciones de productos, contenido general. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Perfecta legibilidad para lectura extendida.</p>
+              </div>
+              <div class="font-showcase__sample">
+                <span class="font-showcase__label">Pequeño (14px)</span>
+                <p class="text-small">Subtítulos, notas y textos secundarios</p>
+              </div>
+            </div>
+            <div class="font-showcase__usage">
+              <strong>Uso:</strong> Textos generales, títulos, botones, navegación, formularios
+            </div>
+          </div>
+
+          <!-- Monoton - Fuente secundaria -->
+          <div class="font-showcase">
+            <div class="font-showcase__header">
+              <h4>Monoton</h4>
+              <span class="font-showcase__tag font-showcase__tag--accent">Fuente Display</span>
+            </div>
+            <div class="font-showcase__samples" style="font-family: 'Monoton', cursive;">
+              <div class="font-showcase__sample">
+                <span class="font-showcase__label">Grande (64px)</span>
+                <div class="monoton-sample monoton-sample--lg">D&R</div>
+              </div>
+              <div class="font-showcase__sample">
+                <span class="font-showcase__label">Mediano (48px)</span>
+                <div class="monoton-sample monoton-sample--md">RETRO</div>
+              </div>
+              <div class="font-showcase__sample">
+                <span class="font-showcase__label">Pequeño (32px)</span>
+                <div class="monoton-sample monoton-sample--sm">70s VIBES</div>
+              </div>
+            </div>
+            <div class="font-showcase__usage">
+              <strong>Uso:</strong> Logo, títulos decorativos, elementos destacados con estética retro/70s
+            </div>
           </div>
         </div>
 
         <!-- Colores -->
         <div class="showcase">
-          <h3>Paleta de Colores</h3>
-          <div class="showcase__grid showcase__grid--colors">
-            <div class="color-swatch color-swatch--primary">
-              <span class="color-swatch__name">Primary</span>
-              <code>--color-accent-primary</code>
+          <h3>Paleta de Colores 70s</h3>
+          <p class="showcase__description">
+            Colores principales del modo claro (cálidos) y oscuro (fríos). Ambas paletas siempre visibles.
+          </p>
+
+          <!-- Modo Light - Cálidos -->
+          <h4 class="color-section-title">Modo Light (Cálidos)</h4>
+          <div class="color-grid">
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #ED9C05;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Primario</div>
+                <div class="color-card__hex">#ED9C05</div>
+                <code>$color-primario-light</code>
+              </div>
             </div>
-            <div class="color-swatch color-swatch--secondary">
-              <span class="color-swatch__name">Secondary</span>
-              <code>--color-accent-secondary</code>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #CA6703;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Secundario</div>
+                <div class="color-card__hex">#CA6703</div>
+                <code>$color-secundario-light</code>
+              </div>
             </div>
-            <div class="color-swatch color-swatch--bg">
-              <span class="color-swatch__name">Background</span>
-              <code>--color-bg-primary</code>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #BB3F03;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Contraste</div>
+                <div class="color-card__hex">#BB3F03</div>
+                <code>$color-contraste-light</code>
+              </div>
             </div>
-            <div class="color-swatch color-swatch--bg-secondary">
-              <span class="color-swatch__name">Bg Secondary</span>
-              <code>--color-bg-secondary</code>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #9D2227;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Acentuado</div>
+                <div class="color-card__hex">#9D2227</div>
+                <code>$color-acentuado-light</code>
+              </div>
             </div>
-            <div class="color-swatch color-swatch--text">
-              <span class="color-swatch__name">Text</span>
-              <code>--color-text-primary</code>
+          </div>
+
+          <!-- Modo Dark - Fríos -->
+          <h4 class="color-section-title">Modo Dark (Fríos)</h4>
+          <div class="color-grid">
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #93CFBB;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Primario</div>
+                <div class="color-card__hex">#93CFBB</div>
+                <code>$color-primario-dark</code>
+              </div>
             </div>
-            <div class="color-swatch color-swatch--border">
-              <span class="color-swatch__name">Border</span>
-              <code>--color-border</code>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #0A9295;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Secundario</div>
+                <div class="color-card__hex">#0A9295</div>
+                <code>$color-secundario-dark</code>
+              </div>
+            </div>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #015F72;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Contraste</div>
+                <div class="color-card__hex">#015F72</div>
+                <code>$color-contraste-dark</code>
+              </div>
+            </div>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #01131B;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Acentuado</div>
+                <div class="color-card__hex">#01131B</div>
+                <code>$color-acentuado-dark</code>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fondos y Textos -->
+          <h4 class="color-section-title">Fondos y Textos</h4>
+          <div class="color-grid">
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #FBFAF2;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Fondo Light</div>
+                <div class="color-card__hex">#FBFAF2</div>
+                <code>$color-fondo-light</code>
+              </div>
+            </div>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #E7D8AB;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Fondo Light 2º</div>
+                <div class="color-card__hex">#E7D8AB</div>
+                <code>$color-fondo-light-secundario</code>
+              </div>
+            </div>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #01131B;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Fondo Oscuro</div>
+                <div class="color-card__hex">#01131B</div>
+                <code>$color-fondo-oscuro</code>
+              </div>
+            </div>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #013946;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Fondo Oscuro 2º</div>
+                <div class="color-card__hex">#013946</div>
+                <code>$color-fondo-oscuro-secundario</code>
+              </div>
+            </div>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #FBFAF2;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Letra Blanca</div>
+                <div class="color-card__hex">#FBFAF2</div>
+                <code>$color-letra-blanca</code>
+              </div>
+            </div>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #01131B;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Letra Oscura</div>
+                <div class="color-card__hex">#01131B</div>
+                <code>$color-letra-oscura</code>
+              </div>
             </div>
           </div>
         </div>
@@ -93,41 +216,105 @@
         <!-- Colores semánticos -->
         <div class="showcase">
           <h3>Colores Semánticos</h3>
-          <div class="showcase__grid showcase__grid--colors">
-            <div class="color-swatch color-swatch--success">
-              <span class="color-swatch__name">Success</span>
-              <code>--color-success</code>
+          <div class="color-grid color-grid--semantic">
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #E04A4A;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Error</div>
+                <div class="color-card__hex">#E04A4A</div>
+                <code>$color-error</code>
+              </div>
             </div>
-            <div class="color-swatch color-swatch--warning">
-              <span class="color-swatch__name">Warning</span>
-              <code>--color-warning</code>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #FFC047;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Advertencia Light</div>
+                <div class="color-card__hex">#FFC047</div>
+                <code>$color-advertencia-light</code>
+              </div>
             </div>
-            <div class="color-swatch color-swatch--error">
-              <span class="color-swatch__name">Error</span>
-              <code>--color-error</code>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #FEF84A;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Advertencia Dark</div>
+                <div class="color-card__hex">#FEF84A</div>
+                <code>$color-advertencia-dark</code>
+              </div>
             </div>
-            <div class="color-swatch color-swatch--info">
-              <span class="color-swatch__name">Info</span>
-              <code>--color-info</code>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #AAD661;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Éxito</div>
+                <div class="color-card__hex">#AAD661</div>
+                <code>$color-exito</code>
+              </div>
+            </div>
+            <div class="color-card">
+              <div class="color-card__swatch" style="background-color: #0A9295;"></div>
+              <div class="color-card__info">
+                <div class="color-card__name">Información</div>
+                <div class="color-card__hex">#0A9295</div>
+                <code>$color-informacion</code>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Sombras -->
         <div class="showcase">
-          <h3>Sombras (Brutal Style)</h3>
+          <h3>Sombras Brutales</h3>
+          <p class="showcase__description">
+            Sombras sólidas sin blur, características del estilo neobrutalist y la estética retro 70s.
+          </p>
           <div class="showcase__row">
-            <div class="showcase__item">
-              <div class="shadow-sample shadow-sample--sm">Small</div>
-              <code>brutal-shadow-sm</code>
+            <div class="shadow-demo">
+              <div class="shadow-demo__box shadow-demo__box--xs">
+                Box
+              </div>
+              <code>brutal-xs<br/>2px 2px 0px</code>
             </div>
-            <div class="showcase__item">
-              <div class="shadow-sample shadow-sample--md">Medium</div>
-              <code>brutal-shadow-md</code>
+            <div class="shadow-demo">
+              <div class="shadow-demo__box shadow-demo__box--s">
+                Box
+              </div>
+              <code>brutal-s<br/>4px 4px 0px</code>
             </div>
-            <div class="showcase__item">
-              <div class="shadow-sample shadow-sample--lg">Large</div>
-              <code>brutal-shadow-lg</code>
+            <div class="shadow-demo">
+              <div class="shadow-demo__box shadow-demo__box--m">
+                Box
+              </div>
+              <code>brutal-m<br/>6px 6px 0px</code>
+            </div>
+            <div class="shadow-demo">
+              <div class="shadow-demo__box shadow-demo__box--l">
+                Box
+              </div>
+              <code>brutal-l<br/>8px 8px 0px</code>
+            </div>
+          </div>
+
+          <h4 style="margin-top: 2rem;">Sombras Efecto Vinilo</h4>
+          <p class="showcase__description">
+            Sombras multicapa con colores de la paleta 70s, efecto 3D retro.
+          </p>
+          <div class="showcase__row">
+            <div class="shadow-demo">
+              <div class="shadow-demo__box shadow-demo__box--vinyl-s">
+                Box
+              </div>
+              <code>vinilo-s<br/>2 capas</code>
+            </div>
+            <div class="shadow-demo">
+              <div class="shadow-demo__box shadow-demo__box--vinyl-m">
+                Box
+              </div>
+              <code>vinilo-m<br/>3 capas</code>
+            </div>
+            <div class="shadow-demo">
+              <div class="shadow-demo__box shadow-demo__box--vinyl-l">
+                Box
+              </div>
+              <code>vinilo-l<br/>4 capas</code>
             </div>
           </div>
         </div>
@@ -135,25 +322,70 @@
         <!-- Espaciado -->
         <div class="showcase">
           <h3>Espaciado</h3>
-          <div class="showcase__column">
-            <div class="spacing-samples">
-              <div class="spacing-sample" style="width: var(--spacing-xs);">
-                <span>xs</span>
+          <p class="showcase__description">
+            Sistema de espaciado coherente para mantener ritmo visual en toda la aplicación.
+          </p>
+          <div class="spacing-grid">
+            <div class="spacing-card">
+              <div class="spacing-card__visual">
+                <div class="spacing-card__block" style="width: 0.5rem; height: 0.5rem;"></div>
               </div>
-              <div class="spacing-sample" style="width: var(--spacing-sm);">
-                <span>sm</span>
-              </div>
-              <div class="spacing-sample" style="width: var(--spacing-md);">
-                <span>md</span>
-              </div>
-              <div class="spacing-sample" style="width: var(--spacing-lg);">
-                <span>lg</span>
-              </div>
-              <div class="spacing-sample" style="width: var(--spacing-xl);">
-                <span>xl</span>
+              <div class="spacing-card__info">
+                <div class="spacing-card__name">XS</div>
+                <div class="spacing-card__value">0.5rem (8px)</div>
+                <code>$espaciado-xs</code>
               </div>
             </div>
-            <code>--spacing-xs | --spacing-sm | --spacing-md | --spacing-lg | --spacing-xl</code>
+            <div class="spacing-card">
+              <div class="spacing-card__visual">
+                <div class="spacing-card__block" style="width: 1rem; height: 1rem;"></div>
+              </div>
+              <div class="spacing-card__info">
+                <div class="spacing-card__name">S</div>
+                <div class="spacing-card__value">1rem (16px)</div>
+                <code>$espaciado-s</code>
+              </div>
+            </div>
+            <div class="spacing-card">
+              <div class="spacing-card__visual">
+                <div class="spacing-card__block" style="width: 2rem; height: 2rem;"></div>
+              </div>
+              <div class="spacing-card__info">
+                <div class="spacing-card__name">M</div>
+                <div class="spacing-card__value">2rem (32px)</div>
+                <code>$espaciado-m</code>
+              </div>
+            </div>
+            <div class="spacing-card">
+              <div class="spacing-card__visual">
+                <div class="spacing-card__block" style="width: 3rem; height: 3rem;"></div>
+              </div>
+              <div class="spacing-card__info">
+                <div class="spacing-card__name">L</div>
+                <div class="spacing-card__value">3rem (48px)</div>
+                <code>$espaciado-l</code>
+              </div>
+            </div>
+            <div class="spacing-card">
+              <div class="spacing-card__visual">
+                <div class="spacing-card__block" style="width: 4rem; height: 4rem;"></div>
+              </div>
+              <div class="spacing-card__info">
+                <div class="spacing-card__name">XL</div>
+                <div class="spacing-card__value">4rem (64px)</div>
+                <code>$espaciado-xl</code>
+              </div>
+            </div>
+            <div class="spacing-card">
+              <div class="spacing-card__visual">
+                <div class="spacing-card__block" style="width: 5rem; height: 5rem;"></div>
+              </div>
+              <div class="spacing-card__info">
+                <div class="spacing-card__name">XXL</div>
+                <div class="spacing-card__value">5rem (80px)</div>
+                <code>$espaciado-xxl</code>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -401,6 +633,85 @@
             </div>
           </div>
         </div>
+
+        <!-- Badges -->
+        <div class="showcase">
+          <h3>Badges - Variantes</h3>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <app-badge variant="primary">Primary</app-badge>
+              <code>variant="primary"</code>
+            </div>
+            <div class="showcase__item">
+              <app-badge variant="secondary">Secondary</app-badge>
+              <code>variant="secondary"</code>
+            </div>
+            <div class="showcase__item">
+              <app-badge variant="success">Success</app-badge>
+              <code>variant="success"</code>
+            </div>
+            <div class="showcase__item">
+              <app-badge variant="warning">Warning</app-badge>
+              <code>variant="warning"</code>
+            </div>
+            <div class="showcase__item">
+              <app-badge variant="error">Error</app-badge>
+              <code>variant="error"</code>
+            </div>
+            <div class="showcase__item">
+              <app-badge variant="info">Info</app-badge>
+              <code>variant="info"</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges - Tamaños -->
+        <div class="showcase">
+          <h3>Badges - Tamaños</h3>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <app-badge size="sm" variant="primary">Small</app-badge>
+              <code>size="sm"</code>
+            </div>
+            <div class="showcase__item">
+              <app-badge size="md" variant="primary">Medium</app-badge>
+              <code>size="md"</code>
+            </div>
+            <div class="showcase__item">
+              <app-badge size="lg" variant="primary">Large</app-badge>
+              <code>size="lg"</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges - Uso práctico -->
+        <div class="showcase">
+          <h3>Badges - Uso Práctico</h3>
+          <div class="showcase__row">
+            <div class="showcase__item">
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <app-badge variant="primary">Rock</app-badge>
+                <app-badge variant="secondary">Jazz</app-badge>
+                <app-badge variant="info">Pop</app-badge>
+              </div>
+              <code>Géneros musicales</code>
+            </div>
+            <div class="showcase__item">
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <span style="font-weight: 600;">Estado:</span>
+                <app-badge variant="success">Disponible</app-badge>
+              </div>
+              <code>Indicador de estado</code>
+            </div>
+            <div class="showcase__item">
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <span style="font-weight: 600;">Notificaciones</span>
+                <app-badge variant="error" size="sm">5</app-badge>
+              </div>
+              <code>Contador</code>
+            </div>
+          </div>
+        </div>
       </section>
     }
 
@@ -413,6 +724,113 @@
         <p class="showcase__description">
           Combinaciones de átomos: cards, formularios individuales, breadcrumbs, alerts y tooltips.
         </p>
+
+        <!-- Form Input -->
+        <div class="showcase">
+          <h3>Input - Estados</h3>
+          <div class="showcase__grid showcase__grid--forms">
+            <div class="showcase__item">
+              <app-form-input
+                label="Email"
+                type="email"
+                placeholder="tu@email.com"
+                helpText="Nunca compartiremos tu email"
+              ></app-form-input>
+              <code>Input normal con ayuda</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-input
+                label="Usuario"
+                type="text"
+                placeholder="Tu nombre de usuario"
+                [hasError]="true"
+                errorMessage="Este usuario ya existe"
+              ></app-form-input>
+              <code>Input con error</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-input
+                label="Contraseña"
+                type="password"
+                placeholder="••••••••"
+                [hasSuccess]="true"
+                helpText="Contraseña segura"
+              ></app-form-input>
+              <code>Input con éxito</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-input
+                label="Campo deshabilitado"
+                type="text"
+                placeholder="No disponible"
+                [disabled]="true"
+              ></app-form-input>
+              <code>Input deshabilitado</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Input - Tipos -->
+        <div class="showcase">
+          <h3>Input - Tipos</h3>
+          <div class="showcase__grid showcase__grid--forms">
+            <div class="showcase__item">
+              <app-form-input
+                label="Texto"
+                type="text"
+                placeholder="Escribe algo..."
+              ></app-form-input>
+              <code>type="text"</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-input
+                label="Email"
+                type="email"
+                placeholder="correo@ejemplo.com"
+              ></app-form-input>
+              <code>type="email"</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-input
+                label="Contraseña"
+                type="password"
+                placeholder="Tu contraseña"
+              ></app-form-input>
+              <code>type="password"</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-input
+                label="Número"
+                type="number"
+                placeholder="123"
+              ></app-form-input>
+              <code>type="number"</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-input
+                label="Teléfono"
+                type="tel"
+                placeholder="+34 600 000 000"
+              ></app-form-input>
+              <code>type="tel"</code>
+            </div>
+
+            <div class="showcase__item">
+              <app-form-input
+                label="Fecha"
+                type="date"
+              ></app-form-input>
+              <code>type="date"</code>
+            </div>
+          </div>
+        </div>
 
         <!-- Cards Polaroid -->
         <div class="showcase">

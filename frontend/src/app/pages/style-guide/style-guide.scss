@@ -3,191 +3,12 @@
 // Define la altura de tu navbar principal aquí
 $header-height: 70px;
 $header-height-mobile: 60px;
-$sidebar-width: 250px;
-$sidebar-width-mobile: 280px;
 
 .style-guide {
   min-height: 100vh;
   background-color: var(--bg-primary);
-  padding-top: $header-height;
+  padding-top: 0; // Sin padding, el nav sticky lo maneja
   position: relative;
-
-  @media (max-width: 768px) {
-    padding-top: $header-height-mobile;
-  }
-
-  // =============================================
-  // OVERLAY (FONDO OSCURO)
-  // =============================================
-  &__overlay {
-    position: fixed;
-    top: $header-height;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 40; // Justo debajo del sidebar (50)
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(2px);
-    pointer-events: none;
-
-    @media (max-width: 768px) {
-      top: $header-height-mobile;
-    }
-
-    &--visible {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
-  }
-
-  // =============================================
-  // SIDEBAR MENU FIXED/FLOTANTE
-  // =============================================
-  &__sidebar {
-    position: fixed;
-    top: $header-height;
-    left: 0;
-    bottom: 0;
-    width: $sidebar-width;
-    background-color: var(--header-bg);
-    border-right: $borde-brutal-medium solid var(--text-primary);
-    box-shadow: 4px 0 0px var(--shadow-color);
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-
-    // Transición suave para abrir/cerrar con transform
-    transition: transform 0.3s ease;
-    transform: translateX(-100%); // Por defecto cerrado
-
-    @media (max-width: 768px) {
-      top: $header-height-mobile;
-      width: $sidebar-width-mobile;
-    }
-
-    // Clase para abrir el menú
-    &--open {
-      transform: translateX(0);
-      box-shadow: 10px 0 20px rgba(0, 0, 0, 0.5);
-    }
-  }
-
-  &__sidebar-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: $espaciado-s;
-    width: 100%;
-    min-height: 60px;
-    padding: $espaciado-m;
-    background-color: var(--header-bg);
-    border-bottom: $borde-brutal-medium solid var(--text-primary);
-    color: var(--text-primary);
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.875rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 51; // Por encima del toggle icon
-
-    &:hover {
-      background-color: var(--color-primary);
-      color: var(--bg-primary);
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--color-primary);
-      outline-offset: -2px;
-    }
-  }
-
-  &__sidebar-toggle-icon {
-    font-size: 1.5rem;
-    transition: transform 0.3s ease;
-    flex-shrink: 0;
-  }
-
-  &__sidebar-toggle-label {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    opacity: 0;
-    width: 0;
-    transition: opacity 0.3s ease, width 0.3s ease;
-
-    .style-guide__sidebar--open & {
-      opacity: 1;
-      width: auto;
-    }
-  }
-
-  &__sidebar-menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-
-  &__sidebar-item {
-    margin: 0;
-    border-bottom: 1px solid var(--border-color);
-
-    &:last-child {
-      border-bottom: none;
-    }
-  }
-
-  &__sidebar-link {
-    display: block;
-    width: 100%;
-    padding: $espaciado-m;
-    background: transparent;
-    border: none;
-    color: var(--text-primary);
-    font-family: inherit;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-align: left;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    &:hover {
-      background-color: var(--color-primary);
-      color: var(--bg-primary);
-      padding-left: calc($espaciado-m + 4px);
-    }
-
-    &--active {
-      background-color: var(--color-primary);
-      color: var(--bg-primary);
-      font-weight: 700;
-      border-left: 4px solid var(--color-secondary);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--color-primary);
-      outline-offset: -2px;
-    }
-  }
 
   // =============================================
   // CONTENIDO PRINCIPAL
@@ -277,6 +98,7 @@ $sidebar-width-mobile: 280px;
   }
 }
 
+
 .showcase {
   margin-bottom: $espaciado-l;
 
@@ -300,9 +122,19 @@ $sidebar-width-mobile: 280px;
     display: flex;
     gap: $espaciado-m;
     flex-wrap: wrap;
+    align-items: flex-start;
 
     @media (max-width: 768px) {
       gap: $espaciado-s;
+    }
+
+    // En móvil, cada item ocupa 100%
+    @media (max-width: 480px) {
+      flex-direction: column;
+
+      .showcase__item {
+        width: 100%;
+      }
     }
   }
 
@@ -310,31 +142,34 @@ $sidebar-width-mobile: 280px;
     display: flex;
     flex-direction: column;
     gap: $espaciado-m;
+    width: 100%;
   }
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: $espaciado-l $espaciado-m;
-    align-items: center;
+    align-items: start;
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
-      gap: $espaciado-s;
+      gap: $espaciado-m;
     }
 
     // Grid específico para formularios (más estrecho)
     &--forms {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       align-items: flex-start;
       gap: $espaciado-xl;
 
       @media (max-width: 1024px) {
         grid-template-columns: repeat(2, 1fr);
+        gap: $espaciado-l;
       }
 
-      @media (max-width: 768px) {
+      @media (max-width: 600px) {
         grid-template-columns: 1fr;
+        gap: $espaciado-m;
       }
     }
   }
@@ -345,10 +180,16 @@ $sidebar-width-mobile: 280px;
     gap: $espaciado-xs;
     align-items: flex-start;
     min-width: 0; // Evita overflow en flex containers
+    max-width: 100%; // No excede su contenedor
 
     &--full {
       width: 100%;
       min-width: 0; // Permite que el contenido se encoja
+    }
+
+    // Componentes internos deben respetar el ancho
+    > * {
+      max-width: 100%;
     }
 
     code {
@@ -366,6 +207,8 @@ $sidebar-width-mobile: 280px;
       @media (max-width: 768px) {
         font-size: 0.75rem;
         padding: 4px 6px;
+        white-space: normal; // Permite wrap en móvil
+        word-break: break-all;
       }
     }
   }
@@ -377,6 +220,38 @@ app-carousel {
   width: 100%;
   max-width: 100%;
   min-width: 0;
+}
+
+/* --- Fix para componentes de formulario --- */
+app-form-input,
+app-form-textarea,
+app-form-select,
+app-form-checkbox,
+app-form-radio-group {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* --- Fix para cards dentro de grids --- */
+app-card {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* --- Fix para alerts full width --- */
+app-alert {
+  display: block;
+  width: 100%;
+}
+
+/* --- Fix para breadcrumbs overflow --- */
+app-breadcrumbs {
+  display: block;
+  width: 100%;
+  overflow: hidden;
 }
 
 /* ========================================
@@ -666,4 +541,328 @@ app-carousel {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
+}
+/* ========================================
+   TIPOGRAFÍA - Font Showcase
+   ======================================== */
+.font-showcase {
+  background-color: var(--bg-secondary);
+  border: $borde-brutal-medium;
+  border-radius: $radio-m;
+  padding: $espaciado-l;
+  margin-bottom: $espaciado-l;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $espaciado-m;
+    padding-bottom: $espaciado-s;
+    border-bottom: 2px solid var(--border-color);
+
+    h4 {
+      font-size: 1.5rem;
+      margin: 0;
+      color: var(--text-primary);
+      text-transform: uppercase;
+    }
+  }
+
+  &__tag {
+    display: inline-block;
+    padding: 4px $espaciado-s;
+    background-color: var(--color-primary);
+    color: var(--text-dark);
+    border: 2px solid var(--border-color);
+    border-radius: $radio-xs;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    &--accent {
+      background-color: var(--color-secondary);
+    }
+  }
+
+  &__samples {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-m;
+    margin-bottom: $espaciado-m;
+  }
+
+  &__sample {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-xs;
+
+    h1, h2, h3, p, div {
+      margin: 0;
+      color: var(--text-primary);
+    }
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__usage {
+    padding: $espaciado-s $espaciado-m;
+    background-color: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: $radio-s;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+
+    strong {
+      color: var(--color-primary);
+    }
+  }
+}
+
+.monoton-sample {
+  color: var(--color-primary);
+
+  &--lg {
+    font-size: 4rem;
+  }
+
+  &--md {
+    font-size: 3rem;
+  }
+
+  &--sm {
+    font-size: 2rem;
+  }
+}
+
+/* ========================================
+   COLORES - Color Cards (Polaroid style)
+   ======================================== */
+.color-section-title {
+  font-size: 1.125rem;
+  color: var(--text-primary);
+  margin: $espaciado-l 0 $espaciado-m 0;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $espaciado-m;
+  margin-bottom: $espaciado-l;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $espaciado-s;
+  }
+
+  &--semantic {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+.color-card {
+  background-color: var(--bg-secondary);
+  border: $borde-brutal-medium;
+  border-radius: $radio-s;
+  box-shadow: 4px 4px 0px var(--shadow-color);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%; // Todas las cards misma altura
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--shadow-color);
+  }
+
+  &__swatch {
+    width: 100%;
+    height: 120px;
+    border-bottom: $borde-brutal-medium;
+  }
+
+  &__info {
+    padding: $espaciado-s;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+
+  &__name {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    text-transform: uppercase;
+  }
+
+  &__hex {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-family: 'Courier New', monospace;
+  }
+
+  code {
+    font-size: 0.625rem;
+    padding: 2px 4px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: $radio-xs;
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+    margin-top: auto;
+  }
+}
+
+/* ========================================
+   SOMBRAS - Shadow Demo
+   ======================================== */
+.shadow-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $espaciado-s;
+  padding: $espaciado-m;
+
+  &__box {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-primary);
+    color: var(--text-dark);
+    border: $borde-brutal-medium;
+    border-radius: $radio-s;
+    font-weight: 700;
+    font-size: 1rem;
+
+    // Sombras brutales base
+    &--xs {
+      box-shadow: $sombra-brutal-xs;
+    }
+
+    &--s {
+      box-shadow: $sombra-brutal-s;
+    }
+
+    &--m {
+      box-shadow: $sombra-brutal-m;
+    }
+
+    &--l {
+      box-shadow: $sombra-brutal-l;
+    }
+
+    // Sombras vinilo
+    &--vinyl-s {
+      box-shadow: $sombra-vinilo-s;
+    }
+
+    &--vinyl-m {
+      box-shadow: $sombra-vinilo-m;
+    }
+
+    &--vinyl-l {
+      box-shadow: $sombra-vinilo-l;
+    }
+  }
+
+  code {
+    text-align: center;
+  }
+}
+
+/* ========================================
+   ESPACIADO - Spacing Cards
+   ======================================== */
+.spacing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: $espaciado-m;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $espaciado-s;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.spacing-card {
+  background-color: var(--bg-secondary);
+  border: $borde-brutal-medium;
+  border-radius: $radio-s;
+  padding: $espaciado-m;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $espaciado-s;
+  box-shadow: 3px 3px 0px var(--shadow-color);
+
+  &__visual {
+    width: 100%;
+    height: 100px;
+    background-color: var(--bg-primary);
+    border: 2px dashed var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radio-xs;
+  }
+
+  &__block {
+    background-color: var(--color-primary);
+    border: 2px solid var(--border-color);
+    border-radius: $radio-xs;
+  }
+
+  &__info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  &__name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+    text-transform: uppercase;
+  }
+
+  &__value {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-family: 'Courier New', monospace;
+  }
+
+  code {
+    font-size: 0.625rem;
+    padding: 4px 6px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: $radio-xs;
+    color: var(--text-primary);
+  }
 }
