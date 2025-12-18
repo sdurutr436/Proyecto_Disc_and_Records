@@ -49,43 +49,96 @@ La aplicación utiliza:
 
 Configura estas variables en **Settings** > **production-backend** > **Environment Variables**:
 
+**IMPORTANTE**: Introduce los **valores reales**, NO los placeholders `${...}`.
+
 ```bash
-# Perfil de Spring
+# Perfil de Spring (OBLIGATORIO)
 SPRING_PROFILES_ACTIVE=docker
 
 # JWT Configuration (OBLIGATORIO)
 JWT_SECRET=eXNVUzJTX2Rpc2NzX2FuZF9yZWNvcmRzX3NlY3JldF9rZXlfMjAyNF9zZWN1cmU=
 JWT_EXPIRATION=86400000
-
-# Database Configuration (OBLIGATORIO)
-SPRING_DATASOURCE_URL=jdbc:mariadb://host:port/database
-SPRING_DATASOURCE_USERNAME=tu_usuario
-SPRING_DATASOURCE_PASSWORD=tu_password
-
-# JVM Optimization (opcional pero recomendado)
-JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -Djava.security.egd=file:/dev/./urandom
 ```
 
-### Base de datos
+**Para la base de datos, elige UNA de estas opciones:**
 
-**Opción 1: Managed Database de DigitalOcean (recomendado)**
+#### Opción A: Sin base de datos (solo para pruebas iniciales)
 
-1. Crea una base de datos MariaDB/MySQL en DigitalOcean
-2. En la configuración del backend, añade las variables:
+Usa H2 en memoria modificando temporalmente el perfil:
+
+```bash
+SPRING_PROFILES_ACTIVE=dev
+```
+
+#### Opción B: Managed Database de DigitalOcean (recomendado para producción)
+
+1. Crea una **Managed Database** MariaDB/MySQL en DigitalOcean
+2. Ve a **Settings** > **production-backend** > **Add Database**
+3. Selecciona tu base de datos creada
+4. DigitalOcean añadirá automáticamente:
+   - `${db.DATABASE_URL}` → Se resuelve automáticamente
+   - `${db.USERNAME}` → Se resuelve automáticamente  
+   - `${db.PASSWORD}` → Se resuelve automáticamente
+
+Luego añade manualmente:
+```bash
+SPRING_DATASOURCE_URL=${db.DATABASE_URL}
+SPRING_DATASOURCE_USERNAME=${db.USERNAME}
+SPRING_DATASOURCE_PASSWORD=${db.PASSWORD}
+```
+
+#### Opción C: Base de datos externa
+
+**IMPORTANTE**: Introduce la URL completa real, NO uses `${...}`:
+
+```bash
+# Ejemplo con valores REALES (reemplaza con los tuyos)
+SPRING_DATASOURCE_URL=jdbc:mariadb://tu-servidor.com:3306/discsandrecords?useSSL=true
+SPRING_DATASOURCE_USERNAME=admin
+SPRING_DATASOURCE_PASSWORD=tu_password_seguro_aqui
+```
+
+## Despliegue Rápido sin Base de Datos (Pruebas)
+
+Si solo quieres probar el despliegue sin configurar una base de datos:
+
+**Variables mínimas requeridas:**
+```bash
+SPRING_PROFILES_ACTIVE=dev
+JWT_SECRET=eXNVUzJTX2Rpc2NzX2FuZF9yZWNvcmRzX3NlY3JldF9rZXlfMjAyNF9zZWN1cmU=
+JWT_EXPIRATION=86400000
+```
+
+Esto usará H2 en memoria (datos se pierden al reiniciar). **Solo para pruebas**, no para producción.
+
+## Configuración de Base de Datos para Producción
+
+Una vez que el backend arranque correctamente con H2, configura la base de datos:
+
+### Opción 1: Managed Database de DigitalOcean (recomendado)
+
+1. En DigitalOcean, crea **Databases** > **Create Database** > MariaDB
+2. Una vez creada, ve a **App Platform** > Tu App > **Settings** > **production-backend**
+3. Click en **Add Database** y selecciona la BD que creaste
+4. DigitalOcean inyectará automáticamente `${db.*}` variables
+5. Añade manualmente estas variables:
    ```bash
+   SPRING_PROFILES_ACTIVE=docker
    SPRING_DATASOURCE_URL=${db.DATABASE_URL}
    SPRING_DATASOURCE_USERNAME=${db.USERNAME}
    SPRING_DATASOURCE_PASSWORD=${db.PASSWORD}
    ```
 
-**Opción 2: Base de datos externa**
+### Opción 2: Base de datos externa (tu propio servidor)
 
-Configura manualmente las variables con tu servidor de BD:
 ```bash
-SPRING_DATASOURCE_URL=jdbc:mariadb://tu-servidor:3306/discsandrecords?useSSL=true
-SPRING_DATASOURCE_USERNAME=tu_usuario
-SPRING_DATASOURCE_PASSWORD=tu_password_seguro
+SPRING_PROFILES_ACTIVE=docker
+SPRING_DATASOURCE_URL=jdbc:mariadb://tu-host.com:3306/discsandrecords?useSSL=true
+SPRING_DATASOURCE_USERNAME=admin
+SPRING_DATASOURCE_PASSWORD=tu_password_real_aqui
 ```
+
+**IMPORTANTE**: No uses placeholders `${...}` a menos que sea una variable inyectada por DigitalOcean.
 
 ### JWT Secret - Generar uno nuevo
 
@@ -120,14 +173,20 @@ El secreto debe tener al menos 256 bits (32 caracteres) antes de codificar en Ba
 7. **HTTP Routes**:
    - Path: `/api`
    - Preserve Path Prefix: `Yes`
-8. **Environment Variables** (OBLIGATORIO):
-   ```
+8. **Environment Variables** (OBLIGATORIO - mínimo para empezar):
+   ```bash
+   # Mínimo para arrancar sin BD (solo pruebas)
+   SPRING_PROFILES_ACTIVE=dev
    JWT_SECRET=eXNVUzJTX2Rpc2NzX2FuZF9yZWNvcmRzX3NlY3JldF9rZXlfMjAyNF9zZWN1cmU=
    JWT_EXPIRATION=86400000
-   SPRING_DATASOURCE_URL=jdbc:mariadb://host:port/database
+   ```
+   
+   **Para producción con BD**, cambia el perfil y añade:
+   ```bash
+   SPRING_PROFILES_ACTIVE=docker
+   SPRING_DATASOURCE_URL=jdbc:mariadb://tu-servidor:3306/discsandrecords
    SPRING_DATASOURCE_USERNAME=tu_usuario
    SPRING_DATASOURCE_PASSWORD=tu_password
-   SPRING_PROFILES_ACTIVE=docker
    ```
 
 ### 3. Configurar el Frontend
@@ -198,6 +257,31 @@ Una vez desplegado:
 **Valor temporal para pruebas** (cambiar en producción):
 ```bash
 JWT_SECRET=eXNVUzJTX2Rpc2NzX2FuZF9yZWNvcmRzX3NlY3JldF9rZXlfMjAyNF9zZWN1cmU=
+```
+
+### Error: "Driver claims to not accept jdbcUrl, ${SPRING_DATASOURCE_URL}"
+
+**Causa**: Pusiste el placeholder literal `${SPRING_DATASOURCE_URL}` en vez del valor real de la URL
+
+**Solución**:
+
+**INCORRECTO** (no hagas esto):
+```bash
+SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}  ❌
+```
+
+**CORRECTO** (valores reales):
+```bash
+# Opción 1: Sin BD (solo pruebas)
+SPRING_PROFILES_ACTIVE=dev
+
+# Opción 2: Managed Database (usa ${db.*} solo si conectaste la BD desde DigitalOcean)
+SPRING_DATASOURCE_URL=${db.DATABASE_URL}  ✓ (solo si añadiste la BD desde la UI)
+
+# Opción 3: BD externa (valor real completo)
+SPRING_DATASOURCE_URL=jdbc:mariadb://tu-host.com:3306/discsandrecords  ✓
+SPRING_DATASOURCE_USERNAME=admin  ✓
+SPRING_DATASOURCE_PASSWORD=tu_password  ✓
 ```
 
 ### Error: "Angular compiler warnings"
