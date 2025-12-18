@@ -6,6 +6,17 @@
 
 ---
 
+## Índice
+
+1. [Manipulación del DOM en componentes](#manipulación-del-dom-en-componentes)
+2. [Creación y eliminación programática (toasts)](#creación-y-eliminación-programática-toasts)
+3. [Sistema de eventos](#sistema-de-eventos)
+4. [Componentes interactivos](#componentes-interactivos)
+5. [Theme Switcher](#theme-switcher)
+6. [Arquitectura de eventos](#arquitectura-de-eventos-readme-técnico)
+
+---
+
 ## Manipulación del DOM en componentes
 En el frontend (Angular), la manipulación del DOM se concentra en componentes UI reutilizables donde se necesita scroll nativo, control de foco o estados visuales reactivos.
 Los ejemplos siguientes muestran acceso al DOM con `ViewChild`/`ElementRef` y cambios puntuales en estilos/atributos cuando el comportamiento lo requiere.
