@@ -229,6 +229,41 @@ El secreto debe tener al menos 256 bits (32 caracteres) antes de codificar en Ba
 
 Habilita **Auto-deploy on push** para que cada push a `master` despliegue automáticamente.
 
+## Acceso a la Aplicación Desplegada
+
+### URL de DigitalOcean (automática)
+
+Una vez desplegada, tu aplicación estará disponible en:
+```
+https://nombre-de-tu-app-xxxxx.ondigitalocean.app
+```
+
+Puedes encontrar la URL exacta en:
+- **App Platform** > Tu App > **Settings** > pestaña **Domains**
+
+### Configurar Dominio Personalizado (discs-n-records.es)
+
+Si tienes un dominio propio, configúralo así:
+
+1. **En DigitalOcean:**
+   - Ve a **App Platform** > Tu App > **Settings** > **Domains**
+   - Click en **Add Domain**
+   - Ingresa `discs-n-records.es` y `www.discs-n-records.es`
+   - DigitalOcean te mostrará los registros DNS a configurar
+
+2. **En tu proveedor de dominio (GoDaddy, Namecheap, etc.):**
+   - Añade un registro **CNAME** para `www` apuntando a la URL de DigitalOcean
+   - Añade un registro **A** para el dominio raíz con la IP que te proporcione DigitalOcean
+   - **IMPORTANTE**: La propagación DNS puede tardar 24-48 horas
+
+3. **Verificación:**
+   - Una vez propagado, accede a `https://discs-n-records.es`
+   - DigitalOcean proporciona SSL/TLS automáticamente (Let's Encrypt)
+
+**Mientras tanto**, usa la URL de DigitalOcean (.ondigitalocean.app) para acceder a tu aplicación.
+
+---
+
 ## Verificación del Despliegue
 
 ### Health Checks
@@ -266,7 +301,24 @@ Una vez desplegado:
 
 **Solución aplicada**: Se eliminó el bloque `location /api/` del nginx.conf y se configuró el enrutado mediante HTTP Request Routes de App Platform.
 
-### Error: "Could not resolve placeholder 'JWT_SECRET'"
+### Error: SQL Syntax en MySQL/MariaDB (DROP CONSTRAINT IF EXISTS)
+
+**Causa**: Hibernate está generando sintaxis de PostgreSQL incompatible con MySQL/MariaDB
+
+**Síntomas**: Logs muestran `Error: 1064-42000: You have an error in your SQL syntax... near 'if exists'`
+
+**Solución aplicada**: Cambiar dialecto de Hibernate en `application-docker.properties`:
+
+```properties
+# Cambiar de MariaDBDialect a MySQLDialect
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+# Evitar sintaxis incompatible
+spring.jpa.properties.hibernate.globally_quoted_identifiers=false
+spring.jpa.properties.hibernate.globally_quoted_identifiers_skip_column_definitions=true
+```
+
+**NOTA**: Los warnings de `DROP CONSTRAINT IF EXISTS` no impiden que la app arranque, pero es mejor corregirlos.
 
 **Causa**: Falta configurar variables de entorno en el componente backend
 
