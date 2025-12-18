@@ -1,1 +1,99 @@
-<p>home works!</p>
+<div class="home">
+  <section class="home__hero">
+    <div class="home__container">
+      <h1 class="home__title">Discs & Records</h1>
+      <p class="home__subtitle">Tu red social musical</p>
+      <p class="home__description">
+        Descubre, guarda, califica y comparte tu pasión por la música.
+        Inspirado en Letterboxd, pero para melómanos.
+      </p>
+      <div class="home__actions">
+        <app-button variant="primary" size="lg" (click)="goToAlbums()">
+          Explorar Álbumes
+        </app-button>
+        <app-button variant="secondary" size="lg" (click)="createNewAlbum()">
+          Crear Álbum
+        </app-button>
+      </div>
+    </div>
+  </section>
+
+  <section class="home__features">
+    <div class="home__container">
+      <h2 class="home__section-title">Ejemplos de Navegación Programática</h2>
+      <div class="home__feature-grid">
+        <!-- Navegación Simple -->
+        <div class="home__feature">
+          <h3>Navegación Simple</h3>
+          <p>Navega a la lista de álbumes</p>
+          <app-button variant="ghost" size="sm" (click)="goToAlbums()">
+            Ir a Álbumes
+          </app-button>
+        </div>
+
+        <!-- Navegación con Parámetros -->
+        <div class="home__feature">
+          <h3>Con Parámetros</h3>
+          <p>Navega al detalle del álbum #1</p>
+          <app-button variant="ghost" size="sm" (click)="goToAlbumDetail(1)">
+            Ver Álbum #1
+          </app-button>
+        </div>
+
+        <!-- Navegación con Query Params -->
+        <div class="home__feature">
+          <h3>Con Query Params</h3>
+          <p>Álbumes filtrados por género y año</p>
+          <app-button variant="ghost" size="sm" (click)="goToAlbumsFiltered()">
+            Rock de 1973
+          </app-button>
+        </div>
+
+        <!-- Navegación con Fragment -->
+        <div class="home__feature">
+          <h3>Con Fragment</h3>
+          <p>Ir a sección específica de About</p>
+          <app-button variant="ghost" size="sm" (click)="goToAboutTeam()">
+            Ver Equipo
+          </app-button>
+        </div>
+
+        <!-- Navegación con Estado -->
+        <div class="home__feature">
+          <h3>Con Estado</h3>
+          <p>Pasa datos sin modificar URL</p>
+          <app-button variant="ghost" size="sm" (click)="goToAlbumsWithState()">
+            Álbumes con Estado
+          </app-button>
+        </div>
+
+        <!-- Navegación Avanzada -->
+        <div class="home__feature">
+          <h3>Avanzada</h3>
+          <p>Combina múltiples opciones</p>
+          <app-button variant="ghost" size="sm" (click)="goToAlbumDetailAdvanced(1)">
+            Ver Reseñas
+          </app-button>
+        </div>
+
+        <!-- Style Guide -->
+        <div class="home__feature">
+          <h3>Style Guide</h3>
+          <p>Explora la guía de diseño</p>
+          <app-button variant="ghost" size="sm" (click)="goToStyleGuide()">
+            Ver Guía
+          </app-button>
+        </div>
+
+        <!-- Ruta Protegida -->
+        <div class="home__feature">
+          <h3>Ruta Protegida</h3>
+          <p>Requiere autenticación (Guard)</p>
+          <app-button variant="ghost" size="sm" (click)="tryNavigateToProtectedRoute()">
+            Crear Álbum
+          </app-button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

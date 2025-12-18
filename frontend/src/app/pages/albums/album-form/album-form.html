@@ -1,0 +1,166 @@
+<div class="album-form">
+  <div class="album-form__container">
+    <app-card>
+      <div class="album-form__header">
+        <h1 class="album-form__title">
+          @if (isEditMode()) {
+            Editar Álbum
+          } @else {
+            Crear Nuevo Álbum
+          }
+        </h1>
+      </div>
+
+      <form [formGroup]="albumForm" (ngSubmit)="onSubmit()" class="album-form__form">
+        <!-- Título -->
+        <div class="album-form__field">
+          <label for="title" class="album-form__label">
+            Título del Álbum *
+          </label>
+          <input
+            id="title"
+            type="text"
+            formControlName="title"
+            placeholder="Ej: The Dark Side of the Moon"
+            class="album-form__input"
+            [class.album-form__input--error]="albumForm.get('title')?.invalid && albumForm.get('title')?.touched"
+          />
+          @if (albumForm.get('title')?.hasError('required') && albumForm.get('title')?.touched) {
+            <span class="album-form__error">El título es requerido</span>
+          }
+          @if (albumForm.get('title')?.hasError('maxlength')) {
+            <span class="album-form__error">Máximo 200 caracteres</span>
+          }
+        </div>
+
+        <!-- Artista -->
+        <div class="album-form__field">
+          <label for="artist" class="album-form__label">
+            Artista *
+          </label>
+          <input
+            id="artist"
+            type="text"
+            formControlName="artist"
+            placeholder="Ej: Pink Floyd"
+            class="album-form__input"
+            [class.album-form__input--error]="albumForm.get('artist')?.invalid && albumForm.get('artist')?.touched"
+          />
+          @if (albumForm.get('artist')?.hasError('required') && albumForm.get('artist')?.touched) {
+            <span class="album-form__error">El artista es requerido</span>
+          }
+        </div>
+
+        <!-- Año y Género en grid -->
+        <div class="album-form__grid">
+          <!-- Año -->
+          <div class="album-form__field">
+            <label for="year" class="album-form__label">
+              Año *
+            </label>
+            <input
+              id="year"
+              type="number"
+              formControlName="year"
+              placeholder="1973"
+              class="album-form__input"
+              [class.album-form__input--error]="albumForm.get('year')?.invalid && albumForm.get('year')?.touched"
+            />
+            @if (albumForm.get('year')?.hasError('required') && albumForm.get('year')?.touched) {
+              <span class="album-form__error">El año es requerido</span>
+            }
+            @if (albumForm.get('year')?.hasError('min') || albumForm.get('year')?.hasError('max')) {
+              <span class="album-form__error">Año inválido</span>
+            }
+          </div>
+
+          <!-- Género -->
+          <div class="album-form__field">
+            <label for="genre" class="album-form__label">
+              Género *
+            </label>
+            <select
+              id="genre"
+              formControlName="genre"
+              class="album-form__input"
+              [class.album-form__input--error]="albumForm.get('genre')?.invalid && albumForm.get('genre')?.touched"
+            >
+              <option value="">Selecciona un género</option>
+              @for (option of genreOptions; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+            @if (albumForm.get('genre')?.hasError('required') && albumForm.get('genre')?.touched) {
+              <span class="album-form__error">El género es requerido</span>
+            }
+          </div>
+        </div>
+
+        <!-- Descripción -->
+        <div class="album-form__field">
+          <label for="description" class="album-form__label">
+            Descripción
+          </label>
+          <textarea
+            id="description"
+            formControlName="description"
+            placeholder="Describe el álbum..."
+            rows="5"
+            class="album-form__input"
+            [class.album-form__input--error]="albumForm.get('description')?.invalid && albumForm.get('description')?.touched"
+          ></textarea>
+          @if (albumForm.get('description')?.hasError('maxlength')) {
+            <span class="album-form__error">Máximo 1000 caracteres</span>
+          }
+        </div>
+
+        <!-- URL de la portada -->
+        <div class="album-form__field">
+          <label for="coverUrl" class="album-form__label">
+            URL de la Portada
+          </label>
+          <input
+            id="coverUrl"
+            type="text"
+            formControlName="coverUrl"
+            placeholder="https://..."
+            class="album-form__input"
+            [class.album-form__input--error]="albumForm.get('coverUrl')?.invalid && albumForm.get('coverUrl')?.touched"
+          />
+          @if (albumForm.get('coverUrl')?.hasError('pattern')) {
+            <span class="album-form__error">URL inválida</span>
+          }
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="album-form__actions">
+          <app-button
+            type="submit"
+            variant="primary"
+            [disabled]="albumForm.invalid"
+          >
+            @if (isEditMode()) {
+              Guardar Cambios
+            } @else {
+              Crear Álbum
+            }
+          </app-button>
+          <app-button
+            type="button"
+            variant="ghost"
+            (click)="cancel()"
+          >
+            Cancelar
+          </app-button>
+        </div>
+
+        <!-- Indicador de cambios sin guardar -->
+        @if (hasUnsavedChanges()) {
+          <div class="album-form__unsaved-warning">
+            ⚠️ Tienes cambios sin guardar
+          </div>
+        }
+      </form>
+    </app-card>
+  </div>
+</div>

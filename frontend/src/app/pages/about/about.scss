@@ -1,0 +1,235 @@
+@use '../../../styles/00-settings/variables' as *;
+@use '../../../styles/01-tools/mixins';
+
+.about {
+  min-height: 100vh;
+
+  &__hero {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: $espaciado-2xl 0;
+    text-align: center;
+  }
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 $espaciado-m;
+  }
+
+  &__title {
+    font-size: $tamano-3xl;
+    font-weight: 900;
+    margin: 0 0 $espaciado-m;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  &__subtitle {
+    font-size: $tamano-xl;
+    margin: 0;
+    opacity: 0.95;
+  }
+
+  &__content {
+    padding: $espaciado-2xl 0;
+  }
+
+  &__intro {
+    margin-bottom: $espaciado-2xl;
+
+    h2 {
+      font-size: $tamano-2xl;
+      font-weight: 900;
+      margin-bottom: $espaciado-m;
+      text-transform: uppercase;
+    }
+
+    p {
+      font-size: $tamano-l;
+      line-height: 1.7;
+      margin-bottom: $espaciado-m;
+      color: var(--text-secondary);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &__features {
+    margin-bottom: $espaciado-2xl;
+
+    h2 {
+      font-size: $tamano-2xl;
+      font-weight: 900;
+      margin-bottom: $espaciado-l;
+      text-transform: uppercase;
+      text-align: center;
+    }
+  }
+
+  &__features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: $espaciado-l;
+  }
+
+  &__feature-card {
+    padding: $espaciado-l;
+    background-color: var(--bg-secondary);
+    border: $borde-brutal-thick;
+    box-shadow: $sombra-brutal-sm;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: $sombra-brutal-md;
+    }
+
+    h3 {
+      font-size: $tamano-l;
+      font-weight: 900;
+      margin: $espaciado-m 0 $espaciado-s;
+      text-transform: uppercase;
+    }
+
+    p {
+      font-size: $tamano-m;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+  }
+
+  &__feature-icon {
+    width: 48px;
+    height: 48px;
+    padding: $espaciado-s;
+    background-color: var(--primary-color);
+    border: $borde-brutal-thin;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      stroke: white;
+    }
+  }
+
+  &__tech {
+    margin-bottom: $espaciado-2xl;
+
+    h2 {
+      font-size: $tamano-2xl;
+      font-weight: 900;
+      margin-bottom: $espaciado-l;
+      text-transform: uppercase;
+      text-align: center;
+    }
+  }
+
+  &__tech-stack {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-m;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  &__tech-item {
+    padding: $espaciado-l;
+    background-color: var(--bg-secondary);
+    border: $borde-brutal-thick;
+    display: flex;
+    gap: $espaciado-m;
+    align-items: center;
+
+    strong {
+      font-weight: 900;
+      font-size: $tamano-l;
+      text-transform: uppercase;
+      min-width: 120px;
+    }
+
+    span {
+      font-size: $tamano-m;
+      color: var(--text-secondary);
+    }
+  }
+
+  &__team {
+    h2 {
+      font-size: $tamano-2xl;
+      font-weight: 900;
+      margin-bottom: $espaciado-l;
+      text-transform: uppercase;
+      text-align: center;
+    }
+  }
+
+  &__team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: $espaciado-l;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  &__team-card {
+    padding: $espaciado-l;
+    background-color: var(--bg-secondary);
+    border: $borde-brutal-thick;
+    box-shadow: $sombra-brutal-sm;
+    text-align: center;
+
+    h3 {
+      font-size: $tamano-xl;
+      font-weight: 900;
+      margin: 0 0 $espaciado-xs;
+      text-transform: uppercase;
+    }
+
+    p {
+      font-size: $tamano-m;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin: $espaciado-xs 0;
+    }
+  }
+
+  &__team-role {
+    font-weight: 700 !important;
+    color: var(--primary-color) !important;
+    text-transform: uppercase;
+    font-size: $tamano-s !important;
+    letter-spacing: 1px;
+  }
+}
+
+@media (max-width: 768px) {
+  .about {
+    &__title {
+      font-size: $tamano-2xl;
+    }
+
+    &__subtitle {
+      font-size: $tamano-l;
+    }
+
+    &__features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    &__tech-item {
+      flex-direction: column;
+      align-items: flex-start;
+
+      strong {
+        min-width: auto;
+      }
+    }
+  }
+}

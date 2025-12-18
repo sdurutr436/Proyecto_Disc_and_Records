@@ -1,0 +1,131 @@
+@use '../../../../styles/00-settings/variables' as *;
+
+.album-form {
+  padding: $espaciado-2xl $espaciado-m;
+  max-width: 800px;
+  margin: 0 auto;
+
+  &__container {
+    width: 100%;
+  }
+
+  &__header {
+    margin-bottom: $espaciado-l;
+  }
+
+  &__title {
+    font-size: $tamano-2xl;
+    font-weight: 900;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-l;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-xs;
+  }
+
+  &__label {
+    font-size: $tamano-m;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+  }
+
+  &__error {
+    font-size: $tamano-s;
+    color: var(--danger-color);
+    font-weight: 600;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $espaciado-m;
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $espaciado-m;
+    margin-top: $espaciado-m;
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+
+      app-button {
+        width: 100%;
+      }
+    }
+  }
+
+  &__unsaved-warning {
+    padding: $espaciado-m;
+    background-color: var(--warning-bg);
+    border: $borde-brutal-thin;
+    border-color: var(--warning-color);
+    color: var(--warning-color);
+    font-weight: 700;
+    text-align: center;
+    font-size: $tamano-m;
+  }
+
+  // Estilos para inputs nativos
+  &__input,
+  select,
+  textarea {
+    padding: $espaciado-s;
+    font-size: $tamano-m;
+    border: $borde-brutal-thin;
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-weight: 600;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px var(--primary-color-alpha);
+    }
+
+    &--error {
+      border-color: var(--danger-color);
+      
+      &:focus {
+        box-shadow: 0 0 0 3px var(--danger-color-alpha);
+      }
+    }
+  }
+
+  select {
+    cursor: pointer;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .album-form {
+    padding: $espaciado-l $espaciado-s;
+
+    &__title {
+      font-size: $tamano-xl;
+    }
+  }
+}

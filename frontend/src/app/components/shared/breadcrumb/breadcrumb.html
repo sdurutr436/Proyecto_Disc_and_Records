@@ -1,0 +1,37 @@
+@if (showBreadcrumbs()) {
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol class="breadcrumb__list">
+      @for (crumb of breadcrumbs(); track crumb.url; let isLast = $last) {
+        <li class="breadcrumb__item">
+          @if (crumb.isActive || isLast) {
+            <span class="breadcrumb__link breadcrumb__link--active" aria-current="page">
+              {{ crumb.label }}
+            </span>
+          } @else {
+            <a
+              [routerLink]="crumb.url"
+              class="breadcrumb__link"
+            >
+              {{ crumb.label }}
+            </a>
+          }
+
+          @if (!isLast) {
+            <svg
+              class="breadcrumb__separator"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          }
+        </li>
+      }
+    </ol>
+  </nav>
+}

@@ -1,0 +1,44 @@
+<div class="not-found">
+  <div class="not-found__container">
+    <div class="not-found__content">
+      <h1 class="not-found__code">404</h1>
+      <h2 class="not-found__title">Página No Encontrada</h2>
+      <p class="not-found__message">
+        Lo sentimos, la página que buscas no existe o ha sido movida.
+      </p>
+
+      <div class="not-found__illustration">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Disco de vinilo roto -->
+          <circle cx="100" cy="100" r="80" stroke="currentColor" stroke-width="3" opacity="0.3"/>
+          <circle cx="100" cy="100" r="60" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+          <circle cx="100" cy="100" r="40" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+          <circle cx="100" cy="100" r="20" fill="currentColor" opacity="0.3"/>
+
+          <!-- Línea de rotura -->
+          <line x1="50" y1="50" x2="150" y2="150" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          <line x1="45" y1="55" x2="155" y2="145" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+      </div>
+
+      <div class="not-found__actions">
+        <app-button variant="primary" (click)="goHome()">
+          Ir al Inicio
+        </app-button>
+        <app-button variant="ghost" (click)="goBack()">
+          Volver Atrás
+        </app-button>
+      </div>
+
+      <div class="not-found__links">
+        <p>Enlaces útiles:</p>
+        <ul>
+          <li><a routerLink="/">Inicio</a></li>
+          <li><a routerLink="/albums">Catálogo de Álbumes</a></li>
+          <li><a routerLink="/about">Sobre Nosotros</a></li>
+          <li><a routerLink="/style-guide">Guía de Estilo</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,103 @@
+<div class="album-detail">
+  @if (isLoading()) {
+    <div class="album-detail__loading">
+      <app-spinner size="lg"></app-spinner>
+      <p>Cargando álbum...</p>
+    </div>
+  } @else if (album(); as album) {
+    <div class="album-detail__container">
+      <!-- Header con información principal -->
+      <div class="album-detail__header">
+        <div class="album-detail__cover">
+          <img [src]="album.coverUrl" [alt]="album.title" />
+        </div>
+        <div class="album-detail__info">
+          <h1 class="album-detail__title">{{ album.title }}</h1>
+          <h2 class="album-detail__artist">{{ album.artist }}</h2>
+          <div class="album-detail__meta">
+            <app-badge variant="info">{{ album.year }}</app-badge>
+            <app-badge variant="secondary">{{ album.genre }}</app-badge>
+          </div>
+          <div class="album-detail__rating">
+            <span class="album-detail__stars">
+              @for (star of [1,2,3,4,5]; track star) {
+                <svg
+                  class="album-detail__star"
+                  [class.album-detail__star--filled]="star <= album.rating"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              }
+            </span>
+            <span class="album-detail__rating-value">{{ album.rating }}/5</span>
+          </div>
+          <div class="album-detail__actions">
+            <app-button variant="primary" (click)="addToFavorites()">
+              Añadir a Favoritos
+            </app-button>
+            <app-button variant="secondary" (click)="editAlbum()">
+              Editar Álbum
+            </app-button>
+            <app-button variant="ghost" (click)="goBack()">
+              Volver
+            </app-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido adicional -->
+      <div class="album-detail__content">
+        <app-card>
+          <h3>Sobre este álbum</h3>
+          <p>{{ album.description }}</p>
+        </app-card>
+
+        @if (album.tracks && album.tracks.length > 0) {
+          <app-card>
+            <h3>Lista de canciones</h3>
+            <div class="album-detail__tracks">
+              @for (track of album.tracks; track track.number) {
+                <div class="album-detail__track">
+                  <span class="album-detail__track-number">{{ track.number }}</span>
+                  <span class="album-detail__track-title">{{ track.title }}</span>
+                  <span class="album-detail__track-duration">{{ track.duration }}</span>
+                </div>
+              }
+            </div>
+          </app-card>
+        }
+
+        @if (album.reviews && album.reviews.length > 0) {
+          <div class="album-detail__reviews">
+            <h3>Reseñas</h3>
+            @for (review of album.reviews; track review.id) {
+              <app-card>
+                <div class="album-detail__review">
+                  <div class="album-detail__review-header">
+                    <strong>{{ review.user }}</strong>
+                    <span class="album-detail__review-date">{{ review.date }}</span>
+                  </div>
+                  <div class="album-detail__review-rating">
+                    @for (star of [1,2,3,4,5]; track star) {
+                      <svg
+                        class="album-detail__review-star"
+                        [class.album-detail__review-star--filled]="star <= review.rating"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                    }
+                  </div>
+                  <p class="album-detail__review-comment">{{ review.comment }}</p>
+                </div>
+              </app-card>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,62 @@
+<div class="album-list">
+  <div class="album-list__header">
+    <h1 class="album-list__title">Catálogo de Álbumes</h1>
+    <p class="album-list__subtitle">Explora nuestra colección musical</p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="album-list__loading">
+      <app-spinner size="lg"></app-spinner>
+      <p>Cargando álbumes...</p>
+    </div>
+  } @else {
+    <div class="album-list__grid">
+      @for (album of albums(); track album.id) {
+        <app-card class="album-card">
+          <div class="album-card__cover">
+            <img [src]="album.coverUrl" [alt]="album.title" />
+            <div class="album-card__overlay">
+              <app-button
+                variant="primary"
+                size="sm"
+                (click)="viewAlbumDetail(album.id)"
+              >
+                Ver Detalles
+              </app-button>
+              <app-button
+                variant="secondary"
+                size="sm"
+                (click)="editAlbum(album.id)"
+              >
+                Editar
+              </app-button>
+            </div>
+          </div>
+          <div class="album-card__info">
+            <h3 class="album-card__title">{{ album.title }}</h3>
+            <p class="album-card__artist">{{ album.artist }}</p>
+            <div class="album-card__meta">
+              <app-badge variant="info">{{ album.year }}</app-badge>
+              <app-badge variant="secondary">{{ album.genre }}</app-badge>
+            </div>
+            <div class="album-card__rating">
+              <span class="album-card__stars">
+                @for (star of [1,2,3,4,5]; track star) {
+                  <svg
+                    class="album-card__star"
+                    [class.album-card__star--filled]="star <= album.rating"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                }
+              </span>
+              <span class="album-card__rating-value">{{ album.rating }}/5</span>
+            </div>
+          </div>
+        </app-card>
+      }
+    </div>
+  }
+</div>

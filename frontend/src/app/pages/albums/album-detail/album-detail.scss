@@ -1,0 +1,243 @@
+@use '../../../../styles/00-settings/variables' as *;
+
+.album-detail {
+  padding: $espaciado-2xl $espaciado-m;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: $espaciado-m;
+
+    p {
+      font-size: $tamano-l;
+      color: var(--text-secondary);
+    }
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-2xl;
+  }
+
+  &__header {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: $espaciado-2xl;
+    align-items: start;
+
+    @media (max-width: 968px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__cover {
+    width: 100%;
+    aspect-ratio: 1;
+    border: $borde-brutal-thick;
+    box-shadow: $sombra-brutal-lg;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-m;
+  }
+
+  &__title {
+    font-size: $tamano-3xl;
+    font-weight: 900;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.2;
+  }
+
+  &__artist {
+    font-size: $tamano-2xl;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-secondary);
+  }
+
+  &__meta {
+    display: flex;
+    gap: $espaciado-s;
+    flex-wrap: wrap;
+  }
+
+  &__rating {
+    display: flex;
+    align-items: center;
+    gap: $espaciado-m;
+  }
+
+  &__stars {
+    display: flex;
+    gap: 4px;
+  }
+
+  &__star {
+    width: 28px;
+    height: 28px;
+    color: var(--text-tertiary);
+
+    &--filled {
+      color: var(--warning-color);
+    }
+  }
+
+  &__rating-value {
+    font-size: $tamano-xl;
+    font-weight: 900;
+    color: var(--text-primary);
+  }
+
+  &__actions {
+    display: flex;
+    gap: $espaciado-m;
+    flex-wrap: wrap;
+    margin-top: $espaciado-m;
+  }
+
+  &__content {
+    h3 {
+      font-size: $tamano-xl;
+      font-weight: 900;
+      margin: 0 0 $espaciado-m;
+      text-transform: uppercase;
+    }
+
+    p {
+      font-size: $tamano-m;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+  }
+
+  &__tracks {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-xs;
+  }
+
+  &__track {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    gap: $espaciado-m;
+    padding: $espaciado-s;
+    border-bottom: 1px solid var(--border-color);
+    align-items: center;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: var(--bg-tertiary);
+    }
+  }
+
+  &__track-number {
+    font-weight: 700;
+    color: var(--text-tertiary);
+    text-align: center;
+  }
+
+  &__track-title {
+    font-size: $tamano-m;
+    font-weight: 600;
+  }
+
+  &__track-duration {
+    font-size: $tamano-s;
+    color: var(--text-secondary);
+    font-family: monospace;
+  }
+
+  &__reviews {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-m;
+  }
+
+  &__review {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-s;
+  }
+
+  &__review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    strong {
+      font-size: $tamano-m;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+  }
+
+  &__review-date {
+    font-size: $tamano-s;
+    color: var(--text-tertiary);
+  }
+
+  &__review-rating {
+    display: flex;
+    gap: 2px;
+  }
+
+  &__review-star {
+    width: 16px;
+    height: 16px;
+    color: var(--text-tertiary);
+
+    &--filled {
+      color: var(--warning-color);
+    }
+  }
+
+  &__review-comment {
+    font-size: $tamano-m;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .album-detail {
+    padding: $espaciado-l $espaciado-s;
+
+    &__title {
+      font-size: $tamano-2xl;
+    }
+
+    &__artist {
+      font-size: $tamano-xl;
+    }
+
+    &__actions {
+      flex-direction: column;
+
+      app-button {
+        width: 100%;
+      }
+    }
+  }
+}
