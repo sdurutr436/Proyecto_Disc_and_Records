@@ -1,4 +1,4 @@
-Ôªø@use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/00-settings/variables' as vars;
 @use '../../../../styles/01-tools/mixins' as mix;
 
 /* ========================================
@@ -11,7 +11,7 @@
   z-index: 1;
 }
 
-/* --- Secci√≥n superior (botones + logo) --- */
+/* --- SecciÛn superior (botones + logo) --- */
 .header__top {
   width: 100%;
   background-color: var(--header-bg);
@@ -30,7 +30,7 @@
   position: relative;
 }
 
-/* --- Wrapper del logo (para posicionar barras detr√°s) --- */
+/* --- Wrapper del logo (para posicionar barras detr·s) --- */
 .header__logo-wrapper {
   position: relative;
   z-index: 2;
@@ -43,7 +43,7 @@
   order: 2;
 }
 
-/* --- Barras de colores detr√°s del logo --- */
+/* --- Barras de colores detr·s del logo --- */
 .header__stripes {
   position: absolute;
   top: 50%;
@@ -135,7 +135,7 @@
 }
 
 /* ========================================
-   RESPONSIVE - M√ìVIL (< 768px)
+   RESPONSIVE - M”VIL (< 768px)
    ======================================== */
 @include mix.mobile-down {
   /* --- Header superior: logo arriba, botones horizontalmente debajo --- */
@@ -155,7 +155,7 @@
     height: 10rem;
   }
 
-  /* --- Franjas verticales en m√≥vil --- */
+  /* --- Franjas verticales en mÛvil --- */
   .header__stripes {
     transform: translate(-50%, -50%) rotate(0deg);
     width: 100%;

@@ -141,5 +141,3 @@ export class Home {
     return this.router.url;
   }
 }
-
-}

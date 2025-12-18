@@ -1,7 +1,7 @@
 @use '../../../../styles/00-settings/variables' as *;
 
 .album-form {
-  padding: $espaciado-2xl $espaciado-m;
+  padding: $espaciado-xl $espaciado-m;
   max-width: 800px;
   margin: 0 auto;
 
@@ -14,7 +14,7 @@
   }
 
   &__title {
-    font-size: $tamano-2xl;
+    font-size: 2rem;
     font-weight: 900;
     margin: 0;
     text-transform: uppercase;
@@ -34,7 +34,7 @@
   }
 
   &__label {
-    font-size: $tamano-m;
+    font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
     color: var(--text-primary);
@@ -42,7 +42,7 @@
   }
 
   &__error {
-    font-size: $tamano-s;
+    font-size: 0.875rem;
     color: var(--danger-color);
     font-weight: 600;
   }
@@ -79,7 +79,7 @@
     color: var(--warning-color);
     font-weight: 700;
     text-align: center;
-    font-size: $tamano-m;
+    font-size: 1rem;
   }
 
   // Estilos para inputs nativos
@@ -87,7 +87,7 @@
   select,
   textarea {
     padding: $espaciado-s;
-    font-size: $tamano-m;
+    font-size: 1rem;
     border: $borde-brutal-thin;
     background-color: var(--background-secondary);
     color: var(--text-primary);
@@ -103,7 +103,7 @@
 
     &--error {
       border-color: var(--danger-color);
-      
+
       &:focus {
         box-shadow: 0 0 0 3px var(--danger-color-alpha);
       }
@@ -125,7 +125,7 @@
     padding: $espaciado-l $espaciado-s;
 
     &__title {
-      font-size: $tamano-xl;
+      font-size: 1.625rem;
     }
   }
 }

@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: $espaciado-2xl $espaciado-m;
+  padding: $espaciado-xl $espaciado-m;
   background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
 
   &__container {
@@ -37,19 +37,19 @@
   }
 
   &__title {
-    font-size: $tamano-2xl;
+    font-size: 2rem;
     font-weight: 900;
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 2px;
 
     @media (max-width: 640px) {
-      font-size: $tamano-xl;
+      font-size: 1.625rem;
     }
   }
 
   &__message {
-    font-size: $tamano-l;
+    font-size: 1.25rem;
     color: var(--text-secondary);
     margin: 0;
     max-width: 400px;
@@ -91,7 +91,7 @@
     width: 100%;
 
     p {
-      font-size: $tamano-m;
+      font-size: 1rem;
       font-weight: 700;
       margin: 0 0 $espaciado-s;
       text-transform: uppercase;

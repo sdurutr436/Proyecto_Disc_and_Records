@@ -1,7 +1,7 @@
 @use '../../../../styles/00-settings/variables' as *;
 
 .album-detail {
-  padding: $espaciado-2xl $espaciado-m;
+  padding: $espaciado-xl $espaciado-m;
   max-width: 1200px;
   margin: 0 auto;
 
@@ -14,7 +14,7 @@
     gap: $espaciado-m;
 
     p {
-      font-size: $tamano-l;
+      font-size: 1.25rem;
       color: var(--text-secondary);
     }
   }
@@ -57,7 +57,7 @@
   }
 
   &__title {
-    font-size: $tamano-3xl;
+    font-size: 2.5rem;
     font-weight: 900;
     margin: 0;
     text-transform: uppercase;
@@ -66,7 +66,7 @@
   }
 
   &__artist {
-    font-size: $tamano-2xl;
+    font-size: 2rem;
     font-weight: 700;
     margin: 0;
     color: var(--text-secondary);
@@ -100,7 +100,7 @@
   }
 
   &__rating-value {
-    font-size: $tamano-xl;
+    font-size: 1.625rem;
     font-weight: 900;
     color: var(--text-primary);
   }
@@ -114,14 +114,14 @@
 
   &__content {
     h3 {
-      font-size: $tamano-xl;
+      font-size: 1.625rem;
       font-weight: 900;
       margin: 0 0 $espaciado-m;
       text-transform: uppercase;
     }
 
     p {
-      font-size: $tamano-m;
+      font-size: 1rem;
       line-height: 1.7;
       color: var(--text-secondary);
       margin: 0;
@@ -158,12 +158,12 @@
   }
 
   &__track-title {
-    font-size: $tamano-m;
+    font-size: 1rem;
     font-weight: 600;
   }
 
   &__track-duration {
-    font-size: $tamano-s;
+    font-size: 0.875rem;
     color: var(--text-secondary);
     font-family: monospace;
   }
@@ -186,14 +186,14 @@
     align-items: center;
 
     strong {
-      font-size: $tamano-m;
+      font-size: 1rem;
       font-weight: 900;
       text-transform: uppercase;
     }
   }
 
   &__review-date {
-    font-size: $tamano-s;
+    font-size: 0.875rem;
     color: var(--text-tertiary);
   }
 
@@ -213,7 +213,7 @@
   }
 
   &__review-comment {
-    font-size: $tamano-m;
+    font-size: 1rem;
     line-height: 1.6;
     color: var(--text-secondary);
     margin: 0;
@@ -225,11 +225,11 @@
     padding: $espaciado-l $espaciado-s;
 
     &__title {
-      font-size: $tamano-2xl;
+      font-size: 2rem;
     }
 
     &__artist {
-      font-size: $tamano-xl;
+      font-size: 1.625rem;
     }
 
     &__actions {

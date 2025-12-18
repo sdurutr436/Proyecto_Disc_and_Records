@@ -1,7 +1,7 @@
 @use '../../../../styles/00-settings/variables' as *;
 
 .album-list {
-  padding: $espaciado-2xl $espaciado-m;
+  padding: $espaciado-xl $espaciado-m;
   max-width: 1400px;
   margin: 0 auto;
 
@@ -11,7 +11,7 @@
   }
 
   &__title {
-    font-size: $tamano-3xl;
+    font-size: 2.5rem;
     font-weight: 900;
     margin: 0 0 $espaciado-s;
     text-transform: uppercase;
@@ -19,7 +19,7 @@
   }
 
   &__subtitle {
-    font-size: $tamano-l;
+    font-size: 1.25rem;
     color: var(--text-secondary);
     margin: 0;
   }
@@ -33,7 +33,7 @@
     gap: $espaciado-m;
 
     p {
-      font-size: $tamano-l;
+      font-size: 1.25rem;
       color: var(--text-secondary);
     }
   }
@@ -91,14 +91,14 @@
   }
 
   &__title {
-    font-size: $tamano-l;
+    font-size: 1.25rem;
     font-weight: 900;
     margin: 0 0 $espaciado-xs;
     text-transform: uppercase;
   }
 
   &__artist {
-    font-size: $tamano-m;
+    font-size: 1rem;
     color: var(--text-secondary);
     margin: 0 0 $espaciado-m;
   }
@@ -132,7 +132,7 @@
   }
 
   &__rating-value {
-    font-size: $tamano-s;
+    font-size: 0.875rem;
     font-weight: 700;
     color: var(--text-secondary);
   }
@@ -143,7 +143,7 @@
     padding: $espaciado-l $espaciado-s;
 
     &__title {
-      font-size: $tamano-2xl;
+      font-size: 2rem;
     }
 
     &__grid {

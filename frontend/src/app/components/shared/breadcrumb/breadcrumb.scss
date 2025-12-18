@@ -24,7 +24,7 @@
   }
 
   &__link {
-    font-size: $tamano-s;
+    font-size: $tamanio-fuente-texto-pequeno-xs;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -58,7 +58,7 @@
     }
 
     &__link {
-      font-size: $tamano-xs;
+      font-size: 0.75rem;
     }
 
     &__separator {
