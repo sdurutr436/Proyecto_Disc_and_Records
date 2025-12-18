@@ -1,6 +1,10 @@
 # Discs & Records
 
-> Plataforma web estilo Letterboxd para música - Valora, reseña y colecciona tus álbumes y canciones favoritas
+> Plataforma web estilo Letterboxd para música - Valora, reseña y colecciona tus álbumes y canciones favoritas:
+
+**DOMINOS DESPLEGADOS:**
+https://discs-n-records-ksgvk.ondigitalocean.app/
+https://discs-n-records-ksgvk.ondigitalocean.app/style-guide
 
 ## 📖 Descripción
 
