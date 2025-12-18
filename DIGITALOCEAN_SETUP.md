@@ -87,7 +87,32 @@ SPRING_DATASOURCE_USERNAME=${db.USERNAME}
 SPRING_DATASOURCE_PASSWORD=${db.PASSWORD}
 ```
 
-#### Opción C: Base de datos externa
+#### Opción C: Managed Database ya creada (tienes las credenciales)
+
+Si ya tienes una base de datos MySQL/MariaDB de DigitalOcean con estas credenciales:
+```
+username = doadmin
+password = ************************
+host = db-mysql-do-user-30328303-0.f.db.ondigitalocean.com
+port = 25060
+database = defaultdb
+sslmode = REQUIRED
+```
+
+**Configura EXACTAMENTE así en DigitalOcean (Environment Variables del backend):**
+
+```bash
+SPRING_PROFILES_ACTIVE=docker
+SPRING_DATASOURCE_URL=jdbc:mariadb://db-mysql-do-user-30328303-0.f.db.ondigitalocean.com:25060/defaultdb?sslMode=REQUIRED
+SPRING_DATASOURCE_USERNAME=doadmin
+SPRING_DATASOURCE_PASSWORD=tu_password_real_aqui
+JWT_SECRET=eXNVUzJTX2Rpc2NzX2FuZF9yZWNvcmRzX3NlY3JldF9rZXlfMjAyNF9zZWN1cmU=
+JWT_EXPIRATION=86400000
+```
+
+**IMPORTANTE**: Reemplaza `tu_password_real_aqui` con la contraseña que te mostraron (haz click en "show").
+
+#### Opción D: Base de datos externa (fuera de DigitalOcean)
 
 **IMPORTANTE**: Introduce la URL completa real, NO uses `${...}`:
 
