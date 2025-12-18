@@ -45,21 +45,61 @@ La aplicación utiliza:
 
 ## Variables de Entorno
 
-### Backend
+### Backend (REQUERIDAS)
 
-```
+Configura estas variables en **Settings** > **production-backend** > **Environment Variables**:
+
+```bash
+# Perfil de Spring
 SPRING_PROFILES_ACTIVE=docker
+
+# JWT Configuration (OBLIGATORIO)
+JWT_SECRET=eXNVUzJTX2Rpc2NzX2FuZF9yZWNvcmRzX3NlY3JldF9rZXlfMjAyNF9zZWN1cmU=
+JWT_EXPIRATION=86400000
+
+# Database Configuration (OBLIGATORIO)
+SPRING_DATASOURCE_URL=jdbc:mariadb://host:port/database
+SPRING_DATASOURCE_USERNAME=tu_usuario
+SPRING_DATASOURCE_PASSWORD=tu_password
+
+# JVM Optimization (opcional pero recomendado)
 JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -Djava.security.egd=file:/dev/./urandom
 ```
 
-### Base de datos (si usas managed database)
+### Base de datos
 
-Añadir en el backend:
+**Opción 1: Managed Database de DigitalOcean (recomendado)**
+
+1. Crea una base de datos MariaDB/MySQL en DigitalOcean
+2. En la configuración del backend, añade las variables:
+   ```bash
+   SPRING_DATASOURCE_URL=${db.DATABASE_URL}
+   SPRING_DATASOURCE_USERNAME=${db.USERNAME}
+   SPRING_DATASOURCE_PASSWORD=${db.PASSWORD}
+   ```
+
+**Opción 2: Base de datos externa**
+
+Configura manualmente las variables con tu servidor de BD:
+```bash
+SPRING_DATASOURCE_URL=jdbc:mariadb://tu-servidor:3306/discsandrecords?useSSL=true
+SPRING_DATASOURCE_USERNAME=tu_usuario
+SPRING_DATASOURCE_PASSWORD=tu_password_seguro
 ```
-SPRING_DATASOURCE_URL=${db.DATABASE_URL}
-SPRING_DATASOURCE_USERNAME=${db.USERNAME}
-SPRING_DATASOURCE_PASSWORD=${db.PASSWORD}
+
+### JWT Secret - Generar uno nuevo
+
+**IMPORTANTE**: Para producción, genera un JWT_SECRET único usando:
+
+```bash
+# En Linux/Mac/WSL
+echo -n "tu_clave_super_secreta_aqui_$(date +%s)" | base64
+
+# En PowerShell
+[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("tu_clave_super_secreta_aqui_$(Get-Date -Format 'yyyyMMddHHmmss')"))
 ```
+
+El secreto debe tener al menos 256 bits (32 caracteres) antes de codificar en Base64.
 
 ## Pasos de Configuración
 
@@ -80,6 +120,15 @@ SPRING_DATASOURCE_PASSWORD=${db.PASSWORD}
 7. **HTTP Routes**:
    - Path: `/api`
    - Preserve Path Prefix: `Yes`
+8. **Environment Variables** (OBLIGATORIO):
+   ```
+   JWT_SECRET=eXNVUzJTX2Rpc2NzX2FuZF9yZWNvcmRzX3NlY3JldF9rZXlfMjAyNF9zZWN1cmU=
+   JWT_EXPIRATION=86400000
+   SPRING_DATASOURCE_URL=jdbc:mariadb://host:port/database
+   SPRING_DATASOURCE_USERNAME=tu_usuario
+   SPRING_DATASOURCE_PASSWORD=tu_password
+   SPRING_PROFILES_ACTIVE=docker
+   ```
 
 ### 3. Configurar el Frontend
 
@@ -132,6 +181,24 @@ Una vez desplegado:
 **Causa**: El nginx.conf del frontend intentaba hacer proxy a `http://backend:8080`
 
 **Solución aplicada**: Se eliminó el bloque `location /api/` del nginx.conf y se configuró el enrutado mediante HTTP Request Routes de App Platform.
+
+### Error: "Could not resolve placeholder 'JWT_SECRET'"
+
+**Causa**: Falta configurar variables de entorno en el componente backend
+
+**Solución**: 
+1. Ve a **Settings** > **production-backend** > **Environment Variables**
+2. Añade las variables obligatorias:
+   - `JWT_SECRET`: Clave secreta en Base64 (mínimo 256 bits)
+   - `JWT_EXPIRATION`: Tiempo de expiración en ms (ej: `86400000` = 24h)
+   - `SPRING_DATASOURCE_URL`: URL de conexión a la base de datos
+   - `SPRING_DATASOURCE_USERNAME`: Usuario de BD
+   - `SPRING_DATASOURCE_PASSWORD`: Contraseña de BD
+
+**Valor temporal para pruebas** (cambiar en producción):
+```bash
+JWT_SECRET=eXNVUzJTX2Rpc2NzX2FuZF9yZWNvcmRzX3NlY3JldF9rZXlfMjAyNF9zZWN1cmU=
+```
 
 ### Error: "Angular compiler warnings"
 
