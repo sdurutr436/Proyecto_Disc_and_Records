@@ -5,19 +5,21 @@ $color-fondo-light: #FBFAF2;
 $color-fondo-light-secundario: #E7D8AB;  // Beige crema 70s
 
 /* Modo oscuro */
-$color-fondo-oscuro: #01131B;  // Azul noche profundo
-$color-fondo-oscuro-secundario: #013946;
+$color-fondo-oscuro: #1A1A1A;  // Gris muy oscuro (fondo principal)
+$color-fondo-oscuro-secundario: #2D2D2D;  // Gris oscuro (más contraste)
+$color-fondo-tarjeta: #242424;  // Gris para tarjetas/cards
 
 /* --- Variables de colores de texto --- */
 $color-letra-blanca: #FBFAF2;
-$color-letra-oscura: #01131B;
-$color-letra-desactivado: rgba(1, 19, 27, 0.5);
+$color-letra-oscura: #1A1A1A;
+$color-letra-desactivado: rgba(150, 150, 150, 0.5);
 
 /* Modo light */
 $color-letra-principal-light: #01131B;
 
 /* Modo oscuro */
-$color-letra-principal-dark: #FBFAF2;
+$color-letra-principal-dark: #F5F5F5;  // Blanco grisáceo (mejor contraste)
+$color-letra-secundaria-dark: #B0B0B0;  // Gris medio para textos secundarios
 
 /* --- Variables de colores principales --- */
 
@@ -27,26 +29,26 @@ $color-secundario-light: #CA6703;  // Naranja quemado
 $color-contraste-light: #BB3F03;   // Naranja rojizo
 $color-acentuado-light: #9D2227;   // Rojo vino/burdeos
 
-/* Paleta 70s - Modo oscuro (fríos: teales y verdes) */
-$color-primario-dark: #93CFBB;     // Verde menta
-$color-secundario-dark: #0A9295;   // Teal vibrante
-$color-contraste-dark: #015F72;    // Teal profundo
-$color-acentuado-dark: #01131B;    // Azul noche
+/* Modo oscuro - Escala de grises con acentos coloridos */
+$color-primario-dark: #5BA3F5;     // Azul brillante (acción principal)
+$color-secundario-dark: #00D9FF;   // Cyan vibrante (enlaces/hover)
+$color-contraste-dark: #A78BFA;    // Púrpura suave (badges/tags)
+$color-acentuado-dark: #34D399;    // Verde esmeralda (acento positivo)
 
 /* Colores de las franjas arcoíris 70s (para gradientes y decoración) */
-$color-franja-1: #93CFBB;  // Verde menta (arriba)
-$color-franja-2: #0A9295;  // Teal
-$color-franja-3: #ED9C05;  // Naranja dorado
-$color-franja-4: #CA6703;  // Naranja quemado
-$color-franja-5: #BB3F03;  // Naranja rojizo
-$color-franja-6: #9D2227;  // Rojo vino (abajo)
+$color-franja-1: #5BA3F5;  // Azul brillante (arriba)
+$color-franja-2: #00D9FF;  // Cyan vibrante
+$color-franja-3: #34D399;  // Verde esmeralda (punto focal)
+$color-franja-4: #FBBF24;  // Amarillo dorado
+$color-franja-5: #F97316;  // Naranja vibrante
+$color-franja-6: #A78BFA;  // Púrpura suave (abajo)
 
 /* --- Variables de colores de estado y apoyo --- */
-$color-error: #E04A4A;
+$color-error: #FF5757;        // Rojo más brillante
 $color-advertencia-light: #FFC047;
-$color-advertencia-dark: #FEF84A;
-$color-exito: #AAD661;
-$color-informacion: #0A9295;  // Teal de la paleta 70s
+$color-advertencia-dark: #FBBF24;  // Amarillo dorado vibrante
+$color-exito: #34D399;        // Verde esmeralda brillante
+$color-informacion: #5BA3F5;  // Azul brillante
 
 /* --- Variables de escala tipográfica --- */
 

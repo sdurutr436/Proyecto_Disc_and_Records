@@ -7,7 +7,7 @@
 
   &__header {
     text-align: center;
-    margin-bottom: $espaciado-2xl;
+    margin-bottom: $espaciado-xl;
   }
 
   &__title {
@@ -51,7 +51,7 @@
 
   &:hover {
     transform: translate(-2px, -2px);
-    box-shadow: $sombra-brutal-md;
+    box-shadow: $sombra-brutal-m;
 
     .album-card__overlay {
       opacity: 1;

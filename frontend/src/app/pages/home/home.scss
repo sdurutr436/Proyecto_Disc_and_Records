@@ -41,7 +41,7 @@
   &__description {
     font-size: 1.25rem;
     max-width: 600px;
-    margin: 0 auto $espaciado-2xl;
+    margin: 0 auto $espaciado-xl;
     line-height: 1.6;
     opacity: 0.95;
   }
@@ -59,7 +59,7 @@
   }
 
   &__features {
-    padding: $espaciado-3xl 0;
+    padding: $espaciado-xl 0;
     background-color: var(--bg-primary);
   }
 
@@ -68,7 +68,7 @@
     font-weight: 900;
     text-transform: uppercase;
     text-align: center;
-    margin: 0 0 $espaciado-2xl;
+    margin: 0 0 $espaciado-xl;
     letter-spacing: 2px;
   }
 
@@ -82,12 +82,12 @@
     padding: $espaciado-l;
     background-color: var(--bg-secondary);
     border: $borde-brutal-thick;
-    box-shadow: $sombra-brutal-sm;
+    box-shadow: $sombra-brutal-s;
     transition: transform 0.2s, box-shadow 0.2s;
 
     &:hover {
       transform: translate(-2px, -2px);
-      box-shadow: $sombra-brutal-md;
+      box-shadow: $sombra-brutal-m;
     }
 
     h3 {

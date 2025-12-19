@@ -22,13 +22,13 @@
   &__container {
     display: flex;
     flex-direction: column;
-    gap: $espaciado-2xl;
+    gap: $espaciado-xl;
   }
 
   &__header {
     display: grid;
     grid-template-columns: 400px 1fr;
-    gap: $espaciado-2xl;
+    gap: $espaciado-xl;
     align-items: start;
 
     @media (max-width: 968px) {
@@ -40,7 +40,7 @@
     width: 100%;
     aspect-ratio: 1;
     border: $borde-brutal-thick;
-    box-shadow: $sombra-brutal-lg;
+    box-shadow: $sombra-brutal-l;
 
     img {
       width: 100%;
