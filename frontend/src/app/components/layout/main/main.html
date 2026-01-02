@@ -27,7 +27,7 @@
         <button
           class="main-nav__theme-toggle"
           (click)="toggleTheme()"
-          [attr.aria-label]="themeService.currentTheme() === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'"
+          [attr.aria-label]="getThemeLabel()"
           type="button">
 
           <!-- Icono Sol (modo claro) -->
@@ -45,10 +45,18 @@
             </svg>
           }
 
-          <!-- Icono Luna (modo oscuro) -->
+          <!-- Icono Luna (modo oscuro azul) -->
           @if (themeService.currentTheme() === 'dark') {
             <svg class="main-nav__theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          }
+
+          <!-- Icono Medialuna/Contraste (modo oscuro escala de grises) -->
+          @if (themeService.currentTheme() === 'dark-gray') {
+            <svg class="main-nav__theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 2 A10 10 0 0 1 12 22 A10 10 0 0 0 12 2" fill="currentColor"></path>
             </svg>
           }
         </button>
@@ -87,10 +95,10 @@
         <button
           class="main-nav__theme-toggle main-nav__theme-toggle--mobile"
           (click)="toggleTheme()"
-          [attr.aria-label]="themeService.currentTheme() === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'"
+          [attr.aria-label]="getThemeLabel()"
           type="button">
           <span class="main-nav__theme-label">
-            {{ themeService.currentTheme() === 'light' ? 'MODO OSCURO' : 'MODO CLARO' }}
+            {{ getThemeText() }}
           </span>
           @if (themeService.currentTheme() === 'light') {
             <svg class="main-nav__theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -108,6 +116,12 @@
           @if (themeService.currentTheme() === 'dark') {
             <svg class="main-nav__theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          }
+          @if (themeService.currentTheme() === 'dark-gray') {
+            <svg class="main-nav__theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 2 A10 10 0 0 1 12 22 A10 10 0 0 0 12 2" fill="currentColor"></path>
             </svg>
           }
         </button>

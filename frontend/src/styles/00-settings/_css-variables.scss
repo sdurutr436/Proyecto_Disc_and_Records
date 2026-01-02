@@ -54,7 +54,7 @@
 }
 
 /* ========================================
-   TEMA OSCURO
+   TEMA OSCURO (AZUL)
    Se activa con [data-theme="dark"] en <html>
    ======================================== */
 
@@ -103,5 +103,57 @@
   --vinyl-shadow-layer-2: #{$color-secundario-dark}; // #0A9295 (teal vibrante)
   --vinyl-shadow-layer-3: #{$color-contraste-dark};  // #015F72 (teal profundo)
   --vinyl-shadow-layer-4: #{$color-acentuado-dark};  // #01131B (azul noche)
+}
+
+/* ========================================
+   TEMA OSCURO ESCALA DE GRISES (NUEVO)
+   Se activa con [data-theme="dark-gray"] en <html>
+   ======================================== */
+
+[data-theme="dark-gray"] {
+  /* --- Colores de fondo - escala de grises pura --- */
+  --bg-primary: #1A1A1A;                             // Gris muy oscuro (casi negro)
+  --bg-secondary: #2D2D2D;                           // Gris oscuro
+
+  /* --- Colores de texto - alto contraste en escala de grises --- */
+  --text-primary: #F5F5F5;                           // Gris muy claro (casi blanco)
+  --text-secondary: rgba(245, 245, 245, 0.7);        // Gris claro con transparencia
+  --text-placeholder: rgba(245, 245, 245, 0.85);     // Placeholder visible
+  --text-white: #F5F5F5;                             // Gris muy claro
+  --text-dark: #1A1A1A;                              // Gris muy oscuro
+
+  /* --- Colores principales - tonos grises con diferentes intensidades --- */
+  --color-primary: #B8B8B8;                          // Gris medio-claro (acción principal)
+  --color-secondary: #9E9E9E;                        // Gris medio
+  --color-contrast: #7A7A7A;                         // Gris medio-oscuro
+  --color-accent: #646464;                           // Gris oscuro para acentos
+
+  /* --- Colores de borde y sombra - grises claros --- */
+  --border-color: #D4D4D4;                           // Gris claro para bordes
+  --shadow-color: #D4D4D4;                           // Gris claro para box-shadow
+
+  /* --- Colores de header/footer/nav - oscuros en escala de grises --- */
+  --header-bg: #2D2D2D;                              // Gris oscuro
+  --nav-bg: #1A1A1A;                                 // Gris muy oscuro
+
+  /* --- Colores de estado (escala de grises) --- */
+  --color-error: #D4D4D4;                            // Gris claro (sin color de error)
+  --color-warning: #B8B8B8;                          // Gris medio-claro
+  --color-success: #9E9E9E;                          // Gris medio
+  --color-info: #7A7A7A;                             // Gris medio-oscuro
+
+  /* --- Colores de franjas (en escala de grises) --- */
+  --color-stripe-1: #B8B8B8;                         // Gris claro
+  --color-stripe-2: #9E9E9E;                         // Gris medio-claro
+  --color-stripe-3: #7A7A7A;                         // Gris medio
+  --color-stripe-4: #646464;                         // Gris medio-oscuro
+  --color-stripe-5: #4A4A4A;                         // Gris oscuro
+  --color-stripe-6: #2D2D2D;                         // Gris muy oscuro
+
+  /* --- Colores de sombras vinilo (escala de grises) --- */
+  --vinyl-shadow-layer-1: #B8B8B8;                   // Gris claro
+  --vinyl-shadow-layer-2: #9E9E9E;                   // Gris medio-claro
+  --vinyl-shadow-layer-3: #7A7A7A;                   // Gris medio
+  --vinyl-shadow-layer-4: #646464;                   // Gris medio-oscuro
 }
 
