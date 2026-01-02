@@ -1,0 +1,121 @@
+<div class="profile">
+  <div class="profile__container">
+    <!-- ============================================ -->
+    <!-- COLUMNA IZQUIERDA: Card de Perfil (1/3)      -->
+    <!-- ============================================ -->
+    <aside class="profile__sidebar">
+      <app-card
+        [title]="userProfile.name"
+        [subtitle]="'Miembro desde ' + userProfile.memberSince"
+        [imageUrl]="userProfile.avatarUrl"
+        [imageAlt]="'Avatar de ' + userProfile.name"
+        cardType="profile"
+        variant="normal"
+        [badges]="favoriteGenres"
+        [actions]="[
+          { label: 'Editar Perfil', variant: 'primary', callback: editProfile },
+          { label: 'Compartir', variant: 'secondary', callback: shareProfile }
+        ]"
+      >
+      </app-card>
+
+      <!-- Estadísticas adicionales -->
+      <div class="profile__stats">
+        <div class="profile__stat">
+          <span class="profile__stat-value">{{ userProfile.totalReviews }}</span>
+          <span class="profile__stat-label">Reseñas</span>
+        </div>
+        <div class="profile__stat">
+          <span class="profile__stat-value">{{ userProfile.totalAlbums }}</span>
+          <span class="profile__stat-label">Álbumes</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ============================================ -->
+    <!-- COLUMNA DERECHA: Tabs + Contenido (2/3)      -->
+    <!-- ============================================ -->
+    <main class="profile__content">
+      <!-- Tabs de navegación -->
+      <nav class="profile__tabs">
+        <button
+          type="button"
+          [class]="'profile__tab ' + (isTabActive('reviews') ? 'profile__tab--active' : '')"
+          (click)="setActiveTab('reviews')"
+        >
+          Reseñas
+        </button>
+        <button
+          type="button"
+          [class]="'profile__tab ' + (isTabActive('albums') ? 'profile__tab--active' : '')"
+          (click)="setActiveTab('albums')"
+        >
+          Álbumes
+        </button>
+        <button
+          type="button"
+          class="profile__tab profile__tab--disabled"
+          disabled
+        >
+          Canciones
+        </button>
+      </nav>
+
+      <!-- Contenido según tab activo -->
+      <div class="profile__tab-content">
+        <!-- VISTA: RESEÑAS -->
+        @if (activeTab() === 'reviews') {
+          <div class="profile__reviews">
+            @for (review of reviews(); track review.id) {
+              <article class="profile__review-card">
+                <div class="profile__review-image">
+                  <img [src]="review.albumImageUrl" [alt]="review.albumTitle" />
+                </div>
+                <div class="profile__review-content">
+                  <header class="profile__review-header">
+                    <h3 class="profile__review-title">{{ review.albumTitle }}</h3>
+                    <p class="profile__review-artist">{{ review.albumArtist }}</p>
+                    <div class="profile__review-rating">
+                      @for (star of [1,2,3,4,5]; track star) {
+                        <span [class]="star <= review.rating ? 'star star--filled' : 'star'">★</span>
+                      }
+                    </div>
+                  </header>
+                  <p class="profile__review-text">{{ review.reviewText }}</p>
+                  <time class="profile__review-date">{{ review.date }}</time>
+                </div>
+              </article>
+            }
+          </div>
+        }
+
+        <!-- VISTA: ÁLBUMES -->
+        @if (activeTab() === 'albums') {
+          <div class="profile__albums">
+            @for (album of albums(); track album.id) {
+              <app-card
+                [title]="album.title"
+                [titleLink]="'/album/' + album.id"
+                [subtitle]="album.artist"
+                [subtitleLink]="'/artist/' + album.artist"
+                [imageUrl]="album.imageUrl"
+                [imageAlt]="album.title + ' por ' + album.artist"
+                variant="vinilo"
+                cardType="polaroid"
+                hoverEffect="lift"
+                (click)="viewAlbum(album.id)"
+                class="profile__album-card"
+              >
+                @if (album.rating) {
+                  <div class="profile__album-rating">
+                    ⭐ {{ album.rating }}
+                  </div>
+                }
+              </app-card>
+            }
+          </div>
+        }
+      </div>
+    </main>
+  </div>
+</div>

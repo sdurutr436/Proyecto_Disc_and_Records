@@ -1,0 +1,41 @@
+<div class="search-bar">
+  <div class="search-bar__container">
+    <!-- Input de búsqueda -->
+    <input
+      type="text"
+      class="search-bar__input"
+      [value]="searchTerm()"
+      (input)="updateSearchTerm($any($event.target).value)"
+      (keypress)="handleKeyPress($event)"
+      placeholder="Busca artistas, álbumes..."
+      aria-label="Buscar en la colección"
+    />
+
+    <!-- Botón de limpiar (solo visible si hay texto) -->
+    @if (searchTerm()) {
+      <button
+        type="button"
+        class="search-bar__clear"
+        (click)="clearSearch()"
+        aria-label="Limpiar búsqueda"
+      >
+        ✕
+      </button>
+    }
+
+    <!-- Botón de búsqueda -->
+    <button
+      type="button"
+      class="search-bar__button"
+      (click)="handleSearch()"
+      [disabled]="!searchTerm().trim()"
+      aria-label="Buscar"
+    >
+      <!-- Icono de lupa -->
+      <svg class="search-bar__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+    </button>
+  </div>
+</div>

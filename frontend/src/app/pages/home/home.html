@@ -1,1 +1,93 @@
-<p>home works!</p>
+<div class="home">
+  <!-- ============================================ -->
+  <!-- SECCIÓN HERO: Eslogan y CTA                  -->
+  <!-- ============================================ -->
+  <section class="home__hero">
+    <div class="home__hero-content">
+      <!-- Eslogan principal -->
+      <h1 class="home__slogan">
+        Puntúa todos tus álbumes favoritos
+        <span class="home__slogan-highlight">en un solo lugar</span>
+      </h1>
+
+      <!-- Botón de llamada a la acción -->
+      <app-button
+        variant="primary"
+        size="lg"
+        (clicked)="openRegisterModal()"
+        class="home__cta-button"
+      >
+        COMIENZA AQUÍ
+      </app-button>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- SECCIÓN DE BÚSQUEDA                          -->
+  <!-- ============================================ -->
+  <section class="home__search">
+    <app-search-bar
+      (onSearch)="handleSearch($event)"
+    ></app-search-bar>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- CARRUSEL: ÁLBUMES EN TENDENCIA               -->
+  <!-- ============================================ -->
+  <section class="home__section">
+    <app-carousel title="ÚLTIMOS ÁLBUMES EN TENDENCIA">
+      @for (album of trendingAlbums(); track album.id) {
+        <app-card
+          [title]="album.title"
+          [titleLink]="'/album/' + album.id"
+          [subtitle]="album.artist"
+          [subtitleLink]="'/artist/' + album.artist"
+          [imageUrl]="album.imageUrl"
+          [imageAlt]="album.title + ' por ' + album.artist"
+          variant="vinilo"
+          cardType="polaroid"
+          hoverEffect="lift"
+          (click)="viewAlbumDetails(album.id)"
+          class="home__album-card"
+        >
+          <!-- Badge de rating si está disponible -->
+          @if (album.rating) {
+            <div class="home__rating">
+              ⭐ {{ album.rating }}
+            </div>
+          }
+        </app-card>
+      }
+    </app-carousel>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- CARRUSEL: ÁLBUMES RESEÑADOS                  -->
+  <!-- ============================================ -->
+  <section class="home__section">
+    <app-carousel title="ÚLTIMOS ÁLBUMES RESEÑADOS">
+      @for (album of recentReviews(); track album.id) {
+        <app-card
+          [title]="album.title"
+          [titleLink]="'/album/' + album.id"
+          [subtitle]="album.artist"
+          [subtitleLink]="'/artist/' + album.artist"
+          [imageUrl]="album.imageUrl"
+          [imageAlt]="album.title + ' por ' + album.artist"
+          variant="vinilo"
+          cardType="polaroid"
+          hoverEffect="lift"
+          (click)="viewAlbumDetails(album.id)"
+          class="home__album-card"
+        >
+          <!-- Badge de número de reseñas -->
+          @if (album.reviewCount) {
+            <div class="home__reviews">
+              💬 {{ album.reviewCount }} reseñas
+            </div>
+          }
+        </app-card>
+      }
+    </app-carousel>
+  </section>
+</div>

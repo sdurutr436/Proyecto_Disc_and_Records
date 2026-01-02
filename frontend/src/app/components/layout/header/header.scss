@@ -41,6 +41,24 @@
   flex-shrink: 0;
   margin: 0;
   order: 2;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+  }
 }
 
 /* --- Barras de colores detrás del logo --- */

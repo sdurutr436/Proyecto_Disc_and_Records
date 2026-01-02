@@ -1,5 +1,6 @@
-import { Component, signal, HostListener, inject } from '@angular/core';
+import { Component, signal, HostListener, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ThemeService } from '../../../services/theme';
 import { Modal } from '../../shared/modal/modal';
 import { LoginForm } from '../../shared/login-form/login-form';
@@ -17,7 +18,9 @@ type AuthModalType = 'none' | 'login' | 'register' | 'forgot-password';
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
-export class Header {
+export class Header implements OnInit, OnDestroy {
+  private router = inject(Router);
+
   isMenuOpen = signal(false);
   themeService = inject(ThemeService);
 
@@ -26,6 +29,38 @@ export class Header {
    * Controla cuál de los 3 modales de autenticación está visible
    */
   activeModal = signal<AuthModalType>('none');
+
+  ngOnInit() {
+    // Escuchar el evento personalizado desde cualquier componente
+    if (typeof window !== 'undefined') {
+      window.addEventListener('open-register-modal', this.handleOpenRegisterModal);
+    }
+  }
+
+  ngOnDestroy() {
+    // Limpiar el listener al destruir el componente
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('open-register-modal', this.handleOpenRegisterModal);
+    }
+  }
+
+  /**
+   * Manejador del evento personalizado
+   */
+  private handleOpenRegisterModal = () => {
+    this.openRegisterModal();
+  };
+
+  // ============================================
+  // MÉTODOS DE NAVEGACIÓN
+  // ============================================
+
+  /**
+   * Navegar a la página principal
+   */
+  navigateToHome() {
+    this.router.navigate(['/']);
+  }
 
   // ============================================
   // MÉTODOS DEL MENÚ MÓVIL

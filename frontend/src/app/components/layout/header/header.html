@@ -5,10 +5,14 @@
       <!-- Barras de colores FUERA del logo-wrapper -->
       <div class="header__stripes" aria-hidden="true"></div>
 
-      <!-- Logo central -->
-      <div class="header__logo-wrapper">
+      <!-- Logo central - clickeable para ir al home -->
+      <button
+        class="header__logo-wrapper"
+        (click)="navigateToHome()"
+        type="button"
+        aria-label="Ir a la página principal">
         <img src="/assets/logo.png" alt="Discs & Records" class="header__logo" />
-      </div>
+      </button>
 
       <!-- Botones debajo del logo -->
       <div class="header__buttons">

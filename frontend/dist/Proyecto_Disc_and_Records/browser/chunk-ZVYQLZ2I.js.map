@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/pages/home/home.ts", "src/app/pages/home/home.html"],
-  "sourcesContent": ["import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-home',\n  imports: [],\n  templateUrl: './home.html',\n  styleUrl: './home.scss',\n})\nexport class Home {\n\n}\n", "<p>home works!</p>\n"],
-  "mappings": ";;;;;;;;;;;AAQM,IAAO,OAAP,MAAO,MAAI;;qCAAJ,OAAI;EAAA;yEAAJ,OAAI,WAAA,CAAA,CAAA,UAAA,CAAA,GAAA,OAAA,GAAA,MAAA,GAAA,UAAA,SAAA,cAAA,IAAA,KAAA;AAAA,QAAA,KAAA,GAAA;ACRjB,MAAA,4BAAA,GAAA,GAAA;AAAG,MAAA,iBAAA,GAAA,aAAA;AAAW,MAAA,0BAAA;;;;;sEDQD,MAAI,CAAA;UANhB;uBACW,YAAU,SACX,CAAA,GAAE,UAAA,uBAAA,CAAA;;;;6EAIA,MAAI,EAAA,WAAA,QAAA,UAAA,8BAAA,YAAA,EAAA,CAAA;AAAA,GAAA;",
-  "names": []
-}
