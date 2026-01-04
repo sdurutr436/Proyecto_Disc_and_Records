@@ -1,0 +1,47 @@
+<div class="not-found">
+  <!-- ============================================ -->
+  <!-- CONTENIDO PRINCIPAL                          -->
+  <!-- ============================================ -->
+  <div class="not-found__container">
+
+    <!-- Gran 404 simple -->
+    <div class="not-found__error-code">404</div>
+
+    <!-- Mensaje principal -->
+    <h1 class="not-found__title">{{ currentMessage() }}</h1>
+    <p class="not-found__subtitle">{{ currentSubtitle() }}</p>
+
+    <!-- Botones de acción -->
+    <div class="not-found__actions">
+      <app-button
+        variant="primary"
+        size="lg"
+        (clicked)="navigateTo('/')"
+      >
+        Volver al Inicio
+      </app-button>
+
+      <app-button
+        variant="secondary"
+        size="lg"
+        (clicked)="goBack()"
+      >
+        Página Anterior
+      </app-button>
+    </div>
+
+    <!-- Separador -->
+    <div class="not-found__divider"></div>
+
+    <!-- Enlaces rápidos -->
+    <div class="not-found__quick-links">
+      @for (link of quickLinks; track link.route) {
+        <article class="not-found__link-card" (click)="navigateTo(link.route)">
+          <div class="not-found__link-icon" [innerHTML]="link.icon"></div>
+          <h3 class="not-found__link-title">{{ link.label }}</h3>
+          <p class="not-found__link-description">{{ link.description }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</div>

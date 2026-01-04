@@ -22,7 +22,13 @@ export const routes: Routes = [
     title: 'Guía de Estilo - Discs & Records'
   },
   {
+    path: '404',
+    loadComponent: () => import('./pages/not-found/not-found'),
+    title: '404 - Página No Encontrada'
+  },
+  {
     path: '**',
-    redirectTo: ''
+    loadComponent: () => import('./pages/not-found/not-found'),
+    title: '404 - Página No Encontrada'
   }
 ];

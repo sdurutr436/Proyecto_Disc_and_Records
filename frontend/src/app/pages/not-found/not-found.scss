@@ -1,0 +1,237 @@
+@use '../../../styles/00-settings/variables' as vars;
+
+.not-found {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-primary);
+  padding: 2rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+
+  /* ========================================
+     CONTENEDOR PRINCIPAL
+     ======================================== */
+  &__container {
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ========================================
+     ERROR CODE 404 SIMPLE
+     ======================================== */
+  &__error-code {
+    font-size: 12rem;
+    font-weight: 900;
+    font-family: vars.$fuente-secundaria;
+    color: var(--color-primary);
+    text-shadow:
+      6px 6px 0px var(--shadow-color);
+    line-height: 1;
+    margin-bottom: 2rem;
+
+    @media (max-width: 768px) {
+      font-size: 8rem;
+      text-shadow: 4px 4px 0px var(--shadow-color);
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  /* ========================================
+     TEXTOS PRINCIPALES
+     ======================================== */
+  &__title {
+    font-size: vars.$tamanio-fuente-h2;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+
+    @media (max-width: 768px) {
+      font-size: vars.$tamanio-fuente-h3;
+    }
+  }
+
+  &__subtitle {
+    font-size: vars.$tamanio-fuente-parrafo;
+    color: var(--text-secondary);
+    margin: 0 0 2.5rem 0;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+
+    @media (max-width: 768px) {
+      font-size: vars.$tamanio-fuente-texto-pequeno-m;
+      margin-bottom: 2rem;
+    }
+  }
+
+  /* ========================================
+     BOTONES DE ACCIÓN
+     ======================================== */
+  &__actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      margin-bottom: 2rem;
+    }
+  }
+
+  /* ========================================
+     SEPARADOR
+     ======================================== */
+  &__divider {
+    height: 2px;
+    background-color: var(--border-color);
+    margin: 3rem auto;
+    max-width: 200px;
+
+    @media (max-width: 768px) {
+      margin: 2rem auto;
+    }
+  }
+
+  /* ========================================
+     ENLACES RÁPIDOS
+     ======================================== */
+  &__quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    max-width: 700px;
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__link-card {
+    background-color: var(--bg-secondary);
+    border: vars.$borde-brutal-thick;
+    padding: 1.5rem 1rem;
+    cursor: pointer;
+    transition: all vars.$transicion-rapida;
+    box-shadow: vars.$sombra-brutal-s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+
+    &:hover {
+      transform: translate(2px, 2px);
+      box-shadow: vars.$sombra-brutal-xs;
+      background-color: var(--color-primary);
+
+      .not-found__link-icon {
+        transform: scale(1.1);
+        color: var(--text-dark);
+      }
+
+      .not-found__link-title {
+        color: var(--text-dark);
+      }
+
+      .not-found__link-description {
+        color: var(--text-dark);
+      }
+    }
+
+    @media (max-width: 768px) {
+      padding: 1.25rem 0.75rem;
+      gap: 0.5rem;
+    }
+  }
+
+  &__link-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--color-primary);
+    transition: all vars.$transicion-base;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (max-width: 768px) {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
+  &__link-title {
+    font-size: vars.$tamanio-fuente-h5;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.2;
+    transition: all vars.$transicion-rapida;
+
+    @media (max-width: 768px) {
+      font-size: vars.$tamanio-fuente-parrafo;
+    }
+  }
+
+  &__link-description {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+    transition: all vars.$transicion-rapida;
+
+    @media (max-width: 768px) {
+      font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+    }
+  }
+}
+
+/* ========================================
+   ANIMACIONES DE ENTRADA
+   ======================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.not-found__error-code {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.not-found__title {
+  animation: fadeIn 0.7s ease-out;
+}
+
+.not-found__subtitle {
+  animation: fadeIn 0.9s ease-out;
+}
+
+.not-found__actions {
+  animation: fadeIn 1.1s ease-out;
+}
+
+.not-found__quick-links {
+  animation: fadeIn 1.3s ease-out;
+}
