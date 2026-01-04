@@ -1,0 +1,165 @@
+<div class="search-results">
+  <!-- ============================================ -->
+  <!-- HEADER: Término de búsqueda y botón volver   -->
+  <!-- ============================================ -->
+  <header class="search-results__header">
+    <button type="button" class="search-results__back" (click)="goBack()">
+      ← Volver
+    </button>
+    <div class="search-results__header-content">
+      <h1 class="search-results__title">
+        Resultados para: <span class="search-results__query">"{{ searchTerm() }}"</span>
+      </h1>
+      <p class="search-results__count">
+        {{ filteredResults().length }} resultado{{ filteredResults().length !== 1 ? 's' : '' }} encontrado{{ filteredResults().length !== 1 ? 's' : '' }}
+      </p>
+    </div>
+  </header>
+
+  <!-- ============================================ -->
+  <!-- BARRA DE BÚSQUEDA INTEGRADA                  -->
+  <!-- ============================================ -->
+  <section class="search-results__search-bar">
+    <app-search-bar
+      (onSearch)="newSearch($event)"
+    ></app-search-bar>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- FILTROS DE TIPO DE CONTENIDO                 -->
+  <!-- ============================================ -->
+  <nav class="search-results__filters">
+    <button
+      type="button"
+      [class]="'search-results__filter ' + (isFilterActive('all') ? 'search-results__filter--active' : '')"
+      (click)="setFilter('all')"
+    >
+      Todos <span class="search-results__filter-count">({{ resultsCount().all }})</span>
+    </button>
+    <button
+      type="button"
+      [class]="'search-results__filter ' + (isFilterActive('albums') ? 'search-results__filter--active' : '')"
+      (click)="setFilter('albums')"
+    >
+      💿 Álbumes <span class="search-results__filter-count">({{ resultsCount().albums }})</span>
+    </button>
+    <button
+      type="button"
+      [class]="'search-results__filter ' + (isFilterActive('artists') ? 'search-results__filter--active' : '')"
+      (click)="setFilter('artists')"
+    >
+      🎤 Artistas <span class="search-results__filter-count">({{ resultsCount().artists }})</span>
+    </button>
+    <button
+      type="button"
+      [class]="'search-results__filter ' + (isFilterActive('users') ? 'search-results__filter--active' : '')"
+      (click)="setFilter('users')"
+    >
+      👤 Usuarios <span class="search-results__filter-count">({{ resultsCount().users }})</span>
+    </button>
+    <button
+      type="button"
+      [class]="'search-results__filter ' + (isFilterActive('reviews') ? 'search-results__filter--active' : '')"
+      (click)="setFilter('reviews')"
+    >
+      📝 Reseñas <span class="search-results__filter-count">({{ resultsCount().reviews }})</span>
+    </button>
+  </nav>
+
+  <!-- ============================================ -->
+  <!-- LOADING STATE                                -->
+  <!-- ============================================ -->
+  @if (isLoading()) {
+    <div class="search-results__loading">
+      <div class="search-results__spinner"></div>
+      <p>Buscando...</p>
+    </div>
+  }
+
+  <!-- ============================================ -->
+  <!-- RESULTADOS                                   -->
+  <!-- ============================================ -->
+  @if (!isLoading()) {
+    @if (filteredResults().length > 0) {
+      <section class="search-results__content">
+        <div class="search-results__grid">
+          @for (result of filteredResults(); track result.id) {
+            <article class="search-results__item">
+              <!-- Card para álbumes y artistas -->
+              @if (result.type === 'album' || result.type === 'artist') {
+                <app-card
+                  [title]="result.title"
+                  [titleLink]="'/' + result.type + '/' + result.id"
+                  [subtitle]="result.subtitle || ''"
+                  [imageUrl]="result.imageUrl"
+                  [imageAlt]="result.title"
+                  [variant]="result.type === 'album' ? 'vinilo' : 'normal'"
+                  cardType="polaroid"
+                  hoverEffect="lift"
+                  (click)="viewResult(result)"
+                  class="search-results__card"
+                >
+                  <div class="search-results__badge">
+                    {{ getResultIcon(result.type) }} {{ getResultTypeLabel(result.type) }}
+                  </div>
+                  @if (result.rating) {
+                    <div class="search-results__rating">
+                      ⭐ {{ result.rating }}
+                    </div>
+                  }
+                </app-card>
+              }
+
+              <!-- Card especial para usuarios y reseñas -->
+              @if (result.type === 'user' || result.type === 'review') {
+                <div class="search-results__custom-card" (click)="viewResult(result)">
+                  <div class="search-results__custom-image">
+                    <img [src]="result.imageUrl" [alt]="result.title" />
+                  </div>
+                  <div class="search-results__custom-content">
+                    <div class="search-results__custom-badge">
+                      {{ getResultIcon(result.type) }} {{ getResultTypeLabel(result.type) }}
+                    </div>
+                    <h3 class="search-results__custom-title">{{ result.title }}</h3>
+                    @if (result.subtitle) {
+                      <p class="search-results__custom-subtitle">{{ result.subtitle }}</p>
+                    }
+                    @if (result.description) {
+                      <p class="search-results__custom-description">{{ result.description }}</p>
+                    }
+                    @if (result.rating) {
+                      <div class="search-results__custom-rating">
+                        @for (star of [1,2,3,4,5]; track star) {
+                          <span [class]="star <= result.rating! ? 'star star--filled' : 'star'">★</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ============================================ -->
+    <!-- NO RESULTS STATE                             -->
+    <!-- ============================================ -->
+    @if (filteredResults().length === 0) {
+      <div class="search-results__empty">
+        <div class="search-results__empty-icon">🔍</div>
+        <h2 class="search-results__empty-title">No se encontraron resultados</h2>
+        <p class="search-results__empty-text">
+          No encontramos ningún resultado para <strong>"{{ searchTerm() }}"</strong>
+          @if (activeFilter() !== 'all') {
+            <span> en la categoría de <strong>{{ getResultTypeLabel(activeFilter()) }}s</strong></span>
+          }
+        </p>
+        <p class="search-results__empty-suggestion">
+          Intenta con otro término de búsqueda o cambia el filtro
+        </p>
+      </div>
+    }
+  }
+</div>

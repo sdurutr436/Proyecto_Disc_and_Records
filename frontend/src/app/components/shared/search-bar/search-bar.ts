@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Output, signal, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -11,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 export class SearchBar {
   @Output() onSearch = new EventEmitter<string>();
 
+  private router = inject(Router);
   searchTerm = signal<string>('');
 
   /**
@@ -20,6 +22,8 @@ export class SearchBar {
     const term = this.searchTerm().trim();
     if (term) {
       this.onSearch.emit(term);
+      // Navegar a la página de resultados
+      this.router.navigate(['/search'], { queryParams: { q: term } });
     }
   }
 

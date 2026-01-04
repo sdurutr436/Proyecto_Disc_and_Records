@@ -7,6 +7,11 @@ export const routes: Routes = [
     title: 'Inicio - Discs & Records'
   },
   {
+    path: 'search',
+    loadComponent: () => import('./pages/search-results/search-results'),
+    title: 'Resultados de Búsqueda - Discs & Records'
+  },
+  {
     path: 'profile',
     loadComponent: () => import('./pages/profile/profile'),
     title: 'Perfil de Usuario - Discs & Records'
