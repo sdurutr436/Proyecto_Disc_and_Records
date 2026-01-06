@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Card } from '../../components/shared/card/card';
 import { SearchBar } from '../../components/shared/search-bar/search-bar';
+import { Button } from '../../components/shared/button/button';
+import { Spinner } from '../../components/shared/spinner/spinner';
 
 type FilterType = 'all' | 'albums' | 'artists' | 'users' | 'reviews';
 
@@ -20,7 +22,7 @@ interface SearchResultItem {
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [CommonModule, Card, SearchBar],
+  imports: [CommonModule, Card, SearchBar, Button, Spinner],
   templateUrl: './search-results.html',
   styleUrls: ['./search-results.scss']
 })

@@ -10,6 +10,7 @@ export interface AccordionItem {
 
 @Component({
   selector: 'app-accordion',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './accordion.html',
   styleUrl: './accordion.scss',

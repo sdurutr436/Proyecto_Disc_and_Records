@@ -40,8 +40,7 @@
       role="region"
       [attr.aria-labelledby]="'accordion-header-' + item.id">
 
-      <div class="accordion__content-inner">
-        {{ item.content }}
+      <div class="accordion__content-inner" [innerHTML]="item.content">
       </div>
     </div>
   </div>

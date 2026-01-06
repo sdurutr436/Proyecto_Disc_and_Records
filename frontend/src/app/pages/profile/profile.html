@@ -1,4 +1,4 @@
-<div class="profile">
+<main class="profile">
   <div class="profile__container">
     <!-- ============================================ -->
     <!-- COLUMNA IZQUIERDA: Card de Perfil (1/3)      -->
@@ -38,27 +38,35 @@
     <main class="profile__content">
       <!-- Tabs de navegación -->
       <nav class="profile__tabs">
-        <button
+        <app-button
+          [variant]="isTabActive('reviews') ? 'primary' : 'ghost'"
           type="button"
-          [class]="'profile__tab ' + (isTabActive('reviews') ? 'profile__tab--active' : '')"
+          [fullWidth]="true"
           (click)="setActiveTab('reviews')"
+          [class.profile__tab--active]="isTabActive('reviews')"
+          class="profile__tab"
         >
           Reseñas
-        </button>
-        <button
+        </app-button>
+        <app-button
+          [variant]="isTabActive('albums') ? 'primary' : 'ghost'"
           type="button"
-          [class]="'profile__tab ' + (isTabActive('albums') ? 'profile__tab--active' : '')"
+          [fullWidth]="true"
           (click)="setActiveTab('albums')"
+          [class.profile__tab--active]="isTabActive('albums')"
+          class="profile__tab"
         >
           Álbumes
-        </button>
-        <button
+        </app-button>
+        <app-button
+          variant="ghost"
           type="button"
+          [fullWidth]="true"
+          [disabled]="true"
           class="profile__tab profile__tab--disabled"
-          disabled
         >
           Canciones
-        </button>
+        </app-button>
       </nav>
 
       <!-- Contenido según tab activo -->
@@ -118,4 +126,4 @@
       </div>
     </main>
   </div>
-</div>
+</main>

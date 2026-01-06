@@ -1,0 +1,210 @@
+<div class="detail">
+  @if (item(); as itemData) {
+    <div class="detail__container">
+
+      <!-- COLUMNA IZQUIERDA: INFO DEL ÁLBUM (1/3) -->
+      <aside class="detail__sidebar">
+        <div class="detail-card">
+          <!-- Cover del álbum -->
+          <div class="detail-card__cover">
+            <img
+              [src]="itemData.coverUrl"
+              [alt]="itemData.title"
+              class="detail-card__image"
+            />
+          </div>
+
+          <!-- Info básica -->
+          <div class="detail-card__info">
+            <h1 class="detail-card__title">{{ itemData.title }}</h1>
+            <p class="detail-card__artist" (click)="goToArtist(itemData.artistId)">
+              {{ itemData.artist }}
+            </p>
+
+            <!-- Rating promedio -->
+            <div class="detail-card__rating">
+              <div class="rating-display">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                  <span
+                    class="rating-display__star"
+                    [class.rating-display__star--filled]="star <= itemData.averageRating"
+                  >
+                    ★
+                  </span>
+                }
+                <span class="rating-display__value">
+                  {{ itemData.averageRating }}/5
+                </span>
+              </div>
+              <p class="rating-display__count">
+                {{ itemData.totalReviews }} reseñas
+              </p>
+            </div>
+
+            <!-- Detalles -->
+            <div class="detail-card__details">
+              <div class="detail-item">
+                <span class="detail-item__label">Año</span>
+                <span class="detail-item__value">{{ itemData.releaseYear }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-item__label">Género</span>
+                <span class="detail-item__value">{{ itemData.genre }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-item__label">Canciones</span>
+                <span class="detail-item__value">{{ itemData.tracks }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-item__label">Duración</span>
+                <span class="detail-item__value">{{ itemData.duration }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-item__label">Sello</span>
+                <span class="detail-item__value">{{ itemData.label }}</span>
+              </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="detail-card__description">
+              <p>{{ itemData.description }}</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- COLUMNA DERECHA: RESEÑAS Y PUNTUACIÓN (2/3) -->
+      <main class="detail__content">
+
+        <!-- SECCIÓN: LISTA DE CANCIONES -->
+        <section class="tracklist-section">
+          <h2 class="section-title">Lista de canciones</h2>
+          <app-accordion
+            [items]="tracklistAccordionItems()"
+            mode="single">
+          </app-accordion>
+        </section>
+
+        <!-- SECCIÓN: TU PUNTUACIÓN -->
+        <section class="rating-section">
+          <h2 class="section-title">Tu puntuación</h2>
+
+          <div class="rating-input">
+            <div class="rating-input__stars">
+              @for (star of [1, 2, 3, 4, 5]; track star) {
+                <button
+                  type="button"
+                  class="star"
+                  [class]="getStarClass(star)"
+                  (click)="setRating(star)"
+                  (mouseenter)="hoverStar(star)"
+                  (mouseleave)="resetHover()"
+                  [attr.aria-label]="'Puntuar con ' + star + ' estrellas'"
+                >
+                  ★
+                </button>
+              }
+            </div>
+
+            @if (hasUserRated()) {
+              <p class="rating-input__message">
+                Has puntuado este álbum con {{ userRating() }} estrella{{ userRating() !== 1 ? 's' : '' }}
+              </p>
+            } @else {
+              <p class="rating-input__message">
+                Haz clic en una estrella para puntuar
+              </p>
+            }
+          </div>
+        </section>
+
+        <!-- SECCIÓN: ESCRIBIR RESEÑA -->
+        <section class="review-form-section">
+          @if (!isWritingReview()) {
+            <app-button
+              variant="primary"
+              size="lg"
+              [fullWidth]="true"
+              (clicked)="toggleReviewForm()"
+            >
+              Escribir una reseña
+            </app-button>
+          } @else {
+            <div class="review-form">
+              <h3 class="review-form__title">Escribe tu reseña</h3>
+
+              <textarea
+                class="review-form__textarea"
+                [(ngModel)]="reviewText"
+                placeholder="Comparte tu opinión sobre este álbum (mínimo 50 caracteres)..."
+                rows="6"
+              ></textarea>
+
+              <div class="review-form__footer">
+                <span class="review-form__counter">
+                  {{ reviewText().length }} caracteres
+                  @if (reviewText().length < 50) {
+                    <span class="review-form__counter--warning">
+                      (mínimo 50)
+                    </span>
+                  }
+                </span>
+
+                <div class="review-form__actions">
+                  <app-button
+                    variant="secondary"
+                    size="md"
+                    (clicked)="cancelReview()"
+                  >
+                    Cancelar
+                  </app-button>
+                  <app-button
+                    variant="primary"
+                    size="md"
+                    [disabled]="!canSubmitReview()"
+                    (clicked)="submitReview()"
+                  >
+                    Publicar reseña
+                  </app-button>
+                </div>
+              </div>
+            </div>
+          }
+        </section>
+
+        <!-- SECCIÓN: LISTA DE RESEÑAS -->
+        <section class="reviews-section">
+          <h2 class="section-title">
+            Reseñas de la comunidad
+            <span class="section-title__count">({{ reviews().length }})</span>
+          </h2>
+
+          @if (isLoadingReviews()) {
+            <div class="loading-state">
+              <app-spinner></app-spinner>
+              <p>Cargando reseñas...</p>
+            </div>
+          } @else if (reviews().length === 0) {
+            <div class="empty-state">
+              <p class="empty-state__title">No hay reseñas aún</p>
+              <p class="empty-state__subtitle">
+                Sé el primero en compartir tu opinión sobre este álbum
+              </p>
+            </div>
+          } @else {
+            <app-accordion
+              [items]="reviewsAccordionItems()"
+              mode="single">
+            </app-accordion>
+          }
+        </section>
+
+      </main>
+    </div>
+  } @else {
+    <div class="loading-state loading-state--fullpage">
+      <app-spinner></app-spinner>
+      <p>Cargando álbum...</p>
+    </div>
+  }
+</div>

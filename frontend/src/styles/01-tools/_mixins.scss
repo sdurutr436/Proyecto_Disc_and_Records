@@ -6,8 +6,37 @@
 
 // Mixin para tipografía usando variables
 @mixin font-size-line($tipo) {
-  font-size: vars.$tamanio-fuente-#{$tipo};
-  line-height: vars.$altura-linea-#{$tipo};
+  @if $tipo == 'h1' {
+    font-size: vars.$tamanio-fuente-h1;
+    line-height: vars.$altura-linea-h1;
+  } @else if $tipo == 'h2' {
+    font-size: vars.$tamanio-fuente-h2;
+    line-height: vars.$altura-linea-h2;
+  } @else if $tipo == 'h3' {
+    font-size: vars.$tamanio-fuente-h3;
+    line-height: vars.$altura-linea-h3;
+  } @else if $tipo == 'h4' {
+    font-size: vars.$tamanio-fuente-h4;
+    line-height: vars.$altura-linea-h4;
+  } @else if $tipo == 'h5' {
+    font-size: vars.$tamanio-fuente-h5;
+    line-height: vars.$altura-linea-h5;
+  } @else if $tipo == 'parrafo' {
+    font-size: vars.$tamanio-fuente-parrafo;
+    line-height: vars.$altura-linea-parrafo;
+  } @else if $tipo == 'texto-pequeno-m' {
+    font-size: vars.$tamanio-fuente-texto-pequeno-m;
+    line-height: vars.$altura-linea-texto-pequeno-m;
+  } @else if $tipo == 'texto-pequeno-s' {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    line-height: vars.$altura-linea-texto-pequeno-s;
+  } @else if $tipo == 'texto-pequeno-xs' {
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+    line-height: vars.$altura-linea-texto-pequeno-xs;
+  } @else if $tipo == 'leyenda' {
+    font-size: vars.$tamanio-fuente-leyenda;
+    line-height: vars.$altura-linea-leyenda;
+  }
 }
 
 /* ========================================

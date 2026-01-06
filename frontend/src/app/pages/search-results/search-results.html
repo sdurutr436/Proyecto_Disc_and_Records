@@ -1,11 +1,16 @@
-<div class="search-results">
+<main class="search-results">
   <!-- ============================================ -->
   <!-- HEADER: Término de búsqueda y botón volver   -->
   <!-- ============================================ -->
   <header class="search-results__header">
-    <button type="button" class="search-results__back" (click)="goBack()">
+    <app-button
+      variant="secondary"
+      size="md"
+      type="button"
+      (click)="goBack()"
+    >
       ← Volver
-    </button>
+    </app-button>
     <div class="search-results__header-content">
       <h1 class="search-results__title">
         Resultados para: <span class="search-results__query">"{{ searchTerm() }}"</span>
@@ -29,51 +34,66 @@
   <!-- FILTROS DE TIPO DE CONTENIDO                 -->
   <!-- ============================================ -->
   <nav class="search-results__filters">
-    <button
+    <app-button
+      [variant]="isFilterActive('all') ? 'primary' : 'ghost'"
       type="button"
-      [class]="'search-results__filter ' + (isFilterActive('all') ? 'search-results__filter--active' : '')"
+      [fullWidth]="true"
       (click)="setFilter('all')"
+      [class.search-results__filter--active]="isFilterActive('all')"
+      class="search-results__filter"
     >
       Todos <span class="search-results__filter-count">({{ resultsCount().all }})</span>
-    </button>
-    <button
+    </app-button>
+    <app-button
+      [variant]="isFilterActive('albums') ? 'primary' : 'ghost'"
       type="button"
-      [class]="'search-results__filter ' + (isFilterActive('albums') ? 'search-results__filter--active' : '')"
+      [fullWidth]="true"
       (click)="setFilter('albums')"
+      [class.search-results__filter--active]="isFilterActive('albums')"
+      class="search-results__filter"
     >
       💿 Álbumes <span class="search-results__filter-count">({{ resultsCount().albums }})</span>
-    </button>
-    <button
+    </app-button>
+    <app-button
+      [variant]="isFilterActive('artists') ? 'primary' : 'ghost'"
       type="button"
-      [class]="'search-results__filter ' + (isFilterActive('artists') ? 'search-results__filter--active' : '')"
+      [fullWidth]="true"
       (click)="setFilter('artists')"
+      [class.search-results__filter--active]="isFilterActive('artists')"
+      class="search-results__filter"
     >
       🎤 Artistas <span class="search-results__filter-count">({{ resultsCount().artists }})</span>
-    </button>
-    <button
+    </app-button>
+    <app-button
+      [variant]="isFilterActive('users') ? 'primary' : 'ghost'"
       type="button"
-      [class]="'search-results__filter ' + (isFilterActive('users') ? 'search-results__filter--active' : '')"
+      [fullWidth]="true"
       (click)="setFilter('users')"
+      [class.search-results__filter--active]="isFilterActive('users')"
+      class="search-results__filter"
     >
       👤 Usuarios <span class="search-results__filter-count">({{ resultsCount().users }})</span>
-    </button>
-    <button
+    </app-button>
+    <app-button
+      [variant]="isFilterActive('reviews') ? 'primary' : 'ghost'"
       type="button"
-      [class]="'search-results__filter ' + (isFilterActive('reviews') ? 'search-results__filter--active' : '')"
+      [fullWidth]="true"
       (click)="setFilter('reviews')"
+      [class.search-results__filter--active]="isFilterActive('reviews')"
+      class="search-results__filter"
     >
       📝 Reseñas <span class="search-results__filter-count">({{ resultsCount().reviews }})</span>
-    </button>
+    </app-button>
   </nav>
 
   <!-- ============================================ -->
   <!-- LOADING STATE                                -->
   <!-- ============================================ -->
   @if (isLoading()) {
-    <div class="search-results__loading">
-      <div class="search-results__spinner"></div>
+    <section class="search-results__loading">
+      <app-spinner></app-spinner>
       <p>Buscando...</p>
-    </div>
+    </section>
   }
 
   <!-- ============================================ -->
@@ -162,4 +182,4 @@
       </div>
     }
   }
-</div>
+</main>

@@ -1,4 +1,5 @@
 @use '../../../styles/00-settings/variables' as vars;
+@use '../../../styles/01-tools/mixins' as mixins;
 
 .not-found {
   min-height: 100vh;
@@ -6,10 +7,10 @@
   align-items: center;
   justify-content: center;
   background-color: var(--bg-primary);
-  padding: 2rem;
+  padding: vars.$espaciado-m;
 
-  @media (max-width: 768px) {
-    padding: 1rem;
+  @include mixins.respond-to('tablet') {
+    padding: vars.$espaciado-s;
   }
 
   /* ========================================
@@ -29,15 +30,14 @@
     font-weight: 900;
     font-family: vars.$fuente-secundaria;
     color: var(--color-primary);
-    text-shadow:
-      6px 6px 0px var(--shadow-color);
+    text-shadow: vars.$sombra-brutal-m;
     line-height: 1;
-    margin-bottom: 2rem;
+    margin-bottom: vars.$espaciado-m;
 
-    @media (max-width: 768px) {
+    @include mixins.respond-to('tablet') {
       font-size: 8rem;
-      text-shadow: 4px 4px 0px var(--shadow-color);
-      margin-bottom: 1.5rem;
+      text-shadow: vars.$sombra-brutal-s;
+      margin-bottom: vars.$espaciado-m;
     }
   }
 
@@ -45,29 +45,29 @@
      TEXTOS PRINCIPALES
      ======================================== */
   &__title {
-    font-size: vars.$tamanio-fuente-h2;
+    @include mixins.font-size-line('h2');
     font-weight: 700;
     color: var(--text-primary);
-    margin: 0 0 1rem 0;
+    margin: 0 0 vars.$espaciado-s 0;
     line-height: 1.2;
 
-    @media (max-width: 768px) {
-      font-size: vars.$tamanio-fuente-h3;
+    @include mixins.respond-to('tablet') {
+      @include mixins.font-size-line('h3');
     }
   }
 
   &__subtitle {
-    font-size: vars.$tamanio-fuente-parrafo;
+    @include mixins.font-size-line('parrafo');
     color: var(--text-secondary);
-    margin: 0 0 2.5rem 0;
+    margin: 0 0 vars.$espaciado-l 0;
     line-height: 1.6;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
 
-    @media (max-width: 768px) {
-      font-size: vars.$tamanio-fuente-texto-pequeno-m;
-      margin-bottom: 2rem;
+    @include mixins.respond-to('tablet') {
+      @include mixins.font-size-line('texto-pequeno-m');
+      margin-bottom: vars.$espaciado-m;
     }
   }
 
@@ -76,14 +76,14 @@
      ======================================== */
   &__actions {
     display: flex;
-    gap: 1rem;
+    gap: vars.$espaciado-s;
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 3rem;
+    margin-bottom: vars.$espaciado-l;
 
-    @media (max-width: 768px) {
+    @include mixins.respond-to('tablet') {
       flex-direction: column;
-      margin-bottom: 2rem;
+      margin-bottom: vars.$espaciado-m;
     }
   }
 
@@ -93,11 +93,11 @@
   &__divider {
     height: 2px;
     background-color: var(--border-color);
-    margin: 3rem auto;
+    margin: vars.$espaciado-l auto;
     max-width: 200px;
 
-    @media (max-width: 768px) {
-      margin: 2rem auto;
+    @include mixins.respond-to('tablet') {
+      margin: vars.$espaciado-m auto;
     }
   }
 
@@ -107,13 +107,13 @@
   &__quick-links {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
+    gap: vars.$espaciado-s;
     max-width: 700px;
     margin: 0 auto;
 
-    @media (max-width: 768px) {
+    @include mixins.respond-to('tablet') {
       grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
+      gap: vars.$espaciado-xs;
     }
 
     @media (max-width: 480px) {
@@ -124,7 +124,7 @@
   &__link-card {
     background-color: var(--bg-secondary);
     border: vars.$borde-brutal-thick;
-    padding: 1.5rem 1rem;
+    padding: vars.$espaciado-m vars.$espaciado-s;
     cursor: pointer;
     transition: all vars.$transicion-rapida;
     box-shadow: vars.$sombra-brutal-s;
@@ -132,36 +132,36 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 0.75rem;
+    gap: vars.$espaciado-xs;
+
+    @include mixins.brutal-interaction(
+      vars.$sombra-brutal-xs,
+      vars.$sombra-brutal-active
+    );
 
     &:hover {
-      transform: translate(2px, 2px);
-      box-shadow: vars.$sombra-brutal-xs;
       background-color: var(--color-primary);
 
-      .not-found__link-icon {
-        transform: scale(1.1);
-        color: var(--text-dark);
-      }
-
-      .not-found__link-title {
-        color: var(--text-dark);
-      }
-
+      .not-found__link-icon,
+      .not-found__link-title,
       .not-found__link-description {
         color: var(--text-dark);
       }
+
+      .not-found__link-icon {
+        transform: scale(1.1);
+      }
     }
 
-    @media (max-width: 768px) {
-      padding: 1.25rem 0.75rem;
-      gap: 0.5rem;
+    @include mixins.respond-to('tablet') {
+      padding: vars.$espaciado-s vars.$espaciado-xs;
+      gap: vars.$espaciado-xs;
     }
   }
 
   &__link-icon {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: vars.$icon-lg;
+    height: vars.$icon-lg;
     color: var(--color-primary);
     transition: all vars.$transicion-base;
 
@@ -170,34 +170,34 @@
       height: 100%;
     }
 
-    @media (max-width: 768px) {
-      width: 2rem;
-      height: 2rem;
+    @include mixins.respond-to('tablet') {
+      width: vars.$icon-md;
+      height: vars.$icon-md;
     }
   }
 
   &__link-title {
-    font-size: vars.$tamanio-fuente-h5;
+    @include mixins.font-size-line('h5');
     font-weight: 700;
     color: var(--text-primary);
     margin: 0;
     line-height: 1.2;
     transition: all vars.$transicion-rapida;
 
-    @media (max-width: 768px) {
-      font-size: vars.$tamanio-fuente-parrafo;
+    @include mixins.respond-to('tablet') {
+      @include mixins.font-size-line('parrafo');
     }
   }
 
   &__link-description {
-    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    @include mixins.font-size-line('texto-pequeno-s');
     color: var(--text-secondary);
     margin: 0;
     line-height: 1.4;
     transition: all vars.$transicion-rapida;
 
-    @media (max-width: 768px) {
-      font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+    @include mixins.respond-to('tablet') {
+      @include mixins.font-size-line('texto-pequeno-xs');
     }
   }
 }
