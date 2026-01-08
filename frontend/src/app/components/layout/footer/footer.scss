@@ -136,12 +136,12 @@
 
   &:hover {
     box-shadow: vars.$sombra-brutal-s;
-    transform: translate(vars.$espaciado-xs, vars.$espaciado-xs);
+    transform: translate(vars.$espaciado-micro, vars.$espaciado-micro);
   }
 
   &:active {
     box-shadow: vars.$sombra-brutal-active;
-    transform: translate(vars.$espaciado-xs, vars.$espaciado-xs);
+    transform: translate(vars.$espaciado-tiny, vars.$espaciado-tiny);
   }
 
   &:focus-visible {

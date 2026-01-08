@@ -19,6 +19,8 @@ import { ForgotPasswordForm } from '../../components/shared/forgot-password-form
 import { Modal } from '../../components/shared/modal/modal';
 import { Accordion, AccordionItem } from '../../components/shared/accordion/accordion';
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
+import { ResponsiveTabs } from '../../components/shared/tabs/responsive-tabs';
+import { TabPanel } from '../../components/shared/tabs/tab-panel';
 import { Tooltip } from '../../components/shared/tooltip/tooltip';
 import { Spinner } from '../../components/shared/spinner/spinner';
 import { ProgressBar } from '../../components/shared/progress-bar/progress-bar';
@@ -50,6 +52,8 @@ import { StyleGuideNavigationService, StyleGuideSection } from '../../services/s
     Modal,
     Accordion,
     Tabs,
+    ResponsiveTabs,
+    TabPanel,
     Tooltip,
     Spinner,
     ProgressBar

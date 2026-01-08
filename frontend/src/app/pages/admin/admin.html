@@ -1,0 +1,126 @@
+<div class="admin-container">
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="header-content">
+      <h1 class="admin-title">Panel de Administración</h1>
+      <a routerLink="/" class="back-button">
+        <app-button variant="secondary" size="sm">← Volver al sitio</app-button>
+      </a>
+    </div>
+  </header>
+
+  <!-- Stats Dashboard -->
+  <section class="stats-section">
+    <div class="stat-card">
+      <div class="stat-content">
+        <p class="stat-label">Álbumes</p>
+        <p class="stat-value">{{ stats().totalAlbums }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-content">
+        <p class="stat-label">Usuarios</p>
+        <p class="stat-value">{{ stats().totalUsers }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-content">
+        <p class="stat-label">Reseñas</p>
+        <p class="stat-value">{{ stats().totalReviews }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-content">
+        <p class="stat-label">Géneros</p>
+        <p class="stat-value">{{ stats().totalGenres }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tabs Navigation -->
+  <nav class="admin-tabs">
+    @for (tab of tabs; track tab.id) {
+      <button
+        class="tab-button"
+        [class.active]="activeTab() === tab.id"
+        (click)="setActiveTab(tab.id)"
+      >
+        {{ tab.label }}
+      </button>
+    }
+  </nav>
+
+  <!-- Content Area -->
+  <main class="admin-content">
+    <!-- Álbumes Tab -->
+    @if (activeTab() === 'albums') {
+      <div class="content-section">
+        <div class="section-header">
+          <h2>Gestión de Álbumes</h2>
+          <app-button (click)="createAlbum()" variant="primary">
+            + Nuevo Álbum
+          </app-button>
+        </div>
+
+        <div class="empty-state">
+          <p class="empty-text">No hay álbumes registrados</p>
+          <p class="empty-hint">Crea el primer álbum para empezar</p>
+        </div>
+
+        <!-- TODO: Tabla de álbumes -->
+      </div>
+    }
+
+    <!-- Usuarios Tab -->
+    @if (activeTab() === 'users') {
+      <div class="content-section">
+        <div class="section-header">
+          <h2>Gestión de Usuarios</h2>
+        </div>
+
+        <div class="empty-state">
+          <p class="empty-text">No hay usuarios registrados</p>
+        </div>
+
+        <!-- TODO: Tabla de usuarios -->
+      </div>
+    }
+
+    <!-- Géneros Tab -->
+    @if (activeTab() === 'genres') {
+      <div class="content-section">
+        <div class="section-header">
+          <h2>Gestión de Géneros</h2>
+          <app-button (click)="createGenre()" variant="primary">
+            + Nuevo Género
+          </app-button>
+        </div>
+
+        <div class="empty-state">
+          <p class="empty-text">No hay géneros registrados</p>
+          <p class="empty-hint">Crea el primer género musical</p>
+        </div>
+
+        <!-- TODO: Tabla de géneros -->
+      </div>
+    }
+
+    <!-- Reseñas Tab -->
+    @if (activeTab() === 'reviews') {
+      <div class="content-section">
+        <div class="section-header">
+          <h2>Moderación de Reseñas</h2>
+        </div>
+
+        <div class="empty-state">
+          <p class="empty-text">No hay reseñas pendientes</p>
+        </div>
+
+        <!-- TODO: Lista de reseñas para moderar -->
+      </div>
+    }
+  </main>
+</div>

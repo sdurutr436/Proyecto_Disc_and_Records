@@ -39,10 +39,10 @@
   }
 
   &__radio {
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-    min-height: 20px;
+    width: calc(vars.$espaciado-l - vars.$espaciado-xs);
+    height: calc(vars.$espaciado-l - vars.$espaciado-xs);
+    min-width: calc(vars.$espaciado-l - vars.$espaciado-xs);
+    min-height: calc(vars.$espaciado-l - vars.$espaciado-xs);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -49,8 +49,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: calc($espaciado-xxl - $espaciado-s);
+    height: calc($espaciado-xxl - $espaciado-s);
     border: none;
     background: transparent;
     color: var(--text-secondary);

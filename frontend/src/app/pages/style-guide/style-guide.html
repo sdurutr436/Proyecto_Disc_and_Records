@@ -1544,15 +1544,36 @@
           </div>
         </div>
 
-        <!-- Tabs (Original) -->
+        <!-- Responsive Tabs (Nuevas) -->
         <div class="showcase">
-          <h3>Tabs (Pestañas)</h3>
+          <h3>Responsive Tabs (Pestañas Adaptativas)</h3>
           <p class="showcase__description">
-            Navegación por teclado (flechas izquierda/derecha) y soporte para tabs deshabilitados.
+            Tabs en desktop que se convierten en accordion en móvil. Navegación por teclado y diseño neobrutalista.
           </p>
           <div class="showcase__column">
             <div class="showcase__item showcase__item--full">
-              <app-tabs [tabs]="tabsExample" [initialActiveTab]="'overview'"></app-tabs>
+              <app-responsive-tabs [breakpoint]="768">
+                <app-tab-panel id="descripcion" label="Descripción">
+                  <h4>Descripción del Producto</h4>
+                  <p>Este es el contenido de la pestaña de descripción. Las tabs se adaptan automáticamente al tamaño de pantalla.</p>
+                </app-tab-panel>
+                <app-tab-panel id="especificaciones" label="Especificaciones">
+                  <h4>Especificaciones Técnicas</h4>
+                  <ul>
+                    <li>Característica 1: Responsive design</li>
+                    <li>Característica 2: Accordion en móvil</li>
+                    <li>Característica 3: Navegación por teclado</li>
+                  </ul>
+                </app-tab-panel>
+                <app-tab-panel id="resenias" label="Reseñas">
+                  <h4>Reseñas de Usuarios</h4>
+                  <p>Aquí aparecerían las reseñas de los usuarios sobre el producto.</p>
+                </app-tab-panel>
+                <app-tab-panel id="soporte" label="Soporte">
+                  <h4>Información de Soporte</h4>
+                  <p>Contacta con nuestro equipo de soporte para cualquier consulta.</p>
+                </app-tab-panel>
+              </app-responsive-tabs>
             </div>
           </div>
         </div>
@@ -1615,7 +1636,7 @@
               </app-carousel>
 
               <div class="style-guide__carousel-demo-controls">
-                <app-button (clicked)="toggleCarouselHighlight()" variant="secondary" size="sm">
+                <app-button (click)="toggleCarouselHighlight()" variant="secondary" size="sm">
                   Toggle Highlight (boxShadow + border)
                 </app-button>
 

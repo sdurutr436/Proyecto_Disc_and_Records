@@ -78,20 +78,20 @@
 
 /* --- Small --- */
 .spinner--sm .spinner__flower {
-  width: 24px;
-  height: 24px;
+  width: calc(vars.$espaciado-l + vars.$espaciado-xs);
+  height: calc(vars.$espaciado-l + vars.$espaciado-xs);
 }
 
 /* --- Medium --- */
 .spinner--md .spinner__flower {
-  width: 44px;
-  height: 44px;
+  width: calc(vars.$espaciado-xl + vars.$espaciado-xs);
+  height: calc(vars.$espaciado-xl + vars.$espaciado-xs);
 }
 
 /* --- Large --- */
 .spinner--lg .spinner__flower {
-  width: 64px;
-  height: 64px;
+  width: calc(vars.$espaciado-xxl + vars.$espaciado-m);
+  height: calc(vars.$espaciado-xxl + vars.$espaciado-m);
 }
 
 /* ========================================

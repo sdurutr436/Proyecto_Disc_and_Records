@@ -23,28 +23,28 @@
   // Variantes de tamaño
   &--small {
     .rating__star {
-      font-size: 0.875rem;
+      font-size: vars.$tamanio-fuente-texto-pequeno-s;
     }
     .rating__value {
-      font-size: 0.75rem;
+      font-size: vars.$tamanio-fuente-texto-pequeno-xs;
     }
   }
 
   &--medium {
     .rating__star {
-      font-size: 1rem;
+      font-size: vars.$tamanio-fuente-parrafo;
     }
     .rating__value {
-      font-size: 0.875rem;
+      font-size: vars.$tamanio-fuente-texto-pequeno-s;
     }
   }
 
   &--large {
     .rating__star {
-      font-size: 1.25rem;
+      font-size: vars.$tamanio-fuente-h5;
     }
     .rating__value {
-      font-size: 1rem;
+      font-size: vars.$tamanio-fuente-parrafo;
     }
   }
 }

@@ -9,7 +9,7 @@
 /* --- Estilos base del botón --- */
 .button {
   @include mix.brutal-button-base;
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
   position: relative;
 
   // Tamaño por defecto (medium)
@@ -27,17 +27,17 @@
   background-color: var(--color-primary);
   color: var(--text-dark);
   border-color: var(--border-color);
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
 
   &:hover:not(.button--disabled) {
     background-color: var(--color-secondary);
-    box-shadow: 2px 2px 0px var(--shadow-color);
-    transform: translate(2px, 2px);
+    box-shadow: vars.$sombra-brutal-xs;
+    transform: translate(vars.$espaciado-micro, vars.$espaciado-micro);
   }
 
   &:active:not(.button--disabled) {
-    box-shadow: 0px 0px 0px var(--shadow-color);
-    transform: translate(4px, 4px);
+    box-shadow: vars.$sombra-brutal-active;
+    transform: translate(vars.$espaciado-tiny, vars.$espaciado-tiny);
   }
 }
 
@@ -46,17 +46,17 @@
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   border-color: var(--border-color);
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
 
   &:hover:not(.button--disabled) {
     background-color: var(--bg-primary);
-    box-shadow: 2px 2px 0px var(--shadow-color);
-    transform: translate(2px, 2px);
+    box-shadow: vars.$sombra-brutal-xs;
+    transform: translate(vars.$espaciado-micro, vars.$espaciado-micro);
   }
 
   &:active:not(.button--disabled) {
-    box-shadow: 0px 0px 0px var(--shadow-color);
-    transform: translate(4px, 4px);
+    box-shadow: vars.$sombra-brutal-active;
+    transform: translate(vars.$espaciado-tiny, vars.$espaciado-tiny);
   }
 }
 
@@ -69,12 +69,12 @@
 
   &:hover:not(.button--disabled) {
     background-color: var(--bg-secondary);
-    box-shadow: 2px 2px 0px var(--shadow-color);
+    box-shadow: vars.$sombra-brutal-xs;
   }
 
   &:active:not(.button--disabled) {
     background-color: var(--color-primary);
-    transform: translate(1px, 1px);
+    transform: translate(vars.$espaciado-micro, vars.$espaciado-micro);
   }
 }
 
@@ -83,17 +83,17 @@
   background-color: vars.$color-error;
   color: vars.$color-letra-blanca;
   border-color: var(--border-color);
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
 
   &:hover:not(.button--disabled) {
     background-color: var(--color-accent);
-    box-shadow: 2px 2px 0px var(--shadow-color);
-    transform: translate(2px, 2px);
+    box-shadow: vars.$sombra-brutal-xs;
+    transform: translate(vars.$espaciado-micro, vars.$espaciado-micro);
   }
 
   &:active:not(.button--disabled) {
-    box-shadow: 0px 0px 0px var(--shadow-color);
-    transform: translate(4px, 4px);
+    box-shadow: vars.$sombra-brutal-active;
+    transform: translate(vars.$espaciado-tiny, vars.$espaciado-tiny);
   }
 }
 
@@ -149,8 +149,8 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 22px;
-  height: 22px;
+  width: calc(vars.$espaciado-l + vars.$espaciado-xs);
+  height: calc(vars.$espaciado-l + vars.$espaciado-xs);
   animation: button-flower-spin 1.5s linear infinite;
 
   /* Margarita inline SVG via background - usa currentColor para adaptarse */
@@ -174,13 +174,13 @@
 
 /* Tamaño del spinner según tamaño del botón */
 .button--sm .button__spinner {
-  width: 16px;
-  height: 16px;
+  width: vars.$icon-sm;
+  height: vars.$icon-sm;
 }
 
 .button--lg .button__spinner {
-  width: 28px;
-  height: 28px;
+  width: calc(vars.$espaciado-xl + vars.$espaciado-xs);
+  height: calc(vars.$espaciado-xl + vars.$espaciado-xs);
 }
 
 /* --- Modificador: Full Width --- */

@@ -7,37 +7,37 @@
   background-color: var(--bg-secondary);
   border: vars.$borde-brutal-thick;
   border-radius: vars.$radio-s;
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   overflow: hidden;
   width: 100%;
-  max-width: 280px;
+  max-width: vars.$max-width-card;
 
   /* Variante con efecto hover lift (hundido) - solo para polaroid */
   &--polaroid.card--hover-lift:hover {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px var(--shadow-color);
+    transform: translate(vars.$espaciado-micro, vars.$espaciado-micro);
+    box-shadow: vars.$sombra-brutal-xs;
   }
 
   /* Variante con sombras multicolor estilo vinilo */
   &--vinilo {
     box-shadow:
-      2px 2px 0px var(--color-accent),
-      4px 4px 0px var(--color-secondary),
-      6px 6px 0px var(--color-primary);
+      vars.$espaciado-micro vars.$espaciado-micro 0px var(--color-accent),
+      vars.$espaciado-tiny vars.$espaciado-tiny 0px var(--color-secondary),
+      vars.$sombra-brutal-m-offset vars.$sombra-brutal-m-offset 0px var(--color-primary);
 
     &.card--polaroid.card--hover-lift:hover {
-      transform: translate(2px, 2px);
+      transform: translate(vars.$espaciado-micro, vars.$espaciado-micro);
       box-shadow:
         1px 1px 0px var(--color-accent),
-        2px 2px 0px var(--color-secondary),
-        3px 3px 0px var(--color-primary);
+        vars.$espaciado-micro vars.$espaciado-micro 0px var(--color-secondary),
+        vars.$espaciado-mini vars.$espaciado-mini 0px var(--color-primary);
     }
   }
 
   /* Modificadores por tipo de card */
   &--polaroid {
-    max-width: 220px;
+    max-width: vars.$max-width-card-polaroid;
   }
 
   &--profile {
@@ -55,7 +55,7 @@
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
-      width: 15.625rem; // 250px en rem
+      width: calc(vars.$max-width-card-polaroid + vars.$espaciado-xl);
       border-right: vars.$borde-brutal-thin;
     }
 
@@ -63,7 +63,7 @@
       width: 100%;
       min-width: 100%;
       max-width: 100%;
-      height: 15.625rem; // 250px en rem
+      height: calc(vars.$max-width-card-polaroid + vars.$espaciado-xl);
       flex-shrink: 0;
       border-right: none;
       border-top: none;
@@ -119,11 +119,11 @@
     // Tablet: más compacto
     @media (max-width: vars.$breakpoint-desktop) {
       .card__left {
-        width: 11.25rem; // 180px en rem
+        width: calc(vars.$espaciado-xxl * 3.6);
       }
 
       .card__image {
-        height: 11.25rem; // 180px en rem
+        height: calc(vars.$espaciado-xxl * 3.6);
       }
     }
 
@@ -142,7 +142,7 @@
         min-width: 100%;
         max-width: 100%;
         height: auto;
-        max-height: 12.5rem; // 200px en rem
+        max-height: calc(vars.$espaciado-xxl * 4);
         border-right: none;
         border-bottom: vars.$borde-brutal-thin;
         aspect-ratio: auto;
@@ -176,7 +176,7 @@
   // ========================================
   &--profile.card--vertical {
     flex-direction: column;
-    max-width: 18.75rem; // 300px en rem
+    max-width: calc(vars.$max-width-card + vars.$espaciado-l);
 
     .card__left {
       width: 100%;
@@ -187,7 +187,7 @@
     .card__image {
       width: 100%;
       height: auto;
-      max-height: 15.625rem; // 250px en rem
+      max-height: calc(vars.$max-width-card-polaroid + vars.$espaciado-xl);
       border-bottom: vars.$borde-brutal-thin;
       aspect-ratio: 1;
     }

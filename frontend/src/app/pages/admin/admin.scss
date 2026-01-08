@@ -1,0 +1,206 @@
+@use '../../../styles/00-settings/variables' as vars;
+
+.admin-container {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding-bottom: vars.$espaciado-xl;
+}
+
+// Header
+.admin-header {
+  background: var(--bg-secondary);
+  border-bottom: vars.$borde-brutal-thick;
+  box-shadow: vars.$sombra-brutal-m;
+  padding: vars.$espaciado-m;
+}
+
+.header-content {
+  max-width: vars.$max-width-container;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: vars.$espaciado-m;
+}
+
+.admin-title {
+  font-size: vars.$tamanio-fuente-h2;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.back-button {
+  text-decoration: none;
+}
+
+// Stats Dashboard
+.stats-section {
+  max-width: vars.$max-width-container;
+  margin: 0 auto;
+  padding: vars.$espaciado-l vars.$espaciado-m;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: vars.$espaciado-m;
+}
+
+.stat-card {
+  background: var(--bg-secondary);
+  border: vars.$borde-brutal-thick;
+  box-shadow: vars.$sombra-brutal-s;
+  padding: vars.$espaciado-m;
+  transition: vars.$transicion-base;
+
+  &:hover {
+    box-shadow: vars.$sombra-brutal-m;
+    transform: translateY(-2px);
+  }
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-label {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  color: var(--text-secondary);
+  margin: 0 0 vars.$espaciado-xs 0;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: vars.$tamanio-fuente-h3;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+// Tabs Navigation
+.admin-tabs {
+  max-width: vars.$max-width-container;
+  margin: 0 auto;
+  padding: 0 vars.$espaciado-m;
+  display: flex;
+  gap: vars.$espaciado-s;
+  border-bottom: vars.$borde-brutal-thin;
+  overflow-x: auto;
+}
+
+.tab-button {
+  padding: vars.$espaciado-m vars.$espaciado-l;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-secondary);
+  font-size: vars.$tamanio-fuente-parrafo;
+  font-weight: 600;
+  cursor: pointer;
+  transition: vars.$transicion-rapida;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+  }
+
+  &.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    background: var(--bg-tertiary);
+  }
+}
+
+// Content Area
+.admin-content {
+  max-width: vars.$max-width-container;
+  margin: 0 auto;
+  padding: vars.$espaciado-l vars.$espaciado-m;
+}
+
+.content-section {
+  background: var(--bg-secondary);
+  border: vars.$borde-brutal-thick;
+  box-shadow: vars.$sombra-brutal-m;
+  padding: vars.$espaciado-l;
+  min-height: 400px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: vars.$espaciado-l;
+  padding-bottom: vars.$espaciado-m;
+  border-bottom: vars.$borde-brutal-thin;
+
+  h2 {
+    font-size: vars.$tamanio-fuente-h3;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+}
+
+// Empty State
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: vars.$espaciado-xxl;
+  text-align: center;
+}
+
+.empty-text {
+  font-size: vars.$tamanio-fuente-h4;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0 0 vars.$espaciado-xs 0;
+}
+
+.empty-hint {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+// Responsive
+@media (max-width: vars.$breakpoint-tablet) {
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stats-section {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: vars.$espaciado-s;
+  }
+
+  .stat-card {
+    text-align: center;
+  }
+
+  .admin-tabs {
+    padding: 0 vars.$espaciado-s;
+  }
+
+  .tab-button {
+    padding: vars.$espaciado-s vars.$espaciado-m;
+  }
+
+  .admin-content {
+    padding: vars.$espaciado-m vars.$espaciado-s;
+  }
+
+  .content-section {
+    padding: vars.$espaciado-m;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: vars.$espaciado-m;
+  }
+}

@@ -97,6 +97,12 @@ $tamanio-fuente-leyenda: 0.75rem italic;
 $altura-linea-leyenda: 1rem;
 
 /* --- Variables de espaciado --- */
+// Micro-espaciados para transforms y efectos sutiles (2-4px)
+$espaciado-micro: 2px;
+$espaciado-mini: 3px;
+$espaciado-tiny: 4px;
+
+// Escala de espaciado principal (8px base)
 $espaciado-xs: 0.5rem;
 $espaciado-s: 1rem;
 $espaciado-m: 2rem;
@@ -118,10 +124,15 @@ $breakpoint-ultra-wide: 1600px;
    ======================================== */
 
 /* Sombras neobrutalistas base (sólidas, sin blur) */
+$sombra-brutal-micro: 1px 1px 0px $color-letra-oscura;
+$sombra-brutal-mini: 2px 2px 0px $color-letra-oscura;
 $sombra-brutal-xs: 2px 2px 0px $color-letra-oscura;
 $sombra-brutal-s: 4px 4px 0px $color-letra-oscura;
 $sombra-brutal-m: 6px 6px 0px $color-letra-oscura;
 $sombra-brutal-l: 8px 8px 0px $color-letra-oscura;
+
+/* Offsets para transforms (cuando se elimina la sombra) */
+$sombra-brutal-m-offset: 6px;
 
 /* Sombras "disco de vinilo" - efecto 3D retro con múltiples capas */
 $sombra-vinilo-s:
@@ -161,6 +172,13 @@ $sombra-brutal-acentuado-dark: 4px 4px 0px $color-acentuado-dark;
 /* Sombras de interacción (hover/active) */
 $sombra-brutal-hover: 2px 2px 0px $color-letra-oscura;
 $sombra-brutal-active: 0px 0px 0px $color-letra-oscura;
+
+/* Sombras para estados de validación */
+$sombra-brutal-error: 4px 4px 0px $color-error;
+$sombra-brutal-error-xs: 2px 2px 0px $color-error;
+$sombra-brutal-success: 4px 4px 0px $color-exito;
+$sombra-brutal-success-xs: 2px 2px 0px $color-exito;
+$sombra-brutal-warning: 4px 4px 0px $color-advertencia-light;
 
 /* Sombras retro suaves - para cards y elementos flotantes */
 $sombra-retro-suave: 4px 4px 0px rgba(1, 19, 27, 0.15);

@@ -42,6 +42,11 @@ export const routes: Routes = [
     title: 'Detalle de Canción - Discs & Records'
   },
   {
+    path: 'admin',
+    loadComponent: () => import('./pages/admin/admin'),
+    title: 'Panel de Administración - Discs & Records'
+  },
+  {
     path: '404',
     loadComponent: () => import('./pages/not-found/not-found'),
     title: '404 - Página No Encontrada'

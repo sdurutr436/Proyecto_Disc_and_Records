@@ -33,7 +33,7 @@
   border-radius: vars.$radio-s;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   width: 100%;
   outline: none;
@@ -49,38 +49,38 @@
   }
 
   &:hover:not(:disabled):not(.form-input__input--error):not(.form-input__input--success) {
-    box-shadow: 2px 2px 0px var(--shadow-color);
-    transform: translate(2px, 2px);
+    box-shadow: vars.$sombra-brutal-xs;
+    transform: translate(vars.$espaciado-micro, vars.$espaciado-micro);
   }
 }
 
 /* --- Estados del Input --- */
 .form-input__input--error {
   border-color: vars.$color-error;
-  box-shadow: 4px 4px 0px vars.$color-error;
+  box-shadow: vars.$sombra-brutal-error;
 
   &:hover:not(:disabled) {
-    box-shadow: 2px 2px 0px vars.$color-error;
-    transform: translate(2px, 2px);
+    box-shadow: vars.$sombra-brutal-error-xs;
+    transform: translate(vars.$espaciado-micro, vars.$espaciado-micro);
   }
 
   &:focus {
-    box-shadow: 4px 4px 0px vars.$color-error;
+    box-shadow: vars.$sombra-brutal-error;
     transform: none;
   }
 }
 
 .form-input__input--success {
   border-color: vars.$color-exito;
-  box-shadow: 4px 4px 0px vars.$color-exito;
+  box-shadow: vars.$sombra-brutal-success;
 
   &:hover:not(:disabled) {
-    box-shadow: 2px 2px 0px vars.$color-exito;
-    transform: translate(2px, 2px);
+    box-shadow: vars.$sombra-brutal-success-xs;
+    transform: translate(vars.$espaciado-micro, vars.$espaciado-micro);
   }
 
   &:focus {
-    box-shadow: 4px 4px 0px vars.$color-exito;
+    box-shadow: vars.$sombra-brutal-success;
     transform: none;
   }
 }
