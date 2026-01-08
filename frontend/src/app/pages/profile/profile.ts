@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Card } from '../../components/shared/card/card';
 import { Button } from '../../components/shared/button/button';
 import { RatingComponent } from '../../components/shared/rating/rating';
@@ -33,6 +34,8 @@ interface Album {
   styleUrls: ['./profile.scss']
 })
 export default class ProfileComponent {
+  private router = new Router();
+
   // Tab activo
   activeTab = signal<TabType>('reviews');
 
@@ -173,7 +176,7 @@ export default class ProfileComponent {
   }
 
   editProfile = (): void => {
-    console.log('Editar perfil');
+    this.router.navigate(['/settings']);
   }
 
   shareProfile = (): void => {

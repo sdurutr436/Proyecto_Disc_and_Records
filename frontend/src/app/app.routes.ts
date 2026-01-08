@@ -17,6 +17,11 @@ export const routes: Routes = [
     title: 'Perfil de Usuario - Discs & Records'
   },
   {
+    path: 'settings',
+    loadComponent: () => import('./pages/settings/settings'),
+    title: 'Ajustes de Perfil - Discs & Records'
+  },
+  {
     path: 'style-guide',
     loadComponent: () => import('./pages/style-guide/style-guide').then(m => m.StyleGuide),
     title: 'Guía de Estilo - Discs & Records'
