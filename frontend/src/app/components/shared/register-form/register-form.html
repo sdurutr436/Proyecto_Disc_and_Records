@@ -3,94 +3,32 @@
   <fieldset class="register-form__fieldset">
     <legend class="register-form__legend">Crea tu cuenta</legend>
 
-    <!-- Campo de nombre de usuario -->
+    <!-- Campo de nombre de usuario - Componente Atómico -->
     <div class="register-form__field">
-      <label for="register-username" class="register-form__label">
-        Nombre de usuario
-        <span class="register-form__required" aria-label="Campo requerido">*</span>
-      </label>
-      <input
-        id="register-username"
+      <app-form-input
+        [control]="usernameControl"
+        label="Nombre de usuario"
         type="text"
-        [formControl]="usernameControl"
+        id="register-username"
         placeholder="tunombredeusuario"
-        class="register-form__input"
-        [class.register-form__input--error]="usernameControl?.invalid && usernameControl?.touched"
-        [attr.aria-invalid]="usernameControl?.invalid && usernameControl?.touched"
-        [attr.aria-describedby]="(usernameControl?.invalid && usernameControl?.touched) ? 'username-error' : 'username-help'"
-        autocomplete="username" />
-
-      <!-- Mensaje de error -->
-      @if (usernameControl?.invalid && usernameControl?.touched) {
-      <p
-        id="username-error"
-        class="register-form__error"
-        role="alert">
-        @if (usernameControl?.hasError('required')) {
-          Username es requerido
-        }
-        @if (usernameControl?.hasError('minlength')) {
-          Mínimo 3 caracteres
-        }
-        @if (usernameControl?.hasError('maxlength')) {
-          Máximo 20 caracteres
-        }
-        @if (usernameControl?.hasError('pattern')) {
-          Solo letras, números y guiones bajos
-        }
-      </p>
-      }
-
-      <!-- Texto de ayuda -->
-      @if (!usernameControl?.invalid || !usernameControl?.touched) {
-      <p
-        id="username-help"
-        class="register-form__help">
-        3-20 caracteres (letras, números, guiones bajos)
-      </p>
-      }
+        helpText="3-20 caracteres (letras, números, guiones bajos)"
+        [required]="true"
+        [autocomplete]="'username'">
+      </app-form-input>
     </div>
 
-    <!-- Campo de correo electrónico -->
+    <!-- Campo de correo electrónico - Componente Atómico -->
     <div class="register-form__field">
-      <label for="register-email" class="register-form__label">
-        Correo electrónico
-        <span class="register-form__required" aria-label="Campo requerido">*</span>
-      </label>
-      <input
-        id="register-email"
+      <app-form-input
+        [control]="emailControl"
+        label="Correo electrónico"
         type="email"
-        [formControl]="emailControl"
+        id="register-email"
         placeholder="tu@email.com"
-        class="register-form__input"
-        [class.register-form__input--error]="emailControl?.invalid && emailControl?.touched"
-        [attr.aria-invalid]="emailControl?.invalid && emailControl?.touched"
-        [attr.aria-describedby]="(emailControl?.invalid && emailControl?.touched) ? 'email-error' : 'email-help'"
-        autocomplete="email" />
-
-      <!-- Mensaje de error -->
-      @if (emailControl?.invalid && emailControl?.touched) {
-      <p
-        id="email-error"
-        class="register-form__error"
-        role="alert">
-        @if (emailControl?.hasError('required')) {
-          Email es requerido
-        }
-        @if (emailControl?.hasError('email')) {
-          Email debe ser válido
-        }
-      </p>
-      }
-
-      <!-- Texto de ayuda -->
-      @if (!emailControl?.invalid || !emailControl?.touched) {
-      <p
-        id="email-help"
-        class="register-form__help">
-        Usaremos este correo para tu cuenta
-      </p>
-      }
+        helpText="Usaremos este correo para tu cuenta"
+        [required]="true"
+        [autocomplete]="'email'">
+      </app-form-input>
     </div>
   </fieldset>
 
@@ -98,90 +36,38 @@
   <fieldset class="register-form__fieldset">
     <legend class="register-form__legend">Seguridad</legend>
 
-    <!-- Campo de contraseña -->
+    <!-- Campo de contraseña - Componente Atómico -->
     <div class="register-form__field">
-      <label for="register-password" class="register-form__label">
-        Contraseña
-        <span class="register-form__required" aria-label="Campo requerido">*</span>
-      </label>
-      <input
-        id="register-password"
+      <app-form-input
+        [control]="passwordControl"
+        label="Contraseña"
         type="password"
-        [formControl]="passwordControl"
+        id="register-password"
         placeholder="••••••••"
-        class="register-form__input"
-        [class.register-form__input--error]="passwordControl?.invalid && passwordControl?.touched"
-        [attr.aria-invalid]="passwordControl?.invalid && passwordControl?.touched"
-        [attr.aria-describedby]="(passwordControl?.invalid && passwordControl?.touched) ? 'password-error' : 'password-help'"
-        autocomplete="new-password" />
-
-      <!-- Mensaje de error -->
-      @if (passwordControl?.invalid && passwordControl?.touched) {
-      <span
-        id="password-error"
-        class="register-form__error"
-        role="alert">
-        @if (passwordControl?.hasError('required')) {
-          Contraseña es requerida
-        }
-        @if (passwordControl?.hasError('minlength')) {
-          Mínimo 8 caracteres
-        }
-        @if (passwordControl?.hasError('pattern')) {
-          Debe tener mayúscula y carácter especial
-        }
-      </span>
-      }
-
-      <!-- Texto de ayuda -->
-      @if (!passwordControl?.invalid || !passwordControl?.touched) {
-      <span
-        id="password-help"
-        class="register-form__help">
-        8+ caracteres, mayúscula y especial (!@#$%...)
-      </span>
-      }
+        helpText="8+ caracteres, mayúscula y especial (!@#$%...)"
+        [required]="true"
+        [autocomplete]="'new-password'">
+      </app-form-input>
     </div>
 
-    <!-- Campo de confirmación de contraseña -->
+    <!-- Campo de confirmación de contraseña - Componente Atómico -->
     <div class="register-form__field">
-      <label for="register-confirm-password" class="register-form__label">
-        Confirmar contraseña
-        <span class="register-form__required" aria-label="Campo requerido">*</span>
-      </label>
-      <input
-        id="register-confirm-password"
+      <app-form-input
+        [control]="confirmPasswordControl"
+        label="Confirmar contraseña"
         type="password"
-        [formControl]="confirmPasswordControl"
+        id="register-confirm-password"
         placeholder="••••••••"
-        class="register-form__input"
-        [class.register-form__input--error]="(confirmPasswordControl.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl.touched"
-        [attr.aria-invalid]="(confirmPasswordControl.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl.touched"
-        [attr.aria-describedby]="((confirmPasswordControl.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl.touched) ? 'confirm-password-error' : 'confirm-password-help'"
-        autocomplete="new-password" />
+        helpText="Vuelve a escribir tu contraseña"
+        [required]="true"
+        [autocomplete]="'new-password'">
+      </app-form-input>
 
-      <!-- Mensaje de error -->
-      @if ((confirmPasswordControl.invalid || registerForm.hasError('passwordMismatch')) && confirmPasswordControl.touched) {
-      <span
-        id="confirm-password-error"
-        class="register-form__error"
-        role="alert">
-        @if (confirmPasswordControl.hasError('required')) {
-          Confirma tu contraseña
-        }
-        @if (registerForm.hasError('passwordMismatch')) {
-          Las contraseñas no coinciden
-        }
-      </span>
-      }
-
-      <!-- Texto de ayuda -->
-      @if ((!confirmPasswordControl.invalid && !registerForm.hasError('passwordMismatch')) || !confirmPasswordControl.touched) {
-      <span
-        id="confirm-password-help"
-        class="register-form__help">
-        Vuelve a escribir tu contraseña
-      </span>
+      <!-- Error de password mismatch a nivel de formulario -->
+      @if (registerForm.hasError('passwordMismatch') && confirmPasswordControl.touched) {
+      <p class="register-form__error" role="alert">
+        Las contraseñas no coinciden
+      </p>
       }
     </div>
   </fieldset>

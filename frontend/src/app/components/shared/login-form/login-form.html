@@ -3,88 +3,32 @@
   <fieldset class="login-form__fieldset">
     <legend class="login-form__legend">Inicia sesión en tu cuenta</legend>
 
-    <!-- Campo de correo electrónico -->
+    <!-- Campo de correo electrónico - Componente Atómico -->
     <div class="login-form__field">
-      <label for="login-email" class="login-form__label">
-        Correo electrónico
-        <span class="login-form__required" aria-label="Campo requerido">*</span>
-      </label>
-      <input
-        id="login-email"
+      <app-form-input
+        [control]="emailControl"
+        label="Correo electrónico"
         type="email"
-        [formControl]="emailControl"
+        id="login-email"
         placeholder="tu@email.com"
-        class="login-form__input"
-        [class.login-form__input--error]="emailControl?.invalid && emailControl?.touched"
-        [attr.aria-invalid]="emailControl?.invalid && emailControl?.touched"
-        [attr.aria-describedby]="(emailControl?.invalid && emailControl?.touched) ? 'email-error' : 'email-help'"
-        autocomplete="email" />
-
-      <!-- Mensaje de error -->
-      @if (emailControl?.invalid && emailControl?.touched) {
-      <p
-        id="email-error"
-        class="login-form__error"
-        role="alert">
-        @if (emailControl?.hasError('required')) {
-          Email es requerido
-        }
-        @if (emailControl?.hasError('email')) {
-          Email debe ser válido (ej: usuario@dominio.com)
-        }
-      </p>
-      }
-
-      <!-- Texto de ayuda -->
-      @if (!emailControl?.invalid || !emailControl?.touched) {
-      <p
-        id="email-help"
-        class="login-form__help">
-        Introduce el correo con el que te registraste
-      </p>
-      }
+        helpText="Introduce el correo con el que te registraste"
+        [required]="true"
+        [autocomplete]="'email'">
+      </app-form-input>
     </div>
 
-    <!-- Campo de contraseña -->
+    <!-- Campo de contraseña - Componente Atómico -->
     <div class="login-form__field">
-      <label for="login-password" class="login-form__label">
-        Contraseña
-        <span class="login-form__required" aria-label="Campo requerido">*</span>
-      </label>
-      <input
-        id="login-password"
+      <app-form-input
+        [control]="passwordControl"
+        label="Contraseña"
         type="password"
-        [formControl]="passwordControl"
+        id="login-password"
         placeholder="••••••••"
-        class="login-form__input"
-        [class.login-form__input--error]="passwordControl?.invalid && passwordControl?.touched"
-        [attr.aria-invalid]="passwordControl?.invalid && passwordControl?.touched"
-        [attr.aria-describedby]="(passwordControl?.invalid && passwordControl?.touched) ? 'password-error' : 'password-help'"
-        autocomplete="current-password" />
-
-      <!-- Mensaje de error -->
-      @if (passwordControl?.invalid && passwordControl?.touched) {
-      <p
-        id="password-error"
-        class="login-form__error"
-        role="alert">
-        @if (passwordControl?.hasError('required')) {
-          Contraseña es requerida
-        }
-        @if (passwordControl?.hasError('minlength')) {
-          Contraseña debe tener al menos 8 caracteres
-        }
-      </p>
-      }
-
-      <!-- Texto de ayuda -->
-      @if (!passwordControl?.invalid || !passwordControl?.touched) {
-      <p
-        id="password-help"
-        class="login-form__help">
-        Mínimo 8 caracteres
-      </p>
-      }
+        helpText="Mínimo 8 caracteres"
+        [required]="true"
+        [autocomplete]="'current-password'">
+      </app-form-input>
     </div>
   </fieldset>
 

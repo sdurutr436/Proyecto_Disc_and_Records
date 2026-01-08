@@ -1,10 +1,11 @@
 import { Component, signal, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ThemeService } from '../../../services/theme';
 
 @Component({
   selector: 'app-main',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './main.html',
   styleUrl: './main.scss',
 })

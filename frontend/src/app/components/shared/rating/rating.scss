@@ -1,0 +1,50 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  &__star {
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+
+    &--filled {
+      color: var(--color-primary);
+    }
+  }
+
+  &__value {
+    margin-left: vars.$espaciado-xs;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  // Variantes de tamaño
+  &--small {
+    .rating__star {
+      font-size: 0.875rem;
+    }
+    .rating__value {
+      font-size: 0.75rem;
+    }
+  }
+
+  &--medium {
+    .rating__star {
+      font-size: 1rem;
+    }
+    .rating__value {
+      font-size: 0.875rem;
+    }
+  }
+
+  &--large {
+    .rating__star {
+      font-size: 1.25rem;
+    }
+    .rating__value {
+      font-size: 1rem;
+    }
+  }
+}

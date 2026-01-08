@@ -1,7 +1,7 @@
 @use '../../../../styles/00-settings/variables' as vars;
 @use '../../../../styles/01-tools/mixins' as mix;
 
-.form-input-wrapper {
+.form-input {
   @include mix.form-field-wrapper;
 }
 
@@ -13,21 +13,19 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  margin-bottom: vars.$espaciado-xs;
 }
 
-.form-input__label--required {
-  font-weight: 600;
-}
-
-.form-input__required-indicator {
+.form-input__required {
   color: vars.$color-error;
   font-weight: 600;
   font-size: 1.125rem;
   line-height: 1;
+  margin-left: 2px;
 }
 
 /* --- Input Field --- */
-.form-input__field {
+.form-input__input {
   font-family: vars.$fuente-principal;
   font-size: vars.$tamanio-fuente-parrafo;
   padding: vars.$espaciado-xs vars.$espaciado-s;
@@ -50,14 +48,14 @@
     box-shadow: vars.$sombra-brutal-primario-light;
   }
 
-  &:hover:not(:disabled):not(.form-input__field--error):not(.form-input__field--success) {
+  &:hover:not(:disabled):not(.form-input__input--error):not(.form-input__input--success) {
     box-shadow: 2px 2px 0px var(--shadow-color);
     transform: translate(2px, 2px);
   }
 }
 
 /* --- Estados del Input --- */
-.form-input__field--error {
+.form-input__input--error {
   border-color: vars.$color-error;
   box-shadow: 4px 4px 0px vars.$color-error;
 
@@ -72,7 +70,7 @@
   }
 }
 
-.form-input__field--success {
+.form-input__input--success {
   border-color: vars.$color-exito;
   box-shadow: 4px 4px 0px vars.$color-exito;
 
@@ -87,7 +85,7 @@
   }
 }
 
-.form-input__field--disabled {
+.form-input__input:disabled {
   @include mix.field-disabled;
 }
 

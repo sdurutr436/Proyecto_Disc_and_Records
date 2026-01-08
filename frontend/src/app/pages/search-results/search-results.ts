@@ -5,6 +5,7 @@ import { Card } from '../../components/shared/card/card';
 import { SearchBar } from '../../components/shared/search-bar/search-bar';
 import { Button } from '../../components/shared/button/button';
 import { Spinner } from '../../components/shared/spinner/spinner';
+import { RatingComponent } from '../../components/shared/rating/rating';
 
 type FilterType = 'all' | 'albums' | 'artists' | 'users' | 'reviews';
 
@@ -22,7 +23,7 @@ interface SearchResultItem {
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [CommonModule, Card, SearchBar, Button, Spinner],
+  imports: [CommonModule, Card, SearchBar, Button, Spinner, RatingComponent],
   templateUrl: './search-results.html',
   styleUrls: ['./search-results.scss']
 })

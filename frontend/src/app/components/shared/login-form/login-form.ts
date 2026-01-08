@@ -1,6 +1,7 @@
 import { Component, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormInput } from '../form-input/form-input';
 
 /**
  * LoginForm Component
@@ -35,7 +36,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } 
  */
 @Component({
   selector: 'app-login-form',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormInput],
   templateUrl: './login-form.html',
   styleUrl: './login-form.scss',
 })

@@ -147,7 +147,7 @@
 .spinner--white {
   .flower__petal {
     fill: vars.$color-letra-blanca;
-    stroke: rgba(255, 255, 255, 0.5);
+    stroke: color-mix(in srgb, var(--text-white) 50%, transparent);
   }
   .flower__center {
     fill: var(--color-primary);

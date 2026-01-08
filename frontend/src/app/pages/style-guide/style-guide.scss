@@ -492,10 +492,10 @@ app-breadcrumbs {
 
   code {
     font-size: 0.75rem;
-    background: rgba(255, 255, 255, 0.8);
+    background: color-mix(in srgb, var(--text-white) 80%, transparent);
     padding: 2px 6px;
     border-radius: 2px;
-    color: #000;
+    color: var(--text-dark);
   }
 
   &--primary {
@@ -530,22 +530,22 @@ app-breadcrumbs {
 
   &--success {
     background-color: var(--color-success);
-    color: #fff;
+    color: var(--text-white);
   }
 
   &--warning {
     background-color: var(--color-warning);
-    color: #000;
+    color: var(--text-dark);
   }
 
   &--error {
     background-color: var(--color-error);
-    color: #fff;
+    color: var(--text-white);
   }
 
   &--info {
     background-color: var(--color-info);
-    color: #fff;
+    color: var(--text-white);
   }
 }
 
@@ -1489,16 +1489,16 @@ app-breadcrumbs {
     }
 
     // Gradiente visual de importancia
-    &--10 { background-color: rgba($color-error, 0.3); }
-    &--9 { background-color: rgba($color-error, 0.2); }
-    &--8 { background-color: rgba($color-advertencia-light, 0.3); }
-    &--7 { background-color: rgba($color-advertencia-light, 0.2); }
-    &--6 { background-color: rgba($color-primario-light, 0.3); }
-    &--5 { background-color: rgba($color-primario-light, 0.2); }
-    &--4 { background-color: rgba($color-exito, 0.3); }
-    &--3 { background-color: rgba($color-exito, 0.2); }
-    &--2 { background-color: rgba($color-informacion, 0.2); }
-    &--1 { background-color: rgba($color-informacion, 0.1); }
+    &--10 { background-color: color-mix(in srgb, $color-error 30%, transparent); }
+    &--9 { background-color: color-mix(in srgb, $color-error 20%, transparent); }
+    &--8 { background-color: color-mix(in srgb, $color-advertencia-light 30%, transparent); }
+    &--7 { background-color: color-mix(in srgb, $color-advertencia-light 20%, transparent); }
+    &--6 { background-color: color-mix(in srgb, $color-primario-light 30%, transparent); }
+    &--5 { background-color: color-mix(in srgb, $color-primario-light 20%, transparent); }
+    &--4 { background-color: color-mix(in srgb, $color-exito 30%, transparent); }
+    &--3 { background-color: color-mix(in srgb, $color-exito 20%, transparent); }
+    &--2 { background-color: color-mix(in srgb, $color-informacion 20%, transparent); }
+    &--1 { background-color: color-mix(in srgb, $color-informacion 10%, transparent); }
     &--0 { background-color: var(--bg-primary); }
   }
 

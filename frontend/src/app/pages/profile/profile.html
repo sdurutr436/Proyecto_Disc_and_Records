@@ -84,9 +84,7 @@
                     <h3 class="profile__review-title">{{ review.albumTitle }}</h3>
                     <p class="profile__review-artist">{{ review.albumArtist }}</p>
                     <div class="profile__review-rating">
-                      @for (star of [1,2,3,4,5]; track star) {
-                        <span [class]="star <= review.rating ? 'star star--filled' : 'star'">★</span>
-                      }
+                      <app-rating [rating]="review.rating" size="medium" />
                     </div>
                   </header>
                   <p class="profile__review-text">{{ review.reviewText }}</p>
@@ -116,7 +114,7 @@
               >
                 @if (album.rating) {
                   <div class="profile__album-rating">
-                    ⭐ {{ album.rating }}
+                    <app-rating [rating]="album.rating" [showValue]="true" size="small" />
                   </div>
                 }
               </app-card>

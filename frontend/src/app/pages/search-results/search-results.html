@@ -124,7 +124,7 @@
                   </div>
                   @if (result.rating) {
                     <div class="search-results__rating">
-                      ⭐ {{ result.rating }}
+                      <app-rating [rating]="result.rating" [showValue]="true" size="small" />
                     </div>
                   }
                 </app-card>
@@ -149,9 +149,7 @@
                     }
                     @if (result.rating) {
                       <div class="search-results__custom-rating">
-                        @for (star of [1,2,3,4,5]; track star) {
-                          <span [class]="star <= result.rating! ? 'star star--filled' : 'star'">★</span>
-                        }
+                        <app-rating [rating]="result.rating!" size="medium" />
                       </div>
                     }
                   </div>

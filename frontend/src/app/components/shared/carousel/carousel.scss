@@ -105,6 +105,13 @@
     }
   }
 
+  // Clase para efecto de highlight (usado por toggleHighlight())
+  &__track--highlighted {
+    box-shadow: 0 0 20px var(--color-primary);
+    border: 2px solid var(--color-primary);
+    transition: all 0.3s ease;
+  }
+
   &__nav {
     position: absolute;
     top: 50%;

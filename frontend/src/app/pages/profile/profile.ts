@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Card } from '../../components/shared/card/card';
 import { Button } from '../../components/shared/button/button';
+import { RatingComponent } from '../../components/shared/rating/rating';
 
 type TabType = 'reviews' | 'albums';
 
@@ -27,7 +28,7 @@ interface Album {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, Card, Button],
+  imports: [CommonModule, Card, Button, RatingComponent],
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss']
 })

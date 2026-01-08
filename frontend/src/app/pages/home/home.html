@@ -53,7 +53,7 @@
           <!-- Badge de rating si está disponible -->
           @if (album.rating) {
             <div class="home__rating">
-              ⭐ {{ album.rating }}
+              <app-rating [rating]="album.rating" [showValue]="true" size="small" />
             </div>
           }
         </app-card>

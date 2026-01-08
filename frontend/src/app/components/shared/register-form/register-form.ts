@@ -1,6 +1,7 @@
 import { Component, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormInput } from '../form-input/form-input';
 
 /**
  * RegisterForm Component
@@ -33,7 +34,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators, A
  */
 @Component({
   selector: 'app-register-form',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormInput],
   templateUrl: './register-form.html',
   styleUrl: './register-form.scss',
 })

@@ -1,8 +1,8 @@
 package com.discsandrecords.api.security;
 
 import java.util.Arrays;
-import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -73,6 +73,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true) // Habilita @PreAuthorize y @PostAuthorize
 public class SecurityConfig {
+
+    @Value("${cors.allowed-origins}")
+    private String allowedOrigins;
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
@@ -179,12 +182,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Orígenes permitidos (frontend Angular)
-        // TODO: En producción, cambiar por dominio específico
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:4200",  // Angular dev server
-                "http://localhost:3000"   // Posible otro frontend
-        ));
+        // Orígenes permitidos desde configuración
+        // En desarrollo: localhost:4200,localhost:3000 (funciona en cualquier PC)
+        // En producción: URL de DigitalOcean desde variable de entorno
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
 
         // Métodos HTTP permitidos
         configuration.setAllowedMethods(Arrays.asList(

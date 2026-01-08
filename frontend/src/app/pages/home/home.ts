@@ -3,6 +3,7 @@ import { Carousel } from '../../components/shared/carousel/carousel';
 import { Card } from '../../components/shared/card/card';
 import { SearchBar } from '../../components/shared/search-bar/search-bar';
 import { Button } from '../../components/shared/button/button';
+import { RatingComponent } from '../../components/shared/rating/rating';
 
 // Mock data para álbumes (temporal hasta conectar con el backend)
 interface Album {
@@ -16,7 +17,7 @@ interface Album {
 
 @Component({
   selector: 'app-home',
-  imports: [Carousel, Card, SearchBar, Button],
+  imports: [Carousel, Card, SearchBar, Button, RatingComponent],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

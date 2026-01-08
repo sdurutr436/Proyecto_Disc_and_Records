@@ -1,5 +1,6 @@
 import { Component, signal, inject, ViewChild, ViewChildren, QueryList, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { Button } from '../../components/shared/button/button';
 import { Card, CardAction } from '../../components/shared/card/card';
 import { Badge } from '../../components/shared/badge/badge';
@@ -30,6 +31,7 @@ import { StyleGuideNavigationService, StyleGuideSection } from '../../services/s
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     Button,
     Card,
     Badge,
@@ -60,6 +62,18 @@ export class StyleGuide {
   private notificationService = inject(NotificationService);
   private loadingService = inject(LoadingService);
   private styleGuideNav = inject(StyleGuideNavigationService);
+
+  // FormControls para demostración de inputs
+  demoInputControl = new FormControl('');
+  demoInputErrorControl = new FormControl('', [Validators.required]);
+  demoInputSuccessControl = new FormControl('valor-válido', [Validators.required]);
+
+  constructor() {
+    // Marcar el control con error como touched para mostrar el error
+    this.demoInputErrorControl.markAsTouched();
+    // Marcar el control con éxito como touched para mostrar el estado
+    this.demoInputSuccessControl.markAsTouched();
+  }
 
   // Usar el signal del servicio compartido
   activeSection = this.styleGuideNav.activeSection;

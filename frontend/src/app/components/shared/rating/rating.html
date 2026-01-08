@@ -1,0 +1,14 @@
+<div class="rating" [class]="'rating--' + size()">
+  @for (star of getStars(); track star) {
+    <span
+      class="rating__star"
+      [class.rating__star--filled]="star <= rating()"
+      aria-hidden="true"
+    >
+      ★
+    </span>
+  }
+  @if (showValue()) {
+    <span class="rating__value">{{ rating() }}</span>
+  }
+</div>

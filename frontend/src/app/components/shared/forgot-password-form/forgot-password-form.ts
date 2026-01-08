@@ -1,6 +1,7 @@
 import { Component, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormInput } from '../form-input/form-input';
 
 /**
  * ForgotPasswordForm Component
@@ -26,7 +27,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } 
  */
 @Component({
   selector: 'app-forgot-password-form',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormInput],
   templateUrl: './forgot-password-form.html',
   styleUrl: './forgot-password-form.scss',
 })

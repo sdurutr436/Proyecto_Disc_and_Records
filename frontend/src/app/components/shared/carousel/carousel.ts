@@ -72,23 +72,15 @@ export class Carousel implements AfterViewInit {
   /**
    * MANIPULACIÓN DOM AVANZADA: Modificar estilos dinámicamente
    * Añade un efecto de highlight al track del carousel
+   * NOTA: Mejor práctica es usar clases CSS en lugar de manipular estilos inline
    */
   toggleHighlight(): void {
     if (!this.carouselTrack) return;
 
     const track = this.carouselTrack.nativeElement;
 
-    // MANIPULACIÓN DIRECTA DEL DOM: Modificar estilos con nativeElement.style
-    if (track.style.boxShadow === '') {
-      // Aplicar estilos dinámicamente
-      track.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.6)';
-      track.style.border = '2px solid gold';
-      track.style.transition = 'all 0.3s ease';
-    } else {
-      // Remover estilos
-      track.style.boxShadow = '';
-      track.style.border = '';
-    }
+    // Mejor práctica: toggle de clase CSS en lugar de manipular estilos
+    track.classList.toggle('carousel-track--highlighted');
   }
 
   /**
