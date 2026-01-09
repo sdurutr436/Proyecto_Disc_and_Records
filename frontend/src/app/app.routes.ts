@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
 import { authGuard, adminGuard } from './guards/auth.guard';
 import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
+import { albumResolver, artistResolver, songResolver } from './resolvers';
 
 /**
- * Configuración de rutas con Lazy Loading y Guards
+ * Configuración de rutas con Lazy Loading, Guards y Resolvers
  *
  * LAZY LOADING:
  * - Todas las rutas usan loadComponent() para carga perezosa
@@ -18,6 +19,13 @@ import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
  * - authGuard: Requiere autenticación, redirige a home si no autenticado
  * - adminGuard: Requiere rol admin, debe aplicarse DESPUÉS de authGuard
  * - unsavedChangesGuard: Previene pérdida de datos en formularios
+ *
+ * RESOLVERS (Precarga de datos):
+ * - albumResolver: Carga datos de álbum antes de mostrar página
+ * - artistResolver: Carga datos de artista antes de mostrar página
+ * - songResolver: Carga datos de canción antes de mostrar página
+ * - Integran LoadingService para mostrar estado durante navegación
+ * - Manejan errores y redirigen a 404 si el recurso no existe
  *
  * CHUNKING:
  * - Angular automáticamente genera chunks separados por cada loadComponent
@@ -90,18 +98,21 @@ export const routes: Routes = [
     path: 'album/:id',
     loadComponent: () => import('./pages/detail/detail').then(m => m.DetailComponent),
     title: 'Detalle de Álbum - Discs & Records',
-    data: { preload: true, critical: true, delay: 1500 } // ✅ Precarga - función principal
+    resolve: { album: albumResolver }, // 🔄 Precarga datos de álbum
+    data: { preload: true, critical: true, delay: 1500 }
   },
   {
     path: 'artist/:id',
     loadComponent: () => import('./pages/detail/detail').then(m => m.DetailComponent),
     title: 'Detalle de Artista - Discs & Records',
-    data: { preload: true, critical: true, delay: 1500 } // ✅ Precarga - función principal
+    resolve: { artist: artistResolver }, // 🔄 Precarga datos de artista
+    data: { preload: true, critical: true, delay: 1500 }
   },
   {
     path: 'song/:id',
     loadComponent: () => import('./pages/detail/detail').then(m => m.DetailComponent),
     title: 'Detalle de Canción - Discs & Records',
+    resolve: { song: songResolver }, // 🔄 Precarga datos de canción
     data: { preload: true, critical: true, delay: 1500 }
   },
   {

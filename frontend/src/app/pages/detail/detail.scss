@@ -281,39 +281,16 @@
   }
 }
 
-.star {
-  background: none;
-  border: none;
-  font-size: 2.5rem;
-  cursor: pointer;
-  transition: all vars.$transicion-rapida;
-  padding: vars.$espaciado-xs;
-  color: var(--border-color);
+// Estilos para rating interactivo ya están en el componente app-rating
+// Se mantiene solo estilo del contenedor
+.rating-input {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-s;
+  align-items: center;
 
-  @include mixins.respond-to('tablet') {
-    font-size: 2rem;
-  }
-
-  &--empty {
-    color: var(--border-color);
-
-    &:hover {
-      color: var(--color-secondary);
-      transform: scale(1.2);
-    }
-  }
-
-  &--filled {
-    color: var(--color-secondary);
-
-    &:hover {
-      transform: scale(1.2);
-    }
-  }
-
-  &:focus {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 4px;
+  app-rating {
+    margin-bottom: vars.$espaciado-xs;
   }
 }
 

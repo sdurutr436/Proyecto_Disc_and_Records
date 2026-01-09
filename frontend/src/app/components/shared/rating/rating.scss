@@ -8,9 +8,38 @@
   &__star {
     color: var(--text-muted);
     transition: color 0.2s ease;
+    background: none;
+    border: none;
+    cursor: default;
+    padding: 0;
+    font: inherit;
 
     &--filled {
       color: var(--color-primary);
+    }
+
+    &--empty {
+      color: var(--text-muted);
+    }
+
+    &:disabled {
+      cursor: default;
+    }
+  }
+
+  &--interactive {
+    .rating__star {
+      cursor: pointer;
+
+      &:hover:not(:disabled) {
+        transform: scale(1.1);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
     }
   }
 

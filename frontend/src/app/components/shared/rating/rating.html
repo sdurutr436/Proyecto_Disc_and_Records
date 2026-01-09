@@ -1,14 +1,24 @@
-<div class="rating" [class]="'rating--' + size()">
+<div
+  class="rating"
+  [class]="'rating--' + size()"
+  [class.rating--interactive]="interactive()"
+  (mouseleave)="onMouseLeave()"
+>
   @for (star of getStars(); track star) {
-    <span
+    <button
+      type="button"
       class="rating__star"
-      [class.rating__star--filled]="star <= rating()"
-      aria-hidden="true"
+      [class.rating__star--filled]="star <= displayRating()"
+      [class.rating__star--empty]="star > displayRating()"
+      [attr.aria-label]="interactive() ? 'Puntuar con ' + star + ' estrellas' : 'Rating: ' + star + ' estrellas'"
+      [disabled]="!interactive()"
+      (click)="onStarClick(star)"
+      (mouseenter)="onStarHover(star)"
     >
       ★
-    </span>
+    </button>
   }
   @if (showValue()) {
-    <span class="rating__value">{{ rating() }}</span>
+    <span class="rating__value">{{ displayRating() }}</span>
   }
 </div>

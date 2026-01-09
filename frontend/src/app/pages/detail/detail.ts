@@ -9,41 +9,13 @@ import { Spinner } from '../../components/shared/spinner/spinner';
 import { Alert } from '../../components/shared/alert/alert';
 import { FormTextarea } from '../../components/shared/form-textarea/form-textarea';
 import { RatingComponent } from '../../components/shared/rating/rating';
+import { Album, Artist, Song, Track, Review } from '../../models/data.models';
+import { AlbumService } from '../../services/album.service';
+import { ArtistService } from '../../services/artist.service';
+import { SongService } from '../../services/song.service';
 
-// Interfaces
-interface DetailItem {
-  id: string;
-  title: string;
-  artist: string;
-  artistId: string;
-  coverUrl: string;
-  releaseYear: number;
-  genre: string;
-  tracks: number;
-  duration: string;
-  label: string;
-  description: string;
-  averageRating: number;
-  totalReviews: number;
-}
-
-interface Track {
-  id: string;
-  number: number;
-  title: string;
-  duration: string;
-}
-
-interface Review {
-  id: string;
-  userId: string;
-  userName: string;
-  userAvatar: string;
-  rating: number;
-  content: string;
-  date: Date;
-  likes: number;
-}
+// Type para el item unificado (puede ser Album, Artist o Song)
+type DetailItem = Album | Artist | Song;
 
 @Component({
   selector: 'app-detail',
@@ -72,31 +44,83 @@ export class DetailComponent implements OnInit, OnDestroy {
   reviews = signal<Review[]>([]);
   reviewsAccordionItems = signal<AccordionItem[]>([]);
   userRating = signal<number>(0);
-  hoveredStar = signal<number>(0);
   reviewText = signal<string>('');
   isWritingReview = signal<boolean>(false);
   isLoadingReviews = signal<boolean>(false);
+
+  // Computed properties para acceso seguro a propiedades de diferentes tipos
+  itemTitle = computed(() => {
+    const item = this.item();
+    if (!item) return '';
+    if ('title' in item) return item.title;
+    if ('name' in item) return item.name;
+    return '';
+  });
+
+  itemArtist = computed(() => {
+    const item = this.item();
+    if (!item) return '';
+    if ('artist' in item) return item.artist;
+    return '';
+  });
+
+  itemArtistId = computed(() => {
+    const item = this.item();
+    if (!item) return '';
+    if ('artistId' in item) return item.artistId;
+    return '';
+  });
+
+  itemCoverUrl = computed(() => {
+    const item = this.item();
+    if (!item) return '';
+    if ('coverUrl' in item) return item.coverUrl;
+    if ('photoUrl' in item) return item.photoUrl;
+    return '';
+  });
+
+  itemType = computed((): 'album' | 'artist' | 'song' | null => {
+    const item = this.item();
+    if (!item) return null;
+    if ('title' in item && 'tracks' in item && 'label' in item) return 'album';
+    if ('name' in item && 'bio' in item) return 'artist';
+    if ('title' in item && 'album' in item) return 'song';
+    return null;
+  });
 
   // Computed
   hasUserRated = computed(() => this.userRating() > 0);
   canSubmitReview = computed(() =>
     this.reviewText().trim().length >= 50 && this.userRating() > 0
   );
-  displayRating = computed(() =>
-    this.hoveredStar() > 0 ? this.hoveredStar() : this.userRating()
-  );
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private viewportScroller: ViewportScroller
+    private viewportScroller: ViewportScroller,
+    private albumService: AlbumService,
+    private artistService: ArtistService,
+    private songService: SongService
   ) {}
 
   ngOnInit(): void {
-    const itemId = this.route.snapshot.paramMap.get('id');
-    if (itemId) {
-      this.loadItemData(itemId);
-      this.loadReviews(itemId);
+    // ✅ DATOS YA PRECARGADOS POR RESOLVER
+    // Los datos vienen del resolver configurado en app.routes.ts
+    const resolvedData = this.route.snapshot.data;
+
+    // Determinar tipo de item según qué resolver se ejecutó
+    if (resolvedData['album']) {
+      const album = resolvedData['album'] as Album;
+      this.item.set(album);
+      this.loadAlbumDetails(album.id);
+    } else if (resolvedData['artist']) {
+      const artist = resolvedData['artist'] as Artist;
+      this.item.set(artist);
+      this.loadArtistDetails(artist.id);
+    } else if (resolvedData['song']) {
+      const song = resolvedData['song'] as Song;
+      this.item.set(song);
+      this.loadSongDetails(song.id);
     }
 
     // Leer estado pasado via NavigationExtras
@@ -118,48 +142,47 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.fragmentSubscription?.unsubscribe();
   }
 
-  loadItemData(itemId: string): void {
-    // TODO: Reemplazar con llamada al servicio real
-    // Datos de ejemplo
-    this.item.set({
-      id: itemId,
-      title: 'The Dark Side of the Moon',
-      artist: 'Pink Floyd',
-      artistId: 'artist-1',
-      coverUrl: 'https://picsum.photos/seed/album1/400/400',
-      releaseYear: 1973,
-      genre: 'Progressive Rock',
-      tracks: 10,
-      duration: '42:59',
-      label: 'Harvest Records',
-      description: 'The Dark Side of the Moon es el octavo álbum de estudio de la banda británica de rock progresivo Pink Floyd. Fue lanzado el 1 de marzo de 1973 y es uno de los álbumes más vendidos e influyentes de todos los tiempos.',
-      averageRating: 4.7,
-      totalReviews: 1248
+  /**
+   * Carga detalles adicionales de un álbum (tracks y reviews)
+   */
+  loadAlbumDetails(albumId: string): void {
+    // Cargar tracks
+    this.albumService.getAlbumTracks(albumId).subscribe({
+      next: (tracks) => {
+        this.trackList.set(tracks);
+        const tracklistItems: AccordionItem[] = [{
+          id: 'tracklist',
+          title: `Lista de canciones (${tracks.length})`,
+          content: this.generateTracklistHTML(tracks),
+          isOpen: true
+        }];
+        this.tracklistAccordionItems.set(tracklistItems);
+      },
+      error: (err) => console.error('Error loading tracks:', err)
     });
 
-    // Cargar lista de canciones
-    const tracks: Track[] = [
-      { id: 'track-1', number: 1, title: 'Speak to Me', duration: '1:30' },
-      { id: 'track-2', number: 2, title: 'Breathe', duration: '2:43' },
-      { id: 'track-3', number: 3, title: 'On the Run', duration: '3:36' },
-      { id: 'track-4', number: 4, title: 'Time', duration: '6:53' },
-      { id: 'track-5', number: 5, title: 'The Great Gig in the Sky', duration: '4:36' },
-      { id: 'track-6', number: 6, title: 'Money', duration: '6:23' },
-      { id: 'track-7', number: 7, title: 'Us and Them', duration: '7:49' },
-      { id: 'track-8', number: 8, title: 'Any Colour You Like', duration: '3:26' },
-      { id: 'track-9', number: 9, title: 'Brain Damage', duration: '3:49' },
-      { id: 'track-10', number: 10, title: 'Eclipse', duration: '2:03' }
-    ];
-    this.trackList.set(tracks);
+    // Cargar reviews
+    this.loadReviews(albumId, 'album');
+  }
 
-    // Create accordion items for tracklist
-    const tracklistItems: AccordionItem[] = [{
-      id: 'tracklist',
-      title: `Lista de canciones (${tracks.length})`,
-      content: this.generateTracklistHTML(tracks),
-      isOpen: true
-    }];
-    this.tracklistAccordionItems.set(tracklistItems);
+  /**
+   * Carga detalles adicionales de un artista
+   */
+  loadArtistDetails(artistId: string): void {
+    // TODO: Cargar álbumes del artista si es necesario
+    this.loadReviews(artistId, 'artist');
+  }
+
+  /**
+   * Carga detalles adicionales de una canción
+   */
+  loadSongDetails(songId: string): void {
+    this.loadReviews(songId, 'song');
+  }
+
+  // MÉTODO LEGACY - Ya no se usa, datos vienen del resolver
+  loadItemData(itemId: string): void {
+    console.warn('loadItemData() is deprecated. Data should come from resolver.');
   }
 
   generateTracklistHTML(tracks: Track[]): string {
@@ -172,59 +195,52 @@ export class DetailComponent implements OnInit, OnDestroy {
     ).join('');
   }
 
-  loadReviews(itemId: string): void {
+  /**
+   * Carga reseñas según el tipo de item
+   */
+  loadReviews(itemId: string, type: 'album' | 'artist' | 'song'): void {
     this.isLoadingReviews.set(true);
 
-    // TODO: Reemplazar con llamada al servicio real
-    setTimeout(() => {
-      const loadedReviews: Review[] = [
-        {
-          id: '1',
-          userId: 'user-1',
-          userName: 'Carlos Méndez',
-          userAvatar: 'https://picsum.photos/seed/user1/100/100',
-          rating: 5,
-          content: 'Una obra maestra absoluta. Cada canción fluye perfectamente hacia la siguiente. El uso de sintetizadores y efectos de sonido fue revolucionario para su época. Time y Money son mis favoritas.',
-          date: new Date('2024-01-15'),
-          likes: 42
-        },
-        {
-          id: '2',
-          userId: 'user-2',
-          userName: 'María García',
-          userAvatar: 'https://picsum.photos/seed/user2/100/100',
-          rating: 5,
-          content: 'Este álbum cambió mi vida. La primera vez que lo escuché completo fue una experiencia trascendental. Breathe, The Great Gig in the Sky y Eclipse son perfectas.',
-          date: new Date('2024-01-10'),
-          likes: 38
-        },
-        {
-          id: '3',
-          userId: 'user-3',
-          userName: 'Pedro Sánchez',
-          userAvatar: 'https://picsum.photos/seed/user3/100/100',
-          rating: 4,
-          content: 'Excelente álbum conceptual. La producción es impecable. Aunque algunos pasajes instrumentales se me hacen un poco largos, la cohesión general es impresionante.',
-          date: new Date('2024-01-05'),
-          likes: 15
-        }
-      ];
-      this.reviews.set(loadedReviews);
+    let reviewsObservable;
+    switch (type) {
+      case 'album':
+        reviewsObservable = this.albumService.getAlbumReviews(itemId);
+        break;
+      case 'song':
+        reviewsObservable = this.songService.getSongReviews(itemId);
+        break;
+      default:
+        // Artists no tienen reviews aún
+        this.isLoadingReviews.set(false);
+        return;
+    }
 
-      // Create accordion items for reviews
-      const reviewsItems: AccordionItem[] = [{
-        id: 'reviews',
-        title: `Reseñas (${loadedReviews.length})`,
-        content: this.generateReviewsHTML(loadedReviews),
-        isOpen: true
-      }];
-      this.reviewsAccordionItems.set(reviewsItems);
+    reviewsObservable.subscribe({
+      next: (loadedReviews) => {
+        this.reviews.set(loadedReviews);
 
-      this.isLoadingReviews.set(false);
-    }, 500);
+        // Create accordion items for reviews
+        const reviewsItems: AccordionItem[] = [{
+          id: 'reviews',
+          title: `Reseñas (${loadedReviews.length})`,
+          content: this.generateReviewsHTML(loadedReviews),
+          isOpen: true
+        }];
+        this.reviewsAccordionItems.set(reviewsItems);
+
+        this.isLoadingReviews.set(false);
+      },
+      error: (err) => {
+        console.error('Error loading reviews:', err);
+        this.isLoadingReviews.set(false);
+      }
+    });
   }
-
   generateReviewsHTML(reviews: Review[]): string {
+    if (reviews.length === 0) {
+      return '<p class="no-reviews">No hay reseñas aún. ¡Sé el primero en escribir una!</p>';
+    }
+
     return reviews.map(review => {
       const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
       const dateStr = review.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -258,22 +274,6 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.userRating.set(rating);
     // TODO: Enviar rating al backend
     console.log('Rating set:', rating);
-  }
-
-  hoverStar(star: number): void {
-    this.hoveredStar.set(star);
-  }
-
-  resetHover(): void {
-    this.hoveredStar.set(0);
-  }
-
-  getStarClass(starNumber: number): string {
-    const rating = this.displayRating();
-    if (starNumber <= rating) {
-      return 'star--filled';
-    }
-    return 'star--empty';
   }
 
   // Review system
@@ -353,7 +353,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     const extras: NavigationExtras = {
       state: {
         fromAlbum: this.item()?.id,
-        albumTitle: this.item()?.title
+        albumTitle: this.itemTitle()
       }
     };
     this.router.navigate(['/artist', artistId], extras);

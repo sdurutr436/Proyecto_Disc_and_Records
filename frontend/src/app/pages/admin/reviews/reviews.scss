@@ -67,16 +67,8 @@
   }
 }
 
-.review-rating {
-  .star {
-    color: var(--text-secondary);
-    font-size: vars.$tamanio-fuente-h4;
-
-    &.filled {
-      color: vars.$color-advertencia-light;
-    }
-  }
-}
+// Rating ahora usa el componente app-rating
+// No hay estilos específicos necesarios aquí
 
 .review-content {
   color: var(--text-primary);
