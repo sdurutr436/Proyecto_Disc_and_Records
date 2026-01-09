@@ -5,6 +5,7 @@ import { Artist } from '../models/data.models';
 import { ArtistService } from '../services/artist.service';
 import { LoadingService } from '../services/loading';
 import { NotificationStreamService } from '../services/notification-stream';
+import { BreadcrumbService } from '../services/breadcrumb.service';
 
 /**
  * Resolver funcional para precargar datos de artista antes de activar la ruta
@@ -33,6 +34,7 @@ export const artistResolver: ResolveFn<Artist | null> = (route, state): Observab
   const artistService = inject(ArtistService);
   const loadingService = inject(LoadingService);
   const notificationStream = inject(NotificationStreamService);
+  const breadcrumbService = inject(BreadcrumbService);
   const router = inject(Router);
 
   const artistId = route.paramMap.get('id');
@@ -47,7 +49,11 @@ export const artistResolver: ResolveFn<Artist | null> = (route, state): Observab
   loadingService.start('Cargando artista...');
 
   return artistService.getArtistById(artistId).pipe(
-    tap(() => {
+    tap((artist) => {
+      // Actualizar breadcrumb con el nombre real del artista
+      if (artist) {
+        breadcrumbService.updateCurrentBreadcrumb(artist.name);
+      }
       // Datos cargados exitosamente
       loadingService.stop();
     }),

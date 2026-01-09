@@ -5,6 +5,7 @@ import { Album } from '../models/data.models';
 import { AlbumService } from '../services/album.service';
 import { LoadingService } from '../services/loading';
 import { NotificationStreamService } from '../services/notification-stream';
+import { BreadcrumbService } from '../services/breadcrumb.service';
 
 /**
  * Resolver funcional para precargar datos de álbum antes de activar la ruta
@@ -33,6 +34,7 @@ export const albumResolver: ResolveFn<Album | null> = (route, state): Observable
   const albumService = inject(AlbumService);
   const loadingService = inject(LoadingService);
   const notificationStream = inject(NotificationStreamService);
+  const breadcrumbService = inject(BreadcrumbService);
   const router = inject(Router);
 
   const albumId = route.paramMap.get('id');
@@ -47,7 +49,11 @@ export const albumResolver: ResolveFn<Album | null> = (route, state): Observable
   loadingService.start('Cargando álbum...');
 
   return albumService.getAlbumById(albumId).pipe(
-    tap(() => {
+    tap((album) => {
+      // Actualizar breadcrumb con el título real del álbum
+      if (album) {
+        breadcrumbService.updateCurrentBreadcrumb(album.title);
+      }
       // Datos cargados exitosamente
       loadingService.stop();
     }),

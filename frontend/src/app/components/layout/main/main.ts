@@ -2,15 +2,18 @@ import { Component, signal, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ThemeService } from '../../../services/theme';
+import { Breadcrumbs } from '../../shared/breadcrumbs/breadcrumbs';
+import { BreadcrumbService } from '../../../services/breadcrumb.service';
 
 @Component({
   selector: 'app-main',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, Breadcrumbs],
   templateUrl: './main.html',
   styleUrl: './main.scss',
 })
 export class Main {
   themeService = inject(ThemeService);
+  breadcrumbService = inject(BreadcrumbService);
 
   // Menú móvil del nav
   isMenuOpen = signal(false);

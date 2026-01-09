@@ -2,13 +2,13 @@
 
 .breadcrumbs {
   width: 100%;
-  padding: vars.$espaciado-xs 0;
+  padding: 4px 0;
 
   &__list {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: vars.$espaciado-xs;
+    gap: 4px;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -17,7 +17,7 @@
   &__item {
     display: flex;
     align-items: center;
-    gap: vars.$espaciado-xs;
+    gap: 4px;
 
     &--active {
       .breadcrumbs__text {

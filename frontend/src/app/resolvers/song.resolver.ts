@@ -5,6 +5,7 @@ import { Song } from '../models/data.models';
 import { SongService } from '../services/song.service';
 import { LoadingService } from '../services/loading';
 import { NotificationStreamService } from '../services/notification-stream';
+import { BreadcrumbService } from '../services/breadcrumb.service';
 
 /**
  * Resolver funcional para precargar datos de canción antes de activar la ruta
@@ -33,6 +34,7 @@ export const songResolver: ResolveFn<Song | null> = (route, state): Observable<S
   const songService = inject(SongService);
   const loadingService = inject(LoadingService);
   const notificationStream = inject(NotificationStreamService);
+  const breadcrumbService = inject(BreadcrumbService);
   const router = inject(Router);
 
   const songId = route.paramMap.get('id');
@@ -47,7 +49,11 @@ export const songResolver: ResolveFn<Song | null> = (route, state): Observable<S
   loadingService.start('Cargando canción...');
 
   return songService.getSongById(songId).pipe(
-    tap(() => {
+    tap((song) => {
+      // Actualizar breadcrumb con el título real de la canción
+      if (song) {
+        breadcrumbService.updateCurrentBreadcrumb(song.title);
+      }
       // Datos cargados exitosamente
       loadingService.stop();
     }),

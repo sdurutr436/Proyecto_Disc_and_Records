@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 export interface BreadcrumbItem {
@@ -11,11 +10,11 @@ export interface BreadcrumbItem {
 @Component({
   selector: 'app-breadcrumbs',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],
   templateUrl: './breadcrumbs.html',
   styleUrl: './breadcrumbs.scss'
 })
 export class Breadcrumbs {
   @Input() items: BreadcrumbItem[] = [];
-  @Input() separator: string = '/';
+  @Input() separator: string = '>';
 }

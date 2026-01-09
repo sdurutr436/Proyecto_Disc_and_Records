@@ -42,7 +42,7 @@ export const routes: Routes = [
     path: 'search',
     loadComponent: () => import('./pages/search-results/search-results'),
     title: 'Resultados de Búsqueda - Discs & Records',
-    data: { preload: true, critical: true, delay: 1000 } // ✅ Precarga con delay - función crítica
+    data: { preload: true, critical: true, delay: 1000, breadcrumb: 'Búsqueda' } // ✅ Precarga con delay - función crítica
   },
   {
     path: 'profile',
@@ -55,7 +55,7 @@ export const routes: Routes = [
     path: 'settings',
     loadComponent: () => import('./pages/settings/settings'),
     canActivate: [authGuard], // 🔒 Requiere autenticación
-    data: { preload: true, delay: 3000 },
+    data: { preload: true, delay: 3000, breadcrumb: 'Ajustes' },
     children: [
       {
         path: '',
@@ -66,24 +66,28 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () => import('./pages/settings/profile/profile'),
         title: 'Perfil - Ajustes',
+        data: { breadcrumb: 'Mi Perfil' },
         canDeactivate: [unsavedChangesGuard] // ⚠️ Protege formulario
       },
       {
         path: 'account',
         loadComponent: () => import('./pages/settings/account/account'),
         title: 'Cuenta - Ajustes',
+        data: { breadcrumb: 'Cuenta' },
         canDeactivate: [unsavedChangesGuard] // ⚠️ Protege formulario
       },
       {
         path: 'preferences',
         loadComponent: () => import('./pages/settings/preferences/preferences'),
         title: 'Preferencias - Ajustes',
+        data: { breadcrumb: 'Preferencias' },
         canDeactivate: [unsavedChangesGuard] // ⚠️ Protege formulario
       },
       {
         path: 'security',
         loadComponent: () => import('./pages/settings/security/security'),
         title: 'Seguridad - Ajustes',
+        data: { breadcrumb: 'Seguridad' },
         canDeactivate: [unsavedChangesGuard]
       }
     ]
@@ -120,7 +124,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin/admin'),
     title: 'Panel de Administración - Discs & Records',
     canActivate: [authGuard, adminGuard],
-    data: { preload: false },
+    data: { preload: false, breadcrumb: 'Administración' },
     children: [
       {
         path: '',
@@ -130,22 +134,26 @@ export const routes: Routes = [
       {
         path: 'albums',
         loadComponent: () => import('./pages/admin/albums/albums'),
-        title: 'Gestión de Álbumes - Admin'
+        title: 'Gestión de Álbumes - Admin',
+        data: { breadcrumb: 'Álbumes' }
       },
       {
         path: 'users',
         loadComponent: () => import('./pages/admin/users/users'),
-        title: 'Gestión de Usuarios - Admin'
+        title: 'Gestión de Usuarios - Admin',
+        data: { breadcrumb: 'Usuarios' }
       },
       {
         path: 'genres',
         loadComponent: () => import('./pages/admin/genres/genres'),
-        title: 'Gestión de Géneros - Admin'
+        title: 'Gestión de Géneros - Admin',
+        data: { breadcrumb: 'Géneros' }
       },
       {
         path: 'reviews',
         loadComponent: () => import('./pages/admin/reviews/reviews'),
-        title: 'Moderación de Reseñas - Admin'
+        title: 'Moderación de Reseñas - Admin',
+        data: { breadcrumb: 'Reseñas' }
       }
     ]
   },
