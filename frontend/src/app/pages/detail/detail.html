@@ -76,8 +76,41 @@
       <!-- COLUMNA DERECHA: RESEÑAS Y PUNTUACIÓN (2/3) -->
       <main class="detail__content">
 
+        <!-- Navegación interna por secciones (usa fragments) -->
+        <nav class="detail__nav">
+          <button
+            type="button"
+            class="detail__nav-item"
+            (click)="navigateToSection('info')"
+          >
+            Información
+          </button>
+          <button
+            type="button"
+            class="detail__nav-item"
+            (click)="navigateToSection('tracks')"
+          >
+            Canciones
+          </button>
+          <button
+            type="button"
+            class="detail__nav-item"
+            (click)="navigateToSection('reviews')"
+          >
+            Reseñas
+          </button>
+          <button
+            type="button"
+            class="detail__nav-item detail__nav-item--share"
+            (click)="shareReviewsLink()"
+            title="Copiar enlace a reseñas"
+          >
+            🔗 Compartir
+          </button>
+        </nav>
+
         <!-- SECCIÓN: LISTA DE CANCIONES -->
-        <section class="tracklist-section">
+        <section id="tracks" class="tracklist-section">
           <h2 class="section-title">Lista de canciones</h2>
           <app-accordion
             [items]="tracklistAccordionItems()"
@@ -86,7 +119,7 @@
         </section>
 
         <!-- SECCIÓN: TU PUNTUACIÓN -->
-        <section class="rating-section">
+        <section id="info" class="rating-section">
           <h2 class="section-title">Tu puntuación</h2>
 
           <div class="rating-input">
@@ -173,7 +206,7 @@
         </section>
 
         <!-- SECCIÓN: LISTA DE RESEÑAS -->
-        <section class="reviews-section">
+        <section id="reviews" class="reviews-section">
           <h2 class="section-title">
             Reseñas de la comunidad
             <span class="section-title__count">({{ reviews().length }})</span>

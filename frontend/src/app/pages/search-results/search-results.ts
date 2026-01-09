@@ -1,6 +1,6 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { Card } from '../../components/shared/card/card';
 import { SearchBar } from '../../components/shared/search-bar/search-bar';
 import { Button } from '../../components/shared/button/button';
@@ -148,15 +148,30 @@ export default class SearchResultsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtener el término de búsqueda de los query params
+    // Suscribirse a cambios en query params (q y filter)
     this.route.queryParams.subscribe(params => {
+      // Leer término de búsqueda
       const query = params['q'] || '';
       this.searchTerm.set(query);
+
+      // Leer filtro de query params si existe
+      const filter = params['filter'] as FilterType;
+      if (filter && ['albums', 'artists', 'users', 'reviews'].includes(filter)) {
+        this.activeFilter.set(filter);
+      } else {
+        this.activeFilter.set('all');
+      }
 
       if (query) {
         this.performSearch(query);
       }
     });
+
+    // Leer estado de navegación (NavigationExtras state)
+    const navState = history.state;
+    if (navState?.previousSearch) {
+      console.log('Volviendo de:', navState.previousSearch);
+    }
   }
 
   performSearch(query: string): void {
@@ -208,27 +223,78 @@ export default class SearchResultsComponent implements OnInit {
     }
   }
 
+  // ============================================
+  // NAVEGACIÓN PROGRAMÁTICA
+  // ============================================
+
+  /**
+   * Navegar al resultado con NavigationExtras state
+   * Pasa información del contexto de búsqueda para uso en la página destino
+   */
   viewResult(result: SearchResultItem): void {
+    // NavigationExtras con state para pasar datos entre rutas
+    const extras: NavigationExtras = {
+      state: {
+        fromSearch: true,
+        searchTerm: this.searchTerm(),
+        resultPosition: this.filteredResults().indexOf(result) + 1,
+        totalResults: this.filteredResults().length
+      }
+    };
+
     switch (result.type) {
       case 'album':
-        this.router.navigate(['/album', result.id]);
+        // Navegar con fragment para ir directamente a info
+        this.router.navigate(['/album', result.id], {
+          ...extras,
+          fragment: 'info'
+        });
         break;
       case 'artist':
-        this.router.navigate(['/artist', result.id]);
+        this.router.navigate(['/artist', result.id], extras);
         break;
       case 'user':
-        this.router.navigate(['/profile', result.id]);
+        this.router.navigate(['/profile', result.id], extras);
         break;
       case 'review':
-        this.router.navigate(['/review', result.id]);
+        // Navegar al álbum y scroll directo a reviews
+        this.router.navigate(['/album', result.id], {
+          ...extras,
+          fragment: 'reviews'
+        });
         break;
     }
   }
 
+  /**
+   * Nueva búsqueda con queryParamsHandling para preservar parámetros
+   */
   newSearch(query: string): void {
     if (query.trim()) {
-      this.router.navigate(['/search'], { queryParams: { q: query } });
+      const extras: NavigationExtras = {
+        queryParams: { q: query },
+        // 'merge' preserva otros query params existentes
+        queryParamsHandling: 'merge',
+        // No añadir al historial cada búsqueda intermedia
+        replaceUrl: false
+      };
+      this.router.navigate(['/search'], extras);
     }
+  }
+
+  /**
+   * Aplicar filtro actualizando query params
+   */
+  applyFilterWithQueryParams(filter: FilterType): void {
+    this.setFilter(filter);
+
+    // Actualizar URL con filtro actual sin perder el término de búsqueda
+    const extras: NavigationExtras = {
+      queryParams: { filter: filter === 'all' ? null : filter },
+      queryParamsHandling: 'merge',
+      replaceUrl: true // Reemplazar en historial, no apilar
+    };
+    this.router.navigate([], extras);
   }
 
   goBack(): void {

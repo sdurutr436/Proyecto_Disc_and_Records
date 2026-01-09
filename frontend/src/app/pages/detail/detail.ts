@@ -1,6 +1,7 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { CommonModule, ViewportScroller } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule, NavigationExtras } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Accordion, AccordionItem } from '../../components/shared/accordion/accordion';
 import { Button } from '../../components/shared/button/button';
@@ -55,7 +56,9 @@ interface Review {
   templateUrl: './detail.html',
   styleUrl: './detail.scss'
 })
-export class DetailComponent implements OnInit {
+export class DetailComponent implements OnInit, OnDestroy {
+  private fragmentSubscription?: Subscription;
+
   // Signals
   item = signal<DetailItem | null>(null);
   trackList = signal<Track[]>([]);
@@ -79,7 +82,8 @@ export class DetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private viewportScroller: ViewportScroller
   ) {}
 
   ngOnInit(): void {
@@ -88,6 +92,24 @@ export class DetailComponent implements OnInit {
       this.loadItemData(itemId);
       this.loadReviews(itemId);
     }
+
+    // Leer estado pasado via NavigationExtras
+    const navigationState = history.state;
+    if (navigationState?.fromSearch) {
+      console.log('Navegación desde búsqueda:', navigationState.searchTerm);
+    }
+
+    // Suscribirse a cambios en el fragment para scroll automático
+    this.fragmentSubscription = this.route.fragment.subscribe(fragment => {
+      if (fragment) {
+        // Pequeño delay para asegurar que el DOM esté renderizado
+        setTimeout(() => this.scrollToSection(fragment), 100);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.fragmentSubscription?.unsubscribe();
   }
 
   loadItemData(itemId: string): void {
@@ -294,12 +316,62 @@ export class DetailComponent implements OnInit {
     );
   }
 
-  // Navigation
-  goToArtist(artistId: string): void {
-    this.router.navigate(['/artist', artistId]);
+  // ============================================
+  // NAVEGACIÓN PROGRAMÁTICA
+  // ============================================
+
+  /**
+   * Scroll a una sección específica usando fragments
+   * Ejemplo: /album/123#reviews -> scroll a sección reviews
+   */
+  scrollToSection(sectionId: string): void {
+    this.viewportScroller.scrollToAnchor(sectionId);
   }
 
+  /**
+   * Navegar a sección con fragment (actualiza URL)
+   */
+  navigateToSection(section: 'info' | 'tracks' | 'reviews'): void {
+    const extras: NavigationExtras = {
+      fragment: section,
+      // No añadir al historial para cada sección
+      replaceUrl: true
+    };
+    this.router.navigate([], extras);
+  }
+
+  /**
+   * Navegar al artista con estado adicional
+   */
+  goToArtist(artistId: string): void {
+    const extras: NavigationExtras = {
+      state: {
+        fromAlbum: this.item()?.id,
+        albumTitle: this.item()?.title
+      }
+    };
+    this.router.navigate(['/artist', artistId], extras);
+  }
+
+  /**
+   * Navegar al perfil de usuario con estado
+   */
   goToUser(userId: string): void {
-    this.router.navigate(['/profile', userId]);
+    const extras: NavigationExtras = {
+      state: {
+        fromReview: true,
+        albumId: this.item()?.id
+      }
+    };
+    this.router.navigate(['/profile', userId], extras);
+  }
+
+  /**
+   * Compartir enlace directo a las reseñas
+   */
+  shareReviewsLink(): void {
+    const url = `${window.location.origin}/album/${this.item()?.id}#reviews`;
+    navigator.clipboard.writeText(url);
+    // TODO: Mostrar notificación de copiado
   }
 }

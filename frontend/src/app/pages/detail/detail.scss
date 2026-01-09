@@ -41,6 +41,48 @@
     flex-direction: column;
     gap: vars.$espaciado-m;
   }
+
+  /* ========================================
+     NAVEGACIÓN INTERNA (FRAGMENTS)
+     ======================================== */
+  &__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: vars.$espaciado-xs;
+    padding: vars.$espaciado-s;
+    background-color: var(--bg-secondary);
+    border: vars.$borde-brutal-thick;
+    box-shadow: vars.$sombra-brutal-s;
+    position: sticky;
+    top: vars.$espaciado-s;
+    z-index: 10;
+  }
+
+  &__nav-item {
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+    background-color: var(--bg-primary);
+    border: vars.$borde-brutal-thin;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all vars.$transicion-rapida;
+    @include mixins.font-size-line('texto-pequeno-m');
+
+    &:hover {
+      background-color: var(--color-primary);
+      color: var(--bg-primary);
+      transform: translateY(-2px);
+      box-shadow: vars.$sombra-brutal-s;
+    }
+
+    &--share {
+      margin-left: auto;
+      background-color: var(--bg-tertiary);
+
+      &:hover {
+        background-color: var(--color-secondary);
+      }
+    }
+  }
 }
 
 /* ========================================
