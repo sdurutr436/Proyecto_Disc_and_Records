@@ -270,7 +270,7 @@ export class NotificationService {
           return;
         }
 
-        // Obtener el elemento .notification interno (el que tiene position: fixed)
+        // Obtener el elemento .notification interno para medir altura
         const domElem = hostElem.querySelector('.notification') as HTMLElement;
 
         if (!domElem) {
@@ -281,17 +281,26 @@ export class NotificationService {
         const rect = domElem.getBoundingClientRect();
         const elementHeight = rect.height > 0 ? rect.height : DEFAULT_HEIGHT;
 
-        // APLICAR POSICIÓN con transición suave
-        domElem.style.transition = 'top 0.3s ease, bottom 0.3s ease';
+        // APLICAR POSICIÓN al host element (el que tiene position: fixed)
+        hostElem.style.transition = 'top 0.3s ease, bottom 0.3s ease';
 
         if (posKey.startsWith('top')) {
           // Desde arriba hacia abajo
-          domElem.style.top = `${currentOffset}px`;
-          domElem.style.bottom = 'auto';
+          hostElem.style.top = `${currentOffset}px`;
+          hostElem.style.bottom = 'auto';
         } else {
           // Desde abajo hacia arriba
-          domElem.style.bottom = `${currentOffset}px`;
-          domElem.style.top = 'auto';
+          hostElem.style.bottom = `${currentOffset}px`;
+          hostElem.style.top = 'auto';
+        }
+
+        // Aplicar right/left según posición
+        if (posKey.includes('right')) {
+          hostElem.style.right = '20px';
+          hostElem.style.left = 'auto';
+        } else {
+          hostElem.style.left = '20px';
+          hostElem.style.right = 'auto';
         }
 
         // Acumular offset para la siguiente notificación

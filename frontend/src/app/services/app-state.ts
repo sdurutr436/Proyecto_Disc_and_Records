@@ -7,6 +7,7 @@ export interface User {
   id: number;
   username: string;
   email: string;
+  role?: 'user' | 'admin';
   avatarUrl?: string;
   preferences: UserPreferences;
 }

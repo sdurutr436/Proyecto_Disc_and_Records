@@ -6,6 +6,7 @@ import { Button } from '../../../components/shared/button/button';
 import { FormCheckbox } from '../../../components/shared/form-checkbox/form-checkbox';
 import { FormRadioGroup, RadioOption } from '../../../components/shared/form-radio-group/form-radio-group';
 import { FormSelect, SelectOption } from '../../../components/shared/form-select/form-select';
+import { CanComponentDeactivate } from '../../../guards/unsaved-changes.guard';
 
 @Component({
   selector: 'app-settings-preferences',
@@ -22,7 +23,7 @@ import { FormSelect, SelectOption } from '../../../components/shared/form-select
   templateUrl: './preferences.html',
   styleUrl: './preferences.scss'
 })
-export default class SettingsPreferencesComponent {
+export default class SettingsPreferencesComponent implements CanComponentDeactivate {
   successMessage = signal<string | null>(null);
 
   // Opciones para radio group de visibilidad
@@ -56,5 +57,16 @@ export default class SettingsPreferencesComponent {
       this.preferencesForm.markAsPristine();
       setTimeout(() => this.successMessage.set(null), 3000);
     }
+  }
+
+  /**
+   * Guard de navegación - Previene pérdida de datos
+   */
+  canDeactivate(): boolean {
+    if (!this.preferencesForm.dirty) {
+      return true;
+    }
+
+    return confirm('¿Deseas salir sin guardar los cambios en preferencias?');
   }
 }

@@ -5,6 +5,7 @@ import { Alert } from '../../../components/shared/alert/alert';
 import { Badge } from '../../../components/shared/badge/badge';
 import { Button } from '../../../components/shared/button/button';
 import { Modal } from '../../../components/shared/modal/modal';
+import { CanComponentDeactivate } from '../../../guards/unsaved-changes.guard';
 
 @Component({
   selector: 'app-settings-security',
@@ -13,7 +14,7 @@ import { Modal } from '../../../components/shared/modal/modal';
   templateUrl: './security.html',
   styleUrl: './security.scss'
 })
-export default class SettingsSecurityComponent {
+export default class SettingsSecurityComponent implements CanComponentDeactivate {
   private router = inject(Router);
 
   isLoading = signal(false);
@@ -44,5 +45,13 @@ export default class SettingsSecurityComponent {
       console.log('Cuenta eliminada');
       this.router.navigate(['/']);
     }, 1500);
+  }
+
+  /**
+   * Guard de navegación
+   * En este caso, no hay formularios, así que siempre permitir
+   */
+  canDeactivate(): boolean {
+    return true;
   }
 }

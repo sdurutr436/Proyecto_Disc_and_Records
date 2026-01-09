@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
+import { authGuard, adminGuard } from './guards/auth.guard';
+import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
 
 /**
- * Configuración de rutas con Lazy Loading
+ * Configuración de rutas con Lazy Loading y Guards
  *
  * LAZY LOADING:
  * - Todas las rutas usan loadComponent() para carga perezosa
@@ -11,6 +13,11 @@ import { Routes } from '@angular/router';
  * - preload: true -> Precarga con estrategia custom
  * - critical: true -> Precarga incluso en conexiones lentas
  * - delay: number -> Milisegundos a esperar antes de precargar
+ *
+ * GUARDS (Protección de rutas):
+ * - authGuard: Requiere autenticación, redirige a home si no autenticado
+ * - adminGuard: Requiere rol admin, debe aplicarse DESPUÉS de authGuard
+ * - unsavedChangesGuard: Previene pérdida de datos en formularios
  *
  * CHUNKING:
  * - Angular automáticamente genera chunks separados por cada loadComponent
@@ -33,13 +40,14 @@ export const routes: Routes = [
     path: 'profile',
     loadComponent: () => import('./pages/profile/profile'),
     title: 'Perfil de Usuario - Discs & Records',
-    data: { preload: true, critical: true, delay: 2000 } // ✅ Precarga - función común
+    canActivate: [authGuard], // 🔒 Requiere autenticación
+    data: { preload: true, critical: true, delay: 2000 }
   },
   {
     path: 'settings',
     loadComponent: () => import('./pages/settings/settings'),
-    title: 'Ajustes de Perfil - Discs & Records',
-    data: { preload: true, delay: 3000 }, // ✅ Precarga con delay - menos prioritario
+    canActivate: [authGuard], // 🔒 Requiere autenticación
+    data: { preload: true, delay: 3000 },
     children: [
       {
         path: '',
@@ -49,22 +57,26 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () => import('./pages/settings/profile/profile'),
-        title: 'Perfil - Ajustes'
+        title: 'Perfil - Ajustes',
+        canDeactivate: [unsavedChangesGuard] // ⚠️ Protege formulario
       },
       {
         path: 'account',
         loadComponent: () => import('./pages/settings/account/account'),
-        title: 'Cuenta - Ajustes'
+        title: 'Cuenta - Ajustes',
+        canDeactivate: [unsavedChangesGuard] // ⚠️ Protege formulario
       },
       {
         path: 'preferences',
         loadComponent: () => import('./pages/settings/preferences/preferences'),
-        title: 'Preferencias - Ajustes'
+        title: 'Preferencias - Ajustes',
+        canDeactivate: [unsavedChangesGuard] // ⚠️ Protege formulario
       },
       {
         path: 'security',
         loadComponent: () => import('./pages/settings/security/security'),
-        title: 'Seguridad - Ajustes'
+        title: 'Seguridad - Ajustes',
+        canDeactivate: [unsavedChangesGuard]
       }
     ]
   },
@@ -90,13 +102,14 @@ export const routes: Routes = [
     path: 'song/:id',
     loadComponent: () => import('./pages/detail/detail').then(m => m.DetailComponent),
     title: 'Detalle de Canción - Discs & Records',
-    data: { preload: true, critical: true, delay: 1500 } // ✅ Precarga - función principal
+    data: { preload: true, critical: true, delay: 1500 }
   },
   {
     path: 'admin',
     loadComponent: () => import('./pages/admin/admin'),
     title: 'Panel de Administración - Discs & Records',
-    data: { preload: false }, // ❌ Sin precarga - solo para admins
+    canActivate: [authGuard, adminGuard],
+    data: { preload: false },
     children: [
       {
         path: '',

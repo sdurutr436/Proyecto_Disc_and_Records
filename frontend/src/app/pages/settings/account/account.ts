@@ -6,6 +6,7 @@ import { Button } from '../../../components/shared/button/button';
 import { FormInput } from '../../../components/shared/form-input/form-input';
 import { Modal } from '../../../components/shared/modal/modal';
 import { ProgressBar } from '../../../components/shared/progress-bar/progress-bar';
+import { CanComponentDeactivate } from '../../../guards/unsaved-changes.guard';
 
 @Component({
   selector: 'app-settings-account',
@@ -14,7 +15,7 @@ import { ProgressBar } from '../../../components/shared/progress-bar/progress-ba
   templateUrl: './account.html',
   styleUrl: './account.scss'
 })
-export default class SettingsAccountComponent {
+export default class SettingsAccountComponent implements CanComponentDeactivate {
   isLoading = signal(false);
   successMessage = signal<string | null>(null);
   errorMessage = signal<string | null>(null);
@@ -136,9 +137,23 @@ export default class SettingsAccountComponent {
 
     setTimeout(() => {
       this.isLoading.set(false);
+      this.emailForm.markAsPristine(); // ✅ Marca como guardado
+      this.passwordForm.markAsPristine(); // ✅ Marca como guardado
       this.successMessage.set('Contraseña actualizada correctamente');
       this.passwordForm.reset();
       setTimeout(() => this.successMessage.set(null), 3000);
     }, 1000);
+  }
+
+  /**
+   * Guard de navegación - Previene pérdida de datos
+   */
+  canDeactivate(): boolean {
+    // Verificar si hay cambios en email o contraseña
+    if (!this.emailForm.dirty && !this.passwordForm.dirty) {
+      return true;
+    }
+
+    return confirm('¿Deseas salir sin guardar los cambios en tu cuenta?');
   }
 }

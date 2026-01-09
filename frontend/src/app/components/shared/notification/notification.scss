@@ -1,9 +1,15 @@
 @use '../../../../styles/00-settings/variables' as vars;
 @use '../../../../styles/01-tools/mixins' as mix;
 
-.notification {
+// Host element necesita position fixed para que funcione el z-index
+// cuando el servicio lo añade a document.body
+:host {
+  display: block;
   position: fixed;
-  z-index: vars.$z-notification; // Usar escala centralizada (9)
+  z-index: vars.$z-notification;
+}
+
+.notification {
   display: flex;
   align-items: flex-start;
   gap: vars.$espaciado-s;
@@ -51,35 +57,10 @@
     opacity: 0.8;
   }
 
-  // Posiciones - valores por defecto
-  // El servicio sobreescribe top/bottom con inline styles para apilado dinámico
-  &--top-right {
-    top: 20px; // Valor por defecto, el servicio lo sobreescribe
-    right: 20px;
-    left: auto;
-    bottom: auto;
-  }
-
-  &--top-left {
-    top: 20px; // Valor por defecto, el servicio lo sobreescribe
-    left: 20px;
-    right: auto;
-    bottom: auto;
-    transform: translateX(-100%); // Sale por la izquierda
-  }
-
-  &--bottom-right {
-    bottom: 20px; // Valor por defecto, el servicio lo sobreescribe
-    right: 20px;
-    left: auto;
-    top: auto;
-  }
-
+  // Clases de posición para animaciones de entrada
+  // El servicio aplica top/right/left/bottom al :host element
+  &--top-left,
   &--bottom-left {
-    bottom: 20px; // Valor por defecto, el servicio lo sobreescribe
-    left: 20px;
-    right: auto;
-    top: auto;
     transform: translateX(-100%); // Sale por la izquierda
   }
 

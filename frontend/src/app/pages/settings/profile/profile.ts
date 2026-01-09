@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Alert } from '../../../components/shared/alert/alert';
 import { Button } from '../../../components/shared/button/button';
 import { FormInput } from '../../../components/shared/form-input/form-input';
+import { CanComponentDeactivate } from '../../../guards/unsaved-changes.guard';
 
 @Component({
   selector: 'app-settings-profile',
@@ -12,7 +13,7 @@ import { FormInput } from '../../../components/shared/form-input/form-input';
   templateUrl: './profile.html',
   styleUrl: './profile.scss'
 })
-export default class SettingsProfileComponent {
+export default class SettingsProfileComponent implements CanComponentDeactivate {
   isLoading = signal(false);
   successMessage = signal<string | null>(null);
   errorMessage = signal<string | null>(null);
@@ -84,6 +85,7 @@ export default class SettingsProfileComponent {
     // Simular llamada a API
     setTimeout(() => {
       this.isLoading.set(false);
+      this.profileForm.markAsPristine();
       this.successMessage.set('Perfil actualizado correctamente');
       setTimeout(() => this.successMessage.set(null), 3000);
 
@@ -92,5 +94,12 @@ export default class SettingsProfileComponent {
         avatar: this.currentAvatar()
       });
     }, 1000);
+  }
+
+  canDeactivate(): boolean {
+    if (!this.profileForm.dirty) {
+      return true;
+    }
+    return confirm('Deseas salir sin guardar los cambios en tu perfil?');
   }
 }
