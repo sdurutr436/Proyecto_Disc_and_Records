@@ -1,8 +1,15 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withPreloading, withDebugTracing, withComponentInputBinding } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { NetworkAwarePreloadingStrategy } from './services/network-aware-preloading-strategy';
+import {
+  headersInterceptor,
+  authInterceptor,
+  loggingInterceptor,
+  errorInterceptor
+} from './interceptors';
 
 /**
  * Configuración de la aplicación Angular
@@ -31,16 +38,38 @@ import { NetworkAwarePreloadingStrategy } from './services/network-aware-preload
  *    - Precarga TODOS los módulos lazy sin discriminar
  *    - Puede degradar performance en conexiones lentas
  *    - import { PreloadAllModules } from '@angular/router';
+ *
+ * HTTP CLIENT CONFIGURATION:
+ * - provideHttpClient(): Configuración moderna de HttpClient (standalone)
+ * - withInterceptors(): Cadena de interceptores en orden de ejecución
+ *
+ * ORDEN DE INTERCEPTORES (IMPORTANTE):
+ * 1. headersInterceptor: Añade headers comunes (Content-Type, Accept, etc.)
+ * 2. authInterceptor: Añade token de autenticación si existe
+ * 3. loggingInterceptor: Registra peticiones/respuestas (solo desarrollo)
+ * 4. errorInterceptor: Maneja errores globalmente (ÚLTIMO para capturar todo)
  */
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
+
+    // Configuración de Router
     provideRouter(
       routes,
       withPreloading(NetworkAwarePreloadingStrategy), // ✅ Estrategia de precarga adaptativa
       withComponentInputBinding(),                    // ✅ Binding de parámetros de ruta
       // withDebugTracing()                            // 🔧 Descomentar solo para debugging
+    ),
+
+    // Configuración de HttpClient con interceptores
+    provideHttpClient(
+      withInterceptors([
+        headersInterceptor,   // 1️⃣ Headers comunes
+        authInterceptor,      // 2️⃣ Autenticación
+        loggingInterceptor,   // 3️⃣ Logging (desarrollo)
+        errorInterceptor      // 4️⃣ Manejo de errores (último)
+      ])
     )
   ]
 };

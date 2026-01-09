@@ -1,7 +1,10 @@
 import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { AppStateService, User } from './app-state';
 import { EventBusService, EventType } from './event-bus';
 import { NotificationStreamService } from './notification-stream';
+import { API_CONFIG, API_ENDPOINTS, STORAGE_KEYS } from '../config/api.config';
 
 /**
  * Interfaz de credenciales de login
@@ -36,8 +39,14 @@ export interface AuthResponse {
  * PROPÓSITO:
  * - Centralizar toda la lógica de autenticación
  * - Gestionar sesiones de usuario
- * - Comunicarse con el backend (cuando esté disponible)
+ * - Comunicarse con el backend
  * - Coordinar con otros servicios (AppState, EventBus, Notifications)
+ *
+ * ARQUITECTURA:
+ * - Usa HttpClient directamente (no hereda de BaseHttpService)
+ * - Los interceptores se encargan de añadir headers y manejar errores
+ * - Métodos HTTP listos para producción
+ * - Datos mock para desarrollo
  *
  * PATRÓN: SEPARACIÓN DE RESPONSABILIDADES
  *
@@ -100,16 +109,21 @@ export interface AuthResponse {
   providedIn: 'root',
 })
 export class AuthService {
+  private http = inject(HttpClient);
   private appState = inject(AppStateService);
   private eventBus = inject(EventBusService);
   private notificationStream = inject(NotificationStreamService);
+
+  // Flag para determinar si usar API real o mock
+  // Cambiar a true cuando el backend esté disponible
+  private readonly USE_REAL_API = false;
 
   /**
    * WORKFLOW: Login de Usuario
    *
    * 1. Componente llama a login()
    * 2. Servicio valida datos (opcional, si no se valida antes)
-   * 3. Servicio hace llamada a backend (simulada por ahora)
+   * 3. Servicio hace llamada a backend (o mock)
    * 4. Si éxito:
    *    a. Actualiza AppState con usuario
    *    b. Persiste token si existe
@@ -135,11 +149,10 @@ export class AuthService {
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      // TODO: Reemplazar con llamada real a backend
-      // const response = await this.http.post('/api/login', credentials).toPromise();
-
-      // SIMULACIÓN: Por ahora simulamos respuesta del backend
-      const response = await this.simulateBackendLogin(credentials);
+      // Usar API real o mock según configuración
+      const response = this.USE_REAL_API
+        ? await this.loginHttp(credentials)
+        : await this.simulateBackendLogin(credentials);
 
       if (response.success && response.user) {
         // 1. Actualizar estado global
@@ -178,6 +191,7 @@ export class AuthService {
       return response;
     } catch (error: any) {
       // Error de red o del servidor
+      console.error('Login error:', error);
       this.notificationStream.error(
         'Error',
         'No se pudo conectar con el servidor. Intenta de nuevo.'
@@ -205,8 +219,10 @@ export class AuthService {
    */
   async register(data: RegisterData): Promise<AuthResponse> {
     try {
-      // TODO: Reemplazar con llamada real
-      const response = await this.simulateBackendRegister(data);
+      // Usar API real o mock según configuración
+      const response = this.USE_REAL_API
+        ? await this.registerHttp(data)
+        : await this.simulateBackendRegister(data);
 
       if (response.success) {
         // Notificación de éxito
@@ -238,6 +254,7 @@ export class AuthService {
 
       return response;
     } catch (error: any) {
+      console.error('Register error:', error);
       this.notificationStream.error(
         'Error',
         'No se pudo conectar con el servidor'
@@ -341,7 +358,7 @@ export class AuthService {
 
   private saveAuthToken(token: string): void {
     try {
-      localStorage.setItem('auth-token', token);
+      localStorage.setItem(STORAGE_KEYS.authToken, token);
     } catch (error) {
       console.error('Error guardando token:', error);
     }
@@ -349,7 +366,7 @@ export class AuthService {
 
   private getAuthToken(): string | null {
     try {
-      return localStorage.getItem('auth-token');
+      return localStorage.getItem(STORAGE_KEYS.authToken);
     } catch (error) {
       console.error('Error leyendo token:', error);
       return null;
@@ -358,15 +375,65 @@ export class AuthService {
 
   private clearAuthToken(): void {
     try {
-      localStorage.removeItem('auth-token');
+      localStorage.removeItem(STORAGE_KEYS.authToken);
     } catch (error) {
       console.error('Error eliminando token:', error);
     }
   }
 
   /**
+   * MÉTODOS HTTP (Listos para producción)
+   */
+
+  /**
+   * [HTTP] Login de usuario con API real
+   *
+   * Endpoint: POST /api/auth/login
+   * Body: { email, password }
+   * Response: { success, user, token, message }
+   */
+  private async loginHttp(credentials: LoginCredentials): Promise<AuthResponse> {
+    const url = `${API_CONFIG.baseUrl}${API_ENDPOINTS.auth.login}`;
+
+    // firstValueFrom convierte Observable a Promise
+    return firstValueFrom(
+      this.http.post<AuthResponse>(url, credentials)
+    );
+  }
+
+  /**
+   * [HTTP] Registro de usuario con API real
+   *
+   * Endpoint: POST /api/auth/register
+   * Body: { username, email, password }
+   * Response: { success, user, token, message }
+   */
+  private async registerHttp(data: RegisterData): Promise<AuthResponse> {
+    const url = `${API_CONFIG.baseUrl}${API_ENDPOINTS.auth.register}`;
+
+    return firstValueFrom(
+      this.http.post<AuthResponse>(url, data)
+    );
+  }
+
+  /**
+   * [HTTP] Recuperación de contraseña con API real
+   *
+   * Endpoint: POST /api/auth/forgot-password
+   * Body: { email }
+   * Response: { success, message }
+   */
+  private async requestPasswordResetHttp(email: string): Promise<AuthResponse> {
+    const url = `${API_CONFIG.baseUrl}${API_ENDPOINTS.auth.forgotPassword}`;
+
+    return firstValueFrom(
+      this.http.post<AuthResponse>(url, { email })
+    );
+  }
+
+  /**
    * MÉTODOS PRIVADOS: Simulación de backend
-   * TODO: Reemplazar con llamadas HTTP reales
+   * TODO: Eliminar cuando el backend esté disponible
    */
 
   private async simulateBackendLogin(

@@ -1,15 +1,40 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, delay, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Album, Track, Review } from '../models/data.models';
+import { BaseHttpService } from './base-http.service';
+import { API_ENDPOINTS } from '../config/api.config';
 
 /**
- * Servicio para gestionar datos de álbumes
- * TODO: Reemplazar datos mock con llamadas HTTP reales al backend
+ * AlbumService - Servicio de gestión de álbumes
+ *
+ * ARQUITECTURA: Hereda de BaseHttpService
+ * - Métodos HTTP listos para producción (comentados)
+ * - Datos mock para desarrollo (activos)
+ * - Fácil cambio entre mock y API real
+ *
+ * MIGRACIÓN A API REAL:
+ * 1. Descomentar métodos HTTP (getAlbumByIdHttp, etc.)
+ * 2. Cambiar los métodos públicos para usar las versiones HTTP
+ * 3. Eliminar o comentar datos mock
+ *
+ * @example
+ * ```typescript
+ * // Desarrollo (actual)
+ * getAlbumById(id: string) {
+ *   return this.getAlbumByIdMock(id);
+ * }
+ *
+ * // Producción (cuando backend esté listo)
+ * getAlbumById(id: string) {
+ *   return this.getAlbumByIdHttp(id);
+ * }
+ * ```
  */
 @Injectable({
   providedIn: 'root'
 })
-export class AlbumService {
+export class AlbumService extends BaseHttpService {
 
   // Datos mock para desarrollo
   private mockAlbums: Album[] = [
@@ -95,11 +120,54 @@ export class AlbumService {
     ]
   };
 
+  // ==============================================
+  // MÉTODOS PÚBLICOS (Actualmente usan MOCK)
+  // ==============================================
+
   /**
    * Obtiene un álbum por su ID
-   * Simula latencia de red con delay
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a getAlbumByIdHttp(id)
    */
   getAlbumById(id: string): Observable<Album | null> {
+    return this.getAlbumByIdMock(id);
+    // return this.getAlbumByIdHttp(id); // ⬅️ Descomentar para usar API real
+  }
+
+  // ==============================================
+  // MÉTODOS HTTP (Listos para producción)
+  // ==============================================
+
+  /**
+   * [HTTP] Obtiene un álbum por su ID desde la API
+   *
+   * Endpoint: GET /api/albums/:id
+   *
+   * @param id - ID del álbum
+   * @returns Observable con el álbum o null si no existe
+   */
+  private getAlbumByIdHttp(id: string): Observable<Album | null> {
+    return this.get<Album>(API_ENDPOINTS.albums.getById(id)).pipe(
+      catchError(error => {
+        // Si es 404, retornar null en lugar de error
+        if (error.status === 404) {
+          return of(null);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // ==============================================
+  // MÉTODOS MOCK (Desarrollo)
+  // ==============================================
+
+  /**
+   * [MOCK] Obtiene un álbum por su ID
+   * Simula latencia de red con delay
+   */
+  private getAlbumByIdMock(id: string): Observable<Album | null> {
     const album = this.mockAlbums.find(a => a.id === id);
 
     if (!album) {
@@ -111,24 +179,115 @@ export class AlbumService {
 
   /**
    * Obtiene las canciones de un álbum
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a getAlbumTracksHttp(albumId)
    */
   getAlbumTracks(albumId: string): Observable<Track[]> {
+    return this.getAlbumTracksMock(albumId);
+    // return this.getAlbumTracksHttp(albumId); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
+   * Obtiene las reseñas de un álbum
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a getAlbumReviewsHttp(albumId)
+   */
+  getAlbumReviews(albumId: string): Observable<Review[]> {
+    return this.getAlbumReviewsMock(albumId);
+    // return this.getAlbumReviewsHttp(albumId); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
+   * Busca álbumes por término
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a searchAlbumsHttp(query)
+   */
+  searchAlbums(query: string): Observable<Album[]> {
+    return this.searchAlbumsMock(query);
+    // return this.searchAlbumsHttp(query); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
+   * Obtiene todos los álbumes
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a getAllAlbumsHttp()
+   */
+  getAllAlbums(): Observable<Album[]> {
+    return this.getAllAlbumsMock();
+    // return this.getAllAlbumsHttp(); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
+   * Añade una reseña a un álbum
+   *
+   * PRODUCCIÓN: Usar cuando el backend esté listo
+   */
+  addAlbumReview(albumId: string, review: Partial<Review>): Observable<Review> {
+    return this.post<Review>(API_ENDPOINTS.albums.addReview(albumId), review);
+  }
+
+  // ==============================================
+  // MÉTODOS HTTP (Listos para producción)
+  // ==============================================
+
+  /**
+   * [HTTP] Obtiene las canciones de un álbum desde la API
+   */
+  private getAlbumTracksHttp(albumId: string): Observable<Track[]> {
+    return this.get<Track[]>(API_ENDPOINTS.albums.getTracks(albumId));
+  }
+
+  /**
+   * [HTTP] Obtiene las reseñas de un álbum desde la API
+   */
+  private getAlbumReviewsHttp(albumId: string): Observable<Review[]> {
+    return this.get<Review[]>(API_ENDPOINTS.albums.getReviews(albumId));
+  }
+
+  /**
+   * [HTTP] Busca álbumes desde la API
+   */
+  private searchAlbumsHttp(query: string): Observable<Album[]> {
+    return this.get<Album[]>(API_ENDPOINTS.albums.search, {
+      params: { q: query }
+    });
+  }
+
+  /**
+   * [HTTP] Obtiene todos los álbumes desde la API
+   */
+  private getAllAlbumsHttp(): Observable<Album[]> {
+    return this.get<Album[]>(API_ENDPOINTS.albums.getAll);
+  }
+
+  // ==============================================
+  // MÉTODOS MOCK (Desarrollo)
+  // ==============================================
+
+  /**
+   * [MOCK] Obtiene las canciones de un álbum
+   */
+  private getAlbumTracksMock(albumId: string): Observable<Track[]> {
     const tracks = this.mockTracks[albumId] || [];
     return of(tracks).pipe(delay(300));
   }
 
   /**
-   * Obtiene las reseñas de un álbum
+   * [MOCK] Obtiene las reseñas de un álbum
    */
-  getAlbumReviews(albumId: string): Observable<Review[]> {
+  private getAlbumReviewsMock(albumId: string): Observable<Review[]> {
     const reviews = this.mockReviews[albumId] || [];
     return of(reviews).pipe(delay(300));
   }
 
   /**
-   * Busca álbumes por término
+   * [MOCK] Busca álbumes por término
    */
-  searchAlbums(query: string): Observable<Album[]> {
+  private searchAlbumsMock(query: string): Observable<Album[]> {
     const results = this.mockAlbums.filter(album =>
       album.title.toLowerCase().includes(query.toLowerCase()) ||
       album.artist.toLowerCase().includes(query.toLowerCase()) ||
@@ -138,9 +297,9 @@ export class AlbumService {
   }
 
   /**
-   * Obtiene todos los álbumes
+   * [MOCK] Obtiene todos los álbumes
    */
-  getAllAlbums(): Observable<Album[]> {
+  private getAllAlbumsMock(): Observable<Album[]> {
     return of(this.mockAlbums).pipe(delay(300));
   }
 }

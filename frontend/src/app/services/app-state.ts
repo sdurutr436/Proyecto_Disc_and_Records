@@ -9,6 +9,7 @@ export interface User {
   email: string;
   role?: 'user' | 'admin';
   avatarUrl?: string;
+  token?: string; // Token JWT opcional
   preferences: UserPreferences;
 }
 
