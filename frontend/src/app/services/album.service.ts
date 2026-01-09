@@ -222,12 +222,58 @@ export class AlbumService extends BaseHttpService {
   }
 
   /**
+   * Crea un nuevo álbum
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a createAlbumHttp(album)
+   */
+  createAlbum(album: Omit<Album, 'id'>): Observable<Album> {
+    return this.createAlbumMock(album);
+    // return this.createAlbumHttp(album); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
+   * Actualiza un álbum completo (PUT)
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a updateAlbumHttp(id, album)
+   */
+  updateAlbum(id: string, album: Album): Observable<Album> {
+    return this.updateAlbumMock(id, album);
+    // return this.updateAlbumHttp(id, album); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
+   * Actualiza parcialmente un álbum (PATCH)
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a patchAlbumHttp(id, updates)
+   */
+  patchAlbum(id: string, updates: Partial<Album>): Observable<Album> {
+    return this.patchAlbumMock(id, updates);
+    // return this.patchAlbumHttp(id, updates); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
+   * Elimina un álbum
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a deleteAlbumHttp(id)
+   */
+  deleteAlbum(id: string): Observable<void> {
+    return this.deleteAlbumMock(id);
+    // return this.deleteAlbumHttp(id); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
    * Añade una reseña a un álbum
    *
-   * PRODUCCIÓN: Usar cuando el backend esté listo
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a addAlbumReviewHttp(albumId, review)
    */
   addAlbumReview(albumId: string, review: Partial<Review>): Observable<Review> {
-    return this.post<Review>(API_ENDPOINTS.albums.addReview(albumId), review);
+    return this.addAlbumReviewMock(albumId, review);
+    // return this.addAlbumReviewHttp(albumId, review); // ⬅️ Descomentar para usar API real
   }
 
   // ==============================================
@@ -262,6 +308,41 @@ export class AlbumService extends BaseHttpService {
    */
   private getAllAlbumsHttp(): Observable<Album[]> {
     return this.get<Album[]>(API_ENDPOINTS.albums.getAll);
+  }
+
+  /**
+   * [HTTP] Crea un nuevo álbum
+   */
+  private createAlbumHttp(album: Omit<Album, 'id'>): Observable<Album> {
+    return this.post<Album>(API_ENDPOINTS.albums.create, album);
+  }
+
+  /**
+   * [HTTP] Actualiza un álbum completo (PUT)
+   */
+  private updateAlbumHttp(id: string, album: Album): Observable<Album> {
+    return this.put<Album>(API_ENDPOINTS.albums.update(id), album);
+  }
+
+  /**
+   * [HTTP] Actualiza parcialmente un álbum (PATCH)
+   */
+  private patchAlbumHttp(id: string, updates: Partial<Album>): Observable<Album> {
+    return this.patch<Album>(API_ENDPOINTS.albums.update(id), updates);
+  }
+
+  /**
+   * [HTTP] Elimina un álbum
+   */
+  private deleteAlbumHttp(id: string): Observable<void> {
+    return this.delete<void>(API_ENDPOINTS.albums.delete(id));
+  }
+
+  /**
+   * [HTTP] Añade una reseña a un álbum
+   */
+  private addAlbumReviewHttp(albumId: string, review: Partial<Review>): Observable<Review> {
+    return this.post<Review>(API_ENDPOINTS.albums.addReview(albumId), review);
   }
 
   // ==============================================
@@ -301,5 +382,97 @@ export class AlbumService extends BaseHttpService {
    */
   private getAllAlbumsMock(): Observable<Album[]> {
     return of(this.mockAlbums).pipe(delay(300));
+  }
+
+  /**
+   * [MOCK] Crea un nuevo álbum
+   */
+  private createAlbumMock(album: Omit<Album, 'id'>): Observable<Album> {
+    const newAlbum: Album = {
+      ...album,
+      id: `album-${Date.now()}` // Generar ID temporal
+    };
+
+    // Añadir a la lista mock (simula persistencia)
+    this.mockAlbums.push(newAlbum);
+
+    return of(newAlbum).pipe(delay(400));
+  }
+
+  /**
+   * [MOCK] Actualiza un álbum completo (PUT)
+   */
+  private updateAlbumMock(id: string, album: Album): Observable<Album> {
+    const index = this.mockAlbums.findIndex(a => a.id === id);
+
+    if (index === -1) {
+      return throwError(() => new Error(`Album with id ${id} not found`)).pipe(delay(300));
+    }
+
+    // Reemplazar el álbum completo
+    this.mockAlbums[index] = { ...album, id };
+
+    return of(this.mockAlbums[index]).pipe(delay(400));
+  }
+
+  /**
+   * [MOCK] Actualiza parcialmente un álbum (PATCH)
+   */
+  private patchAlbumMock(id: string, updates: Partial<Album>): Observable<Album> {
+    const index = this.mockAlbums.findIndex(a => a.id === id);
+
+    if (index === -1) {
+      return throwError(() => new Error(`Album with id ${id} not found`)).pipe(delay(300));
+    }
+
+    // Actualizar solo los campos proporcionados
+    this.mockAlbums[index] = {
+      ...this.mockAlbums[index],
+      ...updates,
+      id // Asegurar que el ID no cambie
+    };
+
+    return of(this.mockAlbums[index]).pipe(delay(400));
+  }
+
+  /**
+   * [MOCK] Elimina un álbum
+   */
+  private deleteAlbumMock(id: string): Observable<void> {
+    const index = this.mockAlbums.findIndex(a => a.id === id);
+
+    if (index === -1) {
+      return throwError(() => new Error(`Album with id ${id} not found`)).pipe(delay(300));
+    }
+
+    // Eliminar de la lista
+    this.mockAlbums.splice(index, 1);
+
+    return of(void 0).pipe(delay(400));
+  }
+
+  /**
+   * [MOCK] Añade una reseña a un álbum
+   */
+  private addAlbumReviewMock(albumId: string, review: Partial<Review>): Observable<Review> {
+    const newReview: Review = {
+      id: `review-${Date.now()}`,
+      userId: 'mock-user-id',
+      userName: 'Usuario Mock',
+      userAvatar: 'https://i.pravatar.cc/150?img=10',
+      rating: review.rating || 5,
+      content: review.content || '',
+      date: new Date(),
+      likes: 0,
+      ...review
+    };
+
+    // Añadir a las reseñas mock
+    if (!this.mockReviews[albumId]) {
+      this.mockReviews[albumId] = [];
+    }
+    this.mockReviews[albumId].push(newReview);
+
+    return of(newReview).pipe(delay(400));
   }
 }
