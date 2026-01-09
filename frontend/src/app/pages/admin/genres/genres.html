@@ -1,0 +1,45 @@
+<div class="content-section">
+  <div class="section-header">
+    <h2>Gestión de Géneros</h2>
+    <app-button (click)="createGenre()" variant="primary">
+      + Nuevo Género
+    </app-button>
+  </div>
+
+  @if (genres().length === 0) {
+    <div class="empty-state">
+      <p class="empty-text">No hay géneros registrados</p>
+      <p class="empty-hint">Crea el primer género musical</p>
+    </div>
+  } @else {
+    <div class="genres-table">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Álbumes</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (genre of genres(); track genre.id) {
+            <tr>
+              <td>{{ genre.name }}</td>
+              <td>{{ genre.description }}</td>
+              <td>{{ genre.albumCount }}</td>
+              <td class="actions">
+                <app-button variant="secondary" size="sm" (click)="editGenre(genre.id)">
+                  Editar
+                </app-button>
+                <app-button variant="danger" size="sm" (click)="deleteGenre(genre.id)">
+                  Eliminar
+                </app-button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

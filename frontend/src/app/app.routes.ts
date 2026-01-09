@@ -19,7 +19,34 @@ export const routes: Routes = [
   {
     path: 'settings',
     loadComponent: () => import('./pages/settings/settings'),
-    title: 'Ajustes de Perfil - Discs & Records'
+    title: 'Ajustes de Perfil - Discs & Records',
+    children: [
+      {
+        path: '',
+        redirectTo: 'profile',
+        pathMatch: 'full'
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./pages/settings/profile/profile'),
+        title: 'Perfil - Ajustes'
+      },
+      {
+        path: 'account',
+        loadComponent: () => import('./pages/settings/account/account'),
+        title: 'Cuenta - Ajustes'
+      },
+      {
+        path: 'preferences',
+        loadComponent: () => import('./pages/settings/preferences/preferences'),
+        title: 'Preferencias - Ajustes'
+      },
+      {
+        path: 'security',
+        loadComponent: () => import('./pages/settings/security/security'),
+        title: 'Seguridad - Ajustes'
+      }
+    ]
   },
   {
     path: 'style-guide',
@@ -44,7 +71,34 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadComponent: () => import('./pages/admin/admin'),
-    title: 'Panel de Administración - Discs & Records'
+    title: 'Panel de Administración - Discs & Records',
+    children: [
+      {
+        path: '',
+        redirectTo: 'albums',
+        pathMatch: 'full'
+      },
+      {
+        path: 'albums',
+        loadComponent: () => import('./pages/admin/albums/albums'),
+        title: 'Gestión de Álbumes - Admin'
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./pages/admin/users/users'),
+        title: 'Gestión de Usuarios - Admin'
+      },
+      {
+        path: 'genres',
+        loadComponent: () => import('./pages/admin/genres/genres'),
+        title: 'Gestión de Géneros - Admin'
+      },
+      {
+        path: 'reviews',
+        loadComponent: () => import('./pages/admin/reviews/reviews'),
+        title: 'Moderación de Reseñas - Admin'
+      }
+    ]
   },
   {
     path: '404',

@@ -1,0 +1,47 @@
+<div class="content-section">
+  <div class="section-header">
+    <h2>Gestión de Álbumes</h2>
+    <app-button (click)="createAlbum()" variant="primary">
+      + Nuevo Álbum
+    </app-button>
+  </div>
+
+  @if (albums().length === 0) {
+    <div class="empty-state">
+      <p class="empty-text">No hay álbumes registrados</p>
+      <p class="empty-hint">Crea el primer álbum para empezar</p>
+    </div>
+  } @else {
+    <div class="albums-table">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Artista</th>
+            <th>Año</th>
+            <th>Género</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (album of albums(); track album.id) {
+            <tr>
+              <td>{{ album.title }}</td>
+              <td>{{ album.artist }}</td>
+              <td>{{ album.year }}</td>
+              <td>{{ album.genre }}</td>
+              <td class="actions">
+                <app-button variant="secondary" size="sm" (click)="editAlbum(album.id)">
+                  Editar
+                </app-button>
+                <app-button variant="danger" size="sm" (click)="deleteAlbum(album.id)">
+                  Eliminar
+                </app-button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

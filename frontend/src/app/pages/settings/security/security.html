@@ -1,0 +1,70 @@
+<div class="settings-security">
+  <header class="settings-security__header">
+    <h2 class="settings-security__title">Seguridad</h2>
+    <p class="settings-security__subtitle">Información de tu cuenta y acciones críticas</p>
+  </header>
+
+  <!-- Info de seguridad -->
+  <section class="settings-security__section">
+    <h3 class="settings-security__section-title">Información de Seguridad</h3>
+
+    <div class="settings-security__info-grid">
+      <div class="settings-security__info-item">
+        <span class="settings-security__info-label">Cuenta creada</span>
+        <span class="settings-security__info-value">{{ accountCreated() }}</span>
+      </div>
+      <div class="settings-security__info-item">
+        <span class="settings-security__info-label">Último cambio de contraseña</span>
+        <span class="settings-security__info-value">{{ lastPasswordChange() }}</span>
+      </div>
+      <div class="settings-security__info-item">
+        <span class="settings-security__info-label">Sesiones activas</span>
+        <app-badge [text]="activeSessions().toString()" variant="info" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Zona de peligro -->
+  <section class="settings-security__section settings-security__section--danger">
+    <h3 class="settings-security__section-title">Zona de Peligro</h3>
+
+    <app-alert
+      type="warning"
+      title="Eliminar Cuenta"
+      message="Una vez eliminada, no podrás recuperar tu cuenta ni tus reseñas. Esta acción es irreversible."
+    />
+
+    <div class="settings-security__actions">
+      <app-button
+        variant="danger"
+        type="button"
+        [disabled]="isLoading()"
+        (click)="onDeleteAccount()"
+      >
+        Eliminar Cuenta
+      </app-button>
+    </div>
+  </section>
+</div>
+
+<!-- Modal de confirmación usando componente Modal -->
+<app-modal
+  [isOpen]="showDeleteModal()"
+  title="¿Eliminar tu cuenta?"
+  (onClose)="showDeleteModal.set(false)"
+>
+  <app-alert
+    type="error"
+    title="⚠️ Esta acción es irreversible"
+    message="Si eliminas tu cuenta, perderás permanentemente todas tus reseñas, historial de álbumes guardados, listas de reproducción y comentarios."
+  />
+
+  <div modal-footer class="settings-security__modal-actions">
+    <app-button variant="ghost" (click)="showDeleteModal.set(false)">
+      Cancelar
+    </app-button>
+    <app-button variant="danger" (click)="confirmDeleteAccount()">
+      Sí, Eliminar Cuenta
+    </app-button>
+  </div>
+</app-modal>

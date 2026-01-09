@@ -88,6 +88,8 @@
     cursor: pointer;
     transition: all vars.$transicion-rapida;
     font-weight: 600;
+    text-decoration: none;
+    color: var(--text-dark);
     @include mixins.font-size-line('texto-pequeno-m');
 
     &:hover {
@@ -102,6 +104,28 @@
       border-color: var(--text-dark);
       transform: translateX(4px);
       box-shadow: vars.$sombra-brutal-s;
+    }
+  }
+
+  &__sidebar-footer {
+    margin-top: vars.$espaciado-l;
+    padding-top: vars.$espaciado-m;
+    border-top: vars.$borde-brutal-thin;
+  }
+
+  &__back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: vars.$espaciado-xs;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 600;
+    @include mixins.font-size-line('texto-pequeno-m');
+    transition: all vars.$transicion-rapida;
+
+    &:hover {
+      color: var(--color-primary);
+      transform: translateX(-4px);
     }
   }
 

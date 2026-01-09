@@ -1,0 +1,64 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+.content-section {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: vars.$espaciado-m;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: vars.$espaciado-m;
+
+  h2 {
+    font-size: vars.$tamanio-fuente-h3;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: vars.$espaciado-xl;
+  color: var(--text-secondary);
+
+  .empty-text {
+    font-size: vars.$tamanio-fuente-h4;
+    margin-bottom: vars.$espaciado-xs;
+  }
+
+  .empty-hint {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    opacity: 0.7;
+  }
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: vars.$espaciado-s;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    text-transform: uppercase;
+  }
+
+  td {
+    color: var(--text-primary);
+  }
+
+  .actions {
+    display: flex;
+    gap: vars.$espaciado-xs;
+  }
+}

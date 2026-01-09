@@ -1,17 +1,5 @@
 <main class="settings">
   <div class="settings__container">
-    <!-- Mensajes de estado -->
-    @if (successMessage()) {
-      <div class="settings__message settings__message--success">
-        ✓ {{ successMessage() }}
-      </div>
-    }
-    @if (errorMessage()) {
-      <div class="settings__message settings__message--error">
-        ✗ {{ errorMessage() }}
-      </div>
-    }
-
     <!-- Layout: Sidebar + Contenido -->
     <div class="settings__layout">
 
@@ -22,451 +10,54 @@
         <h1 class="settings__title">Ajustes</h1>
 
         <nav class="settings__nav">
-          <button
-            type="button"
+          <a
+            routerLink="/settings/profile"
+            routerLinkActive="settings__nav-item--active"
             class="settings__nav-item"
-            [class.settings__nav-item--active]="isTabActive('perfil')"
-            (click)="setActiveTab('perfil')"
           >
             Perfil
-          </button>
+          </a>
 
-          <button
-            type="button"
+          <a
+            routerLink="/settings/account"
+            routerLinkActive="settings__nav-item--active"
             class="settings__nav-item"
-            [class.settings__nav-item--active]="isTabActive('cuenta')"
-            (click)="setActiveTab('cuenta')"
           >
             Cuenta
-          </button>
+          </a>
 
-          <button
-            type="button"
+          <a
+            routerLink="/settings/preferences"
+            routerLinkActive="settings__nav-item--active"
             class="settings__nav-item"
-            [class.settings__nav-item--active]="isTabActive('preferencias')"
-            (click)="setActiveTab('preferencias')"
           >
             Preferencias
-          </button>
+          </a>
 
-          <button
-            type="button"
+          <a
+            routerLink="/settings/security"
+            routerLinkActive="settings__nav-item--active"
             class="settings__nav-item"
-            [class.settings__nav-item--active]="isTabActive('seguridad')"
-            (click)="setActiveTab('seguridad')"
           >
             Seguridad
-          </button>
+          </a>
         </nav>
+
+        <!-- Botón volver al perfil -->
+        <div class="settings__sidebar-footer">
+          <a routerLink="/profile" class="settings__back-link">
+            ← Volver al Perfil
+          </a>
+        </div>
       </aside>
 
       <!-- ============================================ -->
-      <!-- CONTENIDO: Área dinámica según tab activa    -->
+      <!-- CONTENIDO: Área dinámica con router-outlet  -->
       <!-- ============================================ -->
       <section class="settings__content">
-
-        <!-- ========== TAB: PERFIL ========== -->
-        @if (activeTab() === 'perfil') {
-          <div class="settings__tab-content">
-            <header class="settings__content-header">
-              <h2 class="settings__content-title">Información del Perfil</h2>
-              <p class="settings__content-subtitle">Personaliza cómo te ven los demás usuarios</p>
-            </header>
-
-            <!-- Foto de perfil -->
-            <div class="settings__section">
-              <h3 class="settings__section-title">Foto de Perfil</h3>
-              <div class="settings__avatar-section">
-                <div class="settings__avatar-preview">
-                  <img [src]="currentAvatar()" alt="Avatar actual" class="settings__avatar-image" />
-                </div>
-                <div class="settings__avatar-info">
-                  <label for="avatar-upload" class="settings__avatar-label">
-                    <app-button
-                      variant="secondary"
-                      type="button"
-                      [disabled]="isLoading()"
-                    >
-                      Cambiar Foto
-                    </app-button>
-                  </label>
-                  <input
-                    id="avatar-upload"
-                    type="file"
-                    accept="image/*"
-                    (change)="onAvatarChange($event)"
-                    class="settings__avatar-input"
-                  />
-                  <p class="settings__field-hint">JPG, PNG o GIF. Máximo 2MB.</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="settings__divider"></div>
-
-            <!-- Nombre de usuario -->
-            <div class="settings__section">
-              <h3 class="settings__section-title">Nombre de Usuario</h3>
-              <form [formGroup]="settingsForm" class="settings__form">
-                <app-form-input
-                  [control]="settingsForm.controls.username"
-                  label="Usuario"
-                  type="text"
-                  placeholder="Ingresa tu nombre de usuario"
-                  [required]="true"
-                />
-                <p class="settings__field-hint">Solo letras, números y guiones bajos. Mínimo 3 caracteres.</p>
-
-                <div class="settings__divider settings__divider--small"></div>
-
-                <div class="settings__form-actions">
-                  <app-button
-                    variant="primary"
-                    type="button"
-                    [disabled]="settingsForm.controls.username.invalid || isLoading()"
-                    (click)="onSubmit()"
-                  >
-                    Guardar Cambios
-                  </app-button>
-                </div>
-              </form>
-            </div>
-          </div>
-        }
-
-        <!-- ========== TAB: CUENTA ========== -->
-        @if (activeTab() === 'cuenta') {
-          <div class="settings__tab-content">
-            <header class="settings__content-header">
-              <h2 class="settings__content-title">Información de Cuenta</h2>
-              <p class="settings__content-subtitle">Gestiona tu email y contraseña</p>
-            </header>
-
-            <!-- Email -->
-            <div class="settings__section">
-              <h3 class="settings__section-title">Correo Electrónico</h3>
-              <form [formGroup]="settingsForm" class="settings__form">
-                <app-form-input
-                  [control]="settingsForm.controls.email"
-                  label="Email"
-                  type="email"
-                  placeholder="tu@email.com"
-                  [required]="true"
-                />
-                <p class="settings__field-hint">Recibirás notificaciones importantes en este correo.</p>
-
-                <div class="settings__divider settings__divider--small"></div>
-
-                <div class="settings__form-actions">
-                  <app-button
-                    variant="primary"
-                    type="button"
-                    [disabled]="settingsForm.controls.email.invalid || isLoading()"
-                    (click)="onSubmit()"
-                  >
-                    Actualizar Email
-                  </app-button>
-                </div>
-              </form>
-            </div>
-
-            <div class="settings__divider"></div>
-
-            <!-- Cambio de contraseña -->
-            <div class="settings__section">
-              <h3 class="settings__section-title">Cambiar Contraseña</h3>
-              <form [formGroup]="settingsForm" class="settings__form">
-                <app-form-input
-                  [control]="settingsForm.controls.currentPassword"
-                  label="Contraseña Actual"
-                  type="password"
-                  placeholder="Ingresa tu contraseña actual"
-                  [required]="true"
-                />
-
-                <app-form-input
-                  [control]="settingsForm.controls.newPassword"
-                  label="Nueva Contraseña"
-                  type="password"
-                  placeholder="Ingresa la nueva contraseña"
-                  [required]="true"
-                />
-
-                <!-- Requisitos de contraseña -->
-                @if (settingsForm.controls.newPassword.value.length > 0) {
-                  <div class="settings__password-requirements">
-                    <p class="settings__requirements-title">Requisitos:</p>
-                    <ul class="settings__requirements-list">
-                      <li [class.settings__requirement--met]="passwordRequirements().minLength">
-                        <span class="settings__requirement-icon">{{ passwordRequirements().minLength ? '✓' : '○' }}</span>
-                        Mínimo 8 caracteres
-                      </li>
-                      <li [class.settings__requirement--met]="passwordRequirements().hasUpperCase">
-                        <span class="settings__requirement-icon">{{ passwordRequirements().hasUpperCase ? '✓' : '○' }}</span>
-                        Al menos una mayúscula
-                      </li>
-                      <li [class.settings__requirement--met]="passwordRequirements().hasLowerCase">
-                        <span class="settings__requirement-icon">{{ passwordRequirements().hasLowerCase ? '✓' : '○' }}</span>
-                        Al menos una minúscula
-                      </li>
-                      <li [class.settings__requirement--met]="passwordRequirements().hasNumber">
-                        <span class="settings__requirement-icon">{{ passwordRequirements().hasNumber ? '✓' : '○' }}</span>
-                        Al menos un número
-                      </li>
-                    </ul>
-                  </div>
-                }
-
-                <app-form-input
-                  [control]="settingsForm.controls.confirmPassword"
-                  label="Confirmar Nueva Contraseña"
-                  type="password"
-                  placeholder="Confirma la nueva contraseña"
-                  [required]="true"
-                />
-
-                <div class="settings__divider settings__divider--small"></div>
-
-                <div class="settings__form-actions">
-                  <app-button
-                    variant="primary"
-                    type="button"
-                    [disabled]="settingsForm.controls.currentPassword.invalid ||
-                                settingsForm.controls.newPassword.invalid ||
-                                settingsForm.controls.confirmPassword.invalid ||
-                                isLoading()"
-                    (click)="onPasswordChange()"
-                  >
-                    Cambiar Contraseña
-                  </app-button>
-                </div>
-              </form>
-            </div>
-          </div>
-        }
-
-        <!-- ========== TAB: PREFERENCIAS ========== -->
-        @if (activeTab() === 'preferencias') {
-          <div class="settings__tab-content">
-            <header class="settings__content-header">
-              <h2 class="settings__content-title">Preferencias</h2>
-              <p class="settings__content-subtitle">Personaliza tu experiencia en la plataforma</p>
-            </header>
-
-            <!-- Notificaciones -->
-            <div class="settings__section">
-              <h3 class="settings__section-title">Notificaciones</h3>
-              <div class="settings__preferences">
-                <div class="settings__preference-item">
-                  <div class="settings__preference-info">
-                    <p class="settings__preference-title">Notificaciones por Email</p>
-                    <p class="settings__preference-desc">Recibe actualizaciones sobre tu actividad por correo</p>
-                  </div>
-                  <label class="settings__toggle">
-                    <input
-                      type="checkbox"
-                      [checked]="preferences().emailNotifications"
-                      (change)="updatePreference('emailNotifications', !preferences().emailNotifications)"
-                    />
-                    <span class="settings__toggle-slider"></span>
-                  </label>
-                </div>
-
-                <div class="settings__preference-item">
-                  <div class="settings__preference-info">
-                    <p class="settings__preference-title">Notificaciones de Reseñas</p>
-                    <p class="settings__preference-desc">Recibe alertas cuando alguien comente tus reseñas</p>
-                  </div>
-                  <label class="settings__toggle">
-                    <input
-                      type="checkbox"
-                      [checked]="preferences().reviewNotifications"
-                      (change)="updatePreference('reviewNotifications', !preferences().reviewNotifications)"
-                    />
-                    <span class="settings__toggle-slider"></span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <!-- Privacidad -->
-            <div class="settings__section settings__section--divider">
-              <h3 class="settings__section-title">Privacidad del Perfil</h3>
-              <div class="settings__preference-item settings__preference-item--full">
-                <div class="settings__preference-info">
-                  <p class="settings__preference-title">Visibilidad del Perfil</p>
-                  <p class="settings__preference-desc">Controla quién puede ver tu perfil y reseñas</p>
-                </div>
-                <div class="settings__radio-group">
-                  <label class="settings__radio">
-                    <input
-                      type="radio"
-                      name="visibility"
-                      value="public"
-                      [checked]="preferences().profileVisibility === 'public'"
-                      (change)="updatePreference('profileVisibility', 'public')"
-                    />
-                    <span class="settings__radio-label">Público</span>
-                  </label>
-                  <label class="settings__radio">
-                    <input
-                      type="radio"
-                      name="visibility"
-                      value="friends"
-                      [checked]="preferences().profileVisibility === 'friends'"
-                      (change)="updatePreference('profileVisibility', 'friends')"
-                    />
-                    <span class="settings__radio-label">Solo Amigos</span>
-                  </label>
-                  <label class="settings__radio">
-                    <input
-                      type="radio"
-                      name="visibility"
-                      value="private"
-                      [checked]="preferences().profileVisibility === 'private'"
-                      (change)="updatePreference('profileVisibility', 'private')"
-                    />
-                    <span class="settings__radio-label">Privado</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-
-        <!-- ========== TAB: SEGURIDAD ========== -->
-        @if (activeTab() === 'seguridad') {
-          <div class="settings__tab-content">
-            <header class="settings__content-header">
-              <h2 class="settings__content-title">Seguridad</h2>
-              <p class="settings__content-subtitle">Información de tu cuenta y acciones críticas</p>
-            </header>
-
-            <!-- Info de seguridad -->
-            <div class="settings__section">
-              <h3 class="settings__section-title">Información de Seguridad</h3>
-              <div class="settings__security-info">
-                <div class="settings__info-item">
-                  <span class="settings__info-label">Cuenta creada</span>
-                  <span class="settings__info-value">{{ accountCreated() }}</span>
-                </div>
-                <div class="settings__info-item">
-                  <span class="settings__info-label">Último cambio de contraseña</span>
-                  <span class="settings__info-value">{{ lastPasswordChange() }}</span>
-                </div>
-                <div class="settings__info-item">
-                  <span class="settings__info-label">Sesiones activas</span>
-                  <span class="settings__info-value">{{ activeSessions() }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Zona de peligro -->
-            <div class="settings__section settings__section--danger settings__section--divider">
-              <h3 class="settings__section-title">Zona de Peligro</h3>
-              <div class="settings__danger-zone">
-                <div class="settings__danger-info">
-                  <p class="settings__danger-title">Eliminar Cuenta</p>
-                  <p class="settings__danger-desc">
-                    Una vez eliminada, no podrás recuperar tu cuenta ni tus reseñas.
-                  </p>
-                </div>
-                <app-button
-                  variant="danger"
-                  type="button"
-                  [disabled]="isLoading()"
-                  (click)="onDeleteAccount()"
-                  class="settings__danger-button"
-                >
-                  Eliminar Cuenta
-                </app-button>
-              </div>
-            </div>
-          </div>
-        }
-
+        <router-outlet></router-outlet>
       </section>
-    </div>
 
-    <!-- Botón de volver al perfil -->
-    <div class="settings__back-button">
-      <app-button
-        variant="ghost"
-        type="button"
-        (click)="onCancel()"
-      >
-        ← Volver al Perfil
-      </app-button>
     </div>
   </div>
-
-  <!-- ============================================ -->
-  <!-- MODAL: Confirmar Cambio de Contraseña        -->
-  <!-- ============================================ -->
-  <app-modal
-    [isOpen]="showPasswordModal()"
-    [title]="'Confirmar Cambio de Contraseña'"
-    (onClose)="showPasswordModal.set(false)"
-  >
-    <p class="settings__modal-text">
-      ¿Estás seguro de que deseas cambiar tu contraseña?
-      Deberás usar la nueva contraseña en tu próximo inicio de sesión.
-    </p>
-    <div modal-footer class="settings__modal-actions">
-      <app-button
-        variant="ghost"
-        type="button"
-        (click)="showPasswordModal.set(false)"
-      >
-        Cancelar
-      </app-button>
-      <app-button
-        variant="primary"
-        type="button"
-        (click)="confirmPasswordChange()"
-      >
-        Confirmar
-      </app-button>
-    </div>
-  </app-modal>
-
-  <!-- ============================================ -->
-  <!-- MODAL: Confirmar Eliminación de Cuenta       -->
-  <!-- ============================================ -->
-  <app-modal
-    [isOpen]="showDeleteModal()"
-    [title]="'¿Eliminar tu cuenta?'"
-    (onClose)="showDeleteModal.set(false)"
-  >
-    <div class="settings__modal-content">
-      <p class="settings__modal-text settings__modal-text--warning">
-        ⚠️ Esta acción es irreversible
-      </p>
-      <p class="settings__modal-text">
-        Si eliminas tu cuenta, perderás permanentemente:
-      </p>
-      <ul class="settings__modal-list">
-        <li>Todas tus reseñas y valoraciones</li>
-        <li>Tu historial de álbumes guardados</li>
-        <li>Tus listas de reproducción personalizadas</li>
-        <li>Todos tus comentarios y actividad social</li>
-      </ul>
-    </div>
-    <div modal-footer class="settings__modal-actions">
-      <app-button
-        variant="ghost"
-        type="button"
-        (click)="showDeleteModal.set(false)"
-      >
-        Cancelar
-      </app-button>
-      <app-button
-        variant="danger"
-        type="button"
-        (click)="confirmDeleteAccount()"
-      >
-        Sí, Eliminar Cuenta
-      </app-button>
-    </div>
-  </app-modal>
 </main>

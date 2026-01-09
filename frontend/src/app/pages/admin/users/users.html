@@ -1,0 +1,47 @@
+<div class="content-section">
+  <div class="section-header">
+    <h2>Gestión de Usuarios</h2>
+  </div>
+
+  @if (users().length === 0) {
+    <div class="empty-state">
+      <p class="empty-text">No hay usuarios registrados</p>
+    </div>
+  } @else {
+    <div class="users-table">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Fecha Registro</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            <tr>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span class="role-badge" [class.admin]="user.role === 'admin'">
+                  {{ user.role }}
+                </span>
+              </td>
+              <td>{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
+              <td class="actions">
+                <app-button variant="secondary" size="sm" (click)="editUser(user.id)">
+                  Editar
+                </app-button>
+                <app-button variant="danger" size="sm" (click)="deleteUser(user.id)">
+                  Eliminar
+                </app-button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

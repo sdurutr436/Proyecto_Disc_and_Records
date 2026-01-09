@@ -1,0 +1,49 @@
+<div class="content-section">
+  <div class="section-header">
+    <h2>Moderación de Reseñas</h2>
+  </div>
+
+  @if (reviews().length === 0) {
+    <div class="empty-state">
+      <p class="empty-text">No hay reseñas pendientes</p>
+    </div>
+  } @else {
+    <div class="reviews-list">
+      @for (review of reviews(); track review.id) {
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-info">
+              <span class="album-title">{{ review.albumTitle }}</span>
+              <span class="username">por {{ review.username }}</span>
+            </div>
+            <div class="review-rating">
+              @for (star of [1, 2, 3, 4, 5]; track star) {
+                <span class="star" [class.filled]="star <= review.rating">★</span>
+              }
+            </div>
+          </div>
+          <p class="review-content">{{ review.content }}</p>
+          <div class="review-footer">
+            <span class="review-date">{{ review.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            <span class="review-status" [class]="review.status">
+              {{ review.status === 'pending' ? 'Pendiente' : review.status === 'approved' ? 'Aprobada' : 'Rechazada' }}
+            </span>
+          </div>
+          <div class="review-actions">
+            @if (review.status === 'pending') {
+              <app-button variant="primary" size="sm" (click)="approveReview(review.id)">
+                Aprobar
+              </app-button>
+              <app-button variant="secondary" size="sm" (click)="rejectReview(review.id)">
+                Rechazar
+              </app-button>
+            }
+            <app-button variant="danger" size="sm" (click)="deleteReview(review.id)">
+              Eliminar
+            </app-button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

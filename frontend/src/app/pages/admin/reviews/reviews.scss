@@ -1,0 +1,126 @@
+@use '../../../../styles/00-settings/variables' as vars;
+
+.content-section {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: vars.$espaciado-m;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: vars.$espaciado-m;
+
+  h2 {
+    font-size: vars.$tamanio-fuente-h3;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: vars.$espaciado-xl;
+  color: var(--text-secondary);
+
+  .empty-text {
+    font-size: vars.$tamanio-fuente-h4;
+    margin-bottom: vars.$espaciado-xs;
+  }
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-s;
+}
+
+.review-card {
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  padding: vars.$espaciado-s;
+  border: 1px solid var(--border-color);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: vars.$espaciado-xs;
+}
+
+.review-info {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-xs;
+
+  .album-title {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .username {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    color: var(--text-secondary);
+  }
+}
+
+.review-rating {
+  .star {
+    color: var(--text-secondary);
+    font-size: vars.$tamanio-fuente-h4;
+
+    &.filled {
+      color: vars.$color-advertencia-light;
+    }
+  }
+}
+
+.review-content {
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: vars.$espaciado-xs;
+}
+
+.review-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: vars.$espaciado-xs;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+
+  .review-date {
+    color: var(--text-secondary);
+  }
+
+  .review-status {
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+
+    &.pending {
+      background: vars.$color-advertencia-light;
+      color: #000;
+    }
+
+    &.approved {
+      background: vars.$color-exito;
+      color: white;
+    }
+
+    &.rejected {
+      background: vars.$color-error;
+      color: white;
+    }
+  }
+}
+
+.review-actions {
+  display: flex;
+  gap: vars.$espaciado-xs;
+  justify-content: flex-end;
+}

@@ -1,0 +1,71 @@
+<div class="settings-preferences">
+  <!-- Mensajes de estado con componente Alert -->
+  @if (successMessage()) {
+    <app-alert
+      type="success"
+      [message]="successMessage()!"
+      [dismissible]="true"
+      (dismissed)="successMessage.set(null)"
+    />
+  }
+
+  <header class="settings-preferences__header">
+    <h2 class="settings-preferences__title">Preferencias</h2>
+    <p class="settings-preferences__subtitle">Personaliza tu experiencia en la plataforma</p>
+  </header>
+
+  <!-- Formulario con reactive forms -->
+  <form [formGroup]="preferencesForm" class="settings-preferences__form">
+    <!-- Notificaciones -->
+    <section class="settings-preferences__section">
+      <h3 class="settings-preferences__section-title">Notificaciones</h3>
+
+      <app-form-checkbox
+        formControlName="emailNotifications"
+        label="Notificaciones por Email - Recibe actualizaciones sobre tu actividad"
+        id="emailNotifications"
+      />
+
+      <app-form-checkbox
+        formControlName="reviewNotifications"
+        label="Notificaciones de Reseñas - Recibe alertas cuando comenten tus reseñas"
+        id="reviewNotifications"
+      />
+    </section>
+
+    <!-- Privacidad -->
+    <section class="settings-preferences__section">
+      <h3 class="settings-preferences__section-title">Privacidad del Perfil</h3>
+
+      <app-form-radio-group
+        formControlName="profileVisibility"
+        label="Visibilidad del Perfil"
+        name="profileVisibility"
+        [options]="visibilityOptions"
+      />
+    </section>
+
+    <!-- Idioma -->
+    <section class="settings-preferences__section">
+      <h3 class="settings-preferences__section-title">Idioma</h3>
+
+      <app-form-select
+        formControlName="language"
+        label="Idioma de la interfaz"
+        [options]="languageOptions"
+      />
+    </section>
+
+    <!-- Acciones -->
+    <div class="settings-preferences__actions">
+      <app-button
+        variant="primary"
+        type="button"
+        [disabled]="preferencesForm.pristine"
+        (click)="onSubmit()"
+      >
+        Guardar Preferencias
+      </app-button>
+    </div>
+  </form>
+</div>

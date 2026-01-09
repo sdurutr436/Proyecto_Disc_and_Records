@@ -1,0 +1,119 @@
+<div class="settings-account">
+  <!-- Mensajes de estado con componente Alert -->
+  @if (successMessage()) {
+    <app-alert
+      type="success"
+      [message]="successMessage()!"
+      [dismissible]="true"
+      (dismissed)="successMessage.set(null)"
+    />
+  }
+  @if (errorMessage()) {
+    <app-alert
+      type="error"
+      [message]="errorMessage()!"
+      [dismissible]="true"
+      (dismissed)="errorMessage.set(null)"
+    />
+  }
+
+  <header class="settings-account__header">
+    <h2 class="settings-account__title">Información de Cuenta</h2>
+    <p class="settings-account__subtitle">Gestiona tu email y contraseña</p>
+  </header>
+
+  <!-- Email -->
+  <section class="settings-account__section">
+    <h3 class="settings-account__section-title">Correo Electrónico</h3>
+    <form [formGroup]="emailForm" class="settings-account__form">
+      <app-form-input
+        [control]="emailForm.controls.email"
+        label="Email"
+        type="email"
+        placeholder="tu@email.com"
+        [required]="true"
+        hint="Recibirás notificaciones importantes en este correo."
+      />
+
+      <div class="settings-account__actions">
+        <app-button
+          variant="primary"
+          type="button"
+          [disabled]="emailForm.controls.email.invalid || isLoading()"
+          (click)="onSubmitEmail()"
+        >
+          Actualizar Email
+        </app-button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Cambio de contraseña -->
+  <section class="settings-account__section">
+    <h3 class="settings-account__section-title">Cambiar Contraseña</h3>
+    <form [formGroup]="passwordForm" class="settings-account__form">
+      <app-form-input
+        [control]="passwordForm.controls.currentPassword"
+        label="Contraseña Actual"
+        type="password"
+        placeholder="Ingresa tu contraseña actual"
+        [required]="true"
+      />
+
+      <app-form-input
+        [control]="passwordForm.controls.newPassword"
+        label="Nueva Contraseña"
+        type="password"
+        placeholder="Ingresa la nueva contraseña"
+        [required]="true"
+      />
+
+      <!-- Indicador de fortaleza con ProgressBar -->
+      @if (passwordForm.controls.newPassword.value.length > 0) {
+        <app-progress-bar
+          [value]="passwordStrength()"
+          [showLabel]="true"
+          [variant]="passwordStrengthVariant()"
+        />
+        <p class="settings-account__strength-label">{{ passwordStrengthLabel() }}</p>
+      }
+
+      <app-form-input
+        [control]="passwordForm.controls.confirmPassword"
+        label="Confirmar Nueva Contraseña"
+        type="password"
+        placeholder="Confirma la nueva contraseña"
+        [required]="true"
+      />
+
+      <div class="settings-account__actions">
+        <app-button
+          variant="primary"
+          type="button"
+          [disabled]="passwordForm.invalid || isLoading()"
+          (click)="onPasswordChange()"
+        >
+          Cambiar Contraseña
+        </app-button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<!-- Modal de confirmación usando componente Modal -->
+<app-modal
+  [isOpen]="showPasswordModal()"
+  title="Confirmar cambio de contraseña"
+  (onClose)="showPasswordModal.set(false)"
+>
+  <p>¿Estás seguro de que deseas cambiar tu contraseña? Deberás usarla en tu próximo inicio de sesión.</p>
+
+  <div modal-footer class="settings-account__modal-actions">
+    <app-button variant="ghost" (click)="showPasswordModal.set(false)">
+      Cancelar
+    </app-button>
+    <app-button variant="primary" (click)="confirmPasswordChange()">
+      Confirmar
+    </app-button>
+  </div>
+</app-modal>
