@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Button } from '../../../components/shared/button/button';
+import { Alert } from '../../../components/shared/alert/alert';
 
 interface User {
   id: string;
@@ -13,7 +14,7 @@ interface User {
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [CommonModule, Button],
+  imports: [CommonModule, Button, Alert],
   templateUrl: './users.html',
   styleUrl: './users.scss'
 })

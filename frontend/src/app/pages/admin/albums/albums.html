@@ -7,10 +7,11 @@
   </div>
 
   @if (albums().length === 0) {
-    <div class="empty-state">
-      <p class="empty-text">No hay álbumes registrados</p>
-      <p class="empty-hint">Crea el primer álbum para empezar</p>
-    </div>
+    <app-alert
+      type="info"
+      title="No hay álbumes registrados"
+      message="Crea el primer álbum para empezar"
+    ></app-alert>
   } @else {
     <div class="albums-table">
       <table class="data-table">

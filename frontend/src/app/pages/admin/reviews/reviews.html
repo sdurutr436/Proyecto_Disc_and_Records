@@ -4,9 +4,10 @@
   </div>
 
   @if (reviews().length === 0) {
-    <div class="empty-state">
-      <p class="empty-text">No hay reseñas pendientes</p>
-    </div>
+    <app-alert
+      type="info"
+      title="No hay reseñas pendientes"
+    ></app-alert>
   } @else {
     <div class="reviews-list">
       @for (review of reviews(); track review.id) {

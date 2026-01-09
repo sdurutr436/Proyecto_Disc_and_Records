@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Button } from '../../../components/shared/button/button';
+import { Alert } from '../../../components/shared/alert/alert';
 
 interface Genre {
   id: string;
@@ -12,7 +13,7 @@ interface Genre {
 @Component({
   selector: 'app-admin-genres',
   standalone: true,
-  imports: [CommonModule, Button],
+  imports: [CommonModule, Button, Alert],
   templateUrl: './genres.html',
   styleUrl: './genres.scss'
 })

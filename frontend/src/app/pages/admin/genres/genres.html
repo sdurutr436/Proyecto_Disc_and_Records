@@ -7,10 +7,11 @@
   </div>
 
   @if (genres().length === 0) {
-    <div class="empty-state">
-      <p class="empty-text">No hay géneros registrados</p>
-      <p class="empty-hint">Crea el primer género musical</p>
-    </div>
+    <app-alert
+      type="info"
+      title="No hay géneros registrados"
+      message="Crea el primer género para empezar"
+    ></app-alert>
   } @else {
     <div class="genres-table">
       <table class="data-table">

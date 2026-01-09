@@ -51,7 +51,6 @@ import { StyleGuideNavigationService, StyleGuideSection } from '../../services/s
     ForgotPasswordForm,
     Modal,
     Accordion,
-    Tabs,
     ResponsiveTabs,
     TabPanel,
     Tooltip,

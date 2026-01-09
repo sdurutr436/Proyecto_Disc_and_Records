@@ -23,20 +23,12 @@
 
             <!-- Rating promedio -->
             <div class="detail-card__rating">
-              <div class="rating-display">
-                @for (star of [1, 2, 3, 4, 5]; track star) {
-                  <span
-                    class="rating-display__star"
-                    [class.rating-display__star--filled]="star <= itemData.averageRating"
-                  >
-                    ★
-                  </span>
-                }
-                <span class="rating-display__value">
-                  {{ itemData.averageRating }}/5
-                </span>
-              </div>
-              <p class="rating-display__count">
+              <app-rating
+                [rating]="itemData.averageRating"
+                [showValue]="true"
+                size="medium"
+              />
+              <p class="detail-card__reviews-count">
                 {{ itemData.totalReviews }} reseñas
               </p>
             </div>
@@ -78,35 +70,38 @@
 
         <!-- Navegación interna por secciones (usa fragments) -->
         <nav class="detail__nav">
-          <button
-            type="button"
+          <app-button
+            variant="ghost"
+            size="md"
+            (clicked)="navigateToSection('info')"
             class="detail__nav-item"
-            (click)="navigateToSection('info')"
           >
             Información
-          </button>
-          <button
-            type="button"
+          </app-button>
+          <app-button
+            variant="ghost"
+            size="md"
+            (clicked)="navigateToSection('tracks')"
             class="detail__nav-item"
-            (click)="navigateToSection('tracks')"
           >
             Canciones
-          </button>
-          <button
-            type="button"
+          </app-button>
+          <app-button
+            variant="ghost"
+            size="md"
+            (clicked)="navigateToSection('reviews')"
             class="detail__nav-item"
-            (click)="navigateToSection('reviews')"
           >
             Reseñas
-          </button>
-          <button
-            type="button"
+          </app-button>
+          <app-button
+            variant="secondary"
+            size="md"
+            (clicked)="shareReviewsLink()"
             class="detail__nav-item detail__nav-item--share"
-            (click)="shareReviewsLink()"
-            title="Copiar enlace a reseñas"
           >
             🔗 Compartir
-          </button>
+          </app-button>
         </nav>
 
         <!-- SECCIÓN: LISTA DE CANCIONES -->
@@ -166,12 +161,11 @@
             <div class="review-form">
               <h3 class="review-form__title">Escribe tu reseña</h3>
 
-              <textarea
-                class="review-form__textarea"
+              <app-form-textarea
                 [(ngModel)]="reviewText"
                 placeholder="Comparte tu opinión sobre este álbum (mínimo 50 caracteres)..."
-                rows="6"
-              ></textarea>
+                [rows]="6"
+              ></app-form-textarea>
 
               <div class="review-form__footer">
                 <span class="review-form__counter">
@@ -215,15 +209,17 @@
           @if (isLoadingReviews()) {
             <div class="loading-state">
               <app-spinner></app-spinner>
-              <p>Cargando reseñas...</p>
+              <app-alert
+                type="info"
+                message="Cargando reseñas..."
+              ></app-alert>
             </div>
           } @else if (reviews().length === 0) {
-            <div class="empty-state">
-              <p class="empty-state__title">No hay reseñas aún</p>
-              <p class="empty-state__subtitle">
-                Sé el primero en compartir tu opinión sobre este álbum
-              </p>
-            </div>
+            <app-alert
+              type="info"
+              title="No hay reseñas aún"
+              message="Sé el primero en compartir tu opinión sobre este álbum"
+            ></app-alert>
           } @else {
             <app-accordion
               [items]="reviewsAccordionItems()"
@@ -237,7 +233,10 @@
   } @else {
     <div class="loading-state loading-state--fullpage">
       <app-spinner></app-spinner>
-      <p>Cargando álbum...</p>
+      <app-alert
+        type="info"
+        message="Cargando álbum..."
+      ></app-alert>
     </div>
   }
 </div>

@@ -4,9 +4,10 @@
   </div>
 
   @if (users().length === 0) {
-    <div class="empty-state">
-      <p class="empty-text">No hay usuarios registrados</p>
-    </div>
+    <app-alert
+      type="info"
+      title="No hay usuarios registrados"
+    ></app-alert>
   } @else {
     <div class="users-table">
       <table class="data-table">

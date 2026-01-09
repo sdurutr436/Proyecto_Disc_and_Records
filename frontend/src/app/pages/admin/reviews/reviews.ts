@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Button } from '../../../components/shared/button/button';
+import { Alert } from '../../../components/shared/alert/alert';
 
 interface Review {
   id: string;
@@ -15,7 +16,7 @@ interface Review {
 @Component({
   selector: 'app-admin-reviews',
   standalone: true,
-  imports: [CommonModule, Button],
+  imports: [CommonModule, Button, Alert],
   templateUrl: './reviews.html',
   styleUrl: './reviews.scss'
 })

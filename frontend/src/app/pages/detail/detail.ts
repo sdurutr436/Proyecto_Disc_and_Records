@@ -6,6 +6,9 @@ import { FormsModule } from '@angular/forms';
 import { Accordion, AccordionItem } from '../../components/shared/accordion/accordion';
 import { Button } from '../../components/shared/button/button';
 import { Spinner } from '../../components/shared/spinner/spinner';
+import { Alert } from '../../components/shared/alert/alert';
+import { FormTextarea } from '../../components/shared/form-textarea/form-textarea';
+import { RatingComponent } from '../../components/shared/rating/rating';
 
 // Interfaces
 interface DetailItem {
@@ -51,7 +54,10 @@ interface Review {
     RouterModule,
     Accordion,
     Button,
-    Spinner
+    Spinner,
+    Alert,
+    FormTextarea,
+    RatingComponent
   ],
   templateUrl: './detail.html',
   styleUrl: './detail.scss'
