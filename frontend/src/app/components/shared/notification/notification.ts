@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, signal, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, signal, ElementRef, AfterViewInit, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 /**
@@ -135,6 +135,45 @@ export class Notification implements OnInit, OnDestroy, AfterViewInit {
    * Se usa para calcular el tiempo transcurrido
    */
   private pausedAt: number = 0;
+
+  /**
+   * HOST BINDINGS: Aplicar estilos directamente al :host element
+   * Necesario para el apilado porque :host tiene position: fixed
+   */
+  @HostBinding('style.top')
+  get hostTop(): string | null {
+    if (this.stackIndex < 0) return null;
+    if (!this.position.startsWith('top')) return null;
+    return this.calculateStackOffset() + 'px';
+  }
+
+  @HostBinding('style.bottom')
+  get hostBottom(): string | null {
+    if (this.stackIndex < 0) return null;
+    if (!this.position.startsWith('bottom')) return null;
+    return this.calculateStackOffset() + 'px';
+  }
+
+  /**
+   * Calcula el offset de apilado para esta notificación
+   */
+  private calculateStackOffset(): number {
+    const INITIAL_OFFSET = 20; // Margen inicial desde el borde
+    const GAP = 12; // Espacio entre notificaciones
+
+    let offset = INITIAL_OFFSET;
+
+    if (this.getHeightAt) {
+      for (let i = 0; i < this.stackIndex; i++) {
+        offset += this.getHeightAt(i) + GAP;
+      }
+    } else {
+      const ESTIMATED_HEIGHT = 92;
+      offset = INITIAL_OFFSET + (this.stackIndex * (ESTIMATED_HEIGHT + GAP));
+    }
+
+    return offset;
+  }
 
   constructor(private elementRef: ElementRef) {}
 

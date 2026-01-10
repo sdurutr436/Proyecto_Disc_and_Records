@@ -650,44 +650,46 @@ app-breadcrumbs {
 .layout-diagram {
   display: flex;
   flex-direction: column;
-  gap: $espaciado-xs;
-  border: $borde-brutal-thick;
+  gap: $espaciado-mini;
+  border: $borde-brutal-medium;
   background-color: var(--border-color);
-  max-width: calc($max-width-form * 1.5);
+  max-width: calc($max-width-form * 0.9); // Reducido de 1.5 a 0.9
   margin: 0 auto;
-  border-radius: $radio-m;
+  border-radius: $radio-s;
   overflow: hidden;
-  box-shadow: $sombra-brutal-s;
+  box-shadow: $sombra-brutal-xs;
 
   &__header,
   &__footer {
     background-color: var(--color-primary);
     color: var(--text-dark);
-    padding: $espaciado-m;
+    padding: $espaciado-s; // Reducido de m a s
     text-align: center;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    font-size: $tamanio-fuente-texto-pequeno-m; // Texto más pequeño
   }
 
   &__body {
     display: flex;
-    gap: $espaciado-xs;
-    min-height: 150px;
+    gap: $espaciado-mini;
+    min-height: 80px; // Reducido de 150px a 80px
   }
 
   &__sidebar {
-    flex: 0 0 calc($max-width-card-polaroid * 0.68);
+    flex: 0 0 calc($max-width-card-polaroid * 0.4); // Reducido de 0.68 a 0.4
     background-color: var(--bg-secondary);
-    padding: $espaciado-m;
+    padding: $espaciado-s; // Reducido
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     text-transform: uppercase;
+    font-size: $tamanio-fuente-texto-pequeno-s; // Texto más pequeño
 
     @include mixins.respond-to('tablet') {
-      flex: 0 0 calc($espaciado-xxl + $espaciado-m);
+      flex: 0 0 $espaciado-xxl;
       font-size: $tamanio-fuente-texto-pequeno-xs;
     }
   }
@@ -695,12 +697,13 @@ app-breadcrumbs {
   &__main {
     flex: 1;
     background-color: var(--bg-primary);
-    padding: $espaciado-m;
+    padding: $espaciado-s; // Reducido
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     text-transform: uppercase;
+    font-size: $tamanio-fuente-texto-pequeno-s; // Texto más pequeño
   }
 }
 
@@ -708,7 +711,7 @@ app-breadcrumbs {
    LAYOUT - Breakpoint Cards (Base)
    ======================================== */
 .showcase__grid--breakpoints {
-  grid-template-columns: repeat(auto-fit, minmax(calc($espaciado-xxl * 3.6), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(calc($espaciado-xxl * 2.5), 1fr));
 }
 
 .breakpoint-card {
@@ -716,7 +719,7 @@ app-breadcrumbs {
   flex-direction: column;
   align-items: center;
   gap: $espaciado-xs;
-  padding: $espaciado-m;
+  padding: $espaciado-s;
   background-color: var(--bg-primary);
   border: $borde-brutal-medium;
   border-radius: $radio-s;
@@ -837,17 +840,21 @@ app-breadcrumbs {
 
 .monoton-sample {
   color: var(--color-primary);
+  line-height: 1.4; // Espacio vertical para que las líneas decorativas no se superpongan
 
   &--lg {
     font-size: calc($tamanio-fuente-h1 * 1.33);
+    line-height: 1.5;
   }
 
   &--md {
     font-size: $tamanio-fuente-h2;
+    line-height: 1.45;
   }
 
   &--sm {
     font-size: $tamanio-fuente-h3;
+    line-height: 1.4;
   }
 }
 
@@ -889,15 +896,10 @@ app-breadcrumbs {
   border-radius: $radio-s;
   box-shadow: $sombra-brutal-s;
   overflow: hidden;
-  transition: transform $transicion-rapida ease, box-shadow $transicion-rapida ease;
   display: flex;
   flex-direction: column;
   height: 100%; // Todas las cards misma altura
-
-  &:hover {
-    transform: translate(-$espaciado-micro, -$espaciado-micro);
-    box-shadow: $sombra-brutal-m;
-  }
+  // Sin hover - es solo presentación de colores
 
   &__swatch {
     width: 100%;
@@ -945,8 +947,19 @@ app-breadcrumbs {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $espaciado-s;
-  padding: $espaciado-m;
+  gap: $espaciado-m;
+  padding: $espaciado-m $espaciado-s $espaciado-l;
+
+  code {
+    font-size: $tamanio-fuente-texto-pequeno-m;
+    text-align: center;
+    line-height: 1.4;
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+    padding: $espaciado-xs $espaciado-s;
+    border: $borde-brutal-thin;
+    border-radius: $radio-xs;
+  }
 
   &__box {
     width: calc($espaciado-xxl * 2);
@@ -999,10 +1012,6 @@ app-breadcrumbs {
         $espaciado-xs * 3 $espaciado-xs * 3 0px var(--vinyl-shadow-layer-3),
         $espaciado-xs * 4 $espaciado-xs * 4 0px var(--vinyl-shadow-layer-4);
     }
-  }
-
-  code {
-    text-align: center;
   }
 }
 
@@ -1253,13 +1262,15 @@ app-breadcrumbs {
   box-shadow: $sombra-brutal-xs;
   cursor: pointer;
   appearance: none;
+  -webkit-appearance: none; // Fix para Safari/Chrome
+  -moz-appearance: none; // Fix para Firefox
   position: relative;
   transition: all $transicion-rapida;
   flex-shrink: 0;
 
   // Checkmark cuando está checked
   &:checked {
-    background-color: var(--color-primary);
+    background-color: $color-primario-light; // Usar variable SCSS directa, no CSS var
 
     &::after {
       content: '✓';
@@ -1320,19 +1331,22 @@ app-breadcrumbs {
 .radio {
   width: 20px;
   height: 20px;
-  border: $borde-brutal-medium;
+  border: $borde-brutal-medium; // Negro (borde)
   border-radius: $radio-redondo;
   background-color: var(--bg-primary);
   box-shadow: $sombra-brutal-xs;
   cursor: pointer;
   appearance: none;
+  -webkit-appearance: none; // Fix Safari/Chrome
+  -moz-appearance: none; // Fix Firefox
   position: relative;
   transition: all $transicion-rapida;
   flex-shrink: 0;
 
-  // Punto interno cuando está checked
+  // Estado checked: Negro (borde) - Naranja (fondo) - Negro (punto)
   &:checked {
-    background-color: var(--color-primary);
+    background-color: var(--color-primary); // Naranja (fondo)
+    border-color: var(--border-color); // Negro (borde)
 
     &::after {
       content: '';
@@ -1340,9 +1354,9 @@ app-breadcrumbs {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: $espaciado-s;
-      height: $espaciado-s;
-      background-color: var(--text-dark);
+      width: $espaciado-xs;
+      height: $espaciado-xs;
+      background-color: var(--text-dark); // Negro (punto interno)
       border-radius: $radio-redondo;
     }
   }
@@ -1382,29 +1396,29 @@ app-breadcrumbs {
   display: flex;
   flex-direction: column;
   gap: $espaciado-xs;
-  padding: $espaciado-m;
+  padding: $espaciado-s;
   background-color: var(--bg-primary);
   border: $borde-brutal-medium;
   border-radius: $radio-s;
-  box-shadow: $sombra-brutal-s;
+  box-shadow: $sombra-brutal-xs;
   transition: all $transicion-rapida;
 
   &:hover {
     transform: translate(-$espaciado-micro, -$espaciado-micro);
-    box-shadow: $sombra-brutal-m;
+    box-shadow: $sombra-brutal-s;
   }
 
   &__header {
     display: flex;
     align-items: center;
-    gap: $espaciado-s;
-    padding-bottom: $espaciado-xs;
+    gap: $espaciado-xs;
+    padding-bottom: $espaciado-tiny;
     border-bottom: $borde-brutal-thin;
   }
 
   &__icon {
-    width: calc($espaciado-xxl - $espaciado-s);
-    height: calc($espaciado-xxl - $espaciado-s);
+    width: $espaciado-l;
+    height: $espaciado-l;
     stroke: var(--color-primary);
     flex-shrink: 0;
   }
@@ -1455,10 +1469,10 @@ app-breadcrumbs {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $espaciado-s;
+  gap: $espaciado-xs;
 
   app-card {
-    width: calc($espaciado-xxl * 3.6);
+    width: calc($espaciado-xxl * 2.4);
   }
 
   code {
@@ -1483,22 +1497,22 @@ app-breadcrumbs {
 .z-index-scale {
   display: flex;
   flex-direction: column;
-  gap: $espaciado-xs;
-  max-width: calc($max-width-form * 1.5);
+  gap: $espaciado-mini;
+  max-width: $max-width-form; // Reducido para ser más compacto
   margin: 0 auto;
 
   &__item {
     display: flex;
     align-items: center;
-    gap: $espaciado-s;
-    padding: $espaciado-xs $espaciado-s;
+    gap: $espaciado-xs;
+    padding: $espaciado-mini $espaciado-xs;
     background-color: var(--bg-secondary);
     border: $borde-brutal-thin;
     border-radius: $radio-xs;
     transition: all $transicion-rapida;
 
     &:hover {
-      transform: translateX($espaciado-tiny);
+      transform: translateX($espaciado-micro);
       box-shadow: $sombra-brutal-xs;
     }
 
@@ -1517,8 +1531,8 @@ app-breadcrumbs {
   }
 
   &__level {
-    width: calc($espaciado-xl + $espaciado-xs);
-    height: calc($espaciado-xl + $espaciado-xs);
+    width: $espaciado-l;
+    height: $espaciado-l;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1526,7 +1540,7 @@ app-breadcrumbs {
     border: $borde-brutal-thin;
     border-radius: $radio-xs;
     font-weight: 700;
-    font-size: $tamanio-fuente-texto-pequeno-s;
+    font-size: $tamanio-fuente-texto-pequeno-xs;
     color: var(--text-dark);
     flex-shrink: 0;
   }
@@ -1534,7 +1548,7 @@ app-breadcrumbs {
   &__name {
     flex: 1;
     font-family: 'Courier New', monospace;
-    font-size: $tamanio-fuente-texto-pequeno-s;
+    font-size: $tamanio-fuente-texto-pequeno-xs;
     font-weight: 600;
     color: var(--text-primary);
   }

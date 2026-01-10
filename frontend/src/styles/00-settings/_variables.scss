@@ -256,19 +256,21 @@ $ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); // Efecto rebote retro
 
 /* ========================================
    Z-INDEX SCALE
-   Escala centralizada para z-index (1-10)
+   Escala centralizada para z-index (0-12)
+   Incrementos de 1 para fácil gestión
    ======================================== */
-$z-base: 0;
-$z-dropdown: 1;
-$z-sticky: 2;
-$z-fixed: 3;        // Elementos fixed genéricos (sidebar, alertas)
-$z-nav: 4;          // Navegación principal
-$z-overlay: 5;      // Overlays y backdrops
-$z-modal: 6;        // Modales
-$z-popover: 7;      // Popovers y dropdowns flotantes
-$z-tooltip: 8;      // Tooltips
-$z-notification: 9; // Notificaciones toast
-$z-spinner: 10;     // Spinner de carga global
+$z-base: 0;           // Contenido base
+$z-dropdown: 1;       // Dropdowns simples
+$z-sticky: 2;         // Elementos sticky
+$z-fixed: 3;          // Elementos fixed genéricos (sidebar, alertas)
+$z-nav: 4;            // Navegación principal
+$z-overlay: 5;        // Overlays y backdrops
+$z-modal: 6;          // Modales
+$z-popover: 7;        // Popovers y dropdowns flotantes
+$z-tooltip: 8;        // Tooltips
+$z-notification: 9;   // Notificaciones toast
+$z-spinner: 10;       // Spinner de carga global
+// Reservados: 11, 12 para casos especiales futuros
 
 /* ========================================
    TAMAÑOS DE ICONOS

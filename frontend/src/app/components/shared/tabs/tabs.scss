@@ -12,6 +12,14 @@
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch; /* Smooth scroll en iOS */
   scroll-behavior: smooth;
+  cursor: grab; /* Indicar que se puede arrastrar */
+  user-select: none; /* Evitar selección de texto al arrastrar */
+
+  /* Estado grabbing al arrastrar */
+  &--grabbing {
+    cursor: grabbing;
+    scroll-behavior: auto; /* Desactivar smooth durante drag */
+  }
 
   /* Scrollbar visible pero estilizado en desktop */
   @media (min-width: vars.$breakpoint-tablet) {

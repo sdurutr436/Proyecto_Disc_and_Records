@@ -7,6 +7,10 @@
   display: block;
   position: fixed;
   z-index: vars.$z-notification;
+  // Posición horizontal por defecto (top-right)
+  // El servicio dinámico sobrescribe esto con style inline
+  right: 2rem;
+  top: 1rem;
 }
 
 .notification {
