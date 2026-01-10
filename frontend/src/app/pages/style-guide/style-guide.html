@@ -1569,6 +1569,48 @@
           </div>
         </div>
 
+        <!-- Responsive Tabs (Desktop: Tabs / Móvil: Accordion) -->
+        <div class="showcase">
+          <h3>Responsive Tabs</h3>
+          <p class="showcase__description">
+            Componente que adapta su presentación según el viewport: Tabs en desktop (>768px), Accordion en móvil/tablet.
+            Usa <code>app-tab-panel</code> para definir el contenido de cada pestaña con content projection.
+          </p>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-responsive-tabs [breakpoint]="768" initialActiveTab="panel-info">
+                <app-tab-panel id="panel-info" label="Información">
+                  <div class="demo-tab-content">
+                    <h4>Panel de Información</h4>
+                    <p>Contenido proyectado mediante ng-content. Soporta HTML complejo, componentes anidados y cualquier contenido Angular.</p>
+                    <app-badge variant="primary">Ejemplo de Badge</app-badge>
+                  </div>
+                </app-tab-panel>
+                <app-tab-panel id="panel-config" label="Configuración">
+                  <div class="demo-tab-content">
+                    <h4>Panel de Configuración</h4>
+                    <p>Cada TabPanel puede tener contenido diferente y complejo.</p>
+                    <app-button variant="secondary" size="sm">Botón de ejemplo</app-button>
+                  </div>
+                </app-tab-panel>
+                <app-tab-panel id="panel-help" label="Ayuda">
+                  <div class="demo-tab-content">
+                    <h4>Panel de Ayuda</h4>
+                    <p>El componente maneja automáticamente la accesibilidad con roles ARIA y navegación por teclado.</p>
+                  </div>
+                </app-tab-panel>
+                <app-tab-panel id="panel-disabled" label="Deshabilitado" [disabled]="true">
+                  <div class="demo-tab-content">
+                    <h4>Panel Deshabilitado</h4>
+                    <p>Este panel no se puede seleccionar.</p>
+                  </div>
+                </app-tab-panel>
+              </app-responsive-tabs>
+              <code>ResponsiveTabs con TabPanel - Redimensiona para ver el cambio a accordion</code>
+            </div>
+          </div>
+        </div>
+
         <!-- Carrusel -->
         <div class="showcase">
           <h3>Carrusel de Álbumes</h3>

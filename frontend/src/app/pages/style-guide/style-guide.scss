@@ -467,6 +467,31 @@ app-breadcrumbs {
 }
 
 /* ========================================
+   DEMO - Contenido de TabPanel
+   ======================================== */
+.demo-tab-content {
+  padding: $espaciado-m;
+  background-color: var(--bg-secondary);
+  border: $borde-brutal-medium;
+  border-top: none;
+
+  h4 {
+    margin-bottom: $espaciado-s;
+    color: var(--text-primary);
+  }
+
+  p {
+    margin-bottom: $espaciado-s;
+    color: var(--text-secondary);
+  }
+
+  app-badge,
+  app-button {
+    margin-top: $espaciado-xs;
+  }
+}
+
+/* ========================================
    FUNDAMENTOS - Color Swatches
    ======================================== */
 .color-swatch {
