@@ -1544,36 +1544,27 @@
           </div>
         </div>
 
-        <!-- Responsive Tabs (Nuevas) -->
+        <!-- Tabs Simplificadas -->
         <div class="showcase">
-          <h3>Responsive Tabs (Pestañas Adaptativas)</h3>
+          <h3>Tabs con Scroll Lateral</h3>
           <p class="showcase__description">
-            Tabs en desktop que se convierten en accordion en móvil. Navegación por teclado y diseño neobrutalista.
+            Tabs neobrutalistas con scroll horizontal responsive. En desktop muestra scrollbar estilizado, en móvil scrollbar oculto.
           </p>
           <div class="showcase__column">
             <div class="showcase__item showcase__item--full">
-              <app-responsive-tabs [breakpoint]="768">
-                <app-tab-panel id="descripcion" label="Descripción">
-                  <h4>Descripción del Producto</h4>
-                  <p>Este es el contenido de la pestaña de descripción. Las tabs se adaptan automáticamente al tamaño de pantalla.</p>
-                </app-tab-panel>
-                <app-tab-panel id="especificaciones" label="Especificaciones">
-                  <h4>Especificaciones Técnicas</h4>
-                  <ul>
-                    <li>Característica 1: Responsive design</li>
-                    <li>Característica 2: Accordion en móvil</li>
-                    <li>Característica 3: Navegación por teclado</li>
-                  </ul>
-                </app-tab-panel>
-                <app-tab-panel id="resenias" label="Reseñas">
-                  <h4>Reseñas de Usuarios</h4>
-                  <p>Aquí aparecerían las reseñas de los usuarios sobre el producto.</p>
-                </app-tab-panel>
-                <app-tab-panel id="soporte" label="Soporte">
-                  <h4>Información de Soporte</h4>
-                  <p>Contacta con nuestro equipo de soporte para cualquier consulta.</p>
-                </app-tab-panel>
-              </app-responsive-tabs>
+              <app-tabs
+                [tabs]="[
+                  { id: 'tab1', label: 'Descripción' },
+                  { id: 'tab2', label: 'Especificaciones' },
+                  { id: 'tab3', label: 'Reseñas' },
+                  { id: 'tab4', label: 'Soporte' },
+                  { id: 'tab5', label: 'Garantía' },
+                  { id: 'tab6', label: 'Envío' },
+                  { id: 'tab7', label: 'Devoluciones' }
+                ]"
+                [activeTabId]="'tab1'">
+              </app-tabs>
+              <code>Tabs con scroll lateral para múltiples opciones</code>
             </div>
           </div>
         </div>

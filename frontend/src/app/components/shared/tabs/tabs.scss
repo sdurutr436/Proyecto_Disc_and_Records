@@ -1,129 +1,81 @@
 @use '../../../../styles/00-settings/variables' as vars;
-@use '../../../../styles/01-tools/mixins' as mix;
 
 /* ========================================
-   TABS - Brutal Neobrutalism
+   TABS - Simplified Neobrutalist Design with Responsive Scroll
    ======================================== */
 
-:host {
-  @include mix.host-block;
-}
-
 .tabs {
-  width: 100%;
-  border: vars.$borde-brutal-medium;
-  border-radius: vars.$radio-s;
-  background-color: var(--bg-primary);
-  overflow: hidden;
-}
-
-/* --- Navegación de tabs --- */
-.tabs__nav {
   display: flex;
-  background-color: var(--bg-secondary);
-  border-bottom: vars.$borde-brutal-medium;
-
+  gap: vars.$espaciado-s;
+  border-bottom: vars.$borde-brutal-thin;
   overflow-x: auto;
   overflow-y: hidden;
-  @include mix.hide-scrollbar;
+  -webkit-overflow-scrolling: touch; /* Smooth scroll en iOS */
+  scroll-behavior: smooth;
 
+  /* Scrollbar visible pero estilizado en desktop */
+  @media (min-width: vars.$breakpoint-tablet) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary) var(--bg-secondary);
+
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--color-primary);
+      border-radius: vars.$radio-xs;
+    }
+  }
+
+  /* Scrollbar oculto en móvil para más espacio */
+  @media (max-width: vars.$breakpoint-tablet) {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 
-
-/* --- Tab individual --- */
-.tabs__tab {
-  flex: 0 0 auto;
+.tabs__button {
   padding: vars.$espaciado-m vars.$espaciado-l;
+  background: transparent;
   border: none;
-  border-right: vars.$borde-brutal-thin;
-  background-color: transparent;
-  color: var(--text-primary);
-  font-family: vars.$fuente-principal;
-  font-size: vars.$tamanio-fuente-texto-pequeno-m;
+  border-bottom: 3px solid transparent;
+  color: var(--text-secondary);
+  font-size: vars.$tamanio-fuente-parrafo;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
+  transition: vars.$transicion-rapida;
   white-space: nowrap;
-  @include mix.text-uppercase;
+  flex-shrink: 0; /* Evita que los botones se compriman */
+  font-family: vars.$fuente-principal;
 
-  &:last-child {
-    border-right: none;
+  &:hover:not(.tabs__button--disabled) {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
   }
 
-  &:hover:not(.tabs__tab--disabled):not(.tabs__tab--active) {
-    background-color: var(--color-primary);
-    color: var(--text-dark);
-  }
-
-  @include mix.focus-visible;
-}
-
-/* --- Tab activo --- */
-.tabs__tab--active {
-  background-color: var(--color-primary);
-  color: var(--text-dark);
-  font-weight: 800;
-  box-shadow: inset 0 -4px 0 0 var(--text-dark);
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background-color: var(--color-primary);
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 }
 
-/* --- Tab deshabilitado --- */
-.tabs__tab--disabled {
+.tabs__button--active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  background: var(--bg-tertiary);
+}
+
+.tabs__button--disabled {
   opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
-}
-
-/* --- Panel de contenido --- */
-.tabs__panel {
-  padding: vars.$espaciado-l;
-  min-height: 12rem;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(0.5rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.tabs__content {
-  font-family: vars.$fuente-principal;
-  font-size: vars.$tamanio-fuente-texto-pequeno-m;
-  line-height: 1.6;
-  color: var(--text-primary);
-}
-
-/* ========================================
-   RESPONSIVE
-   ======================================== */
-@include mix.mobile-down {
-  .tabs__tab {
-    padding: vars.$espaciado-s vars.$espaciado-m;
-    font-size: vars.$tamanio-fuente-texto-pequeno-s;
-  }
-
-  .tabs__panel {
-    padding: vars.$espaciado-m;
-    min-height: 8rem;
-  }
-
-  .tabs__content {
-    font-size: vars.$tamanio-fuente-texto-pequeno-s;
-  }
 }

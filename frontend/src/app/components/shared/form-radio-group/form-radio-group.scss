@@ -39,10 +39,10 @@
   }
 
   &__radio {
-    width: calc(vars.$espaciado-l - vars.$espaciado-xs);
-    height: calc(vars.$espaciado-l - vars.$espaciado-xs);
-    min-width: calc(vars.$espaciado-l - vars.$espaciado-xs);
-    min-height: calc(vars.$espaciado-l - vars.$espaciado-xs);
+    width: 20px; // Tamaño razonable para radio button
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -54,10 +54,12 @@
   }
 
   &__dot {
-    width: 10px;
+    width: 10px; // Punto interno proporcional
     height: 10px;
     border-radius: 50%;
-    background-color: var(--text-primary);
+    background-color: var(--color-primary);
+    opacity: 0;
+    transform: scale(0);
     transition: all vars.$transicion-rapida;
   }
 
@@ -81,8 +83,12 @@
   }
 
   &__input:checked + &__radio {
-    background-color: var(--color-primary);
-    border-color: var(--border-color);
+    border-color: var(--color-primary);
+
+    .form-radio-group__dot {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   &--disabled {

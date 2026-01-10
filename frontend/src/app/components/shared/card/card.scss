@@ -270,7 +270,7 @@
 /* Placeholder emoji cuando no hay imagen */
 .card__placeholder {
   font-size: 4rem;
-  opacity: 0.3;
+  opacity: 0.5; // Aumentar visibilidad del placeholder
 
   // Variante SVG
   &--svg {
@@ -284,7 +284,7 @@
       width: 4rem;
       height: 4rem;
       stroke: var(--text-primary);
-      opacity: 0.4;
+      opacity: 0.6;
     }
   }
 }
