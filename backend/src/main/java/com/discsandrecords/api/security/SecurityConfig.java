@@ -175,7 +175,7 @@ public class SecurityConfig {
     /**
      * Configura CORS para permitir peticiones del frontend
      *
-     * NOTA: En producción, especificar dominios exactos en lugar de "*"
+     * NOTA: Usa AllowedOriginPatterns para soportar comodines en producción
      *
      * @return Fuente de configuración CORS
      */
@@ -184,13 +184,14 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Orígenes permitidos desde configuración
-        // En desarrollo: localhost:4200,localhost:3000 (funciona en cualquier PC)
-        // En producción: URL de DigitalOcean desde variable de entorno
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+        // En desarrollo: localhost:4200,localhost:3000
+        // En producción: URLs de DigitalOcean
+        // Usar AllowedOriginPatterns para permitir comodines como *.ondigitalocean.app
+        configuration.setAllowedOriginPatterns(Arrays.asList(allowedOrigins.split(",")));
 
         // Métodos HTTP permitidos
         configuration.setAllowedMethods(Arrays.asList(
-                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"
         ));
 
         // Headers permitidos
@@ -199,7 +200,15 @@ public class SecurityConfig {
                 "Content-Type",
                 "X-Requested-With",
                 "Accept",
-                "Origin"
+                "Origin",
+                "Access-Control-Request-Method",
+                "Access-Control-Request-Headers"
+        ));
+
+        // Headers expuestos en la respuesta
+        configuration.setExposedHeaders(Arrays.asList(
+                "Authorization",
+                "Content-Disposition"
         ));
 
         // Permitir credenciales (cookies, Authorization header)
