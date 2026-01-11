@@ -15,7 +15,7 @@
 }
 
 .header-content {
-  max-width: vars.$max-width-container;
+  max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -36,7 +36,7 @@
 
 // Stats Dashboard
 .stats-section {
-  max-width: vars.$max-width-container;
+  max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
   padding: vars.$espaciado-l vars.$espaciado-m;
   display: grid;
@@ -79,14 +79,14 @@
 
 // Tabs Navigation
 .admin-tabs-wrapper {
-  max-width: vars.$max-width-container;
+  max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
   padding: 0 vars.$espaciado-m;
 }
 
 // Content Area
 .admin-content {
-  max-width: vars.$max-width-container;
+  max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
   padding: vars.$espaciado-l vars.$espaciado-m;
 }

@@ -160,8 +160,8 @@
   }
 
   &__link-icon {
-    width: vars.$icon-lg;
-    height: vars.$icon-lg;
+    width: vars.$icono-l;
+    height: vars.$icono-l;
     color: var(--color-primary);
     transition: all vars.$transicion-base;
 
@@ -171,8 +171,8 @@
     }
 
     @include mixins.respond-to('tablet') {
-      width: vars.$icon-md;
-      height: vars.$icon-md;
+      width: vars.$icono-m;
+      height: vars.$icono-m;
     }
   }
 

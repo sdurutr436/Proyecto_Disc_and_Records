@@ -38,7 +38,7 @@ $header-height-mobile: calc($espaciado-xxl + $espaciado-s);
     box-shadow: $sombra-brutal-m;
     width: 48px;
     height: 48px;
-    min-height: $touch-min-height-md;
+    min-height: $altura-minima-touch-m;
     padding: 0;
     font-size: 1.5rem;
     position: relative;
@@ -105,7 +105,7 @@ $header-height-mobile: calc($espaciado-xxl + $espaciado-s);
     width: 150px; /* Ancho fijo para todos los botones */
     padding: $espaciado-s $espaciado-m;
     font-size: $tamanio-fuente-texto-pequeno-s;
-    min-height: $touch-min-height-md;
+    min-height: $altura-minima-touch-m;
     position: relative;
 
     &:hover {
@@ -172,7 +172,7 @@ $header-height-mobile: calc($espaciado-xxl + $espaciado-s);
   &__intro {
     font-size: $tamanio-fuente-h5;
     color: var(--text-primary);
-    max-width: calc($max-width-form * 1.5);
+    max-width: calc($ancho-maximo-formulario * 1.5);
     margin: 0 auto;
 
     @include mixins.respond-to('tablet') {
@@ -267,8 +267,8 @@ $header-height-mobile: calc($espaciado-xxl + $espaciado-s);
 
         app-card {
           display: block;
-          width: $max-width-card-polaroid;
-          max-width: $max-width-card-polaroid;
+          width: $ancho-maximo-card-polaroid;
+          max-width: $ancho-maximo-card-polaroid;
         }
       }
 
@@ -299,7 +299,7 @@ $header-height-mobile: calc($espaciado-xxl + $espaciado-s);
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax($max-width-card, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax($ancho-maximo-card, 1fr));
     gap: $espaciado-l $espaciado-m;
     align-items: start;
 
@@ -377,23 +377,23 @@ app-carousel {
   // El carrusel ya define flex: 0 0 200px para sus hijos
   .carousel__track > app-card {
     display: block;
-    flex: 0 0 $max-width-card-polaroid !important;
-    width: $max-width-card-polaroid !important;
-    min-width: $max-width-card-polaroid !important;
-    max-width: $max-width-card-polaroid !important;
+    flex: 0 0 $ancho-maximo-card-polaroid !important;
+    width: $ancho-maximo-card-polaroid !important;
+    min-width: $ancho-maximo-card-polaroid !important;
+    max-width: $ancho-maximo-card-polaroid !important;
 
     @include mixins.respond-to('tablet') {
-      flex: 0 0 calc($max-width-card-polaroid * 0.77) !important;
-      width: calc($max-width-card-polaroid * 0.77) !important;
-      min-width: calc($max-width-card-polaroid * 0.77) !important;
-      max-width: calc($max-width-card-polaroid * 0.77) !important;
+      flex: 0 0 calc($ancho-maximo-card-polaroid * 0.77) !important;
+      width: calc($ancho-maximo-card-polaroid * 0.77) !important;
+      min-width: calc($ancho-maximo-card-polaroid * 0.77) !important;
+      max-width: calc($ancho-maximo-card-polaroid * 0.77) !important;
     }
 
     @include mixins.respond-to('mobile') {
-      flex: 0 0 calc($max-width-card-polaroid * 0.68) !important;
-      width: calc($max-width-card-polaroid * 0.68) !important;
-      min-width: calc($max-width-card-polaroid * 0.68) !important;
-      max-width: calc($max-width-card-polaroid * 0.68) !important;
+      flex: 0 0 calc($ancho-maximo-card-polaroid * 0.68) !important;
+      width: calc($ancho-maximo-card-polaroid * 0.68) !important;
+      min-width: calc($ancho-maximo-card-polaroid * 0.68) !important;
+      max-width: calc($ancho-maximo-card-polaroid * 0.68) !important;
     }
   }
 }
@@ -452,7 +452,7 @@ app-breadcrumbs {
 }
 
 .style-guide__carousel-demo-range {
-  width: calc($max-width-card-polaroid * 0.68);
+  width: calc($ancho-maximo-card-polaroid * 0.68);
   max-width: 100%;
 }
 
@@ -570,7 +570,7 @@ app-breadcrumbs {
 }
 
 .showcase__grid--colors {
-  grid-template-columns: repeat(auto-fit, minmax(calc($max-width-card-polaroid * 0.68), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(calc($ancho-maximo-card-polaroid * 0.68), 1fr));
 }
 
 /* ========================================
@@ -653,7 +653,7 @@ app-breadcrumbs {
   gap: $espaciado-mini;
   border: $borde-brutal-medium;
   background-color: var(--border-color);
-  max-width: calc($max-width-form * 0.9); // Reducido de 1.5 a 0.9
+  max-width: calc($ancho-maximo-formulario * 0.9); // Reducido de 1.5 a 0.9
   margin: 0 auto;
   border-radius: $radio-s;
   overflow: hidden;
@@ -678,7 +678,7 @@ app-breadcrumbs {
   }
 
   &__sidebar {
-    flex: 0 0 calc($max-width-card-polaroid * 0.4); // Reducido de 0.68 a 0.4
+    flex: 0 0 calc($ancho-maximo-card-polaroid * 0.4); // Reducido de 0.68 a 0.4
     background-color: var(--bg-secondary);
     padding: $espaciado-s; // Reducido
     display: flex;
@@ -1198,7 +1198,7 @@ app-breadcrumbs {
     border-radius: $radio-xs;
     top: 2px;
     left: 2px;
-    transition: transform $transicion-base $ease-brutal;
+    transition: transform $transicion-base $curva-brutal;
   }
 
   // Estado checked (activado)
@@ -1498,7 +1498,7 @@ app-breadcrumbs {
   display: flex;
   flex-direction: column;
   gap: $espaciado-mini;
-  max-width: $max-width-form; // Reducido para ser más compacto
+  max-width: $ancho-maximo-formulario; // Reducido para ser más compacto
   margin: 0 auto;
 
   &__item {

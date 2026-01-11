@@ -92,9 +92,24 @@ $altura-linea-texto-pequeno-s: 1.5rem;
 $tamanio-fuente-texto-pequeno-xs: 0.75rem;
 $altura-linea-texto-pequeno-xs: 1rem;
 
+// Texto micro (para badges pequeños, etc.)
+$tamanio-fuente-micro: 0.625rem;
+$altura-linea-micro: 0.875rem;
+
 // Texto leyenda
 $tamanio-fuente-leyenda: 0.75rem italic;
 $altura-linea-leyenda: 1rem;
+
+// Fuentes display (para títulos decorativos grandes)
+$tamanio-fuente-display-xs: 1.25rem;   // 20px
+$tamanio-fuente-display-s: 1.5rem;     // 24px
+$tamanio-fuente-display-m: 1.75rem;    // 28px
+$tamanio-fuente-display-l: 2rem;       // 32px
+$tamanio-fuente-display-xl: 2.5rem;    // 40px
+$tamanio-fuente-display-xxl: 4rem;     // 64px - página 404
+$tamanio-fuente-display-hero: 5rem;    // 80px - títulos hero
+$tamanio-fuente-display-mega: 8rem;    // 128px - responsive 404
+$tamanio-fuente-display-ultra: 12rem;  // 192px - 404 desktop
 
 /* --- Variables de espaciado --- */
 // Micro-espaciados para transforms y efectos sutiles (2-4px)
@@ -127,6 +142,7 @@ $breakpoint-ultra-wide: 1600px;
 $sombra-brutal-micro: 1px 1px 0px $color-letra-oscura;
 $sombra-brutal-mini: 2px 2px 0px $color-letra-oscura;
 $sombra-brutal-xs: 2px 2px 0px $color-letra-oscura;
+$sombra-brutal-xs-plus: 3px 3px 0px $color-letra-oscura;  // Intermedio entre xs y s
 $sombra-brutal-s: 4px 4px 0px $color-letra-oscura;
 $sombra-brutal-m: 6px 6px 0px $color-letra-oscura;
 $sombra-brutal-l: 8px 8px 0px $color-letra-oscura;
@@ -234,11 +250,13 @@ $borde-primario-dark: 3px solid $color-primario-dark;
    VARIABLES DE BORDER RADIUS
    ======================================== */
 $radio-ninguno: 0px;
+$radio-micro: 2px;      // Para elementos muy sutiles (focus rings, etc.)
 $radio-xs: 3px;
 $radio-s: 5px;          // Radio principal - sutil pero visible
 $radio-m: 8px;
 $radio-l: 12px;
 $radio-xl: 16px;
+$radio-xxl: 20px;       // Para cards con bordes muy redondeados
 $radio-redondo: 50%;    // Para elementos circulares
 $radio-pildora: 9999px; // Para botones tipo píldora
 
@@ -251,8 +269,8 @@ $transicion-lenta: 500ms ease-in-out;    // Transiciones complejas (modales, aco
 $transicion-muy-lenta: 700ms ease-in-out; // Animaciones decorativas
 
 /* Funciones de timing específicas */
-$ease-brutal: cubic-bezier(0.25, 0.46, 0.45, 0.94);  // Transición "snappy" para neobrutalismo
-$ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); // Efecto rebote retro
+$curva-brutal: cubic-bezier(0.25, 0.46, 0.45, 0.94);  // Transición "snappy" para neobrutalismo
+$curva-rebote: cubic-bezier(0.68, -0.55, 0.265, 1.55); // Efecto rebote retro
 
 /* ========================================
    Z-INDEX SCALE
@@ -275,33 +293,33 @@ $z-spinner: 10;       // Spinner de carga global
 /* ========================================
    TAMAÑOS DE ICONOS
    ======================================== */
-$icon-xs: 1rem;
-$icon-sm: 1.25rem;
-$icon-md: 1.5rem;
-$icon-lg: 2rem;
-$icon-xl: 3rem;
+$icono-xs: 1rem;
+$icono-s: 1.25rem;
+$icono-m: 1.5rem;
+$icono-l: 2rem;
+$icono-xl: 3rem;
 
 /* ========================================
    ANCHO MÁXIMO DE CONTENEDORES
    ======================================== */
-$max-width-container: 1440px;
-$max-width-modal: 36rem;
-$max-width-form: 400px;
-$max-width-card: 280px;
-$max-width-card-polaroid: 220px;
+$ancho-maximo-contenedor: 1440px;
+$ancho-maximo-modal: 36rem;
+$ancho-maximo-formulario: 400px;
+$ancho-maximo-card: 280px;
+$ancho-maximo-card-polaroid: 220px;
 
 /* ========================================
    TAMAÑOS TOUCH ACCESSIBILITY
    ======================================== */
-$touch-min-height-sm: 36px;
-$touch-min-height-md: 44px;
-$touch-min-height-lg: 52px;
+$altura-minima-touch-s: 36px;
+$altura-minima-touch-m: 44px;
+$altura-minima-touch-l: 52px;
 
 /* ========================================
    DURACIONES DE ANIMACIÓN
    ======================================== */
-$duration-instant: 100ms;
-$duration-fast: 150ms;
-$duration-normal: 300ms;
-$duration-slow: 500ms;
-$duration-very-slow: 700ms;
+$duracion-instantanea: 100ms;
+$duracion-rapida: 150ms;
+$duracion-normal: 300ms;
+$duracion-lenta: 500ms;
+$duracion-muy-lenta: 700ms;

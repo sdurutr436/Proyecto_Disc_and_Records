@@ -18,7 +18,7 @@
 
 /* --- Contenido del footer --- */
 .footer__content {
-  max-width: vars.$max-width-container;
+  max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
   padding: 0 vars.$espaciado-m;
   display: flex;
@@ -130,7 +130,7 @@
   box-shadow: vars.$sombra-brutal-m;
   position: relative;
   white-space: nowrap;
-  min-width: vars.$max-width-form;
+  min-width: vars.$ancho-maximo-formulario;
   text-align: center;
   text-decoration: none;
 
@@ -160,7 +160,7 @@
 
 .footer__btn--left-middle {
   background-color: var(--color-primary);
-  min-width: calc(vars.$max-width-form * 1.1);
+  min-width: calc(vars.$ancho-maximo-formulario * 1.1);
   border-right: none;
   border-radius: vars.$radio-pildora 0 0 vars.$radio-pildora;
   border-top: vars.$borde-brutal-medium;
@@ -184,7 +184,7 @@
 
 .footer__btn--right-middle {
   background-color: var(--color-primary);
-  min-width: calc(vars.$max-width-form * 1.1);
+  min-width: calc(vars.$ancho-maximo-formulario * 1.1);
   border-left: none;
   border-radius: 0 vars.$radio-pildora vars.$radio-pildora 0;
   border-top: vars.$borde-brutal-medium;

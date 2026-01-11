@@ -185,7 +185,7 @@
     background-color: var(--color-primary);
     color: var(--text-dark);
     padding: vars.$espaciado-xs vars.$espaciado-s;
-    border-radius: 20px;
+    border-radius: vars.$radio-xxl;
     @include mixins.font-size-line('texto-pequeno-s');
     font-weight: 600;
     box-shadow: 0 2px 8px color-mix(in srgb, var(--shadow-color) 20%, transparent);

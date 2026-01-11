@@ -114,7 +114,7 @@
   .tooltip {
     /* En móvil, permitir que el texto se ajuste en múltiples líneas */
     white-space: normal;
-    max-width: calc(vars.$max-width-card-polaroid - vars.$espaciado-l);
+    max-width: calc(vars.$ancho-maximo-card-polaroid - vars.$espaciado-l);
     font-size: vars.$tamanio-fuente-texto-pequeno-xs;
     padding: vars.$espaciado-xs vars.$espaciado-s;
   }

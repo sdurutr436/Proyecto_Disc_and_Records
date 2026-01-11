@@ -20,7 +20,7 @@
   transition: all vars.$transicion-rapida;
 
   // Tamaño por defecto (md)
-  padding: 4px vars.$espaciado-s;
+  padding: vars.$espaciado-tiny vars.$espaciado-s;
   font-size: 0.75rem;
   border-radius: vars.$radio-xs;
   box-shadow: 2px 2px 0px var(--shadow-color);
@@ -31,13 +31,13 @@
    ======================================== */
 
 .badge--sm {
-  padding: 2px vars.$espaciado-xs;
+  padding: vars.$espaciado-micro vars.$espaciado-xs;
   font-size: 0.625rem;
   box-shadow: 1px 1px 0px var(--shadow-color);
 }
 
 .badge--md {
-  padding: 4px vars.$espaciado-s;
+  padding: vars.$espaciado-tiny vars.$espaciado-s;
   font-size: 0.75rem;
   box-shadow: 2px 2px 0px var(--shadow-color);
 }

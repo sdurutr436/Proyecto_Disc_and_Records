@@ -36,7 +36,7 @@
     font-size: vars.$tamanio-fuente-texto-pequeno-m;
     font-weight: 500;
     transition: all vars.$transicion-rapida;
-    padding: 2px 4px;
+    padding: vars.$espaciado-micro vars.$espaciado-tiny;
     border-radius: vars.$radio-xs;
 
     &:hover {
@@ -53,7 +53,7 @@
   &__text {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: vars.$espaciado-tiny;
     font-size: vars.$tamanio-fuente-texto-pequeno-m;
     font-weight: 500;
     color: var(--text-primary);

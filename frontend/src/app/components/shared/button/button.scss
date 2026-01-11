@@ -15,7 +15,7 @@
   // Tamaño por defecto (medium)
   padding: vars.$espaciado-s vars.$espaciado-l;
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
-  min-height: vars.$touch-min-height-md;
+  min-height: vars.$altura-minima-touch-m;
 }
 
 /* ========================================
@@ -105,21 +105,21 @@
 .button--sm {
   padding: vars.$espaciado-xs vars.$espaciado-m;
   font-size: vars.$tamanio-fuente-texto-pequeno-xs;
-  min-height: vars.$touch-min-height-sm;
+  min-height: vars.$altura-minima-touch-s;
 }
 
 /* --- Tamaño: Medium (ya definido en base) --- */
 .button--md {
   padding: vars.$espaciado-s vars.$espaciado-l;
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
-  min-height: vars.$touch-min-height-md;
+  min-height: vars.$altura-minima-touch-m;
 }
 
 /* --- Tamaño: Large --- */
 .button--lg {
   padding: vars.$espaciado-m vars.$espaciado-xl;
   font-size: vars.$tamanio-fuente-texto-pequeno-m;
-  min-height: vars.$touch-min-height-lg;
+  min-height: vars.$altura-minima-touch-l;
 }
 
 /* ========================================
@@ -174,8 +174,8 @@
 
 /* Tamaño del spinner según tamaño del botón */
 .button--sm .button__spinner {
-  width: vars.$icon-sm;
-  height: vars.$icon-sm;
+  width: vars.$icono-s;
+  height: vars.$icono-s;
 }
 
 .button--lg .button__spinner {

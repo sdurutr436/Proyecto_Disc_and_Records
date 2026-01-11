@@ -30,7 +30,7 @@
   transition: all vars.$transicion-base;
 
   @include mix.mobile-down {
-    min-width: vars.$max-width-card;
+    min-width: vars.$ancho-maximo-card;
     max-width: calc(100vw - 2rem);
   }
 

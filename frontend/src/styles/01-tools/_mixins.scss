@@ -255,7 +255,7 @@
 }
 
 // Contenedor de formulario completo (wrapper externo)
-@mixin form-container($max-width: vars.$max-width-form) {
+@mixin form-container($max-width: vars.$ancho-maximo-formulario) {
   @include flex-column(vars.$espaciado-m);
   max-width: $max-width;
   margin: 0 auto;
