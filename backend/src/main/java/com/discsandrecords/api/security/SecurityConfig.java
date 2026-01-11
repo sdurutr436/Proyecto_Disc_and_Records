@@ -141,9 +141,10 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll()
 
                         // ============ RUTAS DE LECTURA PÚBLICA ============
-                        // Cualquiera puede ver discos, artistas, géneros, etc.
-                        .requestMatchers(HttpMethod.GET, "/api/discos/**").permitAll()
+                        // Cualquiera puede ver álbumes, artistas, géneros, etc.
+                        .requestMatchers(HttpMethod.GET, "/api/albumes/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/artistas/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/canciones/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/generos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/resenas/**").permitAll()
 
