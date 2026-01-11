@@ -1,15 +1,40 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, delay, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Song, Review } from '../models/data.models';
+import { BaseHttpService } from './base-http.service';
+import { API_ENDPOINTS } from '../config/api.config';
 
 /**
- * Servicio para gestionar datos de canciones
- * TODO: Reemplazar datos mock con llamadas HTTP reales al backend
+ * SongService - Servicio de gestión de canciones
+ *
+ * ARQUITECTURA: Hereda de BaseHttpService
+ * - Métodos HTTP listos para producción (comentados)
+ * - Datos mock para desarrollo (activos)
+ * - Fácil cambio entre mock y API real
+ *
+ * MIGRACIÓN A API REAL:
+ * 1. Descomentar métodos HTTP (getSongByIdHttp, etc.)
+ * 2. Cambiar los métodos públicos para usar las versiones HTTP
+ * 3. Eliminar o comentar datos mock
+ *
+ * @example
+ * ```typescript
+ * // Desarrollo (actual)
+ * getSongById(id: string) {
+ *   return this.getSongByIdMock(id);
+ * }
+ *
+ * // Producción (cuando backend esté listo)
+ * getSongById(id: string) {
+ *   return this.getSongByIdHttp(id);
+ * }
+ * ```
  */
 @Injectable({
   providedIn: 'root'
 })
-export class SongService {
+export class SongService extends BaseHttpService {
 
   // Datos mock para desarrollo
   private mockSongs: Song[] = [
@@ -75,11 +100,125 @@ export class SongService {
     ]
   };
 
+  // ==============================================
+  // MÉTODOS PÚBLICOS (Actualmente usan MOCK)
+  // ==============================================
+
   /**
    * Obtiene una canción por su ID
-   * Simula latencia de red con delay
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a getSongByIdHttp(id)
    */
   getSongById(id: string): Observable<Song | null> {
+    return this.getSongByIdMock(id);
+    // return this.getSongByIdHttp(id); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
+   * Obtiene las reseñas de una canción
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a getSongReviewsHttp(songId)
+   */
+  getSongReviews(songId: string): Observable<Review[]> {
+    return this.getSongReviewsMock(songId);
+    // return this.getSongReviewsHttp(songId); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
+   * Busca canciones por término
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a searchSongsHttp(query)
+   */
+  searchSongs(query: string): Observable<Song[]> {
+    return this.searchSongsMock(query);
+    // return this.searchSongsHttp(query); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
+   * Obtiene todas las canciones
+   *
+   * ACTUAL: Usa datos mock
+   * PRODUCCIÓN: Cambiar a getAllSongsHttp()
+   */
+  getAllSongs(): Observable<Song[]> {
+    return this.getAllSongsMock();
+    // return this.getAllSongsHttp(); // ⬅️ Descomentar para usar API real
+  }
+
+  /**
+   * Añade una reseña a una canción
+   *
+   * PRODUCCIÓN: Usar cuando el backend esté listo
+   */
+  addSongReview(songId: string, review: Partial<Review>): Observable<Review> {
+    return this.post<Review>(API_ENDPOINTS.songs.addReview(songId), review);
+  }
+
+  // ==============================================
+  // MÉTODOS HTTP (Listos para producción)
+  // ==============================================
+
+  /**
+   * [HTTP] Obtiene una canción por su ID desde la API
+   *
+   * Endpoint: GET /api/songs/:id
+   *
+   * @param id - ID de la canción
+   * @returns Observable con la canción o null si no existe
+   */
+  private getSongByIdHttp(id: string): Observable<Song | null> {
+    return this.get<Song>(API_ENDPOINTS.songs.getById(id)).pipe(
+      catchError(error => {
+        // Si es 404, retornar null en lugar de error
+        if (error.status === 404) {
+          return of(null);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * [HTTP] Obtiene las reseñas de una canción desde la API
+   *
+   * Endpoint: GET /api/songs/:id/reviews
+   */
+  private getSongReviewsHttp(songId: string): Observable<Review[]> {
+    return this.get<Review[]>(API_ENDPOINTS.songs.getReviews(songId));
+  }
+
+  /**
+   * [HTTP] Busca canciones desde la API
+   *
+   * Endpoint: GET /api/songs/search?q=query
+   */
+  private searchSongsHttp(query: string): Observable<Song[]> {
+    return this.get<Song[]>(API_ENDPOINTS.songs.search, {
+      params: { q: query }
+    });
+  }
+
+  /**
+   * [HTTP] Obtiene todas las canciones desde la API
+   *
+   * Endpoint: GET /api/songs
+   */
+  private getAllSongsHttp(): Observable<Song[]> {
+    return this.get<Song[]>(API_ENDPOINTS.songs.getAll);
+  }
+
+  // ==============================================
+  // MÉTODOS MOCK (Desarrollo)
+  // ==============================================
+
+  /**
+   * [MOCK] Obtiene una canción por su ID
+   * Simula latencia de red con delay
+   */
+  private getSongByIdMock(id: string): Observable<Song | null> {
     const song = this.mockSongs.find(s => s.id === id);
 
     if (!song) {
@@ -90,17 +229,17 @@ export class SongService {
   }
 
   /**
-   * Obtiene las reseñas de una canción
+   * [MOCK] Obtiene las reseñas de una canción
    */
-  getSongReviews(songId: string): Observable<Review[]> {
+  private getSongReviewsMock(songId: string): Observable<Review[]> {
     const reviews = this.mockReviews[songId] || [];
     return of(reviews).pipe(delay(300));
   }
 
   /**
-   * Busca canciones por término
+   * [MOCK] Busca canciones por término
    */
-  searchSongs(query: string): Observable<Song[]> {
+  private searchSongsMock(query: string): Observable<Song[]> {
     const results = this.mockSongs.filter(song =>
       song.title.toLowerCase().includes(query.toLowerCase()) ||
       song.artist.toLowerCase().includes(query.toLowerCase()) ||
@@ -111,9 +250,9 @@ export class SongService {
   }
 
   /**
-   * Obtiene todas las canciones
+   * [MOCK] Obtiene todas las canciones
    */
-  getAllSongs(): Observable<Song[]> {
+  private getAllSongsMock(): Observable<Song[]> {
     return of(this.mockSongs).pipe(delay(300));
   }
 }
