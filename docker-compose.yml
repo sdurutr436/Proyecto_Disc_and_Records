@@ -47,8 +47,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mariadb://database:3306/${MYSQL_DATABASE:-discsandrecords}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-discuser}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-discpass}
-      # JPA
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      # JPA - create-drop para desarrollo (limpia y recrea tablas en cada inicio)
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
       SPRING_JPA_SHOW_SQL: "false"
       # CORS - Permitir Frontend en Docker (http://frontend o localhost)
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:80,http://localhost,http://localhost:4200}
