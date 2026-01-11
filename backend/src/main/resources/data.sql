@@ -265,3 +265,14 @@ INSERT INTO usuario_cancion (id_usuario, id_cancion, escuchada, puntuacion, text
 (2, 4, true, 5, 'Wish You Were Here me hace llorar cada vez.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (3, 42, true, 5, 'Blue in Green es melancolía pura. Bill Evans en su máximo.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (4, 31, true, 5, 'Heroes: el himno del optimismo en tiempos oscuros.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- ===========================================
+-- USUARIO ADMIN INICIAL (para testing)
+-- ===========================================
+-- Email: admin@discsandrecords.com
+-- Contraseña: Admin123! (hasheada con BCrypt)
+-- Nota: El hash es de prueba, en producción usar valores reales
+INSERT INTO usuarios (nombre_usuario, mail, contrasena, avatar, biografia, fecha_registro, rol, activo) VALUES 
+('admin_system', 'admin@discsandrecords.com', '$2a$10$PNvY5FPPfJQfmKnPXo7VdOkgGLhfY.ZQGG5Wz5M6RqXzPgGKEUEAe', 
+ 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin', 
+ 'Administrador del sistema - Cuenta de prueba', 
+ CURRENT_TIMESTAMP, 'ROLE_ADMIN', true);

@@ -23,14 +23,16 @@
 export const API_CONFIG = {
   /**
    * URL base del backend
-   * En producción, esto debería venir de variables de entorno
+   * Detecta automáticamente si está en Docker o desarrollo local
    *
-   * OPCIONES:
-   * - Desarrollo: 'http://localhost:8080/api'
-   * - Docker: 'http://backend:8080/api'
-   * - Producción: 'https://api.discandrecords.com/api'
+   * LÓGICA:
+   * - Si el host es 'localhost': usa 'http://localhost:8080/api' (desarrollo)
+   * - Si el host es diferente: usa 'http://backend:8080/api' (Docker)
+   * - En producción, puede sobrescribirse con variable de entorno
    */
-  baseUrl: 'http://localhost:8080/api',
+  baseUrl: typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
+    ? 'http://backend:8080/api' 
+    : 'http://localhost:8080/api',
 
   /**
    * Timeout para peticiones HTTP (ms)
