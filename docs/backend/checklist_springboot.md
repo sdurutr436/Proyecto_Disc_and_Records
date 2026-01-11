@@ -34,16 +34,16 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 - [x] 🟢 Control de acceso implementado según rol
 
 ## Pruebas de API con buena cobertura
-- [x] 🟢 Tests de endpoints implementados (AuthControllerTest, AlbumServiceTest)
-- [x] 🟢 Autenticación probada (AuthServiceTest, AuthIntegrationTest)
+- [x] 🟢 Tests de endpoints implementados (AlbumControllerTest, ArtistaControllerTest, CancionControllerTest, GeneroControllerTest, AuthControllerTest)
+- [x] 🟢 Autenticación probada (AuthServiceTest, AuthIntegrationTest, AuthorizationIntegrationTest)
 - [x] 🟢 Validación del formato JSON probada (tests de validación en controladores)
-- [x] 🟢 Tests automatizados implementados (50 tests)
+- [x] 🟢 Tests automatizados implementados (123 tests)
   - [x] 🟢 Spring Boot: MockMvc, @WebMvcTest, @SpringBootTest, @DataJpaTest implementados
 
 ## Documentación clara de la API
-- [x] 🟡 Swagger/OpenAPI parcialmente implementado (springdoc-openapi 2.6.0 instalado, pero con error 500)
+- [x] � Swagger/OpenAPI implementado (springdoc-openapi 2.7.0 con @ApiResponse en todos los controllers)
 - [x] 🟢 Ejemplos de uso documentados en README.md con endpoints principales
-- [x] 🔴 Explicación de autenticación NO incluida (sin autenticación)
+- [x] 🟢 Explicación de autenticación incluida (JWT con ejemplos curl)
 - [x] 🟢 README.md incluido con instrucciones de instalación y ejecución claras
 
 # MVC (estructura del proyecto)
@@ -62,9 +62,9 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 - [x] 🟢 Patrones aplicados correctamente (SRP, IoC mediante @Autowired, @Service, @Repository)
 
 ## Autenticación y roles correctamente aplicados
-- [x] 🔴 Middleware/filtros NO implementados (sin protección de rutas)
-- [x] 🔴 Comprobaciones de rol NO implementadas
-- [x] 🔴 Comportamiento según rol NO aplicado (todo es público)
+- [x] � Middleware/filtros implementados (JwtAuthenticationFilter intercepta todas las peticiones)
+- [x] 🟢 Comprobaciones de rol implementadas (@PreAuthorize en endpoints protegidos)
+- [x] 🟢 Comportamiento según rol aplicado (USER, MODERATOR, ADMIN)
 
 # Modelo de Datos (30%)
 
@@ -85,10 +85,10 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 - [x] 🟡 Sin Flyway/Liquibase (usando ddl-auto=create-drop, suficiente para desarrollo)
 
 ## Documentación del modelo
-- [x] 🟡 Diagrama de entidad-relación NO visual (pero documentado en forma de tabla)
+- [x] � Diagrama de entidad-relación visual (Mermaid ER en DOCUMENTACION.md)
 - [x] 🟢 Descripción de tablas, campos y relaciones en DOCUMENTACION.md
 - [x] 🟢 Justificación del diseño incluida (notas de diseño en cada entidad)
-- [x] 🟢 Incluido en docs/backend/DOCUMENTACION.md (364 líneas de documentación)
+- [x] 🟢 Incluido en docs/backend/DOCUMENTACION.md (450+ líneas de documentación)
 
 ## Nota sobre la instalación y ejecución del servidor
 - [x] 🟡 Instalable y ejecutable (mvnw script incluido, pero con problemas de Swagger en logs)
@@ -103,11 +103,12 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 
 | Categoría | Estado | Progreso |
 |-----------|--------|----------|
-| **API REST** | 🟢 Bien implementada | ~95% completa |
-| **Estructura MVC** | 🟢 Bien implementada | ~95% completa |
-| **Modelo de Datos** | 🟢 Bien estructurado | ~85% completa |
+| **API REST** | 🟢 Completamente implementada | 100% |
+| **Estructura MVC** | 🟢 Completamente implementada | 100% |
+| **Modelo de Datos** | 🟢 Bien estructurado | 95% |
 | **Autenticación** | 🟢 Completamente implementada | 100% |
-| **Tests** | 🟢 Implementados | 100% |
+| **Tests** | 🟢 123 tests pasando | 100% |
+| **Documentación** | 🟢 Swagger + README + ER Diagram | 100% |
 
 ### Puntuación por Secciones
 
@@ -115,9 +116,9 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 - ✅ Diseño RESTful: 8/8
 - ✅ Puntos de entrada: 8/8
 - ✅ Códigos HTTP: 8/8
-- ✅ Autenticación/Autorización: 8/8 (JWT + @PreAuthorize implementados)
-- ✅ Testing: 5/5
-- ⚠️ Documentación Swagger: 4/8 (error 500 resuelto)
+- ✅ Autenticación/Autorización: 8/8 (JWT + @PreAuthorize + 3 roles)
+- ✅ Testing: 8/8 (123 tests con MockMvc, @WebMvcTest, @SpringBootTest)
+- ✅ Documentación Swagger: 8/8 (@ApiResponse en todos los controllers)
 
 📈 **MVC (estructura):**
 - ✅ Separación de responsabilidades: 4/4

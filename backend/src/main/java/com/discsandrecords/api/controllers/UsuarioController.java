@@ -27,6 +27,8 @@ import com.discsandrecords.api.services.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -76,12 +78,20 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener usuario por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     public ResponseEntity<UsuarioResponseDTO> obtenerPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.obtenerPorId(id));
     }
 
     @GetMapping("/username/{nombreUsuario}")
     @Operation(summary = "Obtener usuario por nombre de usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     public ResponseEntity<UsuarioResponseDTO> obtenerPorNombreUsuario(@PathVariable String nombreUsuario) {
         return ResponseEntity.ok(usuarioService.obtenerPorNombreUsuario(nombreUsuario));
     }
@@ -117,6 +127,13 @@ public class UsuarioController {
      */
     @PostMapping
     @Operation(summary = "Crear un nuevo usuario (Admin)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de validación inválidos"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos suficientes"),
+            @ApiResponse(responseCode = "409", description = "Usuario o email ya existen")
+    })
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioResponseDTO> crear(@RequestBody @Valid CreateUsuarioDTO dto) {
         UsuarioResponseDTO creado = usuarioService.crear(dto);
@@ -131,6 +148,13 @@ public class UsuarioController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un usuario existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado"),
+            @ApiResponse(responseCode = "400", description = "Datos de validación inválidos"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos suficientes"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
     public ResponseEntity<UsuarioResponseDTO> actualizar(
             @PathVariable Long id,
@@ -143,6 +167,12 @@ public class UsuarioController {
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un usuario (Admin)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Usuario eliminado"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos suficientes"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         usuarioService.eliminar(id);
