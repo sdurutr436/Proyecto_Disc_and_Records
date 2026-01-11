@@ -26,13 +26,13 @@ export const API_CONFIG = {
    * Detecta automáticamente si está en Docker o desarrollo local
    *
    * LÓGICA:
-   * - Si el host es 'localhost': usa 'http://localhost:8080/api' (desarrollo)
-   * - Si el host es diferente: usa 'http://backend:8080/api' (Docker)
+   * - Si accedes desde localhost:4200 (ng serve): usa 'http://localhost:8080/api' (backend directo)
+   * - Si accedes desde localhost (puerto 80, Docker): usa '/api' (nginx proxy)
    * - En producción, puede sobrescribirse con variable de entorno
    */
-  baseUrl: typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
-    ? 'http://backend:8080/api' 
-    : 'http://localhost:8080/api',
+  baseUrl: typeof window !== 'undefined' && window.location.port === '4200'
+    ? 'http://localhost:8080/api'  // Desarrollo local con ng serve
+    : '/api',  // Producción Docker (nginx proxy)
 
   /**
    * Timeout para peticiones HTTP (ms)

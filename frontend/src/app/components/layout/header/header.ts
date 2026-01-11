@@ -2,6 +2,8 @@ import { Component, signal, HostListener, inject, OnInit, OnDestroy } from '@ang
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ThemeService } from '../../../services/theme';
+import { AuthService } from '../../../services/auth';
+import { AppStateService } from '../../../services/app-state';
 import { Modal } from '../../shared/modal/modal';
 import { LoginForm } from '../../shared/login-form/login-form';
 import { RegisterForm } from '../../shared/register-form/register-form';
@@ -20,6 +22,8 @@ type AuthModalType = 'none' | 'login' | 'register' | 'forgot-password';
 })
 export class Header implements OnInit, OnDestroy {
   private router = inject(Router);
+  authService = inject(AuthService);
+  appState = inject(AppStateService);
 
   isMenuOpen = signal(false);
   themeService = inject(ThemeService);
@@ -60,6 +64,29 @@ export class Header implements OnInit, OnDestroy {
    */
   navigateToHome() {
     this.router.navigate(['/']);
+  }
+
+  /**
+   * Navegar al perfil del usuario
+   */
+  navigateToProfile() {
+    this.router.navigate(['/profile']);
+  }
+
+  /**
+   * Cerrar sesión
+   */
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/']);
+  }
+
+  /**
+   * Callback cuando el login es exitoso
+   * Cierra el modal automáticamente
+   */
+  onLoginSuccess() {
+    this.closeAuthModal();
   }
 
   // ============================================

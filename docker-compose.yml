@@ -53,7 +53,7 @@ services:
       # CORS - Permitir Frontend en Docker (http://frontend o localhost)
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:80,http://localhost,http://localhost:4200}
       # JWT
-      JWT_SECRET: ${JWT_SECRET:-mi-clave-secreta-super-segura-de-256-bits-para-jwt}
+      JWT_SECRET: ${JWT_SECRET:-miClaveSecretaSuperSeguraDe256BitsParaJWT2024DiscsAndRecords}
       JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
       # Profile
       SPRING_PROFILES_ACTIVE: docker
