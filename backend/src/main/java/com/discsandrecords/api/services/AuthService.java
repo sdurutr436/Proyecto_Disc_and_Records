@@ -182,4 +182,39 @@ public class AuthService {
                 usuario.getRole().name()
         );
     }
+
+    // ==========================================
+    // OBTENER USUARIO ACTUAL (ME)
+    // ==========================================
+
+    /**
+     * Obtiene los datos del usuario autenticado desde el SecurityContext
+     *
+     * PROCESO:
+     * 1. Extraer el principal (Usuario) del objeto Authentication
+     * 2. Retornar los datos del usuario sin generar nuevo token
+     *
+     * NOTA: Este método no genera un nuevo token porque el frontend
+     * ya tiene un token válido (de lo contrario no podría llamar a este endpoint).
+     * Si se necesita refrescar el token, se debería implementar un endpoint
+     * de refresh token separado.
+     *
+     * @param authentication Objeto de autenticación de Spring Security
+     * @return AuthResponseDTO con datos del usuario (token null porque ya lo tiene)
+     */
+    @Transactional(readOnly = true)
+    public AuthResponseDTO obtenerUsuarioActual(org.springframework.security.core.Authentication authentication) {
+        // El principal es el Usuario porque implementa UserDetails
+        Usuario usuario = (Usuario) authentication.getPrincipal();
+
+        // Retornar respuesta sin token (el frontend ya tiene uno válido)
+        // Si se quiere refrescar el token, se puede generar uno nuevo aquí
+        return new AuthResponseDTO(
+                null, // No enviamos nuevo token, el frontend ya tiene uno válido
+                usuario.getId(),
+                usuario.getNombreUsuario(),
+                usuario.getMail(),
+                usuario.getRole().name()
+        );
+    }
 }

@@ -66,6 +66,18 @@ public interface UsuarioAlbumRepository extends JpaRepository<UsuarioAlbum, Usua
     @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true ORDER BY ua.fechaAgregada DESC")
     List<UsuarioAlbum> findEscuchadosPorUsuario(@Param("usuarioId") Long usuarioId);
     
+    /**
+     * Contar álbumes escuchados por un usuario específico
+     */
+    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true")
+    Long contarEscuchadosPorUsuario(@Param("usuarioId") Long usuarioId);
+    
+    /**
+     * Contar reseñas (con texto) de un usuario
+     */
+    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.textoResena IS NOT NULL")
+    Long contarResenasPorUsuario(@Param("usuarioId") Long usuarioId);
+    
     // ==========================================
     // QUERIES PERSONALIZADAS - ESTADÍSTICAS
     // ==========================================
@@ -114,4 +126,22 @@ public interface UsuarioAlbumRepository extends JpaRepository<UsuarioAlbum, Usua
      */
     @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.escuchado = true")
     Long contarTotalEscuchados();
+    
+    /**
+     * Puntuación media dada por un usuario (en todos sus álbumes)
+     */
+    @Query("SELECT AVG(ua.puntuacion) FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.puntuacion IS NOT NULL")
+    Double calcularPuntuacionMediaPorUsuario(@Param("usuarioId") Long usuarioId);
+    
+    /**
+     * Géneros más escuchados por un usuario
+     * Retorna: [generoId, nombreGenero, color, conteo]
+     */
+    @Query("SELECT ag.genero.id, ag.genero.nombreGenero, ag.genero.color, COUNT(ua) as conteo " +
+           "FROM UsuarioAlbum ua " +
+           "JOIN AlbumGenero ag ON ua.album.id = ag.album.id " +
+           "WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true " +
+           "GROUP BY ag.genero.id, ag.genero.nombreGenero, ag.genero.color " +
+           "ORDER BY conteo DESC")
+    List<Object[]> generosMasEscuchadosPorUsuario(@Param("usuarioId") Long usuarioId, Pageable pageable);
 }

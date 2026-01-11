@@ -114,4 +114,16 @@ public interface UsuarioCancionRepository extends JpaRepository<UsuarioCancion, 
      */
     @Query("SELECT COUNT(uc) FROM UsuarioCancion uc WHERE uc.escuchada = true")
     Long contarTotalEscuchadas();
+    
+    /**
+     * Contar canciones escuchadas por un usuario específico
+     */
+    @Query("SELECT COUNT(uc) FROM UsuarioCancion uc WHERE uc.usuario.id = :usuarioId AND uc.escuchada = true")
+    Long contarEscuchadasPorUsuario(@Param("usuarioId") Long usuarioId);
+    
+    /**
+     * Contar reseñas (con texto) de un usuario
+     */
+    @Query("SELECT COUNT(uc) FROM UsuarioCancion uc WHERE uc.usuario.id = :usuarioId AND uc.textoResena IS NOT NULL")
+    Long contarResenasPorUsuario(@Param("usuarioId") Long usuarioId);
 }

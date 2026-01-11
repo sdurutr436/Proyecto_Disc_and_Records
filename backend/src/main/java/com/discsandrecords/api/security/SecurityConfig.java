@@ -124,8 +124,8 @@ public class SecurityConfig {
                 // 4. Configurar autorización de rutas
                 .authorizeHttpRequests(auth -> auth
                         // ============ RUTAS PÚBLICAS ============
-                        // Autenticación (login, registro)
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // Autenticación (login, registro) - pero NO /me que requiere token
+                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
 
                         // Actuator (health checks para Docker/Kubernetes)
                         .requestMatchers("/actuator/**").permitAll()

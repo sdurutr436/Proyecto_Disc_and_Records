@@ -116,7 +116,7 @@ export class AuthService {
 
   // Flag para determinar si usar API real o mock
   // Cambiar a true cuando el backend esté disponible
-  private readonly USE_REAL_API = false;
+  private readonly USE_REAL_API = true;
 
   /**
    * WORKFLOW: Login de Usuario
@@ -319,6 +319,82 @@ export class AuthService {
   }
 
   /**
+   * Recuperar sesión al recargar la página
+   *
+   * FLUJO:
+   * 1. Verificar si hay un token guardado en localStorage
+   * 2. Si existe, llamar a GET /api/auth/me para obtener datos del usuario
+   * 3. Si el token es válido, restaurar el estado del usuario
+   * 4. Si el token expiró o es inválido, limpiar localStorage
+   *
+   * CUÁNDO LLAMAR:
+   * - Al iniciar la aplicación (app.component.ts o APP_INITIALIZER)
+   * - Antes de renderizar rutas protegidas
+   *
+   * @returns Promise<boolean> - true si se recuperó la sesión, false si no
+   */
+  async restoreSession(): Promise<boolean> {
+    const token = this.getAuthToken();
+
+    if (!token) {
+      return false;
+    }
+
+    if (!this.USE_REAL_API) {
+      // En modo mock, no podemos validar el token
+      return false;
+    }
+
+    try {
+      const url = `${API_CONFIG.baseUrl}${API_ENDPOINTS.auth.me}`;
+
+      const backendResponse = await firstValueFrom(
+        this.http.get<{
+          token: string | null;
+          tipo: string;
+          id: number;
+          nombreUsuario: string;
+          mail: string;
+          role: string;
+        }>(url)
+      );
+
+      // Restaurar usuario en AppState
+      const user = {
+        id: backendResponse.id,
+        username: backendResponse.nombreUsuario,
+        email: backendResponse.mail,
+        role: backendResponse.role === 'ROLE_ADMIN' ? 'admin' as const : 'user' as const,
+        preferences: {
+          language: 'es' as const,
+          notifications: true,
+          autoplay: false,
+          volume: 70,
+        },
+      };
+
+      this.appState.setUser(user);
+
+      // Emitir evento de login (para que otros componentes se actualicen)
+      this.eventBus.emit({
+        type: EventType.USER_LOGIN,
+        payload: {
+          userId: user.id,
+          username: user.username,
+        },
+        source: 'AuthService.restoreSession',
+      });
+
+      return true;
+    } catch (error) {
+      // Token inválido o expirado
+      console.warn('No se pudo restaurar la sesión:', error);
+      this.clearAuthToken();
+      return false;
+    }
+  }
+
+  /**
    * Recuperar contraseña
    * Envía email con instrucciones
    *
@@ -389,31 +465,113 @@ export class AuthService {
    * [HTTP] Login de usuario con API real
    *
    * Endpoint: POST /api/auth/login
-   * Body: { email, password }
-   * Response: { success, user, token, message }
+   * Body: { mail, contrasena } (nombres del backend)
+   * Response: { token, tipo, id, nombreUsuario, mail, role }
    */
   private async loginHttp(credentials: LoginCredentials): Promise<AuthResponse> {
     const url = `${API_CONFIG.baseUrl}${API_ENDPOINTS.auth.login}`;
 
-    // firstValueFrom convierte Observable a Promise
-    return firstValueFrom(
-      this.http.post<AuthResponse>(url, credentials)
-    );
+    try {
+      // Mapear campos frontend -> backend
+      const backendPayload = {
+        mail: credentials.email,
+        contrasena: credentials.password
+      };
+
+      const backendResponse = await firstValueFrom(
+        this.http.post<{
+          token: string;
+          tipo: string;
+          id: number;
+          nombreUsuario: string;
+          mail: string;
+          role: string;
+        }>(url, backendPayload)
+      );
+
+      // Mapear respuesta backend -> frontend
+      return {
+        success: true,
+        message: 'Login exitoso',
+        token: backendResponse.token,
+        user: {
+          id: backendResponse.id,
+          username: backendResponse.nombreUsuario,
+          email: backendResponse.mail,
+          role: backendResponse.role === 'ROLE_ADMIN' ? 'admin' : 'user',
+          preferences: {
+            language: 'es',
+            notifications: true,
+            autoplay: false,
+            volume: 70,
+          },
+        },
+      };
+    } catch (error: any) {
+      // Mapear errores del backend
+      const errorMessage = error?.error?.message || 'Credenciales inválidas';
+      return {
+        success: false,
+        message: errorMessage,
+      };
+    }
   }
 
   /**
    * [HTTP] Registro de usuario con API real
    *
    * Endpoint: POST /api/auth/register
-   * Body: { username, email, password }
-   * Response: { success, user, token, message }
+   * Body: { nombreUsuario, mail, contrasena } (nombres del backend)
+   * Response: { token, tipo, id, nombreUsuario, mail, role }
    */
   private async registerHttp(data: RegisterData): Promise<AuthResponse> {
     const url = `${API_CONFIG.baseUrl}${API_ENDPOINTS.auth.register}`;
 
-    return firstValueFrom(
-      this.http.post<AuthResponse>(url, data)
-    );
+    try {
+      // Mapear campos frontend -> backend
+      const backendPayload = {
+        nombreUsuario: data.username,
+        mail: data.email,
+        contrasena: data.password
+      };
+
+      const backendResponse = await firstValueFrom(
+        this.http.post<{
+          token: string;
+          tipo: string;
+          id: number;
+          nombreUsuario: string;
+          mail: string;
+          role: string;
+        }>(url, backendPayload)
+      );
+
+      // Mapear respuesta backend -> frontend
+      return {
+        success: true,
+        message: 'Registro exitoso',
+        token: backendResponse.token,
+        user: {
+          id: backendResponse.id,
+          username: backendResponse.nombreUsuario,
+          email: backendResponse.mail,
+          role: backendResponse.role === 'ROLE_ADMIN' ? 'admin' : 'user',
+          preferences: {
+            language: 'es',
+            notifications: true,
+            autoplay: false,
+            volume: 70,
+          },
+        },
+      };
+    } catch (error: any) {
+      // Mapear errores del backend (ej: usuario ya existe)
+      const errorMessage = error?.error?.message || 'No se pudo crear la cuenta';
+      return {
+        success: false,
+        message: errorMessage,
+      };
+    }
   }
 
   /**

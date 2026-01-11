@@ -2,6 +2,7 @@ package com.discsandrecords.api.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -163,6 +164,56 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
         AuthResponseDTO response = authService.login(request);
+        return ResponseEntity.ok(response);
+    }
+
+    // ==========================================
+    // OBTENER USUARIO ACTUAL (ME)
+    // ==========================================
+
+    /**
+     * Obtiene los datos del usuario autenticado
+     *
+     * ENDPOINT: GET /api/auth/me
+     *
+     * PROPÓSITO:
+     * Este endpoint permite al frontend recuperar la sesión del usuario
+     * cuando la página se recarga. El frontend envía el token JWT guardado
+     * y recibe los datos del usuario sin necesidad de hacer login de nuevo.
+     *
+     * FLUJO:
+     * 1. Frontend guarda el token JWT en localStorage
+     * 2. Al recargar la página, frontend llama a GET /api/auth/me
+     * 3. El interceptor añade el header Authorization: Bearer <token>
+     * 4. JwtAuthenticationFilter valida el token y establece el SecurityContext
+     * 5. Este endpoint extrae el usuario del SecurityContext y retorna sus datos
+     *
+     * RESPUESTAS:
+     * - 200: Usuario autenticado, retorna datos del usuario
+     * - 401: Token inválido o expirado
+     *
+     * @param authentication Objeto de autenticación inyectado por Spring Security
+     * @return ResponseEntity con UsuarioResponseDTO
+     */
+    @Operation(
+            summary = "Obtener usuario actual",
+            description = "Retorna los datos del usuario autenticado basándose en el token JWT"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Usuario autenticado encontrado",
+                    content = @Content(schema = @Schema(implementation = AuthResponseDTO.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Token inválido o expirado"
+            )
+    })
+    @GetMapping("/me")
+    public ResponseEntity<AuthResponseDTO> obtenerUsuarioActual(
+            org.springframework.security.core.Authentication authentication) {
+        AuthResponseDTO response = authService.obtenerUsuarioActual(authentication);
         return ResponseEntity.ok(response);
     }
 }

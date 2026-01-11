@@ -1,21 +1,28 @@
 package com.discsandrecords.api.services;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.discsandrecords.api.dto.*;
-import com.discsandrecords.api.entities.Usuario;
-import com.discsandrecords.api.exceptions.DuplicateResourceException;
-import com.discsandrecords.api.exceptions.ResourceNotFoundException;
-import com.discsandrecords.api.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.discsandrecords.api.dto.CreateUsuarioDTO;
+import com.discsandrecords.api.dto.PageResponseDTO;
+import com.discsandrecords.api.dto.UpdateUsuarioDTO;
+import com.discsandrecords.api.dto.UsuarioEstadisticasDTO;
+import com.discsandrecords.api.dto.UsuarioResponseDTO;
+import com.discsandrecords.api.entities.Usuario;
+import com.discsandrecords.api.exceptions.DuplicateResourceException;
+import com.discsandrecords.api.exceptions.ResourceNotFoundException;
+import com.discsandrecords.api.repositories.UsuarioAlbumRepository;
+import com.discsandrecords.api.repositories.UsuarioCancionRepository;
+import com.discsandrecords.api.repositories.UsuarioRepository;
 
 /**
  * UsuarioService - Servicio de Gestión de Usuarios
@@ -45,16 +52,25 @@ import java.util.List;
 public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioAlbumRepository usuarioAlbumRepository;
+    private final UsuarioCancionRepository usuarioCancionRepository;
     private final PasswordEncoder passwordEncoder;
 
     /**
      * Constructor con inyección de dependencias
      *
      * @param usuarioRepository Repositorio de usuarios
+     * @param usuarioAlbumRepository Repositorio de reseñas de álbumes
+     * @param usuarioCancionRepository Repositorio de reseñas de canciones
      * @param passwordEncoder Encoder BCrypt para contraseñas
      */
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository usuarioRepository,
+                          UsuarioAlbumRepository usuarioAlbumRepository,
+                          UsuarioCancionRepository usuarioCancionRepository,
+                          PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.usuarioAlbumRepository = usuarioAlbumRepository;
+        this.usuarioCancionRepository = usuarioCancionRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -184,6 +200,66 @@ public class UsuarioService implements UserDetailsService {
 
         // TODO: Considerar qué hacer con las reseñas del usuario (soft delete, anonimizar, etc.)
         usuarioRepository.delete(usuario);
+    }
+
+    // ==========================================
+    // ESTADÍSTICAS DE USUARIO
+    // ==========================================
+
+    /**
+     * Obtiene las estadísticas del perfil de un usuario
+     *
+     * ESTADÍSTICAS:
+     * - Total de álbumes escuchados
+     * - Total de canciones escuchadas
+     * - Total de reseñas de álbumes
+     * - Total de reseñas de canciones
+     * - Puntuación media que el usuario da
+     * - Top 5 géneros más escuchados
+     *
+     * @param usuarioId ID del usuario
+     * @return DTO con todas las estadísticas
+     * @throws ResourceNotFoundException si el usuario no existe
+     */
+    @Transactional(readOnly = true)
+    public UsuarioEstadisticasDTO obtenerEstadisticas(Long usuarioId) {
+        // Verificar que el usuario existe
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new ResourceNotFoundException("Usuario", "id", usuarioId);
+        }
+
+        // Contadores básicos
+        Long totalAlbumesEscuchados = usuarioAlbumRepository.contarEscuchadosPorUsuario(usuarioId);
+        Long totalCancionesEscuchadas = usuarioCancionRepository.contarEscuchadasPorUsuario(usuarioId);
+        Long totalResenasAlbumes = usuarioAlbumRepository.contarResenasPorUsuario(usuarioId);
+        Long totalResenasCanciones = usuarioCancionRepository.contarResenasPorUsuario(usuarioId);
+
+        // Puntuación media que da el usuario (de álbumes)
+        Double puntuacionMediaDada = usuarioAlbumRepository.calcularPuntuacionMediaPorUsuario(usuarioId);
+
+        // Top 5 géneros más escuchados
+        List<Object[]> generosRaw = usuarioAlbumRepository.generosMasEscuchadosPorUsuario(
+                usuarioId, 
+                PageRequest.of(0, 5)
+        );
+
+        List<UsuarioEstadisticasDTO.GeneroConteoDTO> generosMasEscuchados = generosRaw.stream()
+                .map(row -> new UsuarioEstadisticasDTO.GeneroConteoDTO(
+                        (Long) row[0],      // generoId
+                        (String) row[1],    // nombreGenero
+                        (String) row[2],    // color
+                        (Long) row[3]       // conteo
+                ))
+                .toList();
+
+        return new UsuarioEstadisticasDTO(
+                totalAlbumesEscuchados != null ? totalAlbumesEscuchados : 0L,
+                totalCancionesEscuchadas != null ? totalCancionesEscuchadas : 0L,
+                totalResenasAlbumes != null ? totalResenasAlbumes : 0L,
+                totalResenasCanciones != null ? totalResenasCanciones : 0L,
+                puntuacionMediaDada,
+                generosMasEscuchados
+        );
     }
 
     private UsuarioResponseDTO toResponseDTO(Usuario usuario) {

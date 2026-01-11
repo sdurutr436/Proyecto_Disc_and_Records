@@ -1,20 +1,34 @@
 package com.discsandrecords.api.controllers;
 
-import com.discsandrecords.api.dto.*;
-import com.discsandrecords.api.services.UsuarioService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import java.net.URI;
+import java.util.List;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.util.List;
+import com.discsandrecords.api.dto.CreateUsuarioDTO;
+import com.discsandrecords.api.dto.PageResponseDTO;
+import com.discsandrecords.api.dto.UpdateUsuarioDTO;
+import com.discsandrecords.api.dto.UsuarioEstadisticasDTO;
+import com.discsandrecords.api.dto.UsuarioResponseDTO;
+import com.discsandrecords.api.services.UsuarioService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 /**
  * UsuarioController - Controlador de Gestión de Usuarios
@@ -70,6 +84,27 @@ public class UsuarioController {
     @Operation(summary = "Obtener usuario por nombre de usuario")
     public ResponseEntity<UsuarioResponseDTO> obtenerPorNombreUsuario(@PathVariable String nombreUsuario) {
         return ResponseEntity.ok(usuarioService.obtenerPorNombreUsuario(nombreUsuario));
+    }
+
+    /**
+     * Obtiene las estadísticas del perfil de un usuario
+     *
+     * ENDPOINT: GET /api/usuarios/{id}/estadisticas
+     *
+     * ESTADÍSTICAS INCLUIDAS:
+     * - Total álbumes escuchados
+     * - Total canciones escuchadas
+     * - Total reseñas escritas
+     * - Puntuación media dada
+     * - Top 5 géneros más escuchados (con color para UI)
+     *
+     * @param id ID del usuario
+     * @return DTO con estadísticas del usuario
+     */
+    @GetMapping("/{id}/estadisticas")
+    @Operation(summary = "Obtener estadísticas del perfil de un usuario")
+    public ResponseEntity<UsuarioEstadisticasDTO> obtenerEstadisticas(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.obtenerEstadisticas(id));
     }
 
     // ==========================================
