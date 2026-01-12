@@ -102,15 +102,15 @@ export const adminGuard: CanActivateFn = (
 
   const user = authService.getCurrentUser();
 
-  // Verificar si el usuario tiene rol de administrador
-  if (user && user.role === 'admin') {
-    return true; // ✅ Es admin - permitir acceso
+  // Verificar si el usuario tiene rol de administrador o moderador
+  if (user && (user.role === 'admin' || user.role === 'moderator')) {
+    return true; // ✅ Es admin/moderator - permitir acceso
   }
 
-  // ❌ No es admin - bloquear acceso
+  // ❌ No tiene permisos - bloquear acceso
   notificationStream.error(
     'Acceso denegado',
-    'No tienes permisos de administrador para acceder a esta sección'
+    'No tienes permisos para acceder a esta sección'
   );
 
   router.navigate(['/']);

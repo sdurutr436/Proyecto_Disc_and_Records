@@ -349,7 +349,7 @@ export class AuthService {
         id: backendResponse.id,
         username: backendResponse.nombreUsuario,
         email: backendResponse.mail,
-        role: backendResponse.role === 'ROLE_ADMIN' ? 'admin' as const : 'user' as const,
+        role: this.mapBackendRole(backendResponse.role),
         preferences: {
           language: 'es' as const,
           notifications: true,
@@ -483,7 +483,7 @@ export class AuthService {
           id: backendResponse.id,
           username: backendResponse.nombreUsuario,
           email: backendResponse.mail,
-          role: backendResponse.role === 'ROLE_ADMIN' ? 'admin' : 'user',
+          role: this.mapBackendRole(backendResponse.role),
           preferences: {
             language: 'es',
             notifications: true,
@@ -540,7 +540,7 @@ export class AuthService {
           id: backendResponse.id,
           username: backendResponse.nombreUsuario,
           email: backendResponse.mail,
-          role: backendResponse.role === 'ROLE_ADMIN' ? 'admin' : 'user',
+          role: this.mapBackendRole(backendResponse.role),
           preferences: {
             language: 'es',
             notifications: true,
@@ -556,6 +556,22 @@ export class AuthService {
         success: false,
         message: errorMessage,
       };
+    }
+  }
+
+  /**
+   * Mapea rol del backend al formato del frontend
+   * @param backendRole - Rol desde el backend (ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER)
+   * @returns Rol en formato frontend ('admin', 'moderator', 'user')
+   */
+  private mapBackendRole(backendRole: string): 'admin' | 'moderator' | 'user' {
+    switch (backendRole) {
+      case 'ROLE_ADMIN':
+        return 'admin';
+      case 'ROLE_MODERATOR':
+        return 'moderator';
+      default:
+        return 'user';
     }
   }
 

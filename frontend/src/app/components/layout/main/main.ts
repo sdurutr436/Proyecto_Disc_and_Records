@@ -23,11 +23,11 @@ export class Main {
   isMenuOpen = signal(false);
 
   /**
-   * Computed: Verificar si el usuario actual es administrador
+   * Computed: Verificar si el usuario actual es administrador o moderador
    */
   isAdmin = computed(() => {
     const user = this.appState.currentUser();
-    return user?.role === 'admin';
+    return user?.role === 'admin' || user?.role === 'moderator';
   });
 
   toggleMenu(): void {
