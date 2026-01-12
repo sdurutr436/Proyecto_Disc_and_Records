@@ -22,7 +22,7 @@
   line-height: 1.4;
   border: vars.$borde-brutal-thin;
   border-radius: vars.$radio-xs;
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
   white-space: nowrap;
   pointer-events: none;
 
@@ -49,7 +49,7 @@
 
 /* --- Posición: TOP (tooltip arriba del elemento) --- */
 .tooltip--top {
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 0.5rem);
   left: 50%;
   transform: translateX(-50%);
 
@@ -64,7 +64,7 @@
 
 /* --- Posición: BOTTOM (tooltip debajo del elemento) --- */
 .tooltip--bottom {
-  top: calc(100% + 8px);
+  top: calc(100% + 0.5rem);
   left: 50%;
   transform: translateX(-50%);
 
@@ -72,14 +72,14 @@
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    border-width: 0 6px 6px 6px;
+    border-width: 0 0.375rem 0.375rem 0.375rem;
     border-color: transparent transparent var(--bg-secondary) transparent;
   }
 }
 
 /* --- Posición: LEFT (tooltip a la izquierda) --- */
 .tooltip--left {
-  right: calc(100% + 8px);
+  right: calc(100% + 0.5rem);
   top: 50%;
   transform: translateY(-50%);
 
@@ -94,7 +94,7 @@
 
 /* --- Posición: RIGHT (tooltip a la derecha) --- */
 .tooltip--right {
-  left: calc(100% + 8px);
+  left: calc(100% + 0.5rem);
   top: 50%;
   transform: translateY(-50%);
 

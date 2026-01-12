@@ -86,7 +86,7 @@ import { Spinner } from '../spinner/spinner';
       align-items: center;
       justify-content: center;
       padding: 2rem 1rem;
-      min-height: 60px;
+      min-height: 3.75rem;
       width: 100%;
     }
 
@@ -104,7 +104,7 @@ import { Spinner } from '../spinner/spinner';
 
     .infinite-scroll__end {
       padding: 1rem;
-      border-top: 1px solid var(--color-border, #eee);
+      border-top: 0.0625rem solid var(--color-border, #eee);
       width: 100%;
       text-align: center;
     }
@@ -122,7 +122,7 @@ import { Spinner } from '../spinner/spinner';
       background: var(--color-primary, #007bff);
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 0.25rem;
       cursor: pointer;
       font-size: 0.875rem;
       transition: background 0.2s;

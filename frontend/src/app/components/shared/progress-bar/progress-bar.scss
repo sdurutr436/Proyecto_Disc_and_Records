@@ -20,12 +20,12 @@
 /* --- Track (contenedor de la barra) --- */
 .progress-bar__track {
   flex: 1;
-  height: 20px;
+  height: 1.25rem;
   background-color: var(--bg-primary);
   border: vars.$borde-brutal-medium solid var(--border-color);
   overflow: hidden;
   position: relative;
-  box-shadow: inset 0 2px 4px color-mix(in srgb, var(--shadow-color) 10%, transparent);
+  box-shadow: inset 0 0.125rem 0.25rem color-mix(in srgb, var(--shadow-color) 10%, transparent);
 }
 
 /* --- Fill (barra de progreso) --- */
@@ -34,7 +34,7 @@
   background-color: var(--color-primary);
   transition: width 0.3s ease-out;
   position: relative;
-  min-width: 4px;
+  min-width: 0.25rem;
 }
 
 /* --- Label (texto de porcentaje) --- */
@@ -42,7 +42,7 @@
   font-size: vars.$tamanio-fuente-texto-pequeno-xs;
   font-weight: 700;
   color: var(--text-primary);
-  min-width: 40px;
+  min-width: 2.5rem;
   text-align: right;
   font-family: vars.$tamanio-fuente-parrafo;
 }
@@ -54,32 +54,32 @@
 /* --- Small --- */
 .progress-bar--sm {
   .progress-bar__track {
-    height: 12px;
+    height: 0.75rem;
     border-width: vars.$borde-brutal-thin;
   }
 
   .progress-bar__label {
     font-size: vars.$tamanio-fuente-texto-pequeno-xs;
-    min-width: 32px;
+    min-width: 2rem;
   }
 }
 
 /* --- Medium --- */
 .progress-bar--md {
   .progress-bar__track {
-    height: 20px;
+    height: 1.25rem;
   }
 }
 
 /* --- Large --- */
 .progress-bar--lg {
   .progress-bar__track {
-    height: 28px;
+    height: 1.75rem;
   }
 
   .progress-bar__label {
     font-size: vars.$tamanio-fuente-texto-pequeno-s;
-    min-width: 48px;
+    min-width: 3rem;
   }
 }
 
@@ -146,7 +146,7 @@
       transparent 75%,
       transparent
     );
-    background-size: 24px 24px;
+    background-size: 1.5rem 1.5rem;
     animation: stripe-move 1s linear infinite;
   }
 }
@@ -156,7 +156,7 @@
     background-position: 0 0;
   }
   100% {
-    background-position: 24px 0;
+    background-position: 1.5rem 0;
   }
 }
 
@@ -166,7 +166,7 @@
 @media (max-width: vars.$breakpoint-tablet) {
   .progress-bar--lg {
     .progress-bar__track {
-      height: 16px;
+      height: 1rem;
     }
 
     .progress-bar__label {

@@ -20,12 +20,12 @@
   transition: box-shadow 0.2s ease;
 
   &:hover {
-    box-shadow: 4px 4px 0px var(--shadow-color);
+    box-shadow: vars.$sombra-brutal-s;
   }
 }
 
 .accordion__item--open {
-  box-shadow: 6px 6px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-m;
   border-color: var(--color-primary);
 }
 
@@ -52,7 +52,7 @@
   }
 
   &:active {
-    transform: translateY(1px);
+    transform: translateY(0.0625rem);
   }
 
   @include mix.focus-visible;

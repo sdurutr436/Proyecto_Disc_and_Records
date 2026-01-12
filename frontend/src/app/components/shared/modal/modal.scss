@@ -7,7 +7,7 @@
 .modal__overlay {
   @include mix.overlay-backdrop(vars.$z-modal);
   padding: vars.$espaciado-m;
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(0.1875rem);
   animation: modal-fadeIn vars.$duracion-normal ease;
 }
 
@@ -18,7 +18,7 @@
 
 /* --- Contenido del modal --- */
 .modal__content {
-  @include mix.brutal-box(var(--bg-primary), vars.$borde-brutal-thick, 8px 8px 0px var(--shadow-color), vars.$radio-m);
+  @include mix.brutal-box(var(--bg-primary), vars.$borde-brutal-thick, vars.$sombra-brutal-m, vars.$radio-m);
   max-width: vars.$ancho-maximo-modal;
   width: 100%;
   max-height: 90vh;
@@ -92,13 +92,13 @@
   right: vars.$espaciado-s;
   background-color: var(--bg-primary);
   border: vars.$borde-brutal-thin;
-  box-shadow: 2px 2px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-xs;
   z-index: 10;
 
   &:hover {
     background-color: var(--bg-secondary);
-    box-shadow: 1px 1px 0px var(--shadow-color);
-    transform: translate(1px, 1px);
+    box-shadow: 0.0625rem 0.0625rem 0 var(--shadow-color);
+    transform: translate(0.0625rem, 0.0625rem);
   }
 }
 

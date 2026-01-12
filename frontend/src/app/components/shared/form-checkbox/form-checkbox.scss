@@ -20,29 +20,29 @@
     height: 0;
 
     &:focus + .form-checkbox__box {
-      outline: 2px solid vars.$color-primario-light;
-      outline-offset: 2px;
+      outline: 0.125rem solid vars.$color-primario-light;
+      outline-offset: 0.125rem;
     }
   }
 
   &__box {
-    width: 20px; // Tamaño razonable para checkbox
-    height: 20px;
-    min-width: 20px;
-    min-height: 20px;
+    width: 1.25rem; // Tamaño razonable para checkbox
+    height: 1.25rem;
+    min-width: 1.25rem;
+    min-height: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
     border: vars.$borde-brutal-thin;
     border-radius: vars.$radio-xs;
     background-color: var(--bg-secondary);
-    box-shadow: 2px 2px 0px var(--border-color);
+    box-shadow: vars.$sombra-brutal-xs;
     transition: all vars.$transicion-rapida;
   }
 
   &__check {
-    width: 16px; // Ícono un poco más pequeño que el box
-    height: 16px;
+    width: 1rem; // Ícono un poco más pequeño que el box
+    height: 1rem;
     color: var(--text-primary);
   }
 
@@ -57,13 +57,13 @@
     color: vars.$color-error;
     font-weight: 600;
     margin: 0;
-    padding-left: calc(20px + vars.$espaciado-s);
+    padding-left: calc(1.25rem + vars.$espaciado-s);
   }
 
   // Estados
   &:not(.form-checkbox--disabled) &__label:hover &__box {
-    transform: translate(-1px, -1px);
-    box-shadow: 3px 3px 0px var(--border-color);
+    transform: translate(-0.0625rem, -0.0625rem);
+    box-shadow: vars.$sombra-brutal-s;
   }
 
   &--checked &__box {
@@ -82,10 +82,10 @@
 
   &--error &__box {
     border-color: vars.$color-error;
-    box-shadow: 2px 2px 0px vars.$color-error;
+    box-shadow: vars.$sombra-brutal-xs;
 
     &:hover {
-      box-shadow: 3px 3px 0px vars.$color-error;
+      box-shadow: vars.$sombra-brutal-s;
     }
   }
 }

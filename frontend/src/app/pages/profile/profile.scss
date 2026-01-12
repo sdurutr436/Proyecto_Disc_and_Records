@@ -15,7 +15,7 @@
      CONTENEDOR PRINCIPAL
      ======================================== */
   &__container {
-    max-width: 1400px;
+    max-width: 87.5rem;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -103,7 +103,7 @@
      CONTENIDO DE TABS
      ======================================== */
   &__tab-content {
-    min-height: 400px;
+    min-height: 25rem;
     padding: vars.$espaciado-m;
     background-color: var(--bg-primary);
     border: vars.$borde-brutal-thick;
@@ -125,7 +125,7 @@
 
   &__review-card {
     display: grid;
-    grid-template-columns: 150px 1fr;
+    grid-template-columns: 9.375rem 1fr;
     gap: vars.$espaciado-m;
     padding: vars.$espaciado-m;
     background-color: var(--bg-secondary);
@@ -135,15 +135,15 @@
     @include mixins.brutal-interaction(vars.$sombra-brutal-s, vars.$sombra-brutal-active);
 
     @include mixins.respond-to('tablet') {
-      grid-template-columns: 100px 1fr;
+      grid-template-columns: 6.25rem 1fr;
       gap: vars.$espaciado-s;
       padding: vars.$espaciado-s;
     }
   }
 
   &__review-image {
-    width: 150px;
-    height: 150px;
+    width: 9.375rem;
+    height: 9.375rem;
     border: vars.$borde-brutal-thick;
     overflow: hidden;
     background-color: var(--bg-primary);
@@ -156,8 +156,8 @@
     }
 
     @include mixins.respond-to('tablet') {
-      width: 100px;
-      height: 100px;
+      width: 6.25rem;
+      height: 6.25rem;
     }
   }
 
@@ -219,11 +219,11 @@
      ======================================== */
   &__albums {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
     gap: vars.$espaciado-m;
 
     @include mixins.respond-to('desktop') {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(9.375rem, 1fr));
       gap: vars.$espaciado-s;
     }
 
@@ -247,7 +247,7 @@
     border-radius: vars.$radio-xxl;
     @include mixins.font-size-line('texto-pequeno-s');
     font-weight: 600;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--shadow-color) 20%, transparent);
+    box-shadow: 0 0.125rem 0.5rem color-mix(in srgb, var(--shadow-color) 20%, transparent);
     z-index: 10;
   }
 }
@@ -258,7 +258,7 @@
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(1.25rem);
   }
   to {
     opacity: 1;

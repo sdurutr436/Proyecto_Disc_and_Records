@@ -11,7 +11,7 @@
   width: 100%;
 
   &__icon {
-    @include mix.icon-container(24px);
+    @include mix.icon-container(1.5rem);
   }
 
   &__content {
@@ -33,7 +33,7 @@
   }
 
   &__dismiss {
-    @include mix.dismiss-button(24px);
+    @include mix.dismiss-button(1.5rem);
   }
 
   // Tipos con mixin de colores de estado
@@ -58,7 +58,7 @@
   // Estado oculto
   &--hidden {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-0.625rem);
     pointer-events: none;
   }
 }

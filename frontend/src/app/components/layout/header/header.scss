@@ -35,8 +35,8 @@
   position: relative;
   z-index: 2;
   @include mix.flex-center;
-  width: 140px;
-  height: 140px;
+  width: 8.75rem;
+  height: 8.75rem;
   border-radius: 50%;
   flex-shrink: 0;
   margin: 0;
@@ -56,8 +56,8 @@
   }
 
   &:focus {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 4px;
+    outline: 0.125rem solid var(--color-primary);
+    outline-offset: 0.25rem;
   }
 }
 
@@ -67,8 +67,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(135deg);
-  width: 1500px;
-  height: 3000px;
+  width: 93.75rem;
+  height: 187.5rem;
   z-index: 1;
   pointer-events: none;
 }
@@ -80,17 +80,17 @@
   height: 100%;
   background:
     linear-gradient(to bottom,
-      transparent 0, transparent calc(50% - 1.875rem - 8px),
-      vars.$color-exito calc(50% - 1.875rem - 8px), vars.$color-exito calc(50% - 1.125rem - 8px),
-      transparent calc(50% - 1.125rem - 8px), transparent calc(50% - 1.125rem - 4px),
-      vars.$color-informacion calc(50% - 1.125rem - 4px), vars.$color-informacion calc(50% - 0.375rem - 4px),
-      transparent calc(50% - 0.375rem - 4px), transparent calc(50% - 0.375rem),
+      transparent 0, transparent calc(50% - 1.875rem - 0.5rem),
+      vars.$color-exito calc(50% - 1.875rem - 0.5rem), vars.$color-exito calc(50% - 1.125rem - 0.5rem),
+      transparent calc(50% - 1.125rem - 0.5rem), transparent calc(50% - 1.125rem - 0.25rem),
+      vars.$color-informacion calc(50% - 1.125rem - 0.25rem), vars.$color-informacion calc(50% - 0.375rem - 0.25rem),
+      transparent calc(50% - 0.375rem - 0.25rem), transparent calc(50% - 0.375rem),
       vars.$color-advertencia-light calc(50% - 0.375rem), vars.$color-advertencia-light calc(50% + 0.375rem),
-      transparent calc(50% + 0.375rem), transparent calc(50% + 0.375rem + 4px),
-      vars.$color-advertencia-dark calc(50% + 0.375rem + 4px), vars.$color-advertencia-dark calc(50% + 1.125rem + 4px),
-      transparent calc(50% + 1.125rem + 4px), transparent calc(50% + 1.125rem + 8px),
-      vars.$color-error calc(50% + 1.125rem + 8px), vars.$color-error calc(50% + 1.875rem + 8px),
-      transparent calc(50% + 1.875rem + 8px), transparent 100%
+      transparent calc(50% + 0.375rem), transparent calc(50% + 0.375rem + 0.25rem),
+      vars.$color-advertencia-dark calc(50% + 0.375rem + 0.25rem), vars.$color-advertencia-dark calc(50% + 1.125rem + 0.25rem),
+      transparent calc(50% + 1.125rem + 0.25rem), transparent calc(50% + 1.125rem + 0.5rem),
+      vars.$color-error calc(50% + 1.125rem + 0.5rem), vars.$color-error calc(50% + 1.875rem + 0.5rem),
+      transparent calc(50% + 1.875rem + 0.5rem), transparent 100%
     );
 }
 
@@ -126,7 +126,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   @include mix.text-uppercase;
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
   position: relative;
   z-index: 2;
   white-space: nowrap;
@@ -139,14 +139,14 @@
 
 .header__btn--left {
   order: 1;
-  margin-right: 6px;
+  margin-right: 0.375rem;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
 .header__btn--right {
   order: 3;
-  margin-left: 6px;
+  margin-left: 0.375rem;
   z-index: 0;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
@@ -164,8 +164,8 @@
   }
 
   .header__logo-wrapper {
-    width: 80px;
-    height: 80px;
+    width: 5rem;
+    height: 5rem;
     order: 1;
   }
 
@@ -184,17 +184,17 @@
   .header__stripes::before {
     background:
       linear-gradient(to right,
-        transparent 0, transparent calc(50% - 1.875rem - 8px),
-        vars.$color-exito calc(50% - 1.875rem - 8px), vars.$color-exito calc(50% - 1.125rem - 8px),
-        transparent calc(50% - 1.125rem - 8px), transparent calc(50% - 1.125rem - 4px),
-        vars.$color-informacion calc(50% - 1.125rem - 4px), vars.$color-informacion calc(50% - 0.375rem - 4px),
-        transparent calc(50% - 0.375rem - 4px), transparent calc(50% - 0.375rem),
+        transparent 0, transparent calc(50% - 1.875rem - 0.5rem),
+        vars.$color-exito calc(50% - 1.875rem - 0.5rem), vars.$color-exito calc(50% - 1.125rem - 0.5rem),
+        transparent calc(50% - 1.125rem - 0.5rem), transparent calc(50% - 1.125rem - 0.25rem),
+        vars.$color-informacion calc(50% - 1.125rem - 0.25rem), vars.$color-informacion calc(50% - 0.375rem - 0.25rem),
+        transparent calc(50% - 0.375rem - 0.25rem), transparent calc(50% - 0.375rem),
         vars.$color-advertencia-light calc(50% - 0.375rem), vars.$color-advertencia-light calc(50% + 0.375rem),
-        transparent calc(50% + 0.375rem), transparent calc(50% + 0.375rem + 4px),
-        vars.$color-advertencia-dark calc(50% + 0.375rem + 4px), vars.$color-advertencia-dark calc(50% + 1.125rem + 4px),
-        transparent calc(50% + 1.125rem + 4px), transparent calc(50% + 1.125rem + 8px),
-        vars.$color-error calc(50% + 1.125rem + 8px), vars.$color-error calc(50% + 1.875rem + 8px),
-        transparent calc(50% + 1.875rem + 8px), transparent 100%
+        transparent calc(50% + 0.375rem), transparent calc(50% + 0.375rem + 0.25rem),
+        vars.$color-advertencia-dark calc(50% + 0.375rem + 0.25rem), vars.$color-advertencia-dark calc(50% + 1.125rem + 0.25rem),
+        transparent calc(50% + 1.125rem + 0.25rem), transparent calc(50% + 1.125rem + 0.5rem),
+        vars.$color-error calc(50% + 1.125rem + 0.5rem), vars.$color-error calc(50% + 1.875rem + 0.5rem),
+        transparent calc(50% + 1.875rem + 0.5rem), transparent 100%
       );
   }
 

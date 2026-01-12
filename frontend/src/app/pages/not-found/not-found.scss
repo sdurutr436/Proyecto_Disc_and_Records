@@ -17,7 +17,7 @@
      CONTENEDOR PRINCIPAL
      ======================================== */
   &__container {
-    max-width: 800px;
+    max-width: 50rem;
     width: 100%;
     text-align: center;
   }
@@ -61,7 +61,7 @@
     color: var(--text-secondary);
     margin: 0 0 vars.$espaciado-l 0;
     line-height: 1.6;
-    max-width: 600px;
+    max-width: 37.5rem;
     margin-left: auto;
     margin-right: auto;
 
@@ -91,10 +91,10 @@
      SEPARADOR
      ======================================== */
   &__divider {
-    height: 2px;
+    height: 0.125rem;
     background-color: var(--border-color);
     margin: vars.$espaciado-l auto;
-    max-width: 200px;
+    max-width: 12.5rem;
 
     @include mixins.respond-to('tablet') {
       margin: vars.$espaciado-m auto;
@@ -106,9 +106,9 @@
      ======================================== */
   &__quick-links {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(11.25rem, 1fr));
     gap: vars.$espaciado-s;
-    max-width: 700px;
+    max-width: 43.75rem;
     margin: 0 auto;
 
     @include mixins.respond-to('tablet') {
@@ -116,7 +116,7 @@
       gap: vars.$espaciado-xs;
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: vars.$breakpoint-mobile-sm) {
       grid-template-columns: 1fr;
     }
   }
@@ -208,7 +208,7 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(1.25rem);
   }
   to {
     opacity: 1;

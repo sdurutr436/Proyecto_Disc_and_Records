@@ -40,12 +40,12 @@ $transition-fast: vars.$transicion-rapida;
 // =============================================================================
 
 .dynamic-form {
-  max-width: 800px;
+  max-width: 50rem;
   margin: 0 auto;
   padding: $spacing-lg;
 
   &__fieldset {
-    border: 1px solid $color-border;
+    border: 0.0625rem solid $color-border;
     border-radius: $border-radius;
     padding: $spacing-lg;
     margin-bottom: $spacing-lg;
@@ -92,7 +92,7 @@ $transition-fast: vars.$transicion-rapida;
 
   &__required {
     color: $color-error;
-    margin-left: 2px;
+    margin-left: 0.125rem;
   }
 
   &__input-wrapper {
@@ -106,7 +106,7 @@ $transition-fast: vars.$transicion-rapida;
     width: 100%;
     padding: $spacing-sm $spacing-md;
     font-size: 1rem;
-    border: 2px solid $color-border;
+    border: 0.125rem solid $color-border;
     border-radius: $border-radius;
     transition: border-color $transition-fast, box-shadow $transition-fast;
     background-color: white;
@@ -114,7 +114,7 @@ $transition-fast: vars.$transicion-rapida;
     &:focus {
       outline: none;
       border-color: $color-primary;
-      box-shadow: 0 0 0 3px color-mix(in srgb, $color-primary 10%, transparent);
+      box-shadow: 0 0 0 0.1875rem color-mix(in srgb, $color-primary 10%, transparent);
     }
 
     &:disabled {
@@ -128,7 +128,7 @@ $transition-fast: vars.$transicion-rapida;
       background-color: color-mix(in srgb, $color-error 2%, transparent);
 
       &:focus {
-        box-shadow: 0 0 0 3px color-mix(in srgb, $color-error 10%, transparent);
+        box-shadow: 0 0 0 0.1875rem color-mix(in srgb, $color-error 10%, transparent);
       }
     }
 
@@ -137,7 +137,7 @@ $transition-fast: vars.$transicion-rapida;
       background-color: color-mix(in srgb, $color-success 2%, transparent);
 
       &:focus {
-        box-shadow: 0 0 0 3px color-mix(in srgb, $color-success 10%, transparent);
+        box-shadow: 0 0 0 0.1875rem color-mix(in srgb, $color-success 10%, transparent);
       }
     }
 
@@ -168,8 +168,8 @@ $transition-fast: vars.$transicion-rapida;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    width: 1.25rem;
+    height: 1.25rem;
     background-color: $color-success;
     color: white;
     border-radius: 50%;
@@ -184,7 +184,7 @@ $transition-fast: vars.$transicion-rapida;
     font-size: 0.8125rem;
     color: $color-error;
     background-color: color-mix(in srgb, $color-error 5%, transparent);
-    border-left: 3px solid $color-error;
+    border-left: 0.1875rem solid $color-error;
     border-radius: 0 $border-radius $border-radius 0;
 
     &--array {
@@ -216,14 +216,14 @@ $transition-fast: vars.$transicion-rapida;
 }
 
 .dynamic-form__array-item {
-  border: 1px solid $color-border;
+  border: 0.0625rem solid $color-border;
   border-radius: $border-radius;
   background-color: $color-bg-light;
   overflow: hidden;
 
   &--inline {
-    flex: 1 1 200px;
-    max-width: 280px;
+    flex: 1 1 12.5rem;
+    max-width: 17.5rem;
     padding: $spacing-md;
     border: none;
     background: transparent;
@@ -235,7 +235,7 @@ $transition-fast: vars.$transicion-rapida;
     align-items: center;
     padding: $spacing-sm $spacing-md;
     background-color: color-mix(in srgb, $color-primary 5%, transparent);
-    border-bottom: 1px solid $color-border;
+    border-bottom: 0.0625rem solid $color-border;
   }
 
   &-title {
@@ -265,7 +265,7 @@ $transition-fast: vars.$transicion-rapida;
   font-weight: 500;
   color: $color-primary;
   background-color: transparent;
-  border: 2px dashed $color-primary;
+  border: 0.125rem dashed $color-primary;
   border-radius: $border-radius;
   cursor: pointer;
   transition: all $transition-fast;
@@ -285,14 +285,14 @@ $transition-fast: vars.$transicion-rapida;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 1.75rem;
+  height: 1.75rem;
   padding: 0;
   font-size: 1.25rem;
   font-weight: bold;
   color: $color-error;
   background-color: transparent;
-  border: 1px solid transparent;
+  border: 0.0625rem solid transparent;
   border-radius: 50%;
   cursor: pointer;
   transition: all $transition-fast;
@@ -326,13 +326,13 @@ $transition-fast: vars.$transicion-rapida;
   &--success {
     background-color: color-mix(in srgb, $color-success 10%, transparent);
     color: color-mix(in srgb, $color-success 90%, black);
-    border: 1px solid $color-success;
+    border: 0.0625rem solid $color-success;
   }
 
   &--error {
     background-color: color-mix(in srgb, $color-error 10%, transparent);
     color: $color-error;
-    border: 1px solid $color-error;
+    border: 0.0625rem solid $color-error;
   }
 }
 
@@ -341,7 +341,7 @@ $transition-fast: vars.$transicion-rapida;
   gap: $spacing-md;
   justify-content: flex-end;
   padding-top: $spacing-md;
-  border-top: 1px solid $color-border;
+  border-top: 0.0625rem solid $color-border;
 }
 
 .dynamic-form__btn {
@@ -373,7 +373,7 @@ $transition-fast: vars.$transicion-rapida;
   &--secondary {
     background-color: transparent;
     color: $color-text-muted;
-    border: 1px solid $color-border;
+    border: 0.0625rem solid $color-border;
 
     &:hover:not(:disabled) {
       background-color: $color-bg-light;
@@ -388,17 +388,17 @@ $transition-fast: vars.$transicion-rapida;
 
 .spinner {
   display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid currentColor;
+  width: 1rem;
+  height: 1rem;
+  border: 0.125rem solid currentColor;
   border-right-color: transparent;
   border-radius: 50%;
   animation: spinner-rotate 0.75s linear infinite;
 
   &--small {
-    width: 14px;
-    height: 14px;
-    border-width: 2px;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-width: 0.125rem;
   }
 
   &--white {
@@ -421,7 +421,7 @@ $transition-fast: vars.$transicion-rapida;
   margin-top: $spacing-xl;
   padding: $spacing-md;
   background-color: $color-bg-light;
-  border: 1px solid $color-border;
+  border: 0.0625rem solid $color-border;
   border-radius: $border-radius;
   font-size: 0.75rem;
 
@@ -442,7 +442,7 @@ $transition-fast: vars.$transicion-rapida;
 // RESPONSIVE
 // =============================================================================
 
-@media (max-width: 600px) {
+@media (max-width: vars.$breakpoint-tablet) {
   .dynamic-form {
     padding: $spacing-md;
 

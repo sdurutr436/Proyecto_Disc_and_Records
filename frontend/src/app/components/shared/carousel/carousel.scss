@@ -12,7 +12,7 @@
   min-width: 0;
   box-sizing: border-box;
   margin-bottom: vars.$espaciado-xl;
-  @include mix.brutal-box(var(--bg-secondary), vars.$borde-brutal-thick, 6px 6px 0px var(--shadow-color), vars.$radio-m);
+  @include mix.brutal-box(var(--bg-secondary), vars.$borde-brutal-thick, vars.$sombra-brutal-m, vars.$radio-m);
   padding: vars.$espaciado-l;
 
   @include mix.mobile-down {
@@ -32,20 +32,20 @@
     margin: 0 0 vars.$espaciado-m 0;
     color: var(--text-primary);
     text-shadow:
-      3px 3px 0px var(--color-primary),
-      6px 6px 0px var(--color-secondary);
+      0.1875rem 0.1875rem 0px var(--color-primary),
+      0.375rem 0.375rem 0px var(--color-secondary);
     padding-bottom: vars.$espaciado-s;
 
     @include mix.mobile-down {
       font-size: 1.5rem;
-      text-shadow: 2px 2px 0px var(--color-primary);
+      text-shadow: 0.125rem 0.125rem 0px var(--color-primary);
     }
 
     @include mix.tablet-only {
       font-size: 2rem;
       text-shadow:
-        2px 2px 0px var(--color-primary),
-        4px 4px 0px var(--color-secondary);
+        0.125rem 0.125rem 0px var(--color-primary),
+        0.25rem 0.25rem 0px var(--color-secondary);
     }
   }
 
@@ -65,7 +65,7 @@
     overflow-x: auto;
     overflow-y: visible;
     scroll-behavior: smooth;
-    min-height: 280px;
+    min-height: 17.5rem;
     padding: vars.$espaciado-s vars.$espaciado-xs vars.$espaciado-l vars.$espaciado-xs;
     @include mix.hide-scrollbar;
     align-items: flex-start;
@@ -73,42 +73,42 @@
     @include mix.tablet-only {
       gap: vars.$espaciado-xs;
       padding: vars.$espaciado-xs vars.$espaciado-xs vars.$espaciado-m vars.$espaciado-xs;
-      min-height: 250px;
+      min-height: 15.625rem;
     }
 
     @include mix.mobile-down {
       gap: vars.$espaciado-xs;
       padding: vars.$espaciado-xs vars.$espaciado-xs vars.$espaciado-s vars.$espaciado-xs;
-      min-height: 230px;
+      min-height: 14.375rem;
     }
 
     // Items dentro del track - TAMAÑO FIJO
     > * {
-      flex: 0 0 200px;
-      width: 200px;
-      min-width: 200px;
-      max-width: 200px;
+      flex: 0 0 12.5rem;
+      width: 12.5rem;
+      min-width: 12.5rem;
+      max-width: 12.5rem;
 
       @include mix.tablet-only {
-        flex: 0 0 170px;
-        width: 170px;
-        min-width: 170px;
-        max-width: 170px;
+        flex: 0 0 10.625rem;
+        width: 10.625rem;
+        min-width: 10.625rem;
+        max-width: 10.625rem;
       }
 
       @include mix.mobile-down {
-        flex: 0 0 150px;
-        width: 150px;
-        min-width: 150px;
-        max-width: 150px;
+        flex: 0 0 9.375rem;
+        width: 9.375rem;
+        min-width: 9.375rem;
+        max-width: 9.375rem;
       }
     }
   }
 
   // Clase para efecto de highlight (usado por toggleHighlight())
   &__track--highlighted {
-    box-shadow: 0 0 20px var(--color-primary);
-    border: 2px solid var(--color-primary);
+    box-shadow: 0 0 1.25rem var(--color-primary);
+    border: 0.125rem solid var(--color-primary);
     transition: all 0.3s ease;
   }
 
@@ -116,13 +116,13 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
     @include mix.flex-center;
     background-color: var(--bg-primary);
     border: vars.$borde-brutal-medium;
     border-radius: vars.$radio-s;
-    box-shadow: 4px 4px 0px var(--shadow-color);
+    box-shadow: vars.$sombra-brutal-s;
     cursor: pointer;
     font-size: 2rem;
     font-weight: 700;
@@ -133,13 +133,13 @@
 
     &:hover {
       background-color: var(--color-primary);
-      transform: translateY(-50%) translateY(-2px);
-      box-shadow: 6px 6px 0px var(--shadow-color);
+      transform: translateY(-50%) translateY(-0.125rem);
+      box-shadow: vars.$sombra-brutal-m;
     }
 
     &:active {
       transform: translateY(-50%) translateY(0);
-      box-shadow: 2px 2px 0px var(--shadow-color);
+      box-shadow: vars.$sombra-brutal-xs;
     }
 
     @include mix.focus-visible(var(--border-color));
@@ -153,14 +153,14 @@
     }
 
     @include mix.tablet-only {
-      width: 44px;
-      height: 44px;
+      width: 2.75rem;
+      height: 2.75rem;
       font-size: 1.75rem;
     }
 
     @include mix.mobile-down {
-      width: 40px;
-      height: 40px;
+      width: 2.5rem;
+      height: 2.5rem;
       font-size: 1.5rem;
     }
   }

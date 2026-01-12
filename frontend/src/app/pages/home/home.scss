@@ -15,11 +15,11 @@
     padding: 3rem 2rem;
     background-color: var(--bg-primary);
     text-align: center;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 0.125rem solid var(--border-color);
   }
 
   &__hero-content {
-    max-width: 800px;
+    max-width: 50rem;
     width: 100%;
   }
 
@@ -31,7 +31,7 @@
     color: var(--text-primary);
     margin-bottom: 2rem;
 
-    @media (max-width: 768px) {
+    @media (max-width: $breakpoint-tablet) {
       font-size: $tamanio-fuente-h2;
       line-height: $altura-linea-h2;
     }
@@ -43,9 +43,9 @@
     font-family: $fuente-secundaria;
     font-size: 4rem;
     margin-top: 0.5rem;
-    text-shadow: 2px 2px 0 var(--shadow-color);
+    text-shadow: 0.125rem 0.125rem 0 var(--shadow-color);
 
-    @media (max-width: 768px) {
+    @media (max-width: $breakpoint-tablet) {
       font-size: 2.5rem;
     }
   }
@@ -62,9 +62,9 @@
     background-color: var(--bg-primary);
     display: flex;
     justify-content: center;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 0.125rem solid var(--border-color);
 
-    @media (max-width: 768px) {
+    @media (max-width: $breakpoint-tablet) {
       padding: 1.5rem 1rem;
     }
   }
@@ -80,7 +80,7 @@
       background-color: var(--bg-secondary);
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: $breakpoint-tablet) {
       padding: 2rem 1rem;
     }
   }
@@ -91,12 +91,12 @@
   &__album-card {
     cursor: pointer;
     transition: transform 0.3s ease;
-    min-width: 200px;
-    max-width: 250px;
+    min-width: 12.5rem;
+    max-width: 15.625rem;
 
-    @media (max-width: 768px) {
-      min-width: 160px;
-      max-width: 200px;
+    @media (max-width: $breakpoint-tablet) {
+      min-width: 10rem;
+      max-width: 12.5rem;
     }
   }
 
@@ -114,7 +114,7 @@
     border-radius: $radio-xxl;
     font-size: $tamanio-fuente-texto-pequeno-s;
     font-weight: 600;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--shadow-color) 20%, transparent);
+    box-shadow: 0 0.125rem 0.5rem color-mix(in srgb, var(--shadow-color) 20%, transparent);
     z-index: 10;
   }
 
@@ -129,7 +129,7 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(1.25rem);
   }
   to {
     opacity: 1;

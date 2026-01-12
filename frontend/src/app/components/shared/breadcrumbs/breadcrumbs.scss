@@ -2,13 +2,13 @@
 
 .breadcrumbs {
   width: 100%;
-  padding: 4px 0;
+  padding: 0.25rem 0;
 
   &__list {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 4px;
+    gap: 0.25rem;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -17,7 +17,7 @@
   &__item {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 0.25rem;
 
     &--active {
       .breadcrumbs__text {
@@ -30,7 +30,7 @@
   &__link {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 0.25rem;
     text-decoration: none;
     color: var(--text-primary);
     font-size: vars.$tamanio-fuente-texto-pequeno-m;
@@ -45,8 +45,8 @@
     }
 
     &:focus {
-      outline: 2px solid var(--color-primary);
-      outline-offset: 2px;
+      outline: 0.125rem solid var(--color-primary);
+      outline-offset: 0.125rem;
     }
   }
 
@@ -72,10 +72,10 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px;
+    max-width: 12.5rem;
 
     @media (max-width: vars.$breakpoint-tablet) {
-      max-width: 120px;
+      max-width: 7.5rem;
     }
   }
 

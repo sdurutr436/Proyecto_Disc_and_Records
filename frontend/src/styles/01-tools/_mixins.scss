@@ -84,7 +84,7 @@
    ======================================== */
 
 // Efecto hover neobrutalista (hundido)
-@mixin brutal-hover($shadow-hover: 2px 2px 0px var(--shadow-color), $translate: 2px) {
+@mixin brutal-hover($shadow-hover: vars.$sombra-brutal-hover, $translate: 0.125rem) {
   &:hover:not(:disabled):not(.button--disabled) {
     box-shadow: $shadow-hover;
     transform: translate($translate, $translate);
@@ -92,7 +92,7 @@
 }
 
 // Efecto active neobrutalista (más hundido)
-@mixin brutal-active($shadow-active: 0px 0px 0px var(--shadow-color), $translate: 4px) {
+@mixin brutal-active($shadow-active: vars.$sombra-brutal-active, $translate: 0.25rem) {
   &:active:not(:disabled):not(.button--disabled) {
     box-shadow: $shadow-active;
     transform: translate($translate, $translate);
@@ -101,17 +101,17 @@
 
 // Combo hover + active neobrutalista
 @mixin brutal-interaction(
-  $shadow-hover: 2px 2px 0px var(--shadow-color),
-  $shadow-active: 0px 0px 0px var(--shadow-color)
+  $shadow-hover: vars.$sombra-brutal-hover,
+  $shadow-active: vars.$sombra-brutal-active
 ) {
   @include brutal-hover($shadow-hover);
   @include brutal-active($shadow-active);
 }
 
 // Efecto hover inverso (se eleva)
-@mixin brutal-hover-lift($shadow-lift: 3px 3px 0px var(--border-color)) {
+@mixin brutal-hover-lift($shadow-lift: vars.$sombra-brutal-xs-plus) {
   &:hover:not(:disabled) {
-    transform: translate(-1px, -1px);
+    transform: translate(-0.0625rem, -0.0625rem);
     box-shadow: $shadow-lift;
   }
 }
@@ -134,15 +134,15 @@
   background-color: var(--bg-secondary);
 
   &:hover {
-    box-shadow: 4px 4px 0px var(--shadow-color);
+    box-shadow: vars.$sombra-brutal-s;
     transform: none;
   }
 }
 
 // Focus visible accesible
-@mixin focus-visible($color: var(--color-accent), $offset: 2px) {
+@mixin focus-visible($color: var(--color-accent), $offset: 0.125rem) {
   &:focus-visible {
-    outline: 3px solid $color;
+    outline: 0.1875rem solid $color;
     outline-offset: $offset;
   }
 }
@@ -152,7 +152,7 @@
   &:focus {
     outline: none;
     border-color: $color;
-    box-shadow: 3px 3px 0px $color;
+    box-shadow: vars.$sombra-brutal-xs-plus;
   }
 }
 
@@ -196,7 +196,7 @@
   background-color: var(--bg-primary);
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-s;
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   outline: none;
 
@@ -219,10 +219,10 @@
 // Estado de error para campos
 @mixin form-field-error {
   border-color: vars.$color-error;
-  box-shadow: 4px 4px 0px vars.$color-error;
+  box-shadow: vars.$sombra-brutal-error;
 
   &:focus {
-    box-shadow: 4px 4px 0px vars.$color-error;
+    box-shadow: vars.$sombra-brutal-error;
   }
 }
 
@@ -292,7 +292,7 @@
   border-radius: vars.$radio-s;
   background-color: var(--color-primary);
   color: var(--text-dark);
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   cursor: pointer;
   @include text-uppercase;
@@ -303,7 +303,7 @@
 
   &:disabled {
     @include state-disabled(0.6);
-    box-shadow: 4px 4px 0px var(--shadow-color);
+    box-shadow: vars.$sombra-brutal-s;
     transform: none;
   }
 }
@@ -334,7 +334,7 @@
 }
 
 // Contenedor con ancho máximo centrado
-@mixin container-centered($max-width: 1440px) {
+@mixin container-centered($max-width: vars.$ancho-maximo-contenedor) {
   max-width: $max-width;
   margin: 0 auto;
 }
@@ -371,7 +371,7 @@
 @mixin brutal-box(
   $bg: var(--bg-secondary),
   $border: vars.$borde-brutal-thick,
-  $shadow: 4px 4px 0px var(--shadow-color),
+  $shadow: vars.$sombra-brutal-s,
   $radius: vars.$radio-s
 ) {
   background-color: $bg;
@@ -402,15 +402,15 @@
 // Badge neobrutalista
 @mixin brutal-badge($bg: var(--color-primary)) {
   display: inline-block;
-  padding: 4px vars.$espaciado-xs;
-  font-size: 0.75rem;
+  padding: vars.$espaciado-tiny vars.$espaciado-xs;
+  font-size: vars.$tamanio-fuente-texto-pequeno-xs;
   font-weight: 600;
   text-transform: uppercase;
   background-color: $bg;
   color: var(--text-dark);
-  border: 2px solid var(--border-color);
+  border: vars.$borde-brutal-thin;
   border-radius: vars.$radio-xs;
-  box-shadow: 2px 2px 0px var(--border-color);
+  box-shadow: vars.$sombra-brutal-xs;
   line-height: 1;
 }
 
@@ -467,7 +467,7 @@
    ======================================== */
 
 // Contenedor de icono flex
-@mixin icon-container($size: 24px) {
+@mixin icon-container($size: 1.5rem) {
   flex-shrink: 0;
   width: $size;
   height: $size;
@@ -478,7 +478,7 @@
 }
 
 // Botón de cerrar/dismiss
-@mixin dismiss-button($size: 24px) {
+@mixin dismiss-button($size: 1.5rem) {
   @include icon-container($size);
   background: transparent;
   border: none;
@@ -494,8 +494,8 @@
   }
 
   &:focus {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
+    outline: 0.125rem solid currentColor;
+    outline-offset: 0.125rem;
   }
 }
 

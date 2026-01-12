@@ -70,7 +70,7 @@
     &:hover {
       background-color: var(--color-primary);
       color: var(--bg-primary);
-      transform: translateY(-2px);
+      transform: translateY(-0.125rem);
       box-shadow: vars.$sombra-brutal-s;
     }
 
@@ -141,7 +141,7 @@
     cursor: pointer;
     transition: all vars.$transicion-rapida;
     display: inline-block;
-    border-bottom: 2px solid transparent;
+    border-bottom: 0.125rem solid transparent;
 
     &:hover {
       color: var(--color-secondary);
@@ -215,7 +215,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 0.0625rem solid var(--border-color);
 
   &:last-child {
     border-bottom: none;
@@ -318,7 +318,7 @@
 
   &__textarea {
     width: 100%;
-    min-height: 150px;
+    min-height: 9.375rem;
     padding: 1rem;
     font-size: vars.$tamanio-fuente-texto-pequeno-m;
     color: var(--text-primary);
@@ -346,7 +346,7 @@
     align-items: center;
     gap: 1rem;
 
-    @media (max-width: 768px) {
+    @media (max-width: vars.$breakpoint-tablet) {
       flex-direction: column;
       align-items: stretch;
     }
@@ -366,7 +366,7 @@
     display: flex;
     gap: 1rem;
 
-    @media (max-width: 768px) {
+    @media (max-width: vars.$breakpoint-tablet) {
       width: 100%;
 
       button {
@@ -385,7 +385,7 @@
   box-shadow: vars.$sombra-brutal-m;
   padding: 1.5rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: vars.$breakpoint-tablet) {
     padding: 1rem;
   }
 
@@ -417,8 +417,8 @@
   }
 
   :deep(.review-card__avatar) {
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
     border-radius: 50%;
     border: vars.$borde-brutal-thin;
     object-fit: cover;
@@ -493,14 +493,14 @@
     transition: all vars.$transicion-rapida;
 
     svg {
-      width: 16px;
-      height: 16px;
+      width: 1rem;
+      height: 1rem;
     }
 
     &:hover {
       background-color: var(--color-primary);
       color: var(--text-dark);
-      transform: translateY(-2px);
+      transform: translateY(-0.125rem);
     }
 
     &:active {
@@ -532,8 +532,8 @@
   }
 
   &__avatar {
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
     border-radius: 50%;
     border: vars.$borde-brutal-thin;
     object-fit: cover;
@@ -676,9 +676,9 @@
 }
 
 .spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid var(--border-color);
+  width: 3rem;
+  height: 3rem;
+  border: 0.25rem solid var(--border-color);
   border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -711,7 +711,7 @@
     box-shadow: vars.$sombra-brutal-s;
 
     &:hover:not(:disabled) {
-      transform: translate(2px, 2px);
+      transform: translate(0.125rem, 0.125rem);
       box-shadow: vars.$sombra-brutal-xs;
     }
 
@@ -727,7 +727,7 @@
     box-shadow: vars.$sombra-brutal-s;
 
     &:hover:not(:disabled) {
-      transform: translate(2px, 2px);
+      transform: translate(0.125rem, 0.125rem);
       box-shadow: vars.$sombra-brutal-xs;
       background-color: var(--color-secondary);
       color: var(--text-dark);
@@ -749,7 +749,7 @@
   box-shadow: vars.$sombra-brutal-m;
   padding: 1.5rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: vars.$breakpoint-tablet) {
     padding: 1rem;
   }
 
@@ -760,11 +760,11 @@
   // Estilos para los tracks dentro del accordion
   :deep(.track-item) {
     display: grid;
-    grid-template-columns: 40px 1fr auto;
+    grid-template-columns: 2.5rem 1fr auto;
     gap: 1rem;
     align-items: center;
     padding: 0.75rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 0.0625rem solid var(--border-color);
     cursor: pointer;
     transition: all vars.$transicion-rapida;
 
@@ -777,8 +777,8 @@
       color: var(--text-dark);
     }
 
-    @media (max-width: 768px) {
-      grid-template-columns: 30px 1fr auto;
+    @media (max-width: vars.$breakpoint-tablet) {
+      grid-template-columns: 1.875rem 1fr auto;
       gap: 0.5rem;
       padding: 0.5rem;
     }

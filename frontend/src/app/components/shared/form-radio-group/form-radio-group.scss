@@ -33,29 +33,29 @@
     height: 0;
 
     &:focus + .form-radio-group__radio {
-      outline: 2px solid vars.$color-primario-light;
-      outline-offset: 2px;
+      outline: 0.125rem solid vars.$color-primario-light;
+      outline-offset: 0.125rem;
     }
   }
 
   &__radio {
-    width: 20px; // Tamaño razonable para radio button
-    height: 20px;
-    min-width: 20px;
-    min-height: 20px;
+    width: 1.25rem; // Tamaño razonable para radio button
+    height: 1.25rem;
+    min-width: 1.25rem;
+    min-height: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
     border: vars.$borde-brutal-thin;
     border-radius: 50%;
     background-color: var(--bg-secondary);
-    box-shadow: 2px 2px 0px var(--border-color);
+    box-shadow: vars.$sombra-brutal-xs;
     transition: all vars.$transicion-rapida;
   }
 
   &__dot {
-    width: 10px; // Punto interno proporcional
-    height: 10px;
+    width: 0.625rem; // Punto interno proporcional
+    height: 0.625rem;
     border-radius: 50%;
     background-color: var(--color-primary);
     opacity: 0;
@@ -78,8 +78,8 @@
 
   // Estados
   &:not(.form-radio-group--disabled) &__option:hover &__radio {
-    transform: translate(-1px, -1px);
-    box-shadow: 3px 3px 0px var(--border-color);
+    transform: translate(-0.0625rem, -0.0625rem);
+    box-shadow: vars.$sombra-brutal-s;
   }
 
   &__input:checked + &__radio {
@@ -109,10 +109,10 @@
 
   &--error &__radio {
     border-color: vars.$color-error;
-    box-shadow: 2px 2px 0px vars.$color-error;
+    box-shadow: vars.$sombra-brutal-error-xs;
 
     &:hover {
-      box-shadow: 3px 3px 0px vars.$color-error;
+      box-shadow: vars.$sombra-brutal-error;
     }
   }
 }

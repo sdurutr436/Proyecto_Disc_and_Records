@@ -112,21 +112,22 @@ $tamanio-fuente-display-mega: 8rem;    // 128px - responsive 404
 $tamanio-fuente-display-ultra: 12rem;  // 192px - 404 desktop
 
 /* --- Variables de espaciado --- */
-// Micro-espaciados para transforms y efectos sutiles (2-4px)
-$espaciado-micro: 2px;
-$espaciado-mini: 3px;
-$espaciado-tiny: 4px;
+// Micro-espaciados para transforms y efectos sutiles
+$espaciado-micro: 0.125rem;   // 2px
+$espaciado-mini: 0.1875rem;   // 3px
+$espaciado-tiny: 0.25rem;     // 4px
 
 // Escala de espaciado principal (8px base)
-$espaciado-xs: 0.5rem;
-$espaciado-s: 1rem;
-$espaciado-m: 2rem;
-$espaciado-l: 3rem;
-$espaciado-xl: 4rem;
-$espaciado-xxl: 5rem;
+$espaciado-xs: 0.5rem;        // 8px
+$espaciado-s: 1rem;           // 16px
+$espaciado-m: 2rem;           // 32px
+$espaciado-l: 3rem;           // 48px
+$espaciado-xl: 4rem;          // 64px
+$espaciado-xxl: 5rem;         // 80px
 
 /* --- Variables de breakpoints --- */
 $breakpoint-mobile: 320px;
+$breakpoint-mobile-sm: 480px;
 $breakpoint-tablet: 768px;
 $breakpoint-desktop: 1024px;
 $breakpoint-large-desktop: 1200px;
@@ -139,66 +140,66 @@ $breakpoint-ultra-wide: 1600px;
    ======================================== */
 
 /* Sombras neobrutalistas base (sólidas, sin blur) */
-$sombra-brutal-micro: 1px 1px 0px $color-letra-oscura;
-$sombra-brutal-mini: 2px 2px 0px $color-letra-oscura;
-$sombra-brutal-xs: 2px 2px 0px $color-letra-oscura;
-$sombra-brutal-xs-plus: 3px 3px 0px $color-letra-oscura;  // Intermedio entre xs y s
-$sombra-brutal-s: 4px 4px 0px $color-letra-oscura;
-$sombra-brutal-m: 6px 6px 0px $color-letra-oscura;
-$sombra-brutal-l: 8px 8px 0px $color-letra-oscura;
+$sombra-brutal-micro: 0.0625rem 0.0625rem 0 $color-letra-oscura;    // 1px
+$sombra-brutal-mini: 0.125rem 0.125rem 0 $color-letra-oscura;       // 2px
+$sombra-brutal-xs: 0.125rem 0.125rem 0 $color-letra-oscura;         // 2px
+$sombra-brutal-xs-plus: 0.1875rem 0.1875rem 0 $color-letra-oscura;  // 3px - Intermedio entre xs y s
+$sombra-brutal-s: 0.25rem 0.25rem 0 $color-letra-oscura;            // 4px
+$sombra-brutal-m: 0.375rem 0.375rem 0 $color-letra-oscura;          // 6px
+$sombra-brutal-l: 0.5rem 0.5rem 0 $color-letra-oscura;              // 8px
 
 /* Offsets para transforms (cuando se elimina la sombra) */
-$sombra-brutal-m-offset: 6px;
+$sombra-brutal-m-offset: 0.375rem;  // 6px
 
 /* Sombras "disco de vinilo" - efecto 3D retro con múltiples capas */
 $sombra-vinilo-s:
-  2px 2px 0px $color-acentuado-light,
-  4px 4px 0px $color-contraste-light;
+  0.125rem 0.125rem 0 $color-acentuado-light,
+  0.25rem 0.25rem 0 $color-contraste-light;
 $sombra-vinilo-m:
-  2px 2px 0px $color-acentuado-light,
-  4px 4px 0px $color-contraste-light,
-  6px 6px 0px $color-secundario-light;
+  0.125rem 0.125rem 0 $color-acentuado-light,
+  0.25rem 0.25rem 0 $color-contraste-light,
+  0.375rem 0.375rem 0 $color-secundario-light;
 $sombra-vinilo-l:
-  2px 2px 0px $color-acentuado-light,
-  4px 4px 0px $color-contraste-light,
-  6px 6px 0px $color-secundario-light,
-  8px 8px 0px $color-primario-light;
+  0.125rem 0.125rem 0 $color-acentuado-light,
+  0.25rem 0.25rem 0 $color-contraste-light,
+  0.375rem 0.375rem 0 $color-secundario-light,
+  0.5rem 0.5rem 0 $color-primario-light;
 
 /* Sombras "sunset" - degradado cálido 70s para botones principales */
-$sombra-sunset-s: 3px 3px 0px $color-secundario-light;
-$sombra-sunset-m: 4px 4px 0px $color-contraste-light;
-$sombra-sunset-l: 5px 5px 0px $color-acentuado-light;
+$sombra-sunset-s: 0.1875rem 0.1875rem 0 $color-secundario-light;  // 3px
+$sombra-sunset-m: 0.25rem 0.25rem 0 $color-contraste-light;       // 4px
+$sombra-sunset-l: 0.3125rem 0.3125rem 0 $color-acentuado-light;   // 5px
 
 /* Sombras "ocean" - degradado frío para modo dark */
-$sombra-ocean-s: 3px 3px 0px $color-secundario-dark;
-$sombra-ocean-m: 4px 4px 0px $color-contraste-dark;
-$sombra-ocean-l: 5px 5px 0px $color-acentuado-dark;
+$sombra-ocean-s: 0.1875rem 0.1875rem 0 $color-secundario-dark;    // 3px
+$sombra-ocean-m: 0.25rem 0.25rem 0 $color-contraste-dark;         // 4px
+$sombra-ocean-l: 0.3125rem 0.3125rem 0 $color-acentuado-dark;     // 5px
 
 /* Sombras neobrutalistas con colores de la paleta */
-$sombra-brutal-primario-light: 4px 4px 0px $color-primario-light;
-$sombra-brutal-secundario-light: 4px 4px 0px $color-secundario-light;
-$sombra-brutal-contraste-light: 4px 4px 0px $color-contraste-light;
-$sombra-brutal-acentuado-light: 4px 4px 0px $color-acentuado-light;
+$sombra-brutal-primario-light: 0.25rem 0.25rem 0 $color-primario-light;
+$sombra-brutal-secundario-light: 0.25rem 0.25rem 0 $color-secundario-light;
+$sombra-brutal-contraste-light: 0.25rem 0.25rem 0 $color-contraste-light;
+$sombra-brutal-acentuado-light: 0.25rem 0.25rem 0 $color-acentuado-light;
 
-$sombra-brutal-primario-dark: 4px 4px 0px $color-primario-dark;
-$sombra-brutal-secundario-dark: 4px 4px 0px $color-secundario-dark;
-$sombra-brutal-contraste-dark: 4px 4px 0px $color-contraste-dark;
-$sombra-brutal-acentuado-dark: 4px 4px 0px $color-acentuado-dark;
+$sombra-brutal-primario-dark: 0.25rem 0.25rem 0 $color-primario-dark;
+$sombra-brutal-secundario-dark: 0.25rem 0.25rem 0 $color-secundario-dark;
+$sombra-brutal-contraste-dark: 0.25rem 0.25rem 0 $color-contraste-dark;
+$sombra-brutal-acentuado-dark: 0.25rem 0.25rem 0 $color-acentuado-dark;
 
 /* Sombras de interacción (hover/active) */
-$sombra-brutal-hover: 2px 2px 0px $color-letra-oscura;
-$sombra-brutal-active: 0px 0px 0px $color-letra-oscura;
+$sombra-brutal-hover: 0.125rem 0.125rem 0 $color-letra-oscura;
+$sombra-brutal-active: 0 0 0 $color-letra-oscura;
 
 /* Sombras para estados de validación */
-$sombra-brutal-error: 4px 4px 0px $color-error;
-$sombra-brutal-error-xs: 2px 2px 0px $color-error;
-$sombra-brutal-success: 4px 4px 0px $color-exito;
-$sombra-brutal-success-xs: 2px 2px 0px $color-exito;
-$sombra-brutal-warning: 4px 4px 0px $color-advertencia-light;
+$sombra-brutal-error: 0.25rem 0.25rem 0 $color-error;
+$sombra-brutal-error-xs: 0.125rem 0.125rem 0 $color-error;
+$sombra-brutal-success: 0.25rem 0.25rem 0 $color-exito;
+$sombra-brutal-success-xs: 0.125rem 0.125rem 0 $color-exito;
+$sombra-brutal-warning: 0.25rem 0.25rem 0 $color-advertencia-light;
 
 /* Sombras retro suaves - para cards y elementos flotantes */
-$sombra-retro-suave: 4px 4px 0px rgba(1, 19, 27, 0.15);
-$sombra-retro-media: 6px 6px 0px rgba(1, 19, 27, 0.2);
+$sombra-retro-suave: 0.25rem 0.25rem 0 rgba(1, 19, 27, 0.15);
+$sombra-retro-media: 0.375rem 0.375rem 0 rgba(1, 19, 27, 0.2);
 
 /* ========================================
    SOMBRAS NEON (ESTADOS Y APOYO)
@@ -206,59 +207,59 @@ $sombra-retro-media: 6px 6px 0px rgba(1, 19, 27, 0.2);
    ======================================== */
 
 /* Sombras neon de error - rojo alarma */
-$sombra-neon-error: 0px 0px 10px $color-error, 0px 0px 20px $color-error;
-$sombra-neon-error-suave: 0px 0px 8px rgba(224, 74, 74, 0.5);
-$sombra-neon-error-intensa: 0px 0px 15px $color-error, 0px 0px 30px $color-error, 0px 0px 45px rgba(224, 74, 74, 0.3);
+$sombra-neon-error: 0 0 0.625rem $color-error, 0 0 1.25rem $color-error;
+$sombra-neon-error-suave: 0 0 0.5rem rgba(224, 74, 74, 0.5);
+$sombra-neon-error-intensa: 0 0 0.9375rem $color-error, 0 0 1.875rem $color-error, 0 0 2.8125rem rgba(224, 74, 74, 0.3);
 
 /* Sombras neon de advertencia (light) - amarillo disco */
-$sombra-neon-advertencia-light: 0px 0px 10px $color-advertencia-light, 0px 0px 20px $color-advertencia-light;
-$sombra-neon-advertencia-light-suave: 0px 0px 8px rgba(255, 192, 71, 0.5);
+$sombra-neon-advertencia-light: 0 0 0.625rem $color-advertencia-light, 0 0 1.25rem $color-advertencia-light;
+$sombra-neon-advertencia-light-suave: 0 0 0.5rem rgba(255, 192, 71, 0.5);
 
 /* Sombras neon de advertencia (dark) - amarillo neón */
-$sombra-neon-advertencia-dark: 0px 0px 10px $color-advertencia-dark, 0px 0px 20px $color-advertencia-dark;
-$sombra-neon-advertencia-dark-suave: 0px 0px 8px rgba(254, 248, 74, 0.5);
+$sombra-neon-advertencia-dark: 0 0 0.625rem $color-advertencia-dark, 0 0 1.25rem $color-advertencia-dark;
+$sombra-neon-advertencia-dark-suave: 0 0 0.5rem rgba(254, 248, 74, 0.5);
 
 /* Sombras neon de éxito - verde lima disco */
-$sombra-neon-exito: 0px 0px 10px $color-exito, 0px 0px 20px $color-exito;
-$sombra-neon-exito-suave: 0px 0px 8px rgba(170, 214, 97, 0.5);
-$sombra-neon-exito-intensa: 0px 0px 15px $color-exito, 0px 0px 30px $color-exito, 0px 0px 45px rgba(170, 214, 97, 0.3);
+$sombra-neon-exito: 0 0 0.625rem $color-exito, 0 0 1.25rem $color-exito;
+$sombra-neon-exito-suave: 0 0 0.5rem rgba(170, 214, 97, 0.5);
+$sombra-neon-exito-intensa: 0 0 0.9375rem $color-exito, 0 0 1.875rem $color-exito, 0 0 2.8125rem rgba(170, 214, 97, 0.3);
 
 /* Sombras neon de información - teal 70s */
-$sombra-neon-informacion: 0px 0px 10px $color-informacion, 0px 0px 20px $color-informacion;
-$sombra-neon-informacion-suave: 0px 0px 8px rgba(10, 146, 149, 0.5);
-$sombra-neon-informacion-intensa: 0px 0px 15px $color-informacion, 0px 0px 30px $color-informacion, 0px 0px 45px rgba(10, 146, 149, 0.3);
+$sombra-neon-informacion: 0 0 0.625rem $color-informacion, 0 0 1.25rem $color-informacion;
+$sombra-neon-informacion-suave: 0 0 0.5rem rgba(10, 146, 149, 0.5);
+$sombra-neon-informacion-intensa: 0 0 0.9375rem $color-informacion, 0 0 1.875rem $color-informacion, 0 0 2.8125rem rgba(10, 146, 149, 0.3);
 
 /* Sombras neon naranja 70s - para destacados especiales */
-$sombra-neon-naranja: 0px 0px 10px $color-primario-light, 0px 0px 20px $color-primario-light;
-$sombra-neon-naranja-intensa: 0px 0px 15px $color-primario-light, 0px 0px 30px $color-secundario-light, 0px 0px 45px $color-contraste-light;
+$sombra-neon-naranja: 0 0 0.625rem $color-primario-light, 0 0 1.25rem $color-primario-light;
+$sombra-neon-naranja-intensa: 0 0 0.9375rem $color-primario-light, 0 0 1.875rem $color-secundario-light, 0 0 2.8125rem $color-contraste-light;
 
 /* Sombra para efecto "disco ball" / pulso animado */
-$sombra-neon-pulso: 0px 0px 5px currentColor, 0px 0px 10px currentColor;
+$sombra-neon-pulso: 0 0 0.3125rem currentColor, 0 0 0.625rem currentColor;
 
 /* ========================================
    VARIABLES DE BORDES (complemento neobrutalist)
    ======================================== */
-$borde-brutal-thin: 2px solid var(--border-color);
-$borde-brutal-medium: 3px solid var(--border-color);
-$borde-brutal-thick: 4px solid var(--border-color);
+$borde-brutal-thin: 0.125rem solid var(--border-color);    // 2px
+$borde-brutal-medium: 0.1875rem solid var(--border-color); // 3px
+$borde-brutal-thick: 0.25rem solid var(--border-color);    // 4px
 
 /* Bordes con colores de la paleta */
-$borde-primario-light: 3px solid $color-primario-light;
-$borde-primario-dark: 3px solid $color-primario-dark;
+$borde-primario-light: 0.1875rem solid $color-primario-light;  // 3px
+$borde-primario-dark: 0.1875rem solid $color-primario-dark;    // 3px
 
 /* ========================================
    VARIABLES DE BORDER RADIUS
    ======================================== */
-$radio-ninguno: 0px;
-$radio-micro: 2px;      // Para elementos muy sutiles (focus rings, etc.)
-$radio-xs: 3px;
-$radio-s: 5px;          // Radio principal - sutil pero visible
-$radio-m: 8px;
-$radio-l: 12px;
-$radio-xl: 16px;
-$radio-xxl: 20px;       // Para cards con bordes muy redondeados
-$radio-redondo: 50%;    // Para elementos circulares
-$radio-pildora: 9999px; // Para botones tipo píldora
+$radio-ninguno: 0;            // 0px
+$radio-micro: 0.125rem;       // 2px - Para elementos muy sutiles (focus rings, etc.)
+$radio-xs: 0.1875rem;         // 3px
+$radio-s: 0.3125rem;          // 5px - Radio principal - sutil pero visible
+$radio-m: 0.5rem;             // 8px
+$radio-l: 0.75rem;            // 12px
+$radio-xl: 1rem;              // 16px
+$radio-xxl: 1.25rem;          // 20px - Para cards con bordes muy redondeados
+$radio-redondo: 50%;          // Para elementos circulares
+$radio-pildora: 9999px;       // Para botones tipo píldora (se mantiene en px)
 
 /* ========================================
    VARIABLES DE TRANSICIONES
@@ -302,18 +303,18 @@ $icono-xl: 3rem;
 /* ========================================
    ANCHO MÁXIMO DE CONTENEDORES
    ======================================== */
-$ancho-maximo-contenedor: 1440px;
-$ancho-maximo-modal: 36rem;
-$ancho-maximo-formulario: 400px;
-$ancho-maximo-card: 280px;
-$ancho-maximo-card-polaroid: 220px;
+$ancho-maximo-contenedor: 90rem;      // 1440px
+$ancho-maximo-modal: 36rem;           // 576px
+$ancho-maximo-formulario: 25rem;      // 400px
+$ancho-maximo-card: 17.5rem;          // 280px
+$ancho-maximo-card-polaroid: 13.75rem; // 220px
 
 /* ========================================
    TAMAÑOS TOUCH ACCESSIBILITY
    ======================================== */
-$altura-minima-touch-s: 36px;
-$altura-minima-touch-m: 44px;
-$altura-minima-touch-l: 52px;
+$altura-minima-touch-s: 2.25rem;   // 36px
+$altura-minima-touch-m: 2.75rem;   // 44px
+$altura-minima-touch-l: 3.25rem;   // 52px
 
 /* ========================================
    DURACIONES DE ANIMACIÓN

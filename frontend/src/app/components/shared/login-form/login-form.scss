@@ -56,7 +56,7 @@
   border-radius: vars.$radio-s;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   width: 100%;
   outline: none;
@@ -72,17 +72,17 @@
   }
 
   &:hover:not(:disabled) {
-    box-shadow: 2px 2px 0px var(--shadow-color);
-    transform: translate(2px, 2px);
+    box-shadow: vars.$sombra-brutal-xs;
+    transform: translate(0.125rem, 0.125rem);
   }
 }
 
 .login-form__input--error {
   border-color: vars.$color-error;
-  box-shadow: 4px 4px 0px vars.$color-error;
+  box-shadow: vars.$sombra-brutal-error;
 
   &:focus {
-    box-shadow: 4px 4px 0px vars.$color-error;
+    box-shadow: vars.$sombra-brutal-error;
   }
 }
 
@@ -122,7 +122,7 @@
   border-radius: vars.$radio-s;
   background-color: var(--color-primary);
   color: var(--text-dark);
-  box-shadow: 4px 4px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   cursor: pointer;
   @include mix.text-uppercase;
@@ -134,7 +134,7 @@
 
   &:disabled {
     @include mix.state-disabled(0.6);
-    box-shadow: 4px 4px 0px var(--shadow-color);
+    box-shadow: vars.$sombra-brutal-s;
     transform: none;
   }
 }
@@ -171,8 +171,8 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
+    outline: 0.125rem solid var(--color-primary);
+    outline-offset: 0.125rem;
     border-radius: vars.$radio-micro;
   }
 }

@@ -20,10 +20,10 @@
   padding: vars.$espaciado-s vars.$espaciado-m;
   border: vars.$borde-brutal-medium;
   border-radius: vars.$radio-s;
-  box-shadow: 6px 6px 0px var(--shadow-color);
-  min-width: 300px;
-  max-width: 400px;
-  min-height: 60px; // Dimensión base para evitar colapso
+  box-shadow: vars.$sombra-brutal-m;
+  min-width: 18.75rem;
+  max-width: 25rem;
+  min-height: 3.75rem; // Dimensión base para evitar colapso
   margin: 0; // Limpiar márgenes que puedan afectar al cálculo de JS
   opacity: 0;
   transform: translateX(100%);
@@ -35,7 +35,7 @@
   }
 
   &__icon {
-    @include mix.icon-container(24px);
+    @include mix.icon-container(1.5rem);
   }
 
   &__content {
@@ -57,7 +57,7 @@
   }
 
   &__dismiss {
-    @include mix.dismiss-button(24px);
+    @include mix.dismiss-button(1.5rem);
     opacity: 0.8;
   }
 
@@ -96,7 +96,7 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    height: 4px;
+    height: 0.25rem;
     width: 100%;
     background-color: currentColor;
     opacity: 0.3;

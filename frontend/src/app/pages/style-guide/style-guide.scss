@@ -36,8 +36,8 @@ $header-height-mobile: calc($espaciado-xxl + $espaciado-s);
     background-color: var(--color-primary);
     border: $borde-brutal-thick;
     box-shadow: $sombra-brutal-m;
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
     min-height: $altura-minima-touch-m;
     padding: 0;
     font-size: 1.5rem;
@@ -56,7 +56,7 @@ $header-height-mobile: calc($espaciado-xxl + $espaciado-s);
       transform: translate($sombra-brutal-m-offset, $sombra-brutal-m-offset);
     }
 
-    @include mixins.focus-visible($color-contraste-light, 4px);
+    @include mixins.focus-visible($color-contraste-light, 0.25rem);
   }
 
   &__sidebar-icon {
@@ -77,7 +77,7 @@ $header-height-mobile: calc($espaciado-xxl + $espaciado-s);
 
     opacity: 0;
     visibility: hidden;
-    transform: translateY(20px) scale(0.9);
+    transform: translateY(1.25rem) scale(0.9);
     transform-origin: bottom left;
 
     transition:
@@ -102,7 +102,7 @@ $header-height-mobile: calc($espaciado-xxl + $espaciado-s);
     color: var(--text-primary);
     border: $borde-brutal-medium;
     box-shadow: $sombra-brutal-s;
-    width: 150px; /* Ancho fijo para todos los botones */
+    width: 9.375rem; /* Ancho fijo para todos los botones */
     padding: $espaciado-s $espaciado-m;
     font-size: $tamanio-fuente-texto-pequeno-s;
     min-height: $altura-minima-touch-m;
@@ -120,7 +120,7 @@ $header-height-mobile: calc($espaciado-xxl + $espaciado-s);
       transform: translate($espaciado-tiny, $espaciado-tiny);
     }
 
-    @include mixins.focus-visible($color-contraste-light, 2px);
+    @include mixins.focus-visible($color-contraste-light, 0.125rem);
 
     &--active {
       background-color: var(--color-primary);
@@ -310,7 +310,7 @@ $header-height-mobile: calc($espaciado-xxl + $espaciado-s);
 
     // Grid específico para formularios (más estrecho)
     &--forms {
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
       align-items: flex-start;
       gap: $espaciado-xl;
 
@@ -674,7 +674,7 @@ app-breadcrumbs {
   &__body {
     display: flex;
     gap: $espaciado-mini;
-    min-height: 80px; // Reducido de 150px a 80px
+    min-height: 5rem; // Reducido de 150px a 80px
   }
 
   &__sidebar {
@@ -932,7 +932,7 @@ app-breadcrumbs {
     font-size: calc($tamanio-fuente-texto-pequeno-xs * 0.83);
     padding: $espaciado-xs $espaciado-xs;
     background-color: var(--bg-primary);
-    border: 1px solid var(--border-color);
+    border: 0.0625rem solid var(--border-color);
     border-radius: $radio-xs;
     color: var(--text-primary);
     font-family: 'Courier New', monospace;
@@ -1086,7 +1086,7 @@ app-breadcrumbs {
     font-size: calc($tamanio-fuente-texto-pequeno-xs * 0.83);
     padding: $espaciado-xs calc($espaciado-xs + $espaciado-xs / 2);
     background-color: var(--bg-primary);
-    border: 1px solid var(--border-color);
+    border: 0.0625rem solid var(--border-color);
     border-radius: $radio-xs;
     color: var(--text-primary);
   }
@@ -1109,7 +1109,7 @@ app-breadcrumbs {
 
   &:hover {
     color: var(--color-secondary);
-    transform: translateY(-1px);
+    transform: translateY(-0.0625rem);
   }
 
   &:active {
@@ -1137,10 +1137,10 @@ app-breadcrumbs {
     &::after {
       content: '';
       position: absolute;
-      bottom: -2px;
+      bottom: -0.125rem;
       left: 0;
       width: 0;
-      height: 2px;
+      height: 0.125rem;
       background-color: var(--color-primary);
       transition: width $transicion-rapida;
     }
@@ -1176,8 +1176,8 @@ app-breadcrumbs {
 }
 
 .toggle {
-  width: 50px;
-  height: 26px;
+  width: 3.125rem;
+  height: 1.625rem;
   background-color: var(--bg-secondary);
   border: $borde-brutal-medium;
   border-radius: $radio-s;
@@ -1191,13 +1191,13 @@ app-breadcrumbs {
   &::after {
     content: '';
     position: absolute;
-    width: 18px;
-    height: 18px;
+    width: 1.125rem;
+    height: 1.125rem;
     background-color: var(--bg-primary);
     border: $borde-brutal-thin;
     border-radius: $radio-xs;
-    top: 2px;
-    left: 2px;
+    top: 0.125rem;
+    left: 0.125rem;
     transition: transform $transicion-base $curva-brutal;
   }
 
@@ -1206,7 +1206,7 @@ app-breadcrumbs {
     background-color: var(--color-primary);
 
     &::after {
-      transform: translateX(24px);
+      transform: translateX(1.5rem);
     }
   }
 
@@ -1254,8 +1254,8 @@ app-breadcrumbs {
 }
 
 .checkbox {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   border: $borde-brutal-medium;
   border-radius: $radio-xs;
   background-color: var(--bg-primary);
@@ -1293,7 +1293,7 @@ app-breadcrumbs {
   // Hover
   &:not(:disabled):hover {
     box-shadow: $sombra-brutal-xs;
-    transform: translate(-1px, -1px);
+    transform: translate(-0.0625rem, -0.0625rem);
   }
 
   // Disabled
@@ -1329,8 +1329,8 @@ app-breadcrumbs {
 }
 
 .radio {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   border: $borde-brutal-medium; // Negro (borde)
   border-radius: $radio-redondo;
   background-color: var(--bg-primary);
@@ -1370,7 +1370,7 @@ app-breadcrumbs {
   // Hover
   &:not(:disabled):hover {
     box-shadow: $sombra-brutal-xs;
-    transform: translate(-1px, -1px);
+    transform: translate(-0.0625rem, -0.0625rem);
   }
 
   // Disabled
@@ -1447,7 +1447,7 @@ app-breadcrumbs {
       font-size: $tamanio-fuente-texto-pequeno-xs;
       padding: $espaciado-xs $espaciado-xs;
       background-color: var(--bg-secondary);
-      border: 1px solid var(--border-color);
+      border: 0.0625rem solid var(--border-color);
       border-radius: $radio-xs;
       color: var(--color-primary);
     }

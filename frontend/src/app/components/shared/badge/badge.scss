@@ -23,7 +23,7 @@
   padding: vars.$espaciado-tiny vars.$espaciado-s;
   font-size: 0.75rem;
   border-radius: vars.$radio-xs;
-  box-shadow: 2px 2px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-xs;
 }
 
 /* ========================================
@@ -33,19 +33,19 @@
 .badge--sm {
   padding: vars.$espaciado-micro vars.$espaciado-xs;
   font-size: 0.625rem;
-  box-shadow: 1px 1px 0px var(--shadow-color);
+  box-shadow: 0.0625rem 0.0625rem 0px var(--shadow-color);
 }
 
 .badge--md {
   padding: vars.$espaciado-tiny vars.$espaciado-s;
   font-size: 0.75rem;
-  box-shadow: 2px 2px 0px var(--shadow-color);
+  box-shadow: vars.$sombra-brutal-xs;
 }
 
 .badge--lg {
   padding: vars.$espaciado-xs vars.$espaciado-m;
   font-size: 0.875rem;
-  box-shadow: 3px 3px 0px var(--shadow-color);
+  box-shadow: 0.1875rem 0.1875rem 0px var(--shadow-color);
 }
 
 /* ========================================

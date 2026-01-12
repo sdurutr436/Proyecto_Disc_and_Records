@@ -94,7 +94,7 @@
 
     &:hover {
       background-color: var(--bg-secondary);
-      transform: translateX(4px);
+      transform: translateX(0.25rem);
       box-shadow: vars.$sombra-brutal-s;
     }
 
@@ -102,7 +102,7 @@
       background-color: var(--color-primary);
       color: var(--bg-primary);
       border-color: var(--text-dark);
-      transform: translateX(4px);
+      transform: translateX(0.25rem);
       box-shadow: vars.$sombra-brutal-s;
     }
   }
@@ -125,7 +125,7 @@
 
     &:hover {
       color: var(--color-primary);
-      transform: translateX(-4px);
+      transform: translateX(-0.25rem);
     }
   }
 
@@ -139,7 +139,7 @@
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(-10px);
+      transform: translateY(-0.625rem);
     }
     to {
       opacity: 1;
@@ -201,7 +201,7 @@
   @keyframes slideDown {
     from {
       opacity: 0;
-      transform: translateY(-10px);
+      transform: translateY(-0.625rem);
     }
     to {
       opacity: 1;
@@ -213,7 +213,7 @@
      SEPARADORES
      ======================================== */
   &__divider {
-    height: 2px;
+    height: 0.125rem;
     background-color: var(--border-color);
     border: none;
     margin: vars.$espaciado-l 0;
@@ -435,7 +435,7 @@
       }
 
       &:focus + .settings__toggle-slider {
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 20%, transparent);
+        box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--color-primary) 20%, transparent);
       }
     }
   }
@@ -460,7 +460,7 @@
       bottom: vars.$espaciado-xs;
       background-color: var(--bg-primary);
       transition: vars.$transicion-base;
-      border: 2px solid var(--text-dark);
+      border: 0.125rem solid var(--text-dark);
     }
   }
 
@@ -485,7 +485,7 @@
 
     &:hover {
       background-color: var(--bg-secondary);
-      transform: translateY(-2px);
+      transform: translateY(-0.125rem);
       box-shadow: vars.$sombra-brutal-s;
     }
 
@@ -493,7 +493,7 @@
       appearance: none;
       width: vars.$icono-s;
       height: vars.$icono-s;
-      border: 3px solid var(--text-dark);
+      border: 0.1875rem solid var(--text-dark);
       background-color: var(--bg-primary);
       cursor: pointer;
       position: relative;
@@ -562,7 +562,7 @@
      ZONA DE PELIGRO
      ======================================== */
   &__section--danger {
-    border: 3px solid var(--color-error);
+    border: 0.1875rem solid var(--color-error);
     padding: vars.$espaciado-m;
     background-color: color-mix(in srgb, var(--color-error) 5%, transparent);
   }
