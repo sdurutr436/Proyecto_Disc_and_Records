@@ -65,6 +65,18 @@
   flex-shrink: 0; /* Evita que los botones se compriman */
   font-family: vars.$fuente-principal;
 
+  // Tablet: reducir tamaño
+  @media (max-width: vars.$breakpoint-tablet) {
+    padding: vars.$espaciado-s vars.$espaciado-m;
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  }
+
+  // Móvil pequeño: más compacto
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  }
+
   &:hover:not(.tabs__button--disabled) {
     color: var(--text-primary);
     background: var(--bg-tertiary);

@@ -17,10 +17,21 @@
 
   @include mix.mobile-down {
     padding: vars.$espaciado-m;
+    margin-bottom: vars.$espaciado-l;
   }
 
   @include mix.tablet-only {
     padding: vars.$espaciado-m;
+  }
+
+  // Móvil pequeño: padding mínimo y sin bordes laterales
+  @include mix.mobile-sm-down {
+    padding: vars.$espaciado-s vars.$espaciado-xs;
+    margin-bottom: vars.$espaciado-m;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   &__title {
@@ -39,6 +50,7 @@
     @include mix.mobile-down {
       font-size: 1.5rem;
       text-shadow: 0.125rem 0.125rem 0px var(--color-primary);
+      margin-bottom: vars.$espaciado-s;
     }
 
     @include mix.tablet-only {
@@ -46,6 +58,13 @@
       text-shadow:
         0.125rem 0.125rem 0px var(--color-primary),
         0.25rem 0.25rem 0px var(--color-secondary);
+    }
+
+    @include mix.mobile-sm-down {
+      font-size: 1.25rem;
+      text-shadow: 0.0625rem 0.0625rem 0px var(--color-primary);
+      margin-bottom: vars.$espaciado-xs;
+      padding-bottom: vars.$espaciado-xs;
     }
   }
 
@@ -101,6 +120,13 @@
         width: 9.375rem;
         min-width: 9.375rem;
         max-width: 9.375rem;
+      }
+
+      @include mix.mobile-sm-down {
+        flex: 0 0 8rem;
+        width: 8rem;
+        min-width: 8rem;
+        max-width: 8rem;
       }
     }
   }

@@ -10,6 +10,11 @@
     padding: vars.$espaciado-s;
   }
 
+  // Móvil pequeño: padding mínimo
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    padding: vars.$espaciado-xs;
+  }
+
   /* ========================================
      CONTENEDOR PRINCIPAL - LAYOUT 1/3 + 2/3
      ======================================== */
@@ -262,6 +267,13 @@
   @include mixins.respond-to('tablet') {
     padding: vars.$espaciado-s;
   }
+
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    padding: vars.$espaciado-xs;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
 }
 
 .rating-input {
@@ -305,6 +317,13 @@
 
   @include mixins.respond-to('tablet') {
     padding: vars.$espaciado-s;
+  }
+
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    padding: vars.$espaciado-xs;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
   }
 }
 

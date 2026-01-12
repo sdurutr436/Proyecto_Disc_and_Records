@@ -13,6 +13,10 @@
     padding: vars.$espaciado-s;
   }
 
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    padding: vars.$espaciado-xs;
+  }
+
   /* ========================================
      CONTENEDOR PRINCIPAL
      ======================================== */
@@ -38,6 +42,12 @@
       font-size: 8rem;
       text-shadow: vars.$sombra-brutal-s;
       margin-bottom: vars.$espaciado-m;
+    }
+
+    @media (max-width: vars.$breakpoint-mobile-sm) {
+      font-size: 5rem;
+      text-shadow: vars.$sombra-brutal-xs;
+      margin-bottom: vars.$espaciado-s;
     }
   }
 

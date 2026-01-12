@@ -176,3 +176,44 @@
     gap: vars.$espaciado-m;
   }
 }
+
+// Móvil pequeño
+@media (max-width: vars.$breakpoint-mobile-sm) {
+  .admin-header {
+    padding: vars.$espaciado-s vars.$espaciado-xs;
+  }
+
+  .admin-title {
+    font-size: vars.$tamanio-fuente-h4;
+  }
+
+  .stats-section {
+    padding: vars.$espaciado-s vars.$espaciado-xs;
+    grid-template-columns: repeat(2, 1fr);
+    gap: vars.$espaciado-xs;
+  }
+
+  .stat-card {
+    padding: vars.$espaciado-s;
+  }
+
+  .stat-value {
+    font-size: vars.$tamanio-fuente-h4;
+  }
+
+  .stat-label {
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+  }
+
+  .admin-tabs-wrapper {
+    padding: 0 vars.$espaciado-xs;
+  }
+
+  .admin-content {
+    padding: vars.$espaciado-s vars.$espaciado-xs;
+  }
+
+  .content-section {
+    padding: vars.$espaciado-s;
+  }
+}

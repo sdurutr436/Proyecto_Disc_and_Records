@@ -590,9 +590,68 @@
   }
 }
 
+// Media query móvil pequeño (menor que 480px) - para textos y padding más reducidos
+@mixin mobile-sm-down {
+  @media (max-width: #{vars.$breakpoint-mobile-sm - 1px}) {
+    @content;
+  }
+}
+
+// Media query móvil muy pequeño (320px-480px)
+@mixin mobile-xs {
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    @content;
+  }
+}
+
 // Media query desktop hacia arriba
 @mixin desktop-up {
   @media (min-width: vars.$breakpoint-desktop) {
     @content;
+  }
+}
+
+/* ========================================
+   MIXINS DE TIPOGRAFÍA RESPONSIVE MÓVIL
+   ======================================== */
+
+// Tipografía reducida para móviles pequeños
+@mixin mobile-text-size($size: 'normal') {
+  @if $size == 'body' {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s; // 14px en lugar de 16px
+    line-height: vars.$altura-linea-texto-pequeno-s;
+  } @else if $size == 'small' {
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs; // 12px
+    line-height: vars.$altura-linea-texto-pequeno-xs;
+  } @else if $size == 'heading' {
+    font-size: vars.$tamanio-fuente-h4; // 16px para títulos en móvil pequeño
+    line-height: vars.$altura-linea-h4;
+  }
+}
+
+// Contenedor edge-to-edge para móvil (sin padding lateral)
+@mixin mobile-full-width {
+  @include mobile-sm-down {
+    padding-left: vars.$espaciado-xs;
+    padding-right: vars.$espaciado-xs;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0;
+  }
+}
+
+// Sección que se estira al máximo en móvil
+@mixin section-mobile-stretch {
+  @include mobile-down {
+    padding-left: vars.$espaciado-s;
+    padding-right: vars.$espaciado-s;
+  }
+
+  @include mobile-sm-down {
+    padding-left: vars.$espaciado-xs;
+    padding-right: vars.$espaciado-xs;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
   }
 }

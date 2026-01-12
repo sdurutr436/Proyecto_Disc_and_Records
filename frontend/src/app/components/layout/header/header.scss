@@ -237,3 +237,27 @@
     margin-left: -3px;
   }
 }
+
+/* ========================================
+   RESPONSIVE - MÓVIL PEQUEÑO (< 480px)
+   ======================================== */
+@media (max-width: vars.$breakpoint-mobile-sm) {
+  .header__top-container {
+    padding: vars.$espaciado-xs;
+    gap: vars.$espaciado-xs;
+  }
+
+  .header__logo-wrapper {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .header__logo {
+    height: 8rem;
+  }
+
+  .header__btn {
+    font-size: vars.$tamanio-fuente-micro;
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+  }
+}

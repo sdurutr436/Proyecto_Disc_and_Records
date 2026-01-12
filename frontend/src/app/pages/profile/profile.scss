@@ -11,6 +11,11 @@
     padding: vars.$espaciado-s;
   }
 
+  // Móvil pequeño: padding mínimo
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    padding: vars.$espaciado-xs;
+  }
+
   /* ========================================
      CONTENEDOR PRINCIPAL
      ======================================== */
@@ -112,6 +117,13 @@
     @include mixins.respond-to('tablet') {
       padding: vars.$espaciado-s;
     }
+
+    @media (max-width: vars.$breakpoint-mobile-sm) {
+      padding: vars.$espaciado-xs;
+      min-height: 15rem;
+      border-left: none;
+      border-right: none;
+    }
   }
 
   /* ========================================
@@ -139,6 +151,12 @@
       gap: vars.$espaciado-s;
       padding: vars.$espaciado-s;
     }
+
+    @media (max-width: vars.$breakpoint-mobile-sm) {
+      grid-template-columns: 4.5rem 1fr;
+      gap: vars.$espaciado-xs;
+      padding: vars.$espaciado-xs;
+    }
   }
 
   &__review-image {
@@ -158,6 +176,11 @@
     @include mixins.respond-to('tablet') {
       width: 6.25rem;
       height: 6.25rem;
+    }
+
+    @media (max-width: vars.$breakpoint-mobile-sm) {
+      width: 4.5rem;
+      height: 4.5rem;
     }
   }
 

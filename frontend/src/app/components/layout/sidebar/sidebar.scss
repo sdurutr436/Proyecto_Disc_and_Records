@@ -40,6 +40,29 @@
     gap: 0; // Reducir items trending
   }
 }
+
+/* --- Media query para móvil pequeño --- */
+@include mix.mobile-sm-down {
+  .sidebar {
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+
+  .sidebar__container {
+    padding: vars.$espaciado-s vars.$espaciado-xs;
+    gap: vars.$espaciado-s;
+  }
+
+  .sidebar__section {
+    gap: vars.$espaciado-xs;
+    padding-bottom: vars.$espaciado-s;
+  }
+
+  .sidebar__title {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  }
+}
 /* --- Elemento: Container --- */
 .sidebar__container {
   padding: vars.$espaciado-m;

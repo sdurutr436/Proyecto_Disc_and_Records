@@ -9,6 +9,11 @@
   padding: vars.$espaciado-m;
   backdrop-filter: blur(0.1875rem);
   animation: modal-fadeIn vars.$duracion-normal ease;
+
+  // Móvil pequeño: padding mínimo
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    padding: vars.$espaciado-xs;
+  }
 }
 
 @keyframes modal-fadeIn {

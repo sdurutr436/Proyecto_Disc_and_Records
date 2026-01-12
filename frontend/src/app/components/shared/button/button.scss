@@ -202,3 +202,18 @@
     font-size: vars.$tamanio-fuente-texto-pequeno-s;
   }
 }
+
+// Móvil pequeño: botones aún más compactos
+@include mix.mobile-sm-down {
+  .button {
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+    min-height: vars.$altura-minima-touch-s;
+  }
+
+  .button--lg {
+    padding: vars.$espaciado-xs vars.$espaciado-m;
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    min-height: vars.$altura-minima-touch-m;
+  }
+}

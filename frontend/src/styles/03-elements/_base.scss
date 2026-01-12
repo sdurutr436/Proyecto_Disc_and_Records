@@ -56,6 +56,7 @@ h1 {
   @media (max-width: vars.$breakpoint-mobile-sm) {
     font-size: vars.$tamanio-fuente-h3;
     line-height: vars.$altura-linea-h3;
+    margin-bottom: vars.$espaciado-s;
   }
 }
 
@@ -71,6 +72,11 @@ h2 {
     font-size: vars.$tamanio-fuente-h3;
     line-height: vars.$altura-linea-h3;
   }
+
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    font-size: vars.$tamanio-fuente-h4;
+    line-height: vars.$altura-linea-h4;
+  }
 }
 
 h3 {
@@ -84,6 +90,11 @@ h3 {
   @media (max-width: vars.$breakpoint-tablet) {
     font-size: vars.$tamanio-fuente-h4;
     line-height: vars.$altura-linea-h4;
+  }
+
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    font-size: vars.$tamanio-fuente-h5;
+    line-height: vars.$altura-linea-h5;
   }
 }
 
@@ -99,6 +110,11 @@ h4, h5, h6 {
 /* --- Párrafos y texto --- */
 p {
   margin-bottom: vars.$espaciado-s;
+
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    line-height: vars.$altura-linea-texto-pequeno-s;
+  }
 }
 
 small {
