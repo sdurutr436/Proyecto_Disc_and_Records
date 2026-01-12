@@ -1,16 +1,20 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Card } from '../../components/shared/card/card';
 import { SearchBar } from '../../components/shared/search-bar/search-bar';
 import { Button } from '../../components/shared/button/button';
 import { Spinner } from '../../components/shared/spinner/spinner';
 import { RatingComponent } from '../../components/shared/rating/rating';
+import { InfiniteScrollComponent } from '../../components/shared/infinite-scroll/infinite-scroll';
+import { AlbumStateService } from '../../services/album-state.service';
+import { AppStateService } from '../../services/app-state';
 
 type FilterType = 'all' | 'albums' | 'artists' | 'users' | 'reviews';
 
 interface SearchResultItem {
-  id: number;
+  id: number | string;
   type: 'album' | 'artist' | 'user' | 'review';
   title: string;
   subtitle?: string;
@@ -20,26 +24,56 @@ interface SearchResultItem {
   description?: string;
 }
 
+/**
+ * SearchResultsComponent - Página de Resultados de Búsqueda
+ *
+ * OPTIMIZACIONES IMPLEMENTADAS:
+ * - ChangeDetectionStrategy.OnPush para mejor rendimiento
+ * - TrackBy en @for para evitar re-renders innecesarios
+ * - Conexión con AlbumStateService para datos reactivos
+ * - Infinite scroll para paginación automática
+ * - Debounce en búsqueda (a través de SearchBar)
+ * - Conservación de scroll position durante carga
+ */
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [CommonModule, Card, SearchBar, Button, Spinner, RatingComponent],
+  imports: [
+    CommonModule,
+    Card,
+    SearchBar,
+    Button,
+    Spinner,
+    RatingComponent,
+    InfiniteScrollComponent
+  ],
   templateUrl: './search-results.html',
-  styleUrls: ['./search-results.scss']
+  styleUrls: ['./search-results.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export default class SearchResultsComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private albumState = inject(AlbumStateService);
+  private appState = inject(AppStateService);
+  private destroyRef = inject(DestroyRef);
+
   searchTerm = signal<string>('');
   activeFilter = signal<FilterType>('all');
-  isLoading = signal<boolean>(false);
 
-  // Mock data - En producción vendría del backend
+  // Estado de carga (conectado al servicio)
+  isLoading = this.albumState.isLoading;
+  isLoadingMore = this.albumState.isLoadingMore;
+  hasMore = this.albumState.hasMore;
+
+  // Mock data inicial - En producción se reemplazará por datos del servicio
   allResults = signal<SearchResultItem[]>([
     {
       id: 1,
       type: 'album',
       title: 'Random Access Memories',
       subtitle: 'Daft Punk',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/search1/200/200',
       rating: 5,
       reviewCount: 342
     },
@@ -48,7 +82,7 @@ export default class SearchResultsComponent implements OnInit {
       type: 'album',
       title: 'The Dark Side of the Moon',
       subtitle: 'Pink Floyd',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/search2/200/200',
       rating: 5,
       reviewCount: 521
     },
@@ -57,7 +91,7 @@ export default class SearchResultsComponent implements OnInit {
       type: 'artist',
       title: 'Daft Punk',
       subtitle: 'Artista',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/search3/200/200',
       description: 'Dúo francés de música electrónica'
     },
     {
@@ -65,7 +99,7 @@ export default class SearchResultsComponent implements OnInit {
       type: 'user',
       title: 'PerreteGordete',
       subtitle: 'Usuario',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/search4/200/200',
       description: 'Miembro desde Enero 2025'
     },
     {
@@ -73,7 +107,7 @@ export default class SearchResultsComponent implements OnInit {
       type: 'review',
       title: 'Reseña de "Thriller"',
       subtitle: 'por MusicLover123',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/search5/200/200',
       rating: 4,
       description: 'El rey del pop en su máximo esplendor. Temas inolvidables que han marcado generaciones...'
     },
@@ -82,7 +116,7 @@ export default class SearchResultsComponent implements OnInit {
       type: 'album',
       title: 'Avantasia',
       subtitle: 'Avantasia',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/search6/200/200',
       rating: 5,
       reviewCount: 89
     },
@@ -91,7 +125,7 @@ export default class SearchResultsComponent implements OnInit {
       type: 'album',
       title: 'Hammer King',
       subtitle: 'Hammer King',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/search7/200/200',
       rating: 4,
       reviewCount: 45
     },
@@ -100,7 +134,7 @@ export default class SearchResultsComponent implements OnInit {
       type: 'artist',
       title: 'Pink Floyd',
       subtitle: 'Artista',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/search8/200/200',
       description: 'Banda británica de rock progresivo'
     }
   ]);
@@ -142,14 +176,14 @@ export default class SearchResultsComponent implements OnInit {
     };
   });
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  // Computed: paginación info
+  paginationInfo = computed(() => this.albumState.pagination());
 
   ngOnInit(): void {
     // Suscribirse a cambios en query params (q y filter)
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(params => {
       // Leer término de búsqueda
       const query = params['q'] || '';
       this.searchTerm.set(query);
@@ -174,15 +208,38 @@ export default class SearchResultsComponent implements OnInit {
     }
   }
 
-  performSearch(query: string): void {
-    this.isLoading.set(true);
+  // ==========================================================================
+  // TRACKBY FUNCTIONS - OPTIMIZACIÓN DE RENDIMIENTO
+  // ==========================================================================
 
-    // Simular llamada al backend
-    setTimeout(() => {
-      // En producción, aquí harías la llamada HTTP real
-      // Por ahora usamos mock data
-      this.isLoading.set(false);
-    }, 500);
+  /**
+   * TrackBy para resultados - evita re-renders innecesarios
+   */
+  trackByResultId(index: number, result: SearchResultItem): number | string {
+    return result.id;
+  }
+
+  // ==========================================================================
+  // BÚSQUEDA Y FILTRADO
+  // ==========================================================================
+
+  performSearch(query: string): void {
+    // Usar el servicio de estado para búsqueda reactiva
+    this.albumState.search(query);
+
+    // El servicio actualiza isLoading automáticamente
+    // y emite resultados a través de signals
+
+    // TODO: Cuando el backend esté listo, mapear resultados del servicio
+    // this.allResults.set(this.albumState.albums().map(album => ({
+    //   id: album.id,
+    //   type: 'album' as const,
+    //   title: album.title,
+    //   subtitle: album.artist,
+    //   imageUrl: album.coverUrl,
+    //   rating: album.averageRating,
+    //   reviewCount: album.totalReviews
+    // })));
   }
 
   setFilter(filter: FilterType): void {
@@ -192,6 +249,23 @@ export default class SearchResultsComponent implements OnInit {
   isFilterActive(filter: FilterType): boolean {
     return this.activeFilter() === filter;
   }
+
+  // ==========================================================================
+  // INFINITE SCROLL
+  // ==========================================================================
+
+  /**
+   * Cargar más resultados (infinite scroll)
+   */
+  loadMoreResults(): void {
+    if (this.hasMore() && !this.isLoadingMore()) {
+      this.albumState.loadMore();
+    }
+  }
+
+  // ==========================================================================
+  // HELPERS
+  // ==========================================================================
 
   getResultIcon(type: string): string {
     switch (type) {

@@ -158,6 +158,15 @@
             </article>
           }
         </div>
+
+        <!-- Infinite Scroll Component -->
+        <app-infinite-scroll
+          [loading]="isLoadingMore()"
+          [hasMore]="hasMore()"
+          (loadMore)="loadMoreResults()"
+          loadingText="Cargando más resultados..."
+          endText="Has llegado al final de los resultados"
+        />
       </section>
     }
 
