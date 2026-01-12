@@ -1,17 +1,21 @@
 # Modelo Entidad-Relación y Backend Implementado: Discs & Records
 
-> **Proyecto:** Discs & Records
-> **Tipo:** Aplicación web estilo Letterboxd para música
-> **Fecha:** 15 de diciembre de 2025
+> **Proyecto:** Discs & Records  
+> **Tipo:** Aplicación web estilo Letterboxd para música  
+> **Última actualización:** 12 de enero de 2026  
+> **Versión Spring Boot:** 3.5.6 | **Java:** 21
 
 ---
 
 ## Resumen del Sistema
+
 Sistema de catalogación, valoración y reseña de música donde los usuarios pueden:
-- Marcar canciones y álbumes como "escuchados".
-- Asignar puntuaciones (1-5).
-- Escribir reseñas.
-- Explorar contenido por artista, género y endpoints de consulta (búsqueda/paginación).
+- 🎵 Marcar canciones y álbumes como "escuchados"
+- ⭐ Asignar puntuaciones (1-5 estrellas)
+- ✍️ Escribir reseñas personales
+- 📊 Ver estadísticas de géneros favoritos
+- 🔍 Explorar música por artista, género y tendencias
+- 🎧 Integración con Deezer API para datos musicales
 
 ---
 
@@ -356,68 +360,400 @@ LIMIT 10;
 
 ---
 
-## Implementación Backend (según código existente)
+## Implementación Backend
 
-### API REST: controladores y endpoints
-El backend está organizado por controladores REST por dominio (Artista, Álbum, Canción, Usuario, Género, Reseñas) con endpoints de lectura pública, paginación y endpoints protegidos por roles.
+### Arquitectura del Proyecto
 
-Ejemplo de control de acceso por roles (patrón observado en controladores):
-```java
-@PreAuthorize("hasAnyRole("ADMIN", "MODERATOR")")
-public ResponseEntity<AlbumResponseDTO> crear(@Valid @RequestBody CreateAlbumDTO dto) {
-    AlbumResponseDTO creado = albumService.crear(dto);
-    return ResponseEntity.created(URI.create("/api/albumes/" + creado.id())).body(creado);
+```
+backend/src/main/java/com/discsandrecords/api/
+├── config/                    # Configuración de la aplicación
+│   ├── LoggingInterceptor.java      # Interceptor de logging HTTP
+│   ├── OpenApiConfig.java           # Configuración Swagger/OpenAPI
+│   ├── PasswordEncoderConfig.java   # BCrypt para contraseñas
+│   └── WebConfig.java               # Configuración web (CORS, interceptores)
+├── controllers/               # Controladores REST (8 controllers)
+│   ├── AlbumController.java
+│   ├── ArtistaController.java
+│   ├── AuthController.java          # Login/Register públicos
+│   ├── CancionController.java
+│   ├── DeezerProxyController.java   # Proxy para evitar CORS con Deezer API
+│   ├── GeneroController.java
+│   ├── ResenaController.java
+│   └── UsuarioController.java
+├── dto/                       # Data Transfer Objects (21 DTOs)
+│   ├── AlbumResponseDTO.java
+│   ├── ArtistaResponseDTO.java
+│   ├── AuthResponseDTO.java
+│   ├── CancionResponseDTO.java
+│   ├── CreateAlbumDTO.java
+│   ├── CreateArtistaDTO.java
+│   ├── CreateCancionDTO.java
+│   ├── CreateGeneroDTO.java
+│   ├── CreateResenaAlbumDTO.java
+│   ├── CreateResenaCancionDTO.java
+│   ├── CreateUsuarioDTO.java
+│   ├── GeneroResponseDTO.java
+│   ├── LoginRequestDTO.java
+│   ├── PageResponseDTO.java         # DTO genérico para paginación
+│   ├── RegisterRequestDTO.java
+│   ├── ResenaAlbumResponseDTO.java
+│   ├── ResenaCancionResponseDTO.java
+│   ├── UpdateResenaDTO.java
+│   ├── UpdateUsuarioDTO.java
+│   ├── UsuarioEstadisticasDTO.java  # Estadísticas de perfil
+│   └── UsuarioResponseDTO.java
+├── entities/                  # Entidades JPA (16 entidades)
+│   ├── Album.java
+│   ├── AlbumCancion.java / AlbumCancionId.java
+│   ├── AlbumGenero.java / AlbumGeneroId.java
+│   ├── Artista.java
+│   ├── Cancion.java
+│   ├── CancionGenero.java / CancionGeneroId.java
+│   ├── Genero.java
+│   ├── Role.java                    # Enum: ROLE_USER, ROLE_MODERATOR, ROLE_ADMIN
+│   ├── Usuario.java                 # Implementa UserDetails
+│   ├── UsuarioAlbum.java / UsuarioAlbumId.java
+│   └── UsuarioCancion.java / UsuarioCancionId.java
+├── exceptions/                # Manejo de excepciones
+│   ├── BusinessRuleException.java
+│   ├── DuplicateResourceException.java
+│   ├── GlobalExceptionHandler.java  # @ControllerAdvice centralizado
+│   └── ResourceNotFoundException.java
+├── repositories/              # Repositorios JPA (7 repositorios)
+│   ├── AlbumRepository.java
+│   ├── ArtistaRepository.java
+│   ├── CancionRepository.java
+│   ├── GeneroRepository.java
+│   ├── UsuarioAlbumRepository.java
+│   ├── UsuarioCancionRepository.java
+│   └── UsuarioRepository.java
+├── security/                  # Seguridad JWT
+│   ├── JwtAuthenticationFilter.java # Filtro de autenticación JWT
+│   ├── JwtService.java              # Generación/validación de tokens
+│   └── SecurityConfig.java          # Configuración Spring Security
+├── services/                  # Lógica de negocio (7 servicios)
+│   ├── AlbumService.java
+│   ├── ArtistaService.java
+│   ├── AuthService.java             # Login/Register
+│   ├── CancionService.java
+│   ├── GeneroService.java
+│   ├── ResenaService.java
+│   └── UsuarioService.java          # Implementa UserDetailsService
+└── DiscsAndRecordsApplication.java  # Clase principal
+```
+
+---
+
+### Controladores REST y Endpoints
+
+#### 1. AuthController (`/api/auth`)
+| Método | Endpoint | Acceso | Descripción |
+|--------|----------|--------|-------------|
+| POST | `/login` | Público | Login y obtención de token JWT |
+| POST | `/register` | Público | Registro de nuevo usuario |
+| GET | `/me` | Autenticado | Obtener datos del usuario actual |
+
+#### 2. UsuarioController (`/api/usuarios`)
+| Método | Endpoint | Acceso | Descripción |
+|--------|----------|--------|-------------|
+| GET | `/` | Público | Listar todos los usuarios |
+| GET | `/paginado` | Público | Listar con paginación |
+| GET | `/{id}` | Público | Obtener usuario por ID |
+| GET | `/username/{nombreUsuario}` | Público | Buscar por nombre de usuario |
+| GET | `/{id}/estadisticas` | Público | Estadísticas del perfil (géneros, conteos) |
+| POST | `/` | ADMIN | Crear usuario administrativamente |
+| PUT | `/{id}` | ADMIN o propio usuario | Actualizar usuario |
+| DELETE | `/{id}` | ADMIN | Eliminar usuario |
+
+#### 3. ArtistaController (`/api/artistas`)
+| Método | Endpoint | Acceso | Descripción |
+|--------|----------|--------|-------------|
+| GET | `/` | Público | Listar todos los artistas |
+| GET | `/paginado` | Público | Listar con paginación y ordenación |
+| GET | `/{id}` | Público | Obtener artista por ID |
+| GET | `/buscar?nombre=` | Público | Buscar por nombre |
+| GET | `/{id}/albums` | Público | Álbumes del artista |
+| GET | `/{id}/albums/paginado` | Público | Álbumes paginados |
+| GET | `/{id}/canciones` | Público | Canciones del artista |
+| GET | `/{id}/canciones/paginado` | Público | Canciones paginadas |
+| POST | `/` | ADMIN/MODERATOR | Crear artista |
+| PUT | `/{id}` | ADMIN/MODERATOR | Actualizar artista |
+| DELETE | `/{id}` | ADMIN | Eliminar artista |
+
+#### 4. AlbumController (`/api/albumes`)
+| Método | Endpoint | Acceso | Descripción |
+|--------|----------|--------|-------------|
+| GET | `/` | Público | Listar todos los álbumes |
+| GET | `/paginado` | Público | Listar con paginación |
+| GET | `/{id}` | Público | Obtener álbum por ID |
+| GET | `/buscar?titulo=` | Público | Buscar por título |
+| GET | `/artista/{idArtista}` | Público | Álbumes de un artista |
+| POST | `/` | ADMIN/MODERATOR | Crear álbum |
+| PUT | `/{id}` | ADMIN/MODERATOR | Actualizar álbum |
+| DELETE | `/{id}` | ADMIN | Eliminar álbum |
+
+#### 5. CancionController (`/api/canciones`)
+| Método | Endpoint | Acceso | Descripción |
+|--------|----------|--------|-------------|
+| GET | `/` | Público | Listar todas las canciones |
+| GET | `/paginado` | Público | Listar con paginación |
+| GET | `/{id}` | Público | Obtener canción por ID |
+| GET | `/buscar?titulo=` | Público | Buscar por título |
+| GET | `/artista/{idArtista}` | Público | Canciones de un artista |
+| POST | `/` | ADMIN/MODERATOR | Crear canción |
+| PUT | `/{id}` | ADMIN/MODERATOR | Actualizar canción |
+| DELETE | `/{id}` | ADMIN | Eliminar canción |
+
+#### 6. GeneroController (`/api/generos`)
+| Método | Endpoint | Acceso | Descripción |
+|--------|----------|--------|-------------|
+| GET | `/` | Público | Listar todos los géneros |
+| GET | `/paginado` | Público | Listar con paginación |
+| GET | `/{id}` | Público | Obtener género por ID |
+| GET | `/buscar?nombre=` | Público | Buscar por nombre |
+| POST | `/` | ADMIN/MODERATOR | Crear género |
+| PUT | `/{id}` | ADMIN/MODERATOR | Actualizar género |
+| DELETE | `/{id}` | ADMIN | Eliminar género |
+
+#### 7. ResenaController (`/api/resenas`)
+| Método | Endpoint | Acceso | Descripción |
+|--------|----------|--------|-------------|
+| GET | `/albumes/{albumId}` | Público | Reseñas de un álbum |
+| GET | `/albumes/usuario/{usuarioId}` | Público | Reseñas de álbumes del usuario |
+| GET | `/albumes/{albumId}/usuario/{usuarioId}` | Público | Reseña específica |
+| POST | `/albumes` | Autenticado (propio) | Crear reseña de álbum |
+| PUT | `/albumes/{albumId}/usuario/{usuarioId}` | Autor o ADMIN | Actualizar reseña |
+| DELETE | `/albumes/{albumId}/usuario/{usuarioId}` | Autor o ADMIN | Eliminar reseña |
+| GET | `/canciones/{cancionId}` | Público | Reseñas de una canción |
+| GET | `/canciones/usuario/{usuarioId}` | Público | Reseñas de canciones del usuario |
+| POST | `/canciones` | Autenticado (propio) | Crear reseña de canción |
+| PUT | `/canciones/{cancionId}/usuario/{usuarioId}` | Autor o ADMIN | Actualizar reseña |
+| DELETE | `/canciones/{cancionId}/usuario/{usuarioId}` | Autor o ADMIN | Eliminar reseña |
+
+#### 8. DeezerProxyController (`/api/deezer`)
+| Método | Endpoint | Acceso | Descripción |
+|--------|----------|--------|-------------|
+| GET | `/**` | Público | Proxy genérico para Deezer API (evita CORS) |
+
+**Ejemplo:** `GET /api/deezer/chart/0/albums?limit=50` → Redirige a `https://api.deezer.com/chart/0/albums?limit=50`
+
+---
+
+### Sistema de Seguridad
+
+#### Arquitectura de Seguridad JWT
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                   PETICIÓN HTTP                          │
+└──────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌──────────────────────────────────────────────────────────┐
+│               CORS Filter                                │
+│  - Orígenes: localhost:4200, *.ondigitalocean.app       │
+└──────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌──────────────────────────────────────────────────────────┐
+│           JwtAuthenticationFilter                        │
+│  - Extrae token del header Authorization                │
+│  - Valida token (firma, expiración)                     │
+│  - Establece SecurityContext                            │
+└──────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌──────────────────────────────────────────────────────────┐
+│           Authorization Filter                           │
+│  - @PreAuthorize en métodos                             │
+│  - hasRole(), hasAnyRole(), isAuthenticated()           │
+└──────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌──────────────────────────────────────────────────────────┐
+│                   CONTROLLER                             │
+└──────────────────────────────────────────────────────────┘
+```
+
+#### Roles del Sistema
+| Rol | Permisos |
+|-----|----------|
+| `ROLE_USER` | Crear/editar/eliminar sus propias reseñas |
+| `ROLE_MODERATOR` | USER + Crear/editar artistas, álbumes, canciones, géneros |
+| `ROLE_ADMIN` | MODERATOR + Eliminar cualquier contenido + Gestión de usuarios |
+
+#### Configuración JWT
+```properties
+# application.properties
+jwt.secret=${JWT_SECRET:dev-secret-key-for-local-development}
+jwt.expiration=${JWT_EXPIRATION:86400000}  # 24 horas
+```
+
+---
+
+### Manejo de Excepciones (GlobalExceptionHandler)
+
+| Excepción | Código HTTP | Respuesta |
+|-----------|-------------|-----------|
+| `MethodArgumentNotValidException` | 400 | `{"error": "VALIDATION_ERROR", "message": "..."}` |
+| `ResourceNotFoundException` | 404 | `{"error": "NOT_FOUND", "message": "..."}` |
+| `DuplicateResourceException` | 409 | `{"error": "DUPLICATE_RESOURCE", "message": "..."}` |
+| `BusinessRuleException` | 400 | `{"error": "<ruleCode>", "message": "..."}` |
+| `BadCredentialsException` | 401 | `{"error": "UNAUTHORIZED", "message": "Credenciales inválidas"}` |
+| `Exception` (general) | 500 | `{"error": "INTERNAL_SERVER_ERROR", "message": "..."}` |
+
+---
+
+### DTO de Paginación (PageResponseDTO)
+
+Todos los endpoints `/paginado` soportan los siguientes parámetros:
+
+| Parámetro | Default | Descripción |
+|-----------|---------|-------------|
+| `page` | 0 | Número de página (0-indexed) |
+| `size` | 10 | Elementos por página |
+| `sortBy` | id | Campo de ordenación |
+| `sortDir` | asc | Dirección (asc/desc) |
+
+**Respuesta:**
+```json
+{
+  "content": [...],
+  "page": 0,
+  "size": 10,
+  "totalElements": 150,
+  "totalPages": 15,
+  "first": true,
+  "last": false
 }
 ```
 
-### Autenticación y autorización (Spring Security + JWT)
-El backend incorpora autenticación con JWT, con endpoints de login/registro y tests automatizados que validan respuestas exitosas y errores típicos (validación y credenciales).
+---
 
-Ejemplo de comportamiento esperado en tests (MockMvc):
-```java
-mockMvc.perform(post("/api/auth/login")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(loginValido)))
-    .andExpect(status().isOk())
-    .andExpect(jsonPath("$.token").value("jwt.token.aqui"));
+### Estadísticas de Usuario (UsuarioEstadisticasDTO)
+
+Endpoint: `GET /api/usuarios/{id}/estadisticas`
+
+```json
+{
+  "totalAlbumesEscuchados": 45,
+  "totalCancionesEscuchadas": 320,
+  "totalResenasAlbumes": 12,
+  "totalResenasCanciones": 28,
+  "puntuacionMediaDada": 3.8,
+  "generosMasEscuchados": [
+    {"generoId": 1, "nombreGenero": "Rock", "color": "#E91E63", "conteo": 85},
+    {"generoId": 3, "nombreGenero": "Jazz", "color": "#9C27B0", "conteo": 42}
+  ]
+}
 ```
 
-### Observabilidad mínima (Actuator + healthchecks)
-El proyecto incluye Spring Boot Actuator y expone `/actuator/health`, utilizado por los healthchecks de Docker Compose y por el Dockerfile del backend para validación de readiness.
+---
 
-Ejemplo de healthcheck en contenedor (Dockerfile):
+### Observabilidad (Spring Boot Actuator)
+
+| Endpoint | Descripción |
+|----------|-------------|
+| `/actuator/health` | Estado de la aplicación (usado por Docker healthcheck) |
+| `/actuator/info` | Información de la aplicación |
+
+**Healthcheck Docker:**
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=10 \
   CMD curl -f http://localhost:8080/actuator/health || exit 1
 ```
 
-### Logging de peticiones HTTP (Interceptor)
-Existe un interceptor `LoggingInterceptor` que registra información de las peticiones y genera un identificador `X-Request-ID` por request para trazabilidad.
+---
 
-Ejemplo del patrón implementado:
-```java
-private static final String REQUEST_ID_HEADER = "X-Request-ID";
+### Logging de Peticiones (LoggingInterceptor)
 
-@Override
-public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-    String requestId = UUID.randomUUID().toString();
-    request.setAttribute(REQUEST_ID_HEADER, requestId);
-    return true;
-}
+Cada petición HTTP recibe un `X-Request-ID` único para trazabilidad:
+
+```
+[2026-01-12 10:30:45] REQUEST: GET /api/artistas/1 | Request-ID: a1b2c3d4-e5f6-...
+[2026-01-12 10:30:45] RESPONSE: 200 OK | Duration: 45ms | Request-ID: a1b2c3d4-e5f6-...
 ```
 
-### Entorno Docker y perfiles
-El backend soporta perfil `docker` (`SPRING_PROFILES_ACTIVE=docker`) y está preparado para funcionar con MariaDB en contenedores mediante variables de entorno (`SPRING_DATASOURCE_URL`, usuario/contraseña, etc.).
+---
+
+### Documentación OpenAPI/Swagger
+
+- **Swagger UI:** `http://localhost:8080/swagger-ui.html`
+- **OpenAPI JSON:** `http://localhost:8080/api-docs`
+
+**Autenticación en Swagger UI:**
+1. Login con `POST /api/auth/login`
+2. Copiar el token de la respuesta
+3. Click en "Authorize" (🔒)
+4. Pegar el token (sin "Bearer ")
+
+---
+
+### Perfiles de Configuración
+
+| Perfil | Base de Datos | Uso |
+|--------|--------------|-----|
+| `default` | H2 (memoria) | Desarrollo local |
+| `dev` | H2 (memoria) | Desarrollo con logs detallados |
+| `docker` | MariaDB | Contenedores Docker |
+| `test` | H2 (memoria) | Tests automatizados |
+
+```bash
+# Activar perfil
+SPRING_PROFILES_ACTIVE=docker ./mvnw spring-boot:run
+```
+
+---
+
+### Tests Automatizados
+
+**Cobertura de tests:**
+
+| Tipo | Archivos | Descripción |
+|------|----------|-------------|
+| Controllers | 5 tests | `AlbumControllerTest`, `ArtistaControllerTest`, `CancionControllerTest`, `GeneroControllerTest`, `AuthControllerTest` |
+| Services | 2 tests | `AlbumServiceTest`, `AuthServiceTest` |
+| Integration | 2 tests | `AuthIntegrationTest`, `AuthorizationIntegrationTest` |
+| Repositories | - | Tests JPA |
+
+**Tecnologías de testing:**
+- `@WebMvcTest` - Tests de controladores aislados
+- `@SpringBootTest` - Tests de integración
+- `@DataJpaTest` - Tests de repositorios
+- MockMvc + `@WithMockUser` - Simulación de autenticación
 
 ---
 
 ## Decisiones de Diseño
 
 ### Simplificaciones (MVP)
-- **No colaboraciones:** Un artista por canción/álbum
-- **No playlists temáticas:** Solo listas "escuchadas"
-- **No sistema social:** Sin seguidores, likes, comentarios en reseñas
-- **No historial de reproducción:** Solo marca "escuchado" (no registro de cada play)
+- **No colaboraciones:** Un artista por canción/álbum (simplifica relaciones)
+- **No playlists temáticas:** Solo listas "escuchadas" por usuario
+- **No sistema social:** Sin seguidores, likes ni comentarios en reseñas
+- **No historial de reproducción:** Solo marca "escuchado" (sin registro de cada play)
+- **Integración Deezer:** Datos musicales vía API externa (no almacenamiento local masivo)
+
+### Decisiones Técnicas
+- **JWT Stateless:** Sin sesiones en servidor, escalabilidad horizontal
+- **Records para DTOs:** Inmutabilidad y código limpio (Java 21)
+- **BCrypt:** Hashing de contraseñas con factor de trabajo por defecto
+- **Proxy Deezer:** Evita problemas CORS llamando desde el servidor
+
+---
+
+## Dependencias Principales (pom.xml)
+
+| Dependencia | Versión | Propósito |
+|-------------|---------|-----------|
+| Spring Boot | 3.5.6 | Framework base |
+| Spring Security | (parent) | Autenticación/autorización |
+| Spring Data JPA | (parent) | Persistencia |
+| jjwt-api | 0.12.6 | Gestión JWT |
+| springdoc-openapi | 2.7.0 | Documentación Swagger |
+| H2 Database | (parent) | BD desarrollo/tests |
+| MariaDB Client | (parent) | BD producción |
+| PostgreSQL | (parent) | BD alternativa |
+| Lombok | (parent) | Reducción boilerplate |
 
 ---
 
@@ -466,6 +802,9 @@ ADD CONSTRAINT chk_anio_album CHECK (Anio_salida BETWEEN 1900 AND YEAR(CURDATE()
 
 ---
 
-## Notas
-- Este documento mantiene la estructura del modelo E-R y añade únicamente elementos observados como implementados en el backend según el ingest disponible.
-- Los elementos no implementados (semáforo rojo) quedan fuera de esta documentación por el momento.
+## Historial de Cambios
+
+| Fecha | Cambio |
+|-------|--------|
+| 2026-01-12 | Documentación completa de controladores, DTOs, seguridad y arquitectura |
+| 2025-12-15 | Versión inicial del modelo E-R |

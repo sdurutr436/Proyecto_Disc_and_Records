@@ -1,25 +1,29 @@
 Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 
+> **Última actualización:** 12 de enero de 2026
+
 # API REST (70%)
 
 ## Diseño impecable de recursos REST
-- [x] 🟢 Recursos bien definidos y separados por entidad (/api/artistas, /api/albums, etc.)
+- [x] 🟢 Recursos bien definidos y separados por entidad (/api/artistas, /api/albumes, etc.)
 - [x] 🟢 Convención RESTful respetada (GET, POST, PUT/PATCH, DELETE)
 - [x] 🟢 Rutas limpias, sin verbos (/artistas ✅, sin verbos innecesarios)
 - [x] 🟢 Rutas anidadas implementadas (/artistas/{id}/albums, /artistas/{id}/canciones con paginación)
 - [x] 🟢 Paginación implementada en todos los endpoints principales (/api/artistas/paginado?page=0&size=10)
 - [x] 🟢 Identificadores coherentes (Long id en todas las entidades)
-- [x] 🟢 Nombres de recursos en plural (artistas, albums, canciones, generos, usuarios)
+- [x] 🟢 Nombres de recursos en plural (artistas, albumes, canciones, generos, usuarios)
 - [x] 🟢 Documentación Swagger con @Operation en todos los endpoints
 
 ## Puntos de entrada bien organizados
-- [x] 🟢 Controladores separados por dominio/lógica de negocio (6 controllers: Artista, Album, Cancion, Genero, Usuario, Resena)
+- [x] 🟢 8 Controladores separados por dominio:
+  - ArtistaController, AlbumController, CancionController, GeneroController
+  - UsuarioController, ResenaController, AuthController, **DeezerProxyController**
 - [x] 🟢 Rutas agrupadas y estructuradas por funcionalidad (@RequestMapping en cada controller)
 - [x] 🟢 Middlewares/interceptores implementados:
-  - [x] 🟢 LoggingInterceptor: loguea todas las peticiones HTTP con request ID, tiempo y status
+  - [x] 🟢 LoggingInterceptor: loguea peticiones HTTP con X-Request-ID
   - [x] 🟢 WebConfig: registra el interceptor globalmente para /api/**
 - [x] 🟢 Spring Boot: @RestController + @RequestMapping + rutas REST correctas
-- [x] 🟢 Separación de responsabilidades clara: Controllers → Services → Repositories (patrón MVC bien aplicado)
+- [x] 🟢 Separación de responsabilidades clara: Controllers → Services → Repositories
 
 ## Uso correcto de códigos HTTP
 - [x] 🟢 200, 201, 204 implementados correctamente en endpoints (POST devuelve 201 con URI, DELETE devuelve 204)
@@ -56,8 +60,13 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
   - [x] 🟢 Spring Boot: @Valid en DTOs, validación con @NotBlank, @NotNull, etc.
 
 ## Organización del proyecto por componentes
-- [x] 🟢 Estructura clara por módulos (controllers, services, repositories, entities, dto, exceptions)
-- [x] 🟢 Archivos organizados por responsabilidad (11 DTOs, 6 controllers, 6 services, etc.)
+- [x] 🟢 Estructura clara por módulos (controllers, services, repositories, entities, dto, exceptions, security, config)
+- [x] 🟢 Archivos organizados por responsabilidad:
+  - 21 DTOs (incluyendo UsuarioEstadisticasDTO, PageResponseDTO)
+  - 8 controllers (incluyendo DeezerProxyController)
+  - 7 services
+  - 7 repositories
+  - 16 entidades JPA
 - [x] 🟢 Código NO duplicado (servicios reutilizables inyectados con DI)
 - [x] 🟢 Patrones aplicados correctamente (SRP, IoC mediante @Autowired, @Service, @Repository)
 
@@ -88,7 +97,7 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 - [x] � Diagrama de entidad-relación visual (Mermaid ER en DOCUMENTACION.md)
 - [x] 🟢 Descripción de tablas, campos y relaciones en DOCUMENTACION.md
 - [x] 🟢 Justificación del diseño incluida (notas de diseño en cada entidad)
-- [x] 🟢 Incluido en docs/backend/DOCUMENTACION.md (450+ líneas de documentación)
+- [x] 🟢 Incluido en docs/backend/DOCUMENTACION.md (800+ líneas de documentación)
 
 ## Nota sobre la instalación y ejecución del servidor
 - [x] 🟡 Instalable y ejecutable (mvnw script incluido, pero con problemas de Swagger en logs)
@@ -136,65 +145,45 @@ Checklist DWES v1.2 – Proyecto Final (Unificada por stack)
 
 1. **API RESTful correctamente diseñada** - Todos los endpoints siguen convenciones REST
 2. **Paginación implementada** - Todos los endpoints soportan page, size, sort
-3. **Rutas anidadas** - /artistas/{id}/albums y /artistas/{id}/canciones completamente funcionales
+3. **Rutas anidadas completas** - /artistas/{id}/albums y /artistas/{id}/canciones con paginación
 4. **Modelo de datos bien estructurado** - Relaciones 1:N y N:M correctamente definidas
-5. **15 DTOs validados** - Validación de datos de entrada con @Valid, @NotBlank, etc.
-6. **Documentación técnica** - 364 líneas en DOCUMENTACION.md explicando el modelo
-7. **Datos de prueba** - 259 líneas SQL con 15 géneros, 20 artistas, 30 álbumes, etc.
-8. **Estructura MVC clara** - Controladores → Servicios → Repositorios bien separados
-9. **Códigos HTTP correctos** - 200, 201, 204, 404, 409, 400, 401 implementados adecuadamente
+5. **21 DTOs validados** - Validación de datos de entrada con @Valid, @NotBlank, etc.
+6. **Documentación técnica** - 800+ líneas en DOCUMENTACION.md explicando arquitectura completa
+7. **Datos de prueba** - 259 líneas SQL con géneros, artistas, álbumes, canciones
+8. **Estructura MVC clara** - 8 Controllers → 7 Services → 7 Repositories bien separados
+9. **Códigos HTTP correctos** - 200, 201, 204, 400, 401, 403, 404, 409, 500 implementados
 10. **Inyección de dependencias** - IoC con @Autowired, @Service, @Repository
-11. **Logging Interceptor** - Todas las peticiones registradas con request ID, tiempo y status
-12. **Exception Handler centralizado** - Manejo consistente de excepciones en toda la API
-13. **🔐 Autenticación JWT completa** - Generación, validación y renovación de tokens HS256
-14. **🔐 Autorización por roles** - @PreAuthorize en todos los endpoints con control granular
-15. **🔐 JwtAuthenticationFilter** - Intercepta peticiones y valida tokens automáticamente
-16. **🔐 SecurityConfig** - Cadena de filtros con CORS, sesiones STATELESS, CSRF deshabilitado
-17. **🔐 BCrypt hashing** - Contraseñas hasheadas con PasswordEncoder en PasswordEncoderConfig
-18. **🔐 AuthService + AuthController** - Endpoints /api/auth/login y /api/auth/register funcionales
+11. **Logging Interceptor** - Peticiones registradas con X-Request-ID para trazabilidad
+12. **Exception Handler centralizado** - GlobalExceptionHandler con respuestas consistentes
+13. **🔐 Autenticación JWT completa** - Generación, validación de tokens HS256
+14. **🔐 Autorización por roles** - @PreAuthorize en endpoints (USER, MODERATOR, ADMIN)
+15. **🔐 JwtAuthenticationFilter** - Filtro que valida tokens automáticamente
+16. **🔐 SecurityConfig** - CORS, sesiones STATELESS, CSRF deshabilitado
+17. **🔐 BCrypt hashing** - Contraseñas hasheadas con PasswordEncoder
+18. **🔐 AuthController** - /api/auth/login, /api/auth/register, /api/auth/me
+19. **🎧 DeezerProxyController** - Proxy para evitar CORS con API de Deezer
+20. **📊 Estadísticas de usuario** - Endpoint /api/usuarios/{id}/estadisticas
 
-### Consultas avanzadas** - Las queries son básicas, sin agregaciones complejas
-3. **Rutas anidadas** - Faltan endpoints como `/artistas/{id}/albums`
-3. **Códigos de error** - Falta 401, 403, 422 en ciertos endpoints
-4. **Consultas avanzadas** - Las queries son básicas, sin agregaciones complejas
-5. **Migraciones** - No usa Flyway/Liquibase (usa ddl-auto=create-drop)
+### 🟡 Áreas de Mejora (No Críticas)
 
-### 🔴 Lo que FALTA HACER (Crítico para la evaluación)
+1. **Consultas avanzadas** - Las queries son básicas, sin agregaciones complejas (COUNT, AVG)
+2. **Migraciones** - No usa Flyway/Liquibase (usa ddl-auto, suficiente para desarrollo)
+3. **Cobertura de tests** - Tests de autorización (@PreAuthorize) pendientes
 
-1. **Unit Tests** - ✅ Requisito evaluable (100% implementado)
-   - [x] Tests con MockMvc
-   - [x] Cobertura de endpoints éxito/error
-   - [x] Tests de autenticación JWT
-   - [x] Tests de validación
-   - [ ] Tests de autorización (@PreAuthorize)
+### 💡 Recomendaciones para Futuro
 
-2. **Swagger UI** - 🟡 Documentación (error 500 sin resolver)
-   - [ ] Resolver incompatibilidad con GlobalExceptionHandler
-   - [ ] Documentar códigos HTTP en cada endpoint
-   - [ ] Agregar ejemplos de request/response
-
-3. **Consultas complejas** - ⚠️ Mejora de calidad (opcional)
-   - [ ] Agregaciones con COUNT, SUM, AVG
-   - [ ] Búsquedas por rango de fechas
-   - [ ] Filtros complejos combinados
-
-### 💡 Recomendaciones Prioritarias
-
-**URGENTE (Para cumplir la rúbrica):**
-1. ✅ Implementar autenticación JWT con Spring Security (HECHO)
-2. ✅ Crear suite de tests con MockMvc y WebMvcTest (HECHO - 50 tests)
-3. Resolver error Swagger UI 500 (opcional pero recomendado)
-
-**IMPORTANTE (Para mejorar calidad):**
-1. ✅ Crear tests de endpoints (éxito, error, validación) (HECHO)
-2. ✅ Crear tests de autenticación y autorización (HECHO)
-3. Aumentar cobertura de código a 80%+
-4. Agregar rutas anidadas adicionales si es necesario
-
-**OPCIONAL (Valor añadido):**
-1. CORS configuration (✅ HECHO)
-2. Rate limiting
-3. Caching con @Cacheable
+**Mejoras de Calidad:**
+1. Aumentar cobertura de tests a 80%+
+2. Implementar caching con @Cacheable para endpoints de lectura
+3. Rate limiting para prevenir abuso de API
 4. Auditoría de cambios (quién, cuándo, qué cambió)
 
 ---
+
+## Historial de Actualizaciones
+
+| Fecha | Cambio |
+|-------|--------|
+| 2026-01-12 | Actualización completa: 8 controllers, 21 DTOs, DeezerProxy documentado |
+| 2025-12-15 | Versión inicial del checklist |
+
