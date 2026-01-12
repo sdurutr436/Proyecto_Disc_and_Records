@@ -388,8 +388,7 @@ export class AuthService {
    */
   async requestPasswordReset(email: string): Promise<AuthResponse> {
     try {
-      // TODO: Llamada real a backend
-      const response = await this.simulatePasswordReset(email);
+      const response = await this.requestPasswordResetHttp(email);
 
       if (response.success) {
         this.notificationStream.success(

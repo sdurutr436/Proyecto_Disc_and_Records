@@ -98,7 +98,7 @@ export default class ProfileComponent implements OnInit {
       this.userProfile.set({
         name: user.username,
         avatarUrl: user.avatarUrl || 'assets/profile-placeholder.svg',
-        memberSince: user.createdAt ? new Date(user.createdAt).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }) : '',
+        memberSince: '', // TODO: obtener fecha de registro desde backend
         totalReviews: this.reviewState.userReviewsCount(),
         totalAlbums: 0 // Se actualizará cuando tengamos endpoint de álbumes escuchados
       });
