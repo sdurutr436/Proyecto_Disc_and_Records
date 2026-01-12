@@ -133,16 +133,28 @@ export class DeezerService {
   // ==========================================================================
 
   /**
-   * Construye la URL con CORS proxy si es necesario
+   * Construye la URL con proxy apropiado según el entorno
+   * - localhost: usa corsproxy.io (proxy CORS externo)
+   * - producción: usa /deezer-api (proxy nginx interno)
    */
   private buildUrl(endpoint: string): string {
-    const url = `${DEEZER_CONFIG.apiBaseUrl}${endpoint}`;
-    // En desarrollo usamos el proxy CORS
-    if (typeof window !== 'undefined' &&
-        (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-      return `${DEEZER_CONFIG.corsProxy}${encodeURIComponent(url)}`;
+    const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      
+      // Desarrollo local: usar proxy CORS externo
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        const fullUrl = `${DEEZER_CONFIG.apiBaseUrl}${normalizedEndpoint}`;
+        return `${DEEZER_CONFIG.corsProxy}${encodeURIComponent(fullUrl)}`;
+      }
+      
+      // Producción: usar proxy nginx interno
+      return `/deezer-api${normalizedEndpoint}`;
     }
-    return url;
+    
+    // Fallback (SSR u otros entornos)
+    return `${DEEZER_CONFIG.apiBaseUrl}${normalizedEndpoint}`;
   }
 
   // ==========================================================================
