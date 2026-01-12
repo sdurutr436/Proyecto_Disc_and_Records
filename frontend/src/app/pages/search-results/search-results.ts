@@ -37,6 +37,9 @@ interface SearchResultItem {
 // Constantes de paginación
 const PAGE_SIZE = 25;
 const INITIAL_LOAD = 25;
+const SEARCH_LIMIT = 50;
+const DEBOUNCE_TIME_MS = 300;
+const LOAD_MORE_DELAY_MS = 300;
 
 /**
  * SearchResultsComponent - Página de Resultados de Búsqueda Optimizada
@@ -186,7 +189,7 @@ export default class SearchResultsComponent implements OnInit {
    */
   private setupSearchSubscription(): void {
     this.searchSubject.pipe(
-      debounceTime(300),
+      debounceTime(DEBOUNCE_TIME_MS),
       distinctUntilChanged(),
       tap(() => {
         this.isLoading.set(true);
@@ -234,10 +237,10 @@ export default class SearchResultsComponent implements OnInit {
       return of(null);
     }
 
-    // Búsqueda paralela: 50 álbumes + 50 artistas
+    // Búsqueda paralela: SEARCH_LIMIT álbumes + SEARCH_LIMIT artistas
     return forkJoin({
-      albums: this.deezerService.searchAlbums(query, 50).pipe(catchError(() => of([]))),
-      artists: this.deezerService.searchArtists(query, 50).pipe(catchError(() => of([])))
+      albums: this.deezerService.searchAlbums(query, SEARCH_LIMIT).pipe(catchError(() => of([]))),
+      artists: this.deezerService.searchArtists(query, SEARCH_LIMIT).pipe(catchError(() => of([])))
     }).pipe(
       tap(({ albums, artists }) => {
         // Mapear resultados a formato unificado
@@ -326,7 +329,7 @@ export default class SearchResultsComponent implements OnInit {
     setTimeout(() => {
       this.currentOffset.update(offset => offset + PAGE_SIZE);
       this.isLoadingMore.set(false);
-    }, 300);
+    }, LOAD_MORE_DELAY_MS);
   }
 
   // ==========================================================================
