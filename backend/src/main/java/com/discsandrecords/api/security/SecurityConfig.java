@@ -140,6 +140,9 @@ public class SecurityConfig {
                         // Consola H2 (solo desarrollo)
                         .requestMatchers("/h2-console/**").permitAll()
 
+                        // Proxy Deezer API (público, evita CORS)
+                        .requestMatchers(HttpMethod.GET, "/api/deezer/**").permitAll()
+
                         // ============ RUTAS DE LECTURA PÚBLICA ============
                         // Cualquiera puede ver álbumes, artistas, géneros, etc.
                         .requestMatchers(HttpMethod.GET, "/api/albumes/**").permitAll()

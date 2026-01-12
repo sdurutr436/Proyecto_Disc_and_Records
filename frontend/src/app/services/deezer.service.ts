@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError, shareReplay } from 'rxjs/operators';
+import { API_CONFIG } from '../config/api.config';
 
 /**
  * Configuración de Deezer API
@@ -13,13 +14,12 @@ import { map, catchError, shareReplay } from 'rxjs/operators';
  * - Imágenes de alta calidad
  * - Preview de 30 segundos de canciones
  *
+ * PROXY:
+ * Las peticiones se hacen a través del backend (/api/deezer/...)
+ * para evitar problemas de CORS. El backend hace proxy a api.deezer.com.
+ *
  * @see https://developers.deezer.com/api
  */
-const DEEZER_CONFIG = {
-  apiBaseUrl: 'https://api.deezer.com',
-  // CORS proxy necesario porque Deezer no permite CORS desde localhost
-  corsProxy: 'https://corsproxy.io/?',
-};
 
 /**
  * Interfaces para respuestas de Deezer API
@@ -133,24 +133,22 @@ export class DeezerService {
   // ==========================================================================
 
   /**
-   * Construye la URL con proxy CORS
+   * Construye la URL usando el proxy del backend
    *
-   * Usamos corsproxy.io en todos los entornos porque:
-   * - Deezer no tiene headers CORS (Access-Control-Allow-Origin)
-   * - Deezer bloquea peticiones desde servidores (anti-bot)
-   * - corsproxy.io simula un navegador real y funciona en producción
+   * Las peticiones van a: /api/deezer/{endpoint}
+   * El backend hace proxy a: https://api.deezer.com/{endpoint}
+   *
+   * Esto evita problemas de CORS porque:
+   * - El navegador habla con nuestro backend (mismo origen)
+   * - El backend habla con Deezer (servidor a servidor, sin CORS)
    */
   private buildUrl(endpoint: string): string {
     const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    const fullUrl = `${DEEZER_CONFIG.apiBaseUrl}${normalizedEndpoint}`;
-
-    // Usar proxy CORS en todos los entornos (browser)
-    if (typeof window !== 'undefined') {
-      return `${DEEZER_CONFIG.corsProxy}${encodeURIComponent(fullUrl)}`;
-    }
-
-    // Fallback para SSR (no aplica en este proyecto)
-    return fullUrl;
+    
+    // Usar el proxy del backend: /api/deezer/...
+    // API_CONFIG.baseUrl ya contiene /api, así que añadimos /deezer
+    const baseUrl = API_CONFIG.baseUrl.replace(/\/api$/, '');
+    return `${baseUrl}/api/deezer${normalizedEndpoint}`;
   }
 
   // ==========================================================================
