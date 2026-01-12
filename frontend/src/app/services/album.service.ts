@@ -1,156 +1,133 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, delay, throwError } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Album, Track, Review } from '../models/data.models';
+import { Album, Track, Review, AlbumResponse, mapAlbumResponseToLegacy } from '../models/data.models';
 import { BaseHttpService } from './base-http.service';
-import { API_ENDPOINTS } from '../config/api.config';
+import { API_CONFIG, API_ENDPOINTS } from '../config/api.config';
+import { DeezerService, DeezerAlbum } from './deezer.service';
 
 /**
  * AlbumService - Servicio de gestión de álbumes
  *
- * ARQUITECTURA: Hereda de BaseHttpService
- * - Métodos HTTP listos para producción (comentados)
- * - Datos mock para desarrollo (activos)
- * - Fácil cambio entre mock y API real
+ * ARQUITECTURA HÍBRIDA:
+ * - Datos de Deezer para contenido real (álbumes, artistas, canciones)
+ * - Backend propio para datos de usuario (reseñas, ratings, etc.)
  *
- * MIGRACIÓN A API REAL:
- * 1. Descomentar métodos HTTP (getAlbumByIdHttp, etc.)
- * 2. Cambiar los métodos públicos para usar las versiones HTTP
- * 3. Eliminar o comentar datos mock
- *
- * @example
- * ```typescript
- * // Desarrollo (actual)
- * getAlbumById(id: string) {
- *   return this.getAlbumByIdMock(id);
- * }
- *
- * // Producción (cuando backend esté listo)
- * getAlbumById(id: string) {
- *   return this.getAlbumByIdHttp(id);
- * }
- * ```
+ * FLUJO DE DATOS:
+ * 1. Deezer API → Datos de álbumes reales (imágenes, artistas, tracks)
+ * 2. Backend API → Reseñas, puntuaciones de usuarios, favoritos
+ * 3. Frontend → Combina ambas fuentes para la UI
  */
 @Injectable({
   providedIn: 'root'
 })
 export class AlbumService extends BaseHttpService {
+  private deezer = inject(DeezerService);
 
-  // Datos mock para desarrollo
-  private mockAlbums: Album[] = [
-    {
-      id: '1',
-      title: 'The Dark Side of the Moon',
-      artist: 'Pink Floyd',
-      artistId: 'artist-1',
-      coverUrl: 'https://picsum.photos/seed/album1/400/400',
-      releaseYear: 1973,
-      genre: 'Progressive Rock',
-      tracks: 10,
-      duration: '42:49',
-      label: 'Harvest Records',
-      description: 'Uno de los álbumes más icónicos e influyentes de la historia del rock progresivo. Explora temas de conflicto, avaricia, tiempo y salud mental.',
-      averageRating: 4.8,
-      totalReviews: 1523
-    },
-    {
-      id: '2',
-      title: 'Abbey Road',
-      artist: 'The Beatles',
-      artistId: 'artist-2',
-      coverUrl: 'https://picsum.photos/seed/album2/400/400',
-      releaseYear: 1969,
-      genre: 'Rock',
-      tracks: 17,
-      duration: '47:23',
-      label: 'Apple Records',
-      description: 'El undécimo álbum de estudio de The Beatles. Considerado uno de los mejores álbumes de todos los tiempos.',
-      averageRating: 4.9,
-      totalReviews: 2104
-    },
-    {
-      id: '3',
-      title: 'Thriller',
-      artist: 'Michael Jackson',
-      artistId: 'artist-3',
-      coverUrl: 'https://picsum.photos/seed/album3/400/400',
-      releaseYear: 1982,
-      genre: 'Pop',
-      tracks: 9,
-      duration: '42:16',
-      label: 'Epic Records',
-      description: 'El álbum más vendido de todos los tiempos. Revolucionó la industria musical y estableció nuevos estándares de producción.',
-      averageRating: 4.7,
-      totalReviews: 3421
+  // Flag para elegir fuente de datos
+  private readonly USE_DEEZER = true; // true = Deezer, false = mock data
+  private readonly USE_BACKEND_REVIEWS = true; // true = backend, false = mock
+
+  // ==========================================================================
+  // MÉTODOS PRINCIPALES - DEEZER + BACKEND
+  // ==========================================================================
+
+  /**
+   * Obtiene 50 álbumes populares de Deezer (Charts)
+   * Equivalente a "New Releases" pero con los más populares
+   */
+  getNewReleases(): Observable<Album[]> {
+    if (this.USE_DEEZER) {
+      return this.deezer.getChartAlbums(50).pipe(
+        map(deezerAlbums => deezerAlbums.map(da => this.mapDeezerAlbumToAlbum(da))),
+        catchError(error => {
+          console.error('Error obteniendo álbumes de Deezer:', error);
+          return this.getAllAlbumsMock();
+        })
+      );
     }
-  ];
-
-  private mockTracks: { [albumId: string]: Track[] } = {
-    '1': [
-      { id: 't1-1', number: 1, title: 'Speak to Me', duration: '1:30' },
-      { id: 't1-2', number: 2, title: 'Breathe', duration: '2:43' },
-      { id: 't1-3', number: 3, title: 'On the Run', duration: '3:30' },
-      { id: 't1-4', number: 4, title: 'Time', duration: '6:53' },
-      { id: 't1-5', number: 5, title: 'The Great Gig in the Sky', duration: '4:36' }
-    ],
-    '2': [
-      { id: 't2-1', number: 1, title: 'Come Together', duration: '4:20' },
-      { id: 't2-2', number: 2, title: 'Something', duration: '3:03' },
-      { id: 't2-3', number: 3, title: 'Here Comes the Sun', duration: '3:05' }
-    ],
-    '3': [
-      { id: 't3-1', number: 1, title: 'Wanna Be Startin\' Somethin\'', duration: '6:03' },
-      { id: 't3-2', number: 2, title: 'Thriller', duration: '5:57' },
-      { id: 't3-3', number: 3, title: 'Beat It', duration: '4:18' }
-    ]
-  };
-
-  private mockReviews: { [albumId: string]: Review[] } = {
-    '1': [
-      {
-        id: 'r1-1',
-        userId: 'u1',
-        userName: 'John Music',
-        userAvatar: 'https://i.pravatar.cc/150?img=1',
-        rating: 5,
-        content: 'Una obra maestra absoluta. Cada canción es un viaje emocional.',
-        date: new Date('2024-01-15'),
-        likes: 42
-      }
-    ]
-  };
-
-  // ==============================================
-  // MÉTODOS PÚBLICOS (Actualmente usan MOCK)
-  // ==============================================
+    return this.getAllAlbumsMock();
+  }
 
   /**
    * Obtiene un álbum por su ID
-   *
-   * ACTUAL: Usa datos mock
-   * PRODUCCIÓN: Cambiar a getAlbumByIdHttp(id)
+   * Primero intenta Deezer, luego el backend local
    */
   getAlbumById(id: string): Observable<Album | null> {
-    return this.getAlbumByIdMock(id);
-    // return this.getAlbumByIdHttp(id); // ⬅️ Descomentar para usar API real
+    if (this.USE_DEEZER) {
+      return this.deezer.getAlbumById(id).pipe(
+        map(deezerAlbum => deezerAlbum ? this.mapDeezerAlbumToAlbum(deezerAlbum) : null),
+        catchError(() => this.getAlbumByIdBackend(id))
+      );
+    }
+    return this.getAlbumByIdBackend(id);
   }
 
-  // ==============================================
-  // MÉTODOS HTTP (Listos para producción)
-  // ==============================================
+  /**
+   * Busca álbumes por término
+   */
+  searchAlbums(query: string): Observable<Album[]> {
+    if (this.USE_DEEZER) {
+      return this.deezer.searchAlbums(query, 25).pipe(
+        map(deezerAlbums => deezerAlbums.map(da => this.mapDeezerAlbumToAlbum(da))),
+        catchError(() => this.searchAlbumsMock(query))
+      );
+    }
+    return this.searchAlbumsMock(query);
+  }
 
   /**
-   * [HTTP] Obtiene un álbum por su ID desde la API
-   *
-   * Endpoint: GET /api/albums/:id
-   *
-   * @param id - ID del álbum
-   * @returns Observable con el álbum o null si no existe
+   * Obtiene las canciones de un álbum de Deezer
    */
-  private getAlbumByIdHttp(id: string): Observable<Album | null> {
-    return this.get<Album>(API_ENDPOINTS.albums.getById(id)).pipe(
+  getAlbumTracks(albumId: string): Observable<Track[]> {
+    if (this.USE_DEEZER) {
+      return this.deezer.getAlbumTracks(albumId).pipe(
+        map(tracks => tracks.map((t, index) => ({
+          id: String(t.id),
+          number: t.track_position || index + 1,
+          title: t.title,
+          duration: this.deezer.formatDuration(t.duration)
+        }))),
+        catchError(() => this.getAlbumTracksMock(albumId))
+      );
+    }
+    return this.getAlbumTracksMock(albumId);
+  }
+
+  /**
+   * Obtiene las reseñas de un álbum desde el backend
+   * Las reseñas son datos propios, no de Deezer
+   */
+  getAlbumReviews(albumId: string): Observable<Review[]> {
+    if (this.USE_BACKEND_REVIEWS) {
+      return this.getAlbumReviewsBackend(albumId);
+    }
+    return this.getAlbumReviewsMock(albumId);
+  }
+
+  /**
+   * Obtiene todos los álbumes (para admin/listados)
+   */
+  getAllAlbums(): Observable<Album[]> {
+    return this.getNewReleases();
+  }
+
+  // ==========================================================================
+  // MÉTODOS DE BACKEND (API propia)
+  // ==========================================================================
+
+  /**
+   * Obtiene un álbum del backend por ID
+   */
+  private getAlbumByIdBackend(id: string): Observable<Album | null> {
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      return of(null);
+    }
+
+    return this.get<AlbumResponse>(`${API_CONFIG.baseUrl}${API_ENDPOINTS.albumes.getById(numericId)}`).pipe(
+      map(response => mapAlbumResponseToLegacy(response)),
       catchError(error => {
-        // Si es 404, retornar null en lugar de error
         if (error.status === 404) {
           return of(null);
         }
@@ -159,320 +136,193 @@ export class AlbumService extends BaseHttpService {
     );
   }
 
-  // ==============================================
-  // MÉTODOS MOCK (Desarrollo)
-  // ==============================================
-
   /**
-   * [MOCK] Obtiene un álbum por su ID
-   * Simula latencia de red con delay
+   * Obtiene reseñas del backend
    */
-  private getAlbumByIdMock(id: string): Observable<Album | null> {
-    const album = this.mockAlbums.find(a => a.id === id);
-
-    if (!album) {
-      return throwError(() => new Error(`Album with id ${id} not found`)).pipe(delay(300));
+  private getAlbumReviewsBackend(albumId: string): Observable<Review[]> {
+    const numericId = parseInt(albumId, 10);
+    if (isNaN(numericId)) {
+      return of([]);
     }
 
-    return of(album).pipe(delay(500)); // Simula latencia de red
+    return this.get<any[]>(`${API_CONFIG.baseUrl}${API_ENDPOINTS.resenas.albumesByAlbum(numericId)}`).pipe(
+      map(resenas => resenas.map(r => ({
+        id: `${r.usuarioId}-${r.albumId}`,
+        userId: String(r.usuarioId),
+        userName: r.nombreUsuario,
+        userAvatar: r.avatarUsuario || 'https://i.pravatar.cc/150',
+        rating: r.puntuacion,
+        content: r.textoResena,
+        date: new Date(r.fechaResena),
+        likes: 0
+      }))),
+      catchError(() => of([]))
+    );
   }
 
+  // ==========================================================================
+  // MAPEO DEEZER → MODELO FRONTEND
+  // ==========================================================================
+
   /**
-   * Obtiene las canciones de un álbum
-   *
-   * ACTUAL: Usa datos mock
-   * PRODUCCIÓN: Cambiar a getAlbumTracksHttp(albumId)
+   * Convierte un álbum de Deezer al modelo Album del frontend
    */
-  getAlbumTracks(albumId: string): Observable<Track[]> {
-    return this.getAlbumTracksMock(albumId);
-    // return this.getAlbumTracksHttp(albumId); // ⬅️ Descomentar para usar API real
+  private mapDeezerAlbumToAlbum(deezerAlbum: DeezerAlbum): Album {
+    return {
+      id: String(deezerAlbum.id),
+      title: deezerAlbum.title,
+      artist: deezerAlbum.artist?.name || 'Artista Desconocido',
+      artistId: String(deezerAlbum.artist?.id || ''),
+      coverUrl: this.deezer.getBestAlbumCover(deezerAlbum),
+      releaseYear: this.deezer.extractYear(deezerAlbum.release_date),
+      genre: deezerAlbum.genres?.data?.[0]?.name || '',
+      tracks: deezerAlbum.nb_tracks || 0,
+      duration: '',
+      label: deezerAlbum.label || '',
+      description: '',
+      averageRating: 0,
+      totalReviews: deezerAlbum.fans || 0
+    };
   }
 
-  /**
-   * Obtiene las reseñas de un álbum
-   *
-   * ACTUAL: Usa datos mock
-   * PRODUCCIÓN: Cambiar a getAlbumReviewsHttp(albumId)
-   */
-  getAlbumReviews(albumId: string): Observable<Review[]> {
-    return this.getAlbumReviewsMock(albumId);
-    // return this.getAlbumReviewsHttp(albumId); // ⬅️ Descomentar para usar API real
-  }
+  // ==========================================================================
+  // OPERACIONES CRUD (Backend)
+  // ==========================================================================
 
   /**
-   * Busca álbumes por término
-   *
-   * ACTUAL: Usa datos mock
-   * PRODUCCIÓN: Cambiar a searchAlbumsHttp(query)
-   */
-  searchAlbums(query: string): Observable<Album[]> {
-    return this.searchAlbumsMock(query);
-    // return this.searchAlbumsHttp(query); // ⬅️ Descomentar para usar API real
-  }
-
-  /**
-   * Obtiene todos los álbumes
-   *
-   * ACTUAL: Usa datos mock
-   * PRODUCCIÓN: Cambiar a getAllAlbumsHttp()
-   */
-  getAllAlbums(): Observable<Album[]> {
-    return this.getAllAlbumsMock();
-    // return this.getAllAlbumsHttp(); // ⬅️ Descomentar para usar API real
-  }
-
-  /**
-   * Crea un nuevo álbum
-   *
-   * ACTUAL: Usa datos mock
-   * PRODUCCIÓN: Cambiar a createAlbumHttp(album)
+   * Crea un nuevo álbum en el backend
    */
   createAlbum(album: Omit<Album, 'id'>): Observable<Album> {
-    return this.createAlbumMock(album);
-    // return this.createAlbumHttp(album); // ⬅️ Descomentar para usar API real
+    const dto = {
+      tituloAlbum: album.title,
+      anioSalida: album.releaseYear,
+      portadaUrl: album.coverUrl,
+      idArtista: parseInt(album.artistId, 10) || 1
+    };
+
+    return this.post<AlbumResponse>(`${API_CONFIG.baseUrl}${API_ENDPOINTS.albumes.create}`, dto).pipe(
+      map(response => mapAlbumResponseToLegacy(response))
+    );
   }
 
   /**
-   * Actualiza un álbum completo (PUT)
-   *
-   * ACTUAL: Usa datos mock
-   * PRODUCCIÓN: Cambiar a updateAlbumHttp(id, album)
+   * Actualiza un álbum existente
    */
   updateAlbum(id: string, album: Album): Observable<Album> {
-    return this.updateAlbumMock(id, album);
-    // return this.updateAlbumHttp(id, album); // ⬅️ Descomentar para usar API real
-  }
+    const numericId = parseInt(id, 10);
+    const dto = {
+      tituloAlbum: album.title,
+      anioSalida: album.releaseYear,
+      portadaUrl: album.coverUrl,
+      idArtista: parseInt(album.artistId, 10) || 1
+    };
 
-  /**
-   * Actualiza parcialmente un álbum (PATCH)
-   *
-   * ACTUAL: Usa datos mock
-   * PRODUCCIÓN: Cambiar a patchAlbumHttp(id, updates)
-   */
-  patchAlbum(id: string, updates: Partial<Album>): Observable<Album> {
-    return this.patchAlbumMock(id, updates);
-    // return this.patchAlbumHttp(id, updates); // ⬅️ Descomentar para usar API real
+    return this.put<AlbumResponse>(`${API_CONFIG.baseUrl}${API_ENDPOINTS.albumes.update(numericId)}`, dto).pipe(
+      map(response => mapAlbumResponseToLegacy(response))
+    );
   }
 
   /**
    * Elimina un álbum
-   *
-   * ACTUAL: Usa datos mock
-   * PRODUCCIÓN: Cambiar a deleteAlbumHttp(id)
    */
   deleteAlbum(id: string): Observable<void> {
-    return this.deleteAlbumMock(id);
-    // return this.deleteAlbumHttp(id); // ⬅️ Descomentar para usar API real
+    const numericId = parseInt(id, 10);
+    return this.delete<void>(`${API_CONFIG.baseUrl}${API_ENDPOINTS.albumes.delete(numericId)}`);
   }
 
-  /**
-   * Añade una reseña a un álbum
-   *
-   * ACTUAL: Usa datos mock
-   * PRODUCCIÓN: Cambiar a addAlbumReviewHttp(albumId, review)
-   */
-  addAlbumReview(albumId: string, review: Partial<Review>): Observable<Review> {
-    return this.addAlbumReviewMock(albumId, review);
-    // return this.addAlbumReviewHttp(albumId, review); // ⬅️ Descomentar para usar API real
-  }
+  // ==========================================================================
+  // MÉTODOS MOCK (Fallback para desarrollo sin conexión)
+  // ==========================================================================
 
-  // ==============================================
-  // MÉTODOS HTTP (Listos para producción)
-  // ==============================================
-
-  /**
-   * [HTTP] Obtiene las canciones de un álbum desde la API
-   */
-  private getAlbumTracksHttp(albumId: string): Observable<Track[]> {
-    return this.get<Track[]>(API_ENDPOINTS.albums.getTracks(albumId));
-  }
-
-  /**
-   * [HTTP] Obtiene las reseñas de un álbum desde la API
-   */
-  private getAlbumReviewsHttp(albumId: string): Observable<Review[]> {
-    return this.get<Review[]>(API_ENDPOINTS.albums.getReviews(albumId));
-  }
-
-  /**
-   * [HTTP] Busca álbumes desde la API
-   */
-  private searchAlbumsHttp(query: string): Observable<Album[]> {
-    return this.get<Album[]>(API_ENDPOINTS.albums.search, {
-      params: { q: query }
-    });
-  }
-
-  /**
-   * [HTTP] Obtiene todos los álbumes desde la API
-   */
-  private getAllAlbumsHttp(): Observable<Album[]> {
-    return this.get<Album[]>(API_ENDPOINTS.albums.getAll);
-  }
-
-  /**
-   * [HTTP] Crea un nuevo álbum
-   */
-  private createAlbumHttp(album: Omit<Album, 'id'>): Observable<Album> {
-    return this.post<Album>(API_ENDPOINTS.albums.create, album);
-  }
-
-  /**
-   * [HTTP] Actualiza un álbum completo (PUT)
-   */
-  private updateAlbumHttp(id: string, album: Album): Observable<Album> {
-    return this.put<Album>(API_ENDPOINTS.albums.update(id), album);
-  }
-
-  /**
-   * [HTTP] Actualiza parcialmente un álbum (PATCH)
-   */
-  private patchAlbumHttp(id: string, updates: Partial<Album>): Observable<Album> {
-    return this.patch<Album>(API_ENDPOINTS.albums.update(id), updates);
-  }
-
-  /**
-   * [HTTP] Elimina un álbum
-   */
-  private deleteAlbumHttp(id: string): Observable<void> {
-    return this.delete<void>(API_ENDPOINTS.albums.delete(id));
-  }
-
-  /**
-   * [HTTP] Añade una reseña a un álbum
-   */
-  private addAlbumReviewHttp(albumId: string, review: Partial<Review>): Observable<Review> {
-    return this.post<Review>(API_ENDPOINTS.albums.addReview(albumId), review);
-  }
-
-  // ==============================================
-  // MÉTODOS MOCK (Desarrollo)
-  // ==============================================
-
-  /**
-   * [MOCK] Obtiene las canciones de un álbum
-   */
-  private getAlbumTracksMock(albumId: string): Observable<Track[]> {
-    const tracks = this.mockTracks[albumId] || [];
-    return of(tracks).pipe(delay(300));
-  }
-
-  /**
-   * [MOCK] Obtiene las reseñas de un álbum
-   */
-  private getAlbumReviewsMock(albumId: string): Observable<Review[]> {
-    const reviews = this.mockReviews[albumId] || [];
-    return of(reviews).pipe(delay(300));
-  }
-
-  /**
-   * [MOCK] Busca álbumes por término
-   */
-  private searchAlbumsMock(query: string): Observable<Album[]> {
-    const results = this.mockAlbums.filter(album =>
-      album.title.toLowerCase().includes(query.toLowerCase()) ||
-      album.artist.toLowerCase().includes(query.toLowerCase()) ||
-      album.genre.toLowerCase().includes(query.toLowerCase())
-    );
-    return of(results).pipe(delay(400));
-  }
-
-  /**
-   * [MOCK] Obtiene todos los álbumes
-   */
   private getAllAlbumsMock(): Observable<Album[]> {
-    return of(this.mockAlbums).pipe(delay(300));
+    const mockAlbums: Album[] = [
+      {
+        id: '1',
+        title: 'The Dark Side of the Moon',
+        artist: 'Pink Floyd',
+        artistId: 'artist-1',
+        coverUrl: 'https://picsum.photos/seed/album1/400/400',
+        releaseYear: 1973,
+        genre: 'Progressive Rock',
+        tracks: 10,
+        duration: '42:49',
+        label: 'Harvest Records',
+        description: 'Uno de los álbumes más icónicos de la historia del rock.',
+        averageRating: 4.8,
+        totalReviews: 1523
+      },
+      {
+        id: '2',
+        title: 'Abbey Road',
+        artist: 'The Beatles',
+        artistId: 'artist-2',
+        coverUrl: 'https://picsum.photos/seed/album2/400/400',
+        releaseYear: 1969,
+        genre: 'Rock',
+        tracks: 17,
+        duration: '47:23',
+        label: 'Apple Records',
+        description: 'El undécimo álbum de estudio de The Beatles.',
+        averageRating: 4.9,
+        totalReviews: 2104
+      },
+      {
+        id: '3',
+        title: 'Thriller',
+        artist: 'Michael Jackson',
+        artistId: 'artist-3',
+        coverUrl: 'https://picsum.photos/seed/album3/400/400',
+        releaseYear: 1982,
+        genre: 'Pop',
+        tracks: 9,
+        duration: '42:16',
+        label: 'Epic Records',
+        description: 'El álbum más vendido de todos los tiempos.',
+        averageRating: 4.7,
+        totalReviews: 3421
+      }
+    ];
+
+    return of(mockAlbums);
   }
 
-  /**
-   * [MOCK] Crea un nuevo álbum
-   */
-  private createAlbumMock(album: Omit<Album, 'id'>): Observable<Album> {
-    const newAlbum: Album = {
-      ...album,
-      id: `album-${Date.now()}` // Generar ID temporal
+  private searchAlbumsMock(query: string): Observable<Album[]> {
+    return this.getAllAlbumsMock().pipe(
+      map(albums => albums.filter(a =>
+        a.title.toLowerCase().includes(query.toLowerCase()) ||
+        a.artist.toLowerCase().includes(query.toLowerCase())
+      ))
+    );
+  }
+
+  private getAlbumTracksMock(albumId: string): Observable<Track[]> {
+    const mockTracks: { [key: string]: Track[] } = {
+      '1': [
+        { id: 't1-1', number: 1, title: 'Speak to Me', duration: '1:30' },
+        { id: 't1-2', number: 2, title: 'Breathe', duration: '2:43' },
+        { id: 't1-3', number: 3, title: 'On the Run', duration: '3:30' },
+        { id: 't1-4', number: 4, title: 'Time', duration: '6:53' },
+        { id: 't1-5', number: 5, title: 'The Great Gig in the Sky', duration: '4:36' }
+      ]
     };
 
-    // Añadir a la lista mock (simula persistencia)
-    this.mockAlbums.push(newAlbum);
-
-    return of(newAlbum).pipe(delay(400));
+    return of(mockTracks[albumId] || []);
   }
 
-  /**
-   * [MOCK] Actualiza un álbum completo (PUT)
-   */
-  private updateAlbumMock(id: string, album: Album): Observable<Album> {
-    const index = this.mockAlbums.findIndex(a => a.id === id);
+  private getAlbumReviewsMock(albumId: string): Observable<Review[]> {
+    const mockReviews: Review[] = [
+      {
+        id: 'r1',
+        userId: 'u1',
+        userName: 'John Music',
+        userAvatar: 'https://i.pravatar.cc/150?img=1',
+        rating: 5,
+        content: 'Una obra maestra absoluta.',
+        date: new Date('2024-01-15'),
+        likes: 42
+      }
+    ];
 
-    if (index === -1) {
-      return throwError(() => new Error(`Album with id ${id} not found`)).pipe(delay(300));
-    }
-
-    // Reemplazar el álbum completo
-    this.mockAlbums[index] = { ...album, id };
-
-    return of(this.mockAlbums[index]).pipe(delay(400));
-  }
-
-  /**
-   * [MOCK] Actualiza parcialmente un álbum (PATCH)
-   */
-  private patchAlbumMock(id: string, updates: Partial<Album>): Observable<Album> {
-    const index = this.mockAlbums.findIndex(a => a.id === id);
-
-    if (index === -1) {
-      return throwError(() => new Error(`Album with id ${id} not found`)).pipe(delay(300));
-    }
-
-    // Actualizar solo los campos proporcionados
-    this.mockAlbums[index] = {
-      ...this.mockAlbums[index],
-      ...updates,
-      id // Asegurar que el ID no cambie
-    };
-
-    return of(this.mockAlbums[index]).pipe(delay(400));
-  }
-
-  /**
-   * [MOCK] Elimina un álbum
-   */
-  private deleteAlbumMock(id: string): Observable<void> {
-    const index = this.mockAlbums.findIndex(a => a.id === id);
-
-    if (index === -1) {
-      return throwError(() => new Error(`Album with id ${id} not found`)).pipe(delay(300));
-    }
-
-    // Eliminar de la lista
-    this.mockAlbums.splice(index, 1);
-
-    return of(void 0).pipe(delay(400));
-  }
-
-  /**
-   * [MOCK] Añade una reseña a un álbum
-   */
-  private addAlbumReviewMock(albumId: string, review: Partial<Review>): Observable<Review> {
-    const newReview: Review = {
-      id: `review-${Date.now()}`,
-      userId: 'mock-user-id',
-      userName: 'Usuario Mock',
-      userAvatar: 'https://i.pravatar.cc/150?img=10',
-      rating: review.rating || 5,
-      content: review.content || '',
-      date: new Date(),
-      likes: 0,
-      ...review
-    };
-
-    // Añadir a las reseñas mock
-    if (!this.mockReviews[albumId]) {
-      this.mockReviews[albumId] = [];
-    }
-    this.mockReviews[albumId].push(newReview);
-
-    return of(newReview).pipe(delay(400));
+    return of(albumId === '1' ? mockReviews : []);
   }
 }
