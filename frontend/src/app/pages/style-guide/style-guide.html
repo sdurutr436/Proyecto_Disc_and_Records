@@ -1544,36 +1544,69 @@
           </div>
         </div>
 
-        <!-- Responsive Tabs (Nuevas) -->
+        <!-- Tabs Simplificadas -->
         <div class="showcase">
-          <h3>Responsive Tabs (Pestañas Adaptativas)</h3>
+          <h3>Tabs con Scroll Lateral</h3>
           <p class="showcase__description">
-            Tabs en desktop que se convierten en accordion en móvil. Navegación por teclado y diseño neobrutalista.
+            Tabs neobrutalistas con scroll horizontal responsive. En desktop muestra scrollbar estilizado, en móvil scrollbar oculto.
           </p>
           <div class="showcase__column">
             <div class="showcase__item showcase__item--full">
-              <app-responsive-tabs [breakpoint]="768">
-                <app-tab-panel id="descripcion" label="Descripción">
-                  <h4>Descripción del Producto</h4>
-                  <p>Este es el contenido de la pestaña de descripción. Las tabs se adaptan automáticamente al tamaño de pantalla.</p>
+              <app-tabs
+                [tabs]="[
+                  { id: 'tab1', label: 'Descripción' },
+                  { id: 'tab2', label: 'Especificaciones' },
+                  { id: 'tab3', label: 'Reseñas' },
+                  { id: 'tab4', label: 'Soporte' },
+                  { id: 'tab5', label: 'Garantía' },
+                  { id: 'tab6', label: 'Envío' },
+                  { id: 'tab7', label: 'Devoluciones' }
+                ]"
+                [activeTabId]="'tab1'">
+              </app-tabs>
+              <code>Tabs con scroll lateral para múltiples opciones</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Responsive Tabs (Desktop: Tabs / Móvil: Accordion) -->
+        <div class="showcase">
+          <h3>Responsive Tabs</h3>
+          <p class="showcase__description">
+            Componente que adapta su presentación según el viewport: Tabs en desktop (>768px), Accordion en móvil/tablet.
+            Usa <code>app-tab-panel</code> para definir el contenido de cada pestaña con content projection.
+          </p>
+          <div class="showcase__column">
+            <div class="showcase__item showcase__item--full">
+              <app-responsive-tabs [breakpoint]="768" initialActiveTab="panel-info">
+                <app-tab-panel id="panel-info" label="Información">
+                  <div class="demo-tab-content">
+                    <h4>Panel de Información</h4>
+                    <p>Contenido proyectado mediante ng-content. Soporta HTML complejo, componentes anidados y cualquier contenido Angular.</p>
+                    <app-badge variant="primary">Ejemplo de Badge</app-badge>
+                  </div>
                 </app-tab-panel>
-                <app-tab-panel id="especificaciones" label="Especificaciones">
-                  <h4>Especificaciones Técnicas</h4>
-                  <ul>
-                    <li>Característica 1: Responsive design</li>
-                    <li>Característica 2: Accordion en móvil</li>
-                    <li>Característica 3: Navegación por teclado</li>
-                  </ul>
+                <app-tab-panel id="panel-config" label="Configuración">
+                  <div class="demo-tab-content">
+                    <h4>Panel de Configuración</h4>
+                    <p>Cada TabPanel puede tener contenido diferente y complejo.</p>
+                    <app-button variant="secondary" size="sm">Botón de ejemplo</app-button>
+                  </div>
                 </app-tab-panel>
-                <app-tab-panel id="resenias" label="Reseñas">
-                  <h4>Reseñas de Usuarios</h4>
-                  <p>Aquí aparecerían las reseñas de los usuarios sobre el producto.</p>
+                <app-tab-panel id="panel-help" label="Ayuda">
+                  <div class="demo-tab-content">
+                    <h4>Panel de Ayuda</h4>
+                    <p>El componente maneja automáticamente la accesibilidad con roles ARIA y navegación por teclado.</p>
+                  </div>
                 </app-tab-panel>
-                <app-tab-panel id="soporte" label="Soporte">
-                  <h4>Información de Soporte</h4>
-                  <p>Contacta con nuestro equipo de soporte para cualquier consulta.</p>
+                <app-tab-panel id="panel-disabled" label="Deshabilitado" [disabled]="true">
+                  <div class="demo-tab-content">
+                    <h4>Panel Deshabilitado</h4>
+                    <p>Este panel no se puede seleccionar.</p>
+                  </div>
                 </app-tab-panel>
               </app-responsive-tabs>
+              <code>ResponsiveTabs con TabPanel - Redimensiona para ver el cambio a accordion</code>
             </div>
           </div>
         </div>
@@ -1742,7 +1775,7 @@
                 title="Mobile"
                 subtitle="320px+"
                 imageShape="square"
-                imageSize="medium"
+                imageSize="small"
                 variant="normal"
                 cardType="polaroid"
                 [placeholderIcon]="'<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><rect x=&quot;5&quot; y=&quot;2&quot; width=&quot;14&quot; height=&quot;20&quot; rx=&quot;2&quot; ry=&quot;2&quot;></rect><line x1=&quot;12&quot; y1=&quot;18&quot; x2=&quot;12.01&quot; y2=&quot;18&quot;></line></svg>'">
@@ -1755,7 +1788,7 @@
                 title="Tablet"
                 subtitle="768px+"
                 imageShape="square"
-                imageSize="medium"
+                imageSize="small"
                 variant="normal"
                 cardType="polaroid"
                 [placeholderIcon]="'<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><rect x=&quot;4&quot; y=&quot;2&quot; width=&quot;16&quot; height=&quot;20&quot; rx=&quot;2&quot; ry=&quot;2&quot;></rect><line x1=&quot;12&quot; y1=&quot;18&quot; x2=&quot;12.01&quot; y2=&quot;18&quot;></line></svg>'">
@@ -1768,7 +1801,7 @@
                 title="Desktop"
                 subtitle="1024px+"
                 imageShape="square"
-                imageSize="medium"
+                imageSize="small"
                 variant="vinilo"
                 cardType="polaroid"
                 [placeholderIcon]="'<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><rect x=&quot;2&quot; y=&quot;3&quot; width=&quot;20&quot; height=&quot;14&quot; rx=&quot;2&quot; ry=&quot;2&quot;></rect><line x1=&quot;8&quot; y1=&quot;21&quot; x2=&quot;16&quot; y2=&quot;21&quot;></line><line x1=&quot;12&quot; y1=&quot;17&quot; x2=&quot;12&quot; y2=&quot;21&quot;></line></svg>'">
@@ -1781,7 +1814,7 @@
                 title="Large Desktop"
                 subtitle="1200px+"
                 imageShape="square"
-                imageSize="medium"
+                imageSize="small"
                 variant="vinilo"
                 cardType="polaroid"
                 [placeholderIcon]="'<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><rect x=&quot;2&quot; y=&quot;3&quot; width=&quot;20&quot; height=&quot;14&quot; rx=&quot;2&quot; ry=&quot;2&quot;></rect><polyline points=&quot;8 21 12 17 16 21&quot;></polyline></svg>'">

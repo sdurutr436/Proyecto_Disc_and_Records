@@ -1,7 +1,8 @@
-import { Component, signal, output } from '@angular/core';
+import { Component, signal, output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { FormInput } from '../form-input/form-input';
+import { AuthService } from '../../../services/auth';
 
 /**
  * RegisterForm Component
@@ -49,6 +50,11 @@ export class RegisterForm {
    */
   isSubmitting = signal(false);
 
+  /**
+   * Servicio de autenticación
+   */
+  private authService = inject(AuthService);
+
   // ============================================
   // OUTPUTS PARA NAVEGACIÓN ENTRE MODALES
   // ============================================
@@ -57,6 +63,11 @@ export class RegisterForm {
    * Emite cuando el usuario hace click en "¿Ya tienes cuenta? Inicia sesión"
    */
   onLogin = output<void>();
+
+  /**
+   * Emite cuando el registro es exitoso y se debe cerrar el modal
+   */
+  onRegisterSuccess = output<void>();
 
   /**
    * Constructor
@@ -188,10 +199,11 @@ export class RegisterForm {
    * FLUJO:
    * 1. Marcar todos los campos como tocados (para mostrar errores)
    * 2. Verificar si el formulario es válido (todos los campos + validadores de grupo)
-   * 3. Si es válido: obtener valores y procesar
-   * 4. Si es inválido: mostrar errores (ya están visibles por markAllAsTouched)
+   * 3. Si es válido: llamar al AuthService para registrar al usuario
+   * 4. Si el registro es exitoso: emitir evento para cerrar modal
+   * 5. Si es inválido: mostrar errores (ya están visibles por markAllAsTouched)
    */
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     /**
      * Marcar todos los campos como tocados
      * Esto hace que los errores sean visibles en el template
@@ -208,25 +220,39 @@ export class RegisterForm {
     if (this.registerForm.valid) {
       this.isSubmitting.set(true);
 
-      /**
-       * Obtener datos del formulario
-       * {
-       *   username: 'usuario123',
-       *   email: 'usuario@ejemplo.com',
-       *   password: 'MiPassword123!',
-       *   confirmPassword: 'MiPassword123!'
-       * }
-       */
-      const formData = this.registerForm.value;
+      try {
+        /**
+         * Obtener datos del formulario
+         */
+        const { username, email, password } = this.registerForm.value;
 
-      // Aquí iría la lógica de registro (inyectar AuthService)
-      console.log('Registro:', formData);
+        /**
+         * Llamar al AuthService para registrar al usuario
+         */
+        const result = await this.authService.register({
+          username,
+          email,
+          password
+        });
 
-      // Simular llamada a API
-      setTimeout(() => {
+        /**
+         * Si el registro es exitoso, emitir evento para cerrar el modal
+         * El AuthService ya se encarga de:
+         * - Mostrar notificación de éxito
+         * - Iniciar sesión automáticamente (si el backend devuelve token)
+         * - Actualizar el estado global de la aplicación
+         */
+        if (result.success) {
+          this.onRegisterSuccess.emit();
+
+          // Limpiar el formulario
+          this.registerForm.reset();
+        }
+      } catch (error) {
+        console.error('Error en registro:', error);
+      } finally {
         this.isSubmitting.set(false);
-        alert('¡Registro exitoso! Bienvenido a Discs & Records');
-      }, 1500);
+      }
     }
   }
 }

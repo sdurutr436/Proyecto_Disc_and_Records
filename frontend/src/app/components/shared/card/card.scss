@@ -11,7 +11,7 @@
   transition: all vars.$transicion-rapida;
   overflow: hidden;
   width: 100%;
-  max-width: vars.$max-width-card;
+  max-width: vars.$ancho-maximo-card;
 
   /* Variante con efecto hover lift (hundido) - solo para polaroid */
   &--polaroid.card--hover-lift:hover {
@@ -37,7 +37,7 @@
 
   /* Modificadores por tipo de card */
   &--polaroid {
-    max-width: vars.$max-width-card-polaroid;
+    max-width: vars.$ancho-maximo-card-polaroid;
   }
 
   &--profile {
@@ -55,7 +55,7 @@
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
-      width: calc(vars.$max-width-card-polaroid + vars.$espaciado-xl);
+      width: calc(vars.$ancho-maximo-card-polaroid + vars.$espaciado-xl);
       border-right: vars.$borde-brutal-thin;
     }
 
@@ -63,7 +63,7 @@
       width: 100%;
       min-width: 100%;
       max-width: 100%;
-      height: calc(vars.$max-width-card-polaroid + vars.$espaciado-xl);
+      height: calc(vars.$ancho-maximo-card-polaroid + vars.$espaciado-xl);
       flex-shrink: 0;
       border-right: none;
       border-top: none;
@@ -176,7 +176,7 @@
   // ========================================
   &--profile.card--vertical {
     flex-direction: column;
-    max-width: calc(vars.$max-width-card + vars.$espaciado-l);
+    max-width: calc(vars.$ancho-maximo-card + vars.$espaciado-l);
 
     .card__left {
       width: 100%;
@@ -187,7 +187,7 @@
     .card__image {
       width: 100%;
       height: auto;
-      max-height: calc(vars.$max-width-card-polaroid + vars.$espaciado-xl);
+      max-height: calc(vars.$ancho-maximo-card-polaroid + vars.$espaciado-xl);
       border-bottom: vars.$borde-brutal-thin;
       aspect-ratio: 1;
     }
@@ -253,24 +253,39 @@
   /* Tamaños */
   &--small {
     aspect-ratio: 1;
+    height: 120px;
     max-height: 120px;
+
+    .card__placeholder {
+      font-size: vars.$espaciado-m; // 2rem
+    }
   }
 
   &--medium {
     aspect-ratio: 1;
+    height: 200px;
     max-height: 200px;
+
+    .card__placeholder {
+      font-size: vars.$espaciado-l; // 3rem
+    }
   }
 
   &--large {
     aspect-ratio: 1;
+    height: 300px;
     max-height: 300px;
+
+    .card__placeholder {
+      font-size: vars.$espaciado-xl; // 4rem
+    }
   }
 }
 
 /* Placeholder emoji cuando no hay imagen */
 .card__placeholder {
-  font-size: 4rem;
-  opacity: 0.3;
+  font-size: vars.$espaciado-xl; // 4rem - default (large)
+  opacity: 0.5;
 
   // Variante SVG
   &--svg {
@@ -279,12 +294,17 @@
     justify-content: center;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 
-    svg {
-      width: 4rem;
-      height: 4rem;
+    // SVG inyectado vía innerHTML: escalado proporcional sin deformar
+    :is(svg) {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      display: block;
       stroke: var(--text-primary);
-      opacity: 0.4;
+      opacity: 0.6;
     }
   }
 }
@@ -390,7 +410,7 @@
 
 .card__badge {
   display: inline-block;
-  padding: 4px vars.$espaciado-xs;
+  padding: vars.$espaciado-tiny vars.$espaciado-xs;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -429,7 +449,7 @@
   font-weight: 600;
   font-family: inherit;
   border: vars.$borde-brutal-medium;
-  border-radius: 9999px;
+  border-radius: vars.$radio-pildora;
   box-shadow: 2px 2px 0px var(--border-color);
   cursor: pointer;
   transition: all vars.$transicion-rapida;

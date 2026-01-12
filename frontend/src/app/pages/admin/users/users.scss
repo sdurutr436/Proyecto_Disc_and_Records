@@ -2,7 +2,7 @@
 
 .content-section {
   background: var(--bg-secondary);
-  border-radius: 8px;
+  border-radius: vars.$radio-m;
   padding: vars.$espaciado-m;
 }
 
@@ -61,7 +61,7 @@
 .role-badge {
   display: inline-block;
   padding: vars.$espaciado-xs vars.$espaciado-s;
-  border-radius: 4px;
+  border-radius: vars.$radio-s;
   font-size: vars.$tamanio-fuente-texto-pequeno-xs;
   font-weight: 600;
   text-transform: uppercase;

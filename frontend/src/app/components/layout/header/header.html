@@ -16,18 +16,35 @@
 
       <!-- Botones debajo del logo -->
       <div class="header__buttons">
-        <button
-          class="header__btn header__btn--left"
-          (click)="openRegisterModal()"
-          type="button">
-          REGISTRARSE
-        </button>
-        <button
-          class="header__btn header__btn--right"
-          (click)="openLoginModal()"
-          type="button">
-          INICIAR SESIÓN
-        </button>
+        @if (appState.isAuthenticated()) {
+          <!-- Usuario autenticado: mostrar perfil y cerrar sesión -->
+          <button
+            class="header__btn header__btn--left"
+            (click)="navigateToProfile()"
+            type="button">
+            MI PERFIL
+          </button>
+          <button
+            class="header__btn header__btn--right"
+            (click)="logout()"
+            type="button">
+            CERRAR SESIÓN
+          </button>
+        } @else {
+          <!-- Usuario no autenticado: mostrar registro e inicio de sesión -->
+          <button
+            class="header__btn header__btn--left"
+            (click)="openRegisterModal()"
+            type="button">
+            REGISTRARSE
+          </button>
+          <button
+            class="header__btn header__btn--right"
+            (click)="openLoginModal()"
+            type="button">
+            INICIAR SESIÓN
+          </button>
+        }
       </div>
     </div>
   </div>
@@ -43,7 +60,8 @@
   (onClose)="closeAuthModal()">
   <app-login-form
     (onForgotPassword)="navigateToModal('forgot-password')"
-    (onRegister)="navigateToModal('register')">
+    (onRegister)="navigateToModal('register')"
+    (onLoginSuccess)="closeAuthModal()">
   </app-login-form>
 </app-modal>
 
@@ -52,7 +70,8 @@
   [isOpen]="activeModal() === 'register'"
   (onClose)="closeAuthModal()">
   <app-register-form
-    (onLogin)="navigateToModal('login')">
+    (onLogin)="navigateToModal('login')"
+    (onRegisterSuccess)="closeAuthModal()">
   </app-register-form>
 </app-modal>
 

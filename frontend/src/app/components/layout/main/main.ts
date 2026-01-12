@@ -1,7 +1,9 @@
-import { Component, signal, inject, HostListener } from '@angular/core';
+import { Component, signal, inject, HostListener, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ThemeService } from '../../../services/theme';
+import { AuthService } from '../../../services/auth';
+import { AppStateService } from '../../../services/app-state';
 import { Breadcrumbs } from '../../shared/breadcrumbs/breadcrumbs';
 import { BreadcrumbService } from '../../../services/breadcrumb.service';
 
@@ -14,9 +16,19 @@ import { BreadcrumbService } from '../../../services/breadcrumb.service';
 export class Main {
   themeService = inject(ThemeService);
   breadcrumbService = inject(BreadcrumbService);
+  private authService = inject(AuthService);
+  private appState = inject(AppStateService);
 
   // Menú móvil del nav
   isMenuOpen = signal(false);
+
+  /**
+   * Computed: Verificar si el usuario actual es administrador
+   */
+  isAdmin = computed(() => {
+    const user = this.appState.currentUser();
+    return user?.role === 'admin';
+  });
 
   toggleMenu(): void {
     this.isMenuOpen.update((open) => !open);

@@ -156,9 +156,106 @@ Representa la lista de álbumes escuchados/reseñados por usuario.
 
 ---
 
-## Diagrama de Relaciones
+## Diagrama Entidad-Relación (ER)
 
-### Cardinalidades
+### Diagrama Visual (Mermaid)
+
+```mermaid
+erDiagram
+    USUARIO {
+        INT id PK
+        VARCHAR nombre_usuario UK
+        VARCHAR mail UK
+        VARCHAR contrasena
+        VARCHAR avatar
+        TEXT biografia
+        TIMESTAMP fecha_registro
+        VARCHAR rol
+    }
+    
+    ARTISTA {
+        INT id PK
+        VARCHAR nombre_artista
+        DECIMAL puntuacion_media
+    }
+    
+    ALBUM {
+        INT id PK
+        VARCHAR titulo_album
+        YEAR anio_salida
+        VARCHAR portada_url
+        DECIMAL puntuacion_media
+        INT id_artista FK
+    }
+    
+    CANCION {
+        INT id PK
+        VARCHAR titulo_cancion
+        YEAR anio_salida
+        DECIMAL puntuacion_media
+        INT id_artista FK
+    }
+    
+    GENERO {
+        INT id PK
+        VARCHAR nombre_genero UK
+        TEXT descripcion
+        VARCHAR color
+    }
+    
+    USUARIO_CANCION {
+        INT id_usuario FK
+        INT id_cancion FK
+        BOOLEAN escuchada
+        TINYINT puntuacion
+        TEXT texto_resena
+        TIMESTAMP fecha_agregada
+        TIMESTAMP fecha_resena
+    }
+    
+    USUARIO_ALBUM {
+        INT id_usuario FK
+        INT id_album FK
+        BOOLEAN escuchado
+        TINYINT puntuacion
+        TEXT texto_resena
+        TIMESTAMP fecha_agregada
+        TIMESTAMP fecha_resena
+    }
+    
+    CANCION_GENERO {
+        INT id_cancion FK
+        INT id_genero FK
+    }
+    
+    ALBUM_GENERO {
+        INT id_album FK
+        INT id_genero FK
+    }
+    
+    ALBUM_CANCION {
+        INT id_album FK
+        INT id_cancion FK
+        TINYINT numero_pista
+    }
+
+    ARTISTA ||--o{ ALBUM : "tiene"
+    ARTISTA ||--o{ CANCION : "interpreta"
+    USUARIO ||--o{ USUARIO_CANCION : "escucha"
+    CANCION ||--o{ USUARIO_CANCION : "resenada_por"
+    USUARIO ||--o{ USUARIO_ALBUM : "escucha"
+    ALBUM ||--o{ USUARIO_ALBUM : "resenado_por"
+    ALBUM ||--o{ ALBUM_CANCION : "contiene"
+    CANCION ||--o{ ALBUM_CANCION : "pertenece_a"
+    CANCION ||--o{ CANCION_GENERO : "tiene"
+    GENERO ||--o{ CANCION_GENERO : "categoriza"
+    ALBUM ||--o{ ALBUM_GENERO : "tiene"
+    GENERO ||--o{ ALBUM_GENERO : "categoriza"
+```
+
+> **Visualización:** GitHub, GitLab y VS Code (con extensión) renderizan Mermaid automáticamente.
+
+### Cardinalidades (Notación Crow's Foot)
 
 ```
 Usuario (1) ────── (N) Usuario_Cancion (N) ────── (1) Cancion

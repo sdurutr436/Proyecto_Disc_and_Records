@@ -1,7 +1,8 @@
-import { Component, signal, output } from '@angular/core';
+import { Component, signal, output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { FormInput } from '../form-input/form-input';
+import { AuthService } from '../../../services/auth';
 
 /**
  * LoginForm Component
@@ -42,6 +43,11 @@ import { FormInput } from '../form-input/form-input';
 })
 export class LoginForm {
   /**
+   * Inyección de AuthService para autenticación real
+   */
+  private authService = inject(AuthService);
+
+  /**
    * FormGroup - Contenedor de controles del formulario
    * Agrupa email y password en una sola entidad
    * Proporciona métodos para validar todo el formulario de una vez
@@ -68,6 +74,11 @@ export class LoginForm {
    * Emite cuando el usuario hace click en "¿No tienes cuenta? Crea una"
    */
   onRegister = output<void>();
+
+  /**
+   * Emite cuando el login es exitoso para que el header cierre el modal
+   */
+  onLoginSuccess = output<void>();
 
   /**
    * Constructor
@@ -155,14 +166,21 @@ export class LoginForm {
        */
       const formData = this.loginForm.value;
 
-      // Aquí iría la lógica de autenticación (inyectar AuthService)
-      console.log('Login:', formData);
-
-      // Simular llamada a API
-      setTimeout(() => {
+      // Llamar al AuthService para autenticación real
+      this.authService.login({
+        email: formData.email,
+        password: formData.password
+      }).then(result => {
         this.isSubmitting.set(false);
-        alert('¡Inicio de sesión exitoso!');
-      }, 1000);
+        if (result.success) {
+          // Emitir evento de éxito para que el header cierre el modal
+          this.onLoginSuccess.emit();
+          // Limpiar el formulario
+          this.loginForm.reset();
+        }
+      }).catch(() => {
+        this.isSubmitting.set(false);
+      });
     }
   }
 }

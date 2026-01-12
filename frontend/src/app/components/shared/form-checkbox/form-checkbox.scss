@@ -26,10 +26,10 @@
   }
 
   &__box {
-    width: calc(vars.$espaciado-l - vars.$espaciado-xs);
-    height: calc(vars.$espaciado-l - vars.$espaciado-xs);
-    min-width: calc(vars.$espaciado-l - vars.$espaciado-xs);
-    min-height: calc(vars.$espaciado-l - vars.$espaciado-xs);
+    width: 20px; // Tamaño razonable para checkbox
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -41,8 +41,8 @@
   }
 
   &__check {
-    width: calc(vars.$espaciado-m + vars.$espaciado-xs);
-    height: calc(vars.$espaciado-m + vars.$espaciado-xs);
+    width: 16px; // Ícono un poco más pequeño que el box
+    height: 16px;
     color: var(--text-primary);
   }
 

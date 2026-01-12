@@ -18,9 +18,9 @@ import { RegisterForm } from '../../components/shared/register-form/register-for
 import { ForgotPasswordForm } from '../../components/shared/forgot-password-form/forgot-password-form';
 import { Modal } from '../../components/shared/modal/modal';
 import { Accordion, AccordionItem } from '../../components/shared/accordion/accordion';
-import { Tabs, Tab } from '../../components/shared/tabs/tabs';
 import { ResponsiveTabs } from '../../components/shared/tabs/responsive-tabs';
 import { TabPanel } from '../../components/shared/tabs/tab-panel';
+import { Tabs } from '../../components/shared/tabs/tabs';
 import { Tooltip } from '../../components/shared/tooltip/tooltip';
 import { Spinner } from '../../components/shared/spinner/spinner';
 import { ProgressBar } from '../../components/shared/progress-bar/progress-bar';
@@ -53,6 +53,7 @@ import { StyleGuideNavigationService, StyleGuideSection } from '../../services/s
     Accordion,
     ResponsiveTabs,
     TabPanel,
+    Tabs,
     Tooltip,
     Spinner,
     ProgressBar
@@ -304,14 +305,6 @@ export class StyleGuide {
       title: '¿Hay una aplicación móvil?',
       content: 'Actualmente estamos en desarrollo. Por ahora, nuestra web es totalmente responsive y funciona perfectamente en dispositivos móviles.'
     }
-  ];
-
-  // Datos para Tabs
-  tabsExample: Tab[] = [
-    { id: 'overview', label: 'Resumen', content: 'Información general del álbum, año de lanzamiento y géneros musicales.' },
-    { id: 'tracklist', label: 'Lista de Canciones', content: 'Todas las canciones del álbum con duración y colaboradores.' },
-    { id: 'reviews', label: 'Reseñas', content: 'Opiniones de la comunidad y críticas profesionales sobre este álbum.' },
-    { id: 'similar', label: 'Similares', content: 'Álbumes y artistas similares que te podrían gustar.' }
   ];
 
   // Métodos para manejar notificaciones estáticas (Toast)

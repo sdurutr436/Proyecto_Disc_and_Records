@@ -1,12 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Button } from '../../components/shared/button/button';
-
-interface AdminTab {
-  id: string;
-  label: string;
-}
+import { Tabs, Tab } from '../../components/shared/tabs/tabs';
 
 interface Stats {
   totalAlbums: number;
@@ -17,14 +13,15 @@ interface Stats {
 
 @Component({
   selector: 'app-admin',
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, Button],
+  imports: [CommonModule, RouterLink, Button, Tabs],
   templateUrl: './admin.html',
   styleUrl: './admin.scss',
   standalone: true,
 })
 export default class AdminComponent {
-  // Tabs de navegación - ahora con rutas
-  tabs: AdminTab[] = [
+  activeTab = signal<string>('albums');
+
+  tabs: Tab[] = [
     { id: 'albums', label: 'Álbumes' },
     { id: 'users', label: 'Usuarios' },
     { id: 'genres', label: 'Géneros' },
@@ -38,9 +35,19 @@ export default class AdminComponent {
     totalGenres: 0,
   });
 
+  // Mock data para demo
+  albums = signal<any[]>([]);
+  users = signal<any[]>([]);
+  genres = signal<any[]>([]);
+  reviews = signal<any[]>([]);
+
   constructor() {
     // TODO: Cargar datos reales desde el backend
     this.loadMockData();
+  }
+
+  onTabChange(tabId: string | number) {
+    this.activeTab.set(tabId as string);
   }
 
   loadMockData() {
@@ -51,5 +58,59 @@ export default class AdminComponent {
       totalReviews: 0,
       totalGenres: 0,
     });
+  }
+
+  // Métodos CRUD para álbumes
+  createAlbum() {
+    console.log('Crear álbum');
+    // TODO: Implementar lógica de creación
+  }
+
+  editAlbum(id: string) {
+    console.log('Editar álbum:', id);
+    // TODO: Implementar lógica de edición
+  }
+
+  deleteAlbum(id: string) {
+    console.log('Eliminar álbum:', id);
+    // TODO: Implementar lógica de eliminación
+  }
+
+  // Métodos CRUD para usuarios
+  editUser(id: string) {
+    console.log('Editar usuario:', id);
+    // TODO: Implementar lógica de edición
+  }
+
+  deleteUser(id: string) {
+    console.log('Eliminar usuario:', id);
+    // TODO: Implementar lógica de eliminación
+  }
+
+  // Métodos CRUD para géneros
+  createGenre() {
+    console.log('Crear género');
+    // TODO: Implementar lógica de creación
+  }
+
+  editGenre(id: string) {
+    console.log('Editar género:', id);
+    // TODO: Implementar lógica de edición
+  }
+
+  deleteGenre(id: string) {
+    console.log('Eliminar género:', id);
+    // TODO: Implementar lógica de eliminación
+  }
+
+  // Métodos para reseñas
+  approveReview(id: string) {
+    console.log('Aprobar reseña:', id);
+    // TODO: Implementar lógica de aprobación
+  }
+
+  deleteReview(id: string) {
+    console.log('Eliminar reseña:', id);
+    // TODO: Implementar lógica de eliminación
   }
 }

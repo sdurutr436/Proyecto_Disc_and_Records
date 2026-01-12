@@ -15,7 +15,7 @@
 }
 
 .header-content {
-  max-width: vars.$max-width-container;
+  max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -36,7 +36,7 @@
 
 // Stats Dashboard
 .stats-section {
-  max-width: vars.$max-width-container;
+  max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
   padding: vars.$espaciado-l vars.$espaciado-m;
   display: grid;
@@ -78,43 +78,15 @@
 }
 
 // Tabs Navigation
-.admin-tabs {
-  max-width: vars.$max-width-container;
+.admin-tabs-wrapper {
+  max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
   padding: 0 vars.$espaciado-m;
-  display: flex;
-  gap: vars.$espaciado-s;
-  border-bottom: vars.$borde-brutal-thin;
-  overflow-x: auto;
-}
-
-.tab-button {
-  padding: vars.$espaciado-m vars.$espaciado-l;
-  background: transparent;
-  border: none;
-  border-bottom: 3px solid transparent;
-  color: var(--text-secondary);
-  font-size: vars.$tamanio-fuente-parrafo;
-  font-weight: 600;
-  cursor: pointer;
-  transition: vars.$transicion-rapida;
-  white-space: nowrap;
-
-  &:hover {
-    color: var(--text-primary);
-    background: var(--bg-tertiary);
-  }
-
-  &.active {
-    color: var(--color-primary);
-    border-bottom-color: var(--color-primary);
-    background: var(--bg-tertiary);
-  }
 }
 
 // Content Area
 .admin-content {
-  max-width: vars.$max-width-container;
+  max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
   padding: vars.$espaciado-l vars.$espaciado-m;
 }

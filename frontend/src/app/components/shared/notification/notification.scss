@@ -7,6 +7,10 @@
   display: block;
   position: fixed;
   z-index: vars.$z-notification;
+  // Posición horizontal por defecto (top-right)
+  // El servicio dinámico sobrescribe esto con style inline
+  right: 2rem;
+  top: 1rem;
 }
 
 .notification {
@@ -26,7 +30,7 @@
   transition: all vars.$transicion-base;
 
   @include mix.mobile-down {
-    min-width: vars.$max-width-card;
+    min-width: vars.$ancho-maximo-card;
     max-width: calc(100vw - 2rem);
   }
 

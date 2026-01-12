@@ -30,8 +30,11 @@ let nextUniqueId = 0;
   styleUrl: './form-input.scss',
 })
 export class FormInput {
-  // FormControl reactivo (requerido)
-  @Input() control!: FormControl;
+  // FormControl reactivo (opcional - se crea uno por defecto si no se proporciona)
+  @Input() control?: FormControl;
+
+  // Control interno para cuando no se proporciona uno externo
+  private internalControl = new FormControl({ value: '', disabled: false });
 
   // Propiedades del input
   @Input() label: string = '';
@@ -51,25 +54,43 @@ export class FormInput {
   ngOnInit() {
     // Usar el ID proporcionado o generar uno único
     this.inputId = this.id || `form-input-${nextUniqueId++}`;
+
+    // Si no hay control externo, usar el interno
+    if (!this.control) {
+      this.control = this.internalControl;
+    }
+
+    // Aplicar el estado disabled si está configurado
+    if (this.disabled) {
+      this.control.disable();
+    }
+  }
+
+  // Obtener el control activo (externo o interno)
+  get activeControl(): FormControl {
+    return this.control || this.internalControl;
   }
 
   // Computed para verificar si el control tiene errores y ha sido tocado
   get hasError(): boolean {
-    return !!(this.control && this.control.invalid && this.control.touched);
+    const ctrl = this.activeControl;
+    return !!(ctrl && ctrl.invalid && ctrl.touched);
   }
 
   // Computed para verificar si el control es válido
   get hasSuccess(): boolean {
-    return !!(this.control && this.control.valid && this.control.touched);
+    const ctrl = this.activeControl;
+    return !!(ctrl && ctrl.valid && ctrl.touched);
   }
 
   // Obtener el primer mensaje de error del control
   get errorMessage(): string {
-    if (!this.control || !this.control.errors || !this.control.touched) {
+    const ctrl = this.activeControl;
+    if (!ctrl || !ctrl.errors || !ctrl.touched) {
       return '';
     }
 
-    const errors = this.control.errors;
+    const errors = ctrl.errors;
 
     // Mapeo de errores comunes a mensajes en español
     if (errors['required']) {

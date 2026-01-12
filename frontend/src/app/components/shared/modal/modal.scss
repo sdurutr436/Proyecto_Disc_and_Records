@@ -8,7 +8,7 @@
   @include mix.overlay-backdrop(vars.$z-modal);
   padding: vars.$espaciado-m;
   backdrop-filter: blur(3px);
-  animation: modal-fadeIn vars.$duration-normal ease;
+  animation: modal-fadeIn vars.$duracion-normal ease;
 }
 
 @keyframes modal-fadeIn {
@@ -19,12 +19,12 @@
 /* --- Contenido del modal --- */
 .modal__content {
   @include mix.brutal-box(var(--bg-primary), vars.$borde-brutal-thick, 8px 8px 0px var(--shadow-color), vars.$radio-m);
-  max-width: vars.$max-width-modal;
+  max-width: vars.$ancho-maximo-modal;
   width: 100%;
   max-height: 90vh;
   overflow: hidden;
   @include mix.flex-column(0);
-  animation: modal-slideUp vars.$duration-normal vars.$ease-brutal;
+  animation: modal-slideUp vars.$duracion-normal vars.$curva-brutal;
 }
 
 @keyframes modal-slideUp {
@@ -80,8 +80,8 @@
   @include mix.focus-visible;
 
   svg {
-    width: vars.$icon-md;
-    height: vars.$icon-md;
+    width: vars.$icono-m;
+    height: vars.$icono-m;
   }
 }
 

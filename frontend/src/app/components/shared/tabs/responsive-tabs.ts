@@ -174,7 +174,8 @@ export class ResponsiveTabs implements AfterContentInit, AfterViewInit, OnDestro
   }
 
   /**
-   * Toggle accordion (modo accordion)
+   * Toggle accordion (modo accordion) - SINGLE MODE
+   * Solo permite una pestaña abierta a la vez
    */
   toggleAccordion(tabId: string) {
     const tab = this.tabs().find(t => t.id === tabId);
@@ -182,8 +183,11 @@ export class ResponsiveTabs implements AfterContentInit, AfterViewInit, OnDestro
 
     this.openAccordions.update(set => {
       if (set.has(tabId)) {
+        // Si ya está abierto, cerrarlo
         set.delete(tabId);
       } else {
+        // SINGLE MODE: Cerrar todos los demás y abrir solo este
+        set.clear();
         set.add(tabId);
       }
       return new Set(set);

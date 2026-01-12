@@ -21,12 +21,11 @@
       <li class="main-nav__item">
         <a href="#" class="main-nav__link">CANCIONES</a>
       </li>
-      <li class="main-nav__item">
-        <a routerLink="/style-guide" class="main-nav__link">GUÍA DE ESTILOS</a>
-      </li>
-      <li class="main-nav__item">
-        <a routerLink="/admin" class="main-nav__link">ADMIN</a>
-      </li>
+      @if (isAdmin()) {
+        <li class="main-nav__item">
+          <a routerLink="/admin" class="main-nav__link">ADMIN</a>
+        </li>
+      }
 
       <!-- Theme Switcher Desktop -->
       <li class="main-nav__item main-nav__item--theme">
@@ -95,8 +94,9 @@
       <li class="main-nav__item"><a href="#" class="main-nav__link" (click)="closeMenu()">PRÓXIMAMENTE</a></li>
       <li class="main-nav__item"><a href="#" class="main-nav__link" (click)="closeMenu()">ÁLBUMES</a></li>
       <li class="main-nav__item"><a href="#" class="main-nav__link" (click)="closeMenu()">CANCIONES</a></li>
-      <li class="main-nav__item"><a routerLink="/style-guide" class="main-nav__link" (click)="closeMenu()">GUÍA DE ESTILOS</a></li>
-      <li class="main-nav__item"><a routerLink="/admin" class="main-nav__link" (click)="closeMenu()">ADMIN</a></li>
+      @if (isAdmin()) {
+        <li class="main-nav__item"><a routerLink="/admin" class="main-nav__link" (click)="closeMenu()">ADMIN</a></li>
+      }
 
       <!-- Theme Switcher Móvil -->
       <li class="main-nav__item main-nav__item--theme">

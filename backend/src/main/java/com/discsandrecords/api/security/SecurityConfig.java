@@ -124,8 +124,8 @@ public class SecurityConfig {
                 // 4. Configurar autorización de rutas
                 .authorizeHttpRequests(auth -> auth
                         // ============ RUTAS PÚBLICAS ============
-                        // Autenticación (login, registro)
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // Autenticación (login, registro) - pero NO /me que requiere token
+                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
 
                         // Actuator (health checks para Docker/Kubernetes)
                         .requestMatchers("/actuator/**").permitAll()
@@ -141,9 +141,10 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll()
 
                         // ============ RUTAS DE LECTURA PÚBLICA ============
-                        // Cualquiera puede ver discos, artistas, géneros, etc.
-                        .requestMatchers(HttpMethod.GET, "/api/discos/**").permitAll()
+                        // Cualquiera puede ver álbumes, artistas, géneros, etc.
+                        .requestMatchers(HttpMethod.GET, "/api/albumes/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/artistas/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/canciones/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/generos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/resenas/**").permitAll()
 
@@ -174,7 +175,7 @@ public class SecurityConfig {
     /**
      * Configura CORS para permitir peticiones del frontend
      *
-     * NOTA: En producción, especificar dominios exactos en lugar de "*"
+     * NOTA: Usa AllowedOriginPatterns para soportar comodines en producción
      *
      * @return Fuente de configuración CORS
      */
@@ -183,13 +184,14 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Orígenes permitidos desde configuración
-        // En desarrollo: localhost:4200,localhost:3000 (funciona en cualquier PC)
-        // En producción: URL de DigitalOcean desde variable de entorno
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+        // En desarrollo: localhost:4200,localhost:3000
+        // En producción: URLs de DigitalOcean
+        // Usar AllowedOriginPatterns para permitir comodines como *.ondigitalocean.app
+        configuration.setAllowedOriginPatterns(Arrays.asList(allowedOrigins.split(",")));
 
         // Métodos HTTP permitidos
         configuration.setAllowedMethods(Arrays.asList(
-                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"
         ));
 
         // Headers permitidos
@@ -198,7 +200,15 @@ public class SecurityConfig {
                 "Content-Type",
                 "X-Requested-With",
                 "Accept",
-                "Origin"
+                "Origin",
+                "Access-Control-Request-Method",
+                "Access-Control-Request-Headers"
+        ));
+
+        // Headers expuestos en la respuesta
+        configuration.setExposedHeaders(Arrays.asList(
+                "Authorization",
+                "Content-Disposition"
         ));
 
         // Permitir credenciales (cookies, Authorization header)

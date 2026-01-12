@@ -13,6 +13,24 @@ import { API_ENDPOINTS } from '../config/api.config';
  * - Métodos HTTP listos para producción (comentados)
  * - Datos mock para desarrollo (activos)
  * - Búsqueda y filtrado de artistas
+ *
+ * MIGRACIÓN A API REAL:
+ * 1. Descomentar métodos HTTP (getArtistByIdHttp, etc.)
+ * 2. Cambiar los métodos públicos para usar las versiones HTTP
+ * 3. Eliminar o comentar datos mock
+ *
+ * @example
+ * ```typescript
+ * // Desarrollo (actual)
+ * getArtistById(id: string) {
+ *   return this.getArtistByIdMock(id);
+ * }
+ *
+ * // Producción (cuando backend esté listo)
+ * getArtistById(id: string) {
+ *   return this.getArtistByIdHttp(id);
+ * }
+ * ```
  */
 @Injectable({
   providedIn: 'root'

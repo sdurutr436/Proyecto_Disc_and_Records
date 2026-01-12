@@ -312,15 +312,42 @@ Los design tokens son variables SCSS que centralizan todos los valores de diseñ
 | `$tamanio-fuente-h2` | 2.625rem (42px) | 3rem | Títulos de sección |
 | `$tamanio-fuente-h3` | 1.625rem (26px) | 3rem | Subtítulos |
 | `$tamanio-fuente-h4` | 1rem (16px) | 3rem | Títulos menores |
+| `$tamanio-fuente-h5` | 1.125rem (18px) | 1.75rem | Títulos pequeños |
 | `$tamanio-fuente-parrafo` | 1rem (16px) | 1.5rem | Cuerpo de texto |
+| `$tamanio-fuente-texto-pequeno-m` | 0.9375rem (15px) | 1.5rem | Texto pequeño medio |
 | `$tamanio-fuente-texto-pequeno-s` | 0.875rem (14px) | 1.5rem | Labels, captions |
 | `$tamanio-fuente-texto-pequeno-xs` | 0.75rem (12px) | 1rem | Texto muy pequeño |
+| `$tamanio-fuente-micro` | 0.625rem (10px) | 0.875rem | Badges pequeños |
 
-**¿Por qué esta escala?** Utilizo una escala aproximada con ratio 1.25 (Major Third) que proporciona suficiente contraste entre niveles sin saltos demasiado bruscos. El h1 es intencionadamente grande (4.25rem) para crear impacto en el hero.
+#### Escala display (títulos decorativos grandes)
+
+| Token | Tamaño | Uso |
+|-------|--------|-----|
+| `$tamanio-fuente-display-xs` | 1.25rem (20px) | Display extra pequeño |
+| `$tamanio-fuente-display-s` | 1.5rem (24px) | Display pequeño |
+| `$tamanio-fuente-display-m` | 1.75rem (28px) | Display medio |
+| `$tamanio-fuente-display-l` | 2rem (32px) | Display grande |
+| `$tamanio-fuente-display-xl` | 2.5rem (40px) | Display extra grande |
+| `$tamanio-fuente-display-xxl` | 4rem (64px) | Página 404 desktop |
+| `$tamanio-fuente-display-hero` | 5rem (80px) | Títulos hero |
+| `$tamanio-fuente-display-mega` | 8rem (128px) | 404 responsive |
+| `$tamanio-fuente-display-ultra` | 12rem (192px) | 404 desktop |
+
+**¿Por qué esta escala?** Utilizo una escala aproximada con ratio 1.25 (Major Third) que proporciona suficiente contraste entre niveles sin saltos demasiado bruscos. El h1 es intencionadamente grande (4.25rem) para crear impacto en el hero. La escala display se usa para elementos decorativos y páginas especiales como la 404.
 
 ---
 
 ### Espaciado
+
+#### Micro-espaciados
+
+| Token | Valor | Uso |
+|-------|-------|-----|
+| `$espaciado-micro` | 2px | Transforms sutiles, focus rings |
+| `$espaciado-mini` | 3px | Efectos sutiles |
+| `$espaciado-tiny` | 4px | Padding muy pequeño |
+
+#### Escala principal
 
 | Token | Valor | Uso |
 |-------|-------|-----|
@@ -331,7 +358,7 @@ Los design tokens son variables SCSS que centralizan todos los valores de diseñ
 | `$espaciado-xl` | 4rem (64px) | Espaciado hero, grandes bloques |
 | `$espaciado-xxl` | 5rem (80px) | Espaciado extra grande |
 
-**¿Por qué esta escala?** Basada en múltiplos de 8px (0.5rem) que es un estándar de diseño que facilita la alineación y mantiene consistencia. Los valores más usados son `$espaciado-s` (botones, inputs) y `$espaciado-m` (grid gaps).
+**¿Por qué esta escala?** Basada en múltiplos de 8px (0.5rem) que es un estándar de diseño que facilita la alineación y mantiene consistencia. Los valores más usados son `$espaciado-s` (botones, inputs) y `$espaciado-m` (grid gaps). Los micro-espaciados se usan para transforms y efectos visuales sutiles donde px es más apropiado.
 
 ---
 
@@ -356,10 +383,13 @@ Las sombras son un elemento clave del estilo neobrutalista. En lugar de sombras 
 #### Sombras base (negras)
 
 ```scss
-$sombra-brutal-xs: 2px 2px 0px $color-letra-oscura;  // Elementos muy pequeños
-$sombra-brutal-s: 4px 4px 0px $color-letra-oscura;   // Botones, inputs
-$sombra-brutal-m: 6px 6px 0px $color-letra-oscura;   // Cards
-$sombra-brutal-l: 8px 8px 0px $color-letra-oscura;   // Contenedores grandes
+$sombra-brutal-micro: 1px 1px 0px $color-letra-oscura;    // Elementos muy sutiles
+$sombra-brutal-mini: 2px 2px 0px $color-letra-oscura;     // Alias para xs
+$sombra-brutal-xs: 2px 2px 0px $color-letra-oscura;       // Elementos muy pequeños
+$sombra-brutal-xs-plus: 3px 3px 0px $color-letra-oscura;  // Intermedio entre xs y s
+$sombra-brutal-s: 4px 4px 0px $color-letra-oscura;        // Botones, inputs
+$sombra-brutal-m: 6px 6px 0px $color-letra-oscura;        // Cards
+$sombra-brutal-l: 8px 8px 0px $color-letra-oscura;        // Contenedores grandes
 ```
 
 #### Sombras "Vinilo" (múltiples capas de colores)
@@ -401,19 +431,24 @@ $sombra-neon-exito: 0px 0px 10px $color-exito, 0px 0px 20px $color-exito;
 
 | Token | Valor | Uso |
 |-------|-------|-----|
-| `$borde-brutal-thin` | 2px solid $color-letra-oscura | Separadores, elementos sutiles |
-| `$borde-brutal-medium` | 3px solid $color-letra-oscura | Botones, inputs, cards |
-| `$borde-brutal-thick` | 4px solid $color-letra-oscura | Contenedores principales |
+| `$borde-brutal-thin` | 2px solid var(--border-color) | Separadores, elementos sutiles |
+| `$borde-brutal-medium` | 3px solid var(--border-color) | Botones, inputs, cards |
+| `$borde-brutal-thick` | 4px solid var(--border-color) | Contenedores principales |
+
+> **Nota:** Los bordes usan CSS custom properties (`var(--border-color)`) para permitir el cambio de tema dinámico entre modo claro y oscuro.
 
 #### Border Radius
 
 | Token | Valor | Uso |
 |-------|-------|-----|
 | `$radio-ninguno` | 0px | Estilo brutalist puro |
+| `$radio-micro` | 2px | Radio muy sutil (focus rings, etc.) |
 | `$radio-xs` | 3px | Radio mínimo |
 | `$radio-s` | 5px | Radio principal (botones, cards) |
-| `$radio-m` | 8px | Radio medio |
+| `$radio-m` | 8px | Radio medio (secciones admin) |
 | `$radio-l` | 12px | Radio grande |
+| `$radio-xl` | 16px | Radio extra grande |
+| `$radio-xxl` | 20px | Radio para cards muy redondeados |
 | `$radio-redondo` | 50% | Elementos circulares (avatares) |
 | `$radio-pildora` | 9999px | Botones tipo píldora |
 
@@ -433,9 +468,55 @@ $sombra-neon-exito: 0px 0px 10px $color-exito, 0px 0px 20px $color-exito;
 #### Curvas de timing especiales
 
 ```scss
-$ease-brutal: cubic-bezier(0.25, 0.46, 0.45, 0.94);   // Transición "snappy"
-$ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55); // Efecto rebote retro
+$curva-brutal: cubic-bezier(0.25, 0.46, 0.45, 0.94);   // Transición "snappy"
+$curva-rebote: cubic-bezier(0.68, -0.55, 0.265, 1.55); // Efecto rebote retro
 ```
+
+---
+
+### Tamaños de Iconos
+
+| Token | Valor | Uso |
+|-------|-------|-----|
+| `$icono-xs` | 1rem | Iconos muy pequeños |
+| `$icono-s` | 1.25rem | Iconos pequeños |
+| `$icono-m` | 1.5rem | Iconos medianos |
+| `$icono-l` | 2rem | Iconos grandes |
+| `$icono-xl` | 3rem | Iconos muy grandes |
+
+---
+
+### Anchos Máximos
+
+| Token | Valor | Uso |
+|-------|-------|-----|
+| `$ancho-maximo-contenedor` | 1440px | Contenedor principal |
+| `$ancho-maximo-modal` | 36rem | Modales |
+| `$ancho-maximo-formulario` | 400px | Formularios |
+| `$ancho-maximo-card` | 280px | Cards estándar |
+| `$ancho-maximo-card-polaroid` | 220px | Cards tipo polaroid |
+
+---
+
+### Touch Accessibility
+
+| Token | Valor | Uso |
+|-------|-------|-----|
+| `$altura-minima-touch-s` | 36px | Botones pequeños |
+| `$altura-minima-touch-m` | 44px | Botones estándar (mínimo WCAG) |
+| `$altura-minima-touch-l` | 52px | Botones grandes |
+
+---
+
+### Duraciones de Animación
+
+| Token | Valor | Uso |
+|-------|-------|-----|
+| `$duracion-instantanea` | 100ms | Cambios instantáneos |
+| `$duracion-rapida` | 150ms | Hover, focus |
+| `$duracion-normal` | 300ms | Transiciones estándar |
+| `$duracion-lenta` | 500ms | Animaciones complejas |
+| `$duracion-muy-lenta` | 700ms | Animaciones decorativas |
 
 ---
 

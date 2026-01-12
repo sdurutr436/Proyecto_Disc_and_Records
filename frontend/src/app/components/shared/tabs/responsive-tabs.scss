@@ -22,19 +22,15 @@
   // ==========================================
   // MODO TABS (Desktop > 768px)
   // ==========================================
-  &--desktop {
-    display: block;
-
-    @include mix.respond-to('tablet') {
-      display: none;
-    }
-  }
-
   &__nav {
     display: flex;
     flex-wrap: wrap;
     background-color: var(--bg-secondary);
     border-bottom: vars.$borde-brutal-thin;
+
+    @include mix.respond-to('tablet') {
+      display: none;
+    }
   }
 
   &__tab {
@@ -80,9 +76,9 @@
   }
 
   // ==========================================
-  // MODO ACCORDION (Tablet/Movil <= 768px)
+  // NAVEGACIÓN ACCORDION (Móvil <= 768px)
   // ==========================================
-  &--mobile {
+  &__accordion-nav {
     display: none;
 
     @include mix.respond-to('tablet') {

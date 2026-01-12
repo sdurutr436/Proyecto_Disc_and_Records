@@ -80,7 +80,7 @@ export class Carousel implements AfterViewInit {
     const track = this.carouselTrack.nativeElement;
 
     // Mejor práctica: toggle de clase CSS en lugar de manipular estilos
-    track.classList.toggle('carousel-track--highlighted');
+    track.classList.toggle('carousel__track--highlighted');
   }
 
   /**

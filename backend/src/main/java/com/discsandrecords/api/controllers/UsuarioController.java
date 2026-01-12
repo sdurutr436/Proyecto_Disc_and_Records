@@ -1,20 +1,36 @@
 package com.discsandrecords.api.controllers;
 
-import com.discsandrecords.api.dto.*;
-import com.discsandrecords.api.services.UsuarioService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import java.net.URI;
+import java.util.List;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.util.List;
+import com.discsandrecords.api.dto.CreateUsuarioDTO;
+import com.discsandrecords.api.dto.PageResponseDTO;
+import com.discsandrecords.api.dto.UpdateUsuarioDTO;
+import com.discsandrecords.api.dto.UsuarioEstadisticasDTO;
+import com.discsandrecords.api.dto.UsuarioResponseDTO;
+import com.discsandrecords.api.services.UsuarioService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 /**
  * UsuarioController - Controlador de Gestión de Usuarios
@@ -62,14 +78,43 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener usuario por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     public ResponseEntity<UsuarioResponseDTO> obtenerPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.obtenerPorId(id));
     }
 
     @GetMapping("/username/{nombreUsuario}")
     @Operation(summary = "Obtener usuario por nombre de usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     public ResponseEntity<UsuarioResponseDTO> obtenerPorNombreUsuario(@PathVariable String nombreUsuario) {
         return ResponseEntity.ok(usuarioService.obtenerPorNombreUsuario(nombreUsuario));
+    }
+
+    /**
+     * Obtiene las estadísticas del perfil de un usuario
+     *
+     * ENDPOINT: GET /api/usuarios/{id}/estadisticas
+     *
+     * ESTADÍSTICAS INCLUIDAS:
+     * - Total álbumes escuchados
+     * - Total canciones escuchadas
+     * - Total reseñas escritas
+     * - Puntuación media dada
+     * - Top 5 géneros más escuchados (con color para UI)
+     *
+     * @param id ID del usuario
+     * @return DTO con estadísticas del usuario
+     */
+    @GetMapping("/{id}/estadisticas")
+    @Operation(summary = "Obtener estadísticas del perfil de un usuario")
+    public ResponseEntity<UsuarioEstadisticasDTO> obtenerEstadisticas(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.obtenerEstadisticas(id));
     }
 
     // ==========================================
@@ -82,6 +127,13 @@ public class UsuarioController {
      */
     @PostMapping
     @Operation(summary = "Crear un nuevo usuario (Admin)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de validación inválidos"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos suficientes"),
+            @ApiResponse(responseCode = "409", description = "Usuario o email ya existen")
+    })
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioResponseDTO> crear(@RequestBody @Valid CreateUsuarioDTO dto) {
         UsuarioResponseDTO creado = usuarioService.crear(dto);
@@ -96,6 +148,13 @@ public class UsuarioController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un usuario existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado"),
+            @ApiResponse(responseCode = "400", description = "Datos de validación inválidos"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos suficientes"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
     public ResponseEntity<UsuarioResponseDTO> actualizar(
             @PathVariable Long id,
@@ -108,6 +167,12 @@ public class UsuarioController {
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un usuario (Admin)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Usuario eliminado"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos suficientes"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         usuarioService.eliminar(id);

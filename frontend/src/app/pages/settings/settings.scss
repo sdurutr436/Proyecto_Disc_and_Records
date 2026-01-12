@@ -9,7 +9,7 @@
      CONTAINER
      ======================================== */
   &__container {
-    max-width: vars.$max-width-container;
+    max-width: vars.$ancho-maximo-contenedor;
     margin: 0 auto;
     padding: 0 vars.$espaciado-m;
 
@@ -23,7 +23,7 @@
      ======================================== */
   &__layout {
     display: grid;
-    grid-template-columns: vars.$max-width-card 1fr;
+    grid-template-columns: vars.$ancho-maximo-card 1fr;
     gap: vars.$espaciado-xl;
     margin-top: vars.$espaciado-l;
 
@@ -362,7 +362,7 @@
 
   &__requirement-icon {
     font-weight: bold;
-    width: vars.$icon-sm;
+    width: vars.$icono-s;
     text-align: center;
   }
 
@@ -491,8 +491,8 @@
 
     input[type='radio'] {
       appearance: none;
-      width: vars.$icon-sm;
-      height: vars.$icon-sm;
+      width: vars.$icono-s;
+      height: vars.$icono-s;
       border: 3px solid var(--text-dark);
       background-color: var(--bg-primary);
       cursor: pointer;
