@@ -7,12 +7,20 @@
       [value]="searchTerm()"
       (input)="updateSearchTerm($any($event.target).value)"
       (keypress)="handleKeyPress($event)"
-      placeholder="Busca artistas, álbumes..."
+      [placeholder]="placeholder"
       aria-label="Buscar en la colección"
+      [attr.aria-busy]="isSearching()"
     />
 
-    <!-- Botón de limpiar (solo visible si hay texto) -->
-    @if (searchTerm()) {
+    <!-- Spinner de carga (visible durante búsqueda) -->
+    @if (isSearching()) {
+      <div class="search-bar__loading">
+        <app-spinner [size]="'sm'"></app-spinner>
+      </div>
+    }
+
+    <!-- Botón de limpiar (solo visible si hay texto y no está buscando) -->
+    @if (searchTerm() && !isSearching()) {
       <button
         type="button"
         class="search-bar__clear"
@@ -28,7 +36,7 @@
       type="button"
       class="search-bar__button"
       (click)="handleSearch()"
-      [disabled]="!searchTerm().trim()"
+      [disabled]="!searchTerm().trim() || isSearching()"
       aria-label="Buscar"
     >
       <!-- Icono de lupa -->
