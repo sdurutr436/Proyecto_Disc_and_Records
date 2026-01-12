@@ -46,7 +46,6 @@ export interface AuthResponse {
  * - Usa HttpClient directamente (no hereda de BaseHttpService)
  * - Los interceptores se encargan de añadir headers y manejar errores
  * - Métodos HTTP listos para producción
- * - Datos mock para desarrollo
  *
  * PATRÓN: SEPARACIÓN DE RESPONSABILIDADES
  *

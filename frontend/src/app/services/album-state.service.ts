@@ -483,7 +483,7 @@ export class AlbumStateService extends BaseHttpService {
       title: backendAlbum.tituloAlbum,
       artist: backendAlbum.artista?.nombreArtista || 'Artista desconocido',
       artistId: String(backendAlbum.artista?.id || 0),
-      coverUrl: backendAlbum.portadaUrl || 'https://picsum.photos/seed/album' + backendAlbum.id + '/400/400',
+      coverUrl: backendAlbum.portadaUrl || 'assets/album-placeholder.svg',
       releaseYear: backendAlbum.anioSalida,
       genre: '', // No disponible en DTO actual - añadir endpoint si necesario
       tracks: 0, // No disponible en DTO actual

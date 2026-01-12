@@ -94,33 +94,11 @@ export class Home implements OnInit {
         },
         error: (error) => {
           console.error('Error cargando álbumes de Deezer:', error);
-          // Fallback a mock data si falla Deezer
-          this.loadMockData();
+          this.trendingAlbums.set([]);
+          this.recentReviews.set([]);
+          this.isLoading.set(false);
         }
       });
-  }
-
-  /**
-   * Fallback a datos mock si falla la conexión con Spotify
-   */
-  private loadMockData(): void {
-    this.trendingAlbums.set([
-      { id: 1, title: 'Random Access Memories', artist: 'Daft Punk', imageUrl: 'https://picsum.photos/seed/album1/400/400', rating: 4.5 },
-      { id: 2, title: 'The Dark Side of the Moon', artist: 'Pink Floyd', imageUrl: 'https://picsum.photos/seed/album2/400/400', rating: 5.0 },
-      { id: 3, title: 'Abbey Road', artist: 'The Beatles', imageUrl: 'https://picsum.photos/seed/album3/400/400', rating: 4.8 },
-      { id: 4, title: 'Thriller', artist: 'Michael Jackson', imageUrl: 'https://picsum.photos/seed/album4/400/400', rating: 4.7 },
-      { id: 5, title: 'Back in Black', artist: 'AC/DC', imageUrl: 'https://picsum.photos/seed/album5/400/400', rating: 4.6 },
-      { id: 6, title: 'The Wall', artist: 'Pink Floyd', imageUrl: 'https://picsum.photos/seed/album6/400/400', rating: 4.9 },
-    ]);
-
-    this.recentReviews.set([
-      { id: 7, title: 'OK Computer', artist: 'Radiohead', imageUrl: 'https://picsum.photos/seed/album7/400/400', reviewCount: 156 },
-      { id: 8, title: 'Rumours', artist: 'Fleetwood Mac', imageUrl: 'https://picsum.photos/seed/album8/400/400', reviewCount: 203 },
-      { id: 9, title: 'Nevermind', artist: 'Nirvana', imageUrl: 'https://picsum.photos/seed/album9/400/400', reviewCount: 189 },
-      { id: 10, title: 'Led Zeppelin IV', artist: 'Led Zeppelin', imageUrl: 'https://picsum.photos/seed/album10/400/400', reviewCount: 167 },
-    ]);
-
-    this.isLoading.set(false);
   }
 
   /**

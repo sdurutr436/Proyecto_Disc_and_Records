@@ -288,7 +288,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       id: Date.now().toString(),
       userId: 'current-user',
       userName: 'Usuario Actual',
-      userAvatar: 'https://picsum.photos/seed/currentuser/100/100',
+      userAvatar: 'assets/profile-placeholder.svg',
       rating: this.userRating(),
       content: this.reviewText(),
       date: new Date(),

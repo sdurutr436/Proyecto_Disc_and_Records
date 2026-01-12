@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#1a1a2e"/>
+  <!-- Background circle -->
+  <circle cx="200" cy="200" r="160" fill="#16213e"/>
+  <!-- Person silhouette -->
+  <circle cx="200" cy="150" r="55" fill="#0f3460"/>
+  <ellipse cx="200" cy="290" rx="90" ry="70" fill="#0f3460"/>
+  <!-- Music notes decoration -->
+  <g fill="#e94560" opacity="0.6">
+    <path transform="translate(80, 100) scale(0.5)" d="M30 0 L30 40 Q30 50 20 50 Q10 50 10 40 Q10 30 20 30 Q25 30 30 32 L30 10 L50 5 L50 35 Q50 45 40 45 Q30 45 30 35 Q30 25 40 25 Q45 25 50 27 L50 0 Z"/>
+    <path transform="translate(280, 120) scale(0.4)" d="M30 0 L30 40 Q30 50 20 50 Q10 50 10 40 Q10 30 20 30 Q25 30 30 32 L30 10 L50 5 L50 35 Q50 45 40 45 Q30 45 30 35 Q30 25 40 25 Q45 25 50 27 L50 0 Z"/>
+  </g>
+  <!-- Microphone icon -->
+  <g transform="translate(175, 320)" fill="#e94560" opacity="0.7">
+    <rect x="15" y="0" width="20" height="40" rx="10" fill="#e94560"/>
+    <path d="M10 30 Q10 50 25 55 L25 70 L15 70 L15 75 L35 75 L35 70 L25 70 L25 55 Q40 50 40 30" fill="none" stroke="#e94560" stroke-width="3"/>
+  </g>
+</svg>

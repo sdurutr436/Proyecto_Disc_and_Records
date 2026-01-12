@@ -335,7 +335,7 @@ export function mapAlbumResponseToLegacy(album: AlbumResponse): Album {
     title: album.tituloAlbum,
     artist: album.artista.nombreArtista,
     artistId: String(album.artista.id),
-    coverUrl: album.portadaUrl || 'https://picsum.photos/seed/album/400/400',
+    coverUrl: album.portadaUrl || 'assets/album-placeholder.svg',
     releaseYear: album.anioSalida,
     genre: '', // No disponible en DTO actual
     tracks: 0, // No disponible en DTO actual
@@ -355,7 +355,7 @@ export function mapArtistaResponseToLegacy(artista: ArtistaResponse): Artist {
     id: String(artista.id),
     name: artista.nombreArtista,
     bio: '', // No disponible en DTO actual
-    photoUrl: 'https://picsum.photos/seed/artist/400/400',
+    photoUrl: 'assets/artist-placeholder.svg',
     genre: '', // No disponible en DTO actual
     activeYears: '', // No disponible en DTO actual
     albums: 0, // No disponible en DTO actual
@@ -371,7 +371,7 @@ export function mapResenaToLegacy(resena: ResenaAlbumResponse): Review {
     id: `${resena.usuarioId}-${resena.albumId}`, // Clave compuesta
     userId: String(resena.usuarioId),
     userName: resena.nombreUsuario,
-    userAvatar: resena.avatarUsuario || 'https://i.pravatar.cc/150',
+    userAvatar: resena.avatarUsuario || 'assets/profile-placeholder.svg',
     rating: resena.puntuacion,
     content: resena.textoResena,
     date: new Date(resena.fechaResena),

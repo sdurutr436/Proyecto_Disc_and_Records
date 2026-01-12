@@ -1,8 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Button } from '../../components/shared/button/button';
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
+import { AlbumStateService } from '../../services/album-state.service';
+import { Album } from '../../models/data.models';
 
 interface Stats {
   totalAlbums: number;
@@ -18,7 +20,9 @@ interface Stats {
   styleUrl: './admin.scss',
   standalone: true,
 })
-export default class AdminComponent {
+export default class AdminComponent implements OnInit {
+  private albumState = inject(AlbumStateService);
+
   activeTab = signal<string>('albums');
 
   tabs: Tab[] = [
@@ -35,28 +39,32 @@ export default class AdminComponent {
     totalGenres: 0,
   });
 
-  // Mock data para demo
-  albums = signal<any[]>([]);
+  albums = signal<Album[]>([]);
   users = signal<any[]>([]);
   genres = signal<any[]>([]);
   reviews = signal<any[]>([]);
 
-  constructor() {
-    // TODO: Cargar datos reales desde el backend
-    this.loadMockData();
+  ngOnInit() {
+    this.loadData();
   }
 
   onTabChange(tabId: string | number) {
     this.activeTab.set(tabId as string);
   }
 
-  loadMockData() {
-    // TODO: Implementar llamadas al backend
+  loadData() {
+    // Los álbumes se cargan a través de Deezer automáticamente
+    // El admin panel mostrará estadísticas cuando haya datos
+
+    // Actualizar estadísticas desde los signals del servicio
+    const albums = this.albumState.albums();
+    this.albums.set(albums);
+
     this.stats.set({
-      totalAlbums: 0,
-      totalUsers: 0,
-      totalReviews: 0,
-      totalGenres: 0,
+      totalAlbums: albums.length,
+      totalUsers: 0, // TODO: Implementar servicio de usuarios
+      totalReviews: 0, // TODO: Implementar servicio de reseñas
+      totalGenres: 0, // TODO: Implementar servicio de géneros
     });
   }
 

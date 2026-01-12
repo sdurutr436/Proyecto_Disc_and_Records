@@ -436,7 +436,7 @@ export class DeezerService {
     if (album.cover_xl) return album.cover_xl;
     if (album.cover_big) return album.cover_big;
     if (album.cover_medium) return album.cover_medium;
-    return album.cover || 'https://picsum.photos/seed/default/400/400';
+    return album.cover || 'assets/album-placeholder.svg';
   }
 
   /**
@@ -447,7 +447,7 @@ export class DeezerService {
     if (artist.picture_xl) return artist.picture_xl;
     if (artist.picture_big) return artist.picture_big;
     if (artist.picture_medium) return artist.picture_medium;
-    return artist.picture || 'https://picsum.photos/seed/artist/400/400';
+    return artist.picture || 'assets/artist-placeholder.svg';
   }
 
   /**
