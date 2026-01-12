@@ -19,7 +19,7 @@ export default class SettingsProfileComponent implements CanComponentDeactivate 
   errorMessage = signal<string | null>(null);
 
   // Foto de perfil actual (mock)
-  currentAvatar = signal('assets/profile-placeholder.jpg');
+  currentAvatar = signal('assets/profile-placeholder.svg');
 
   // Formulario de perfil
   profileForm = new FormGroup({

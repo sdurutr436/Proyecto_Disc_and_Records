@@ -69,7 +69,7 @@ export default class ProfileComponent implements OnInit {
   // Datos del usuario (conectado a AppStateService)
   userProfile = {
     name: 'PerreteGordete',
-    avatarUrl: 'assets/profile-placeholder.jpg',
+    avatarUrl: 'assets/profile-placeholder.svg',
     memberSince: 'Enero 2025',
     totalReviews: 42,
     totalAlbums: 156
@@ -196,7 +196,7 @@ export default class ProfileComponent implements OnInit {
     if (user) {
       this.userProfile = {
         name: user.username,
-        avatarUrl: user.avatarUrl || 'assets/profile-placeholder.jpg',
+        avatarUrl: user.avatarUrl || 'assets/profile-placeholder.svg',
         memberSince: 'Enero 2025',
         totalReviews: this.reviewState.userReviewsCount(),
         totalAlbums: 156

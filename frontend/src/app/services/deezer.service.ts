@@ -133,28 +133,24 @@ export class DeezerService {
   // ==========================================================================
 
   /**
-   * Construye la URL con proxy apropiado según el entorno
-   * - localhost: usa corsproxy.io (proxy CORS externo)
-   * - producción: usa /deezer-api (proxy nginx interno)
+   * Construye la URL con proxy CORS
+   *
+   * Usamos corsproxy.io en todos los entornos porque:
+   * - Deezer no tiene headers CORS (Access-Control-Allow-Origin)
+   * - Deezer bloquea peticiones desde servidores (anti-bot)
+   * - corsproxy.io simula un navegador real y funciona en producción
    */
   private buildUrl(endpoint: string): string {
     const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    const fullUrl = `${DEEZER_CONFIG.apiBaseUrl}${normalizedEndpoint}`;
 
+    // Usar proxy CORS en todos los entornos (browser)
     if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
-
-      // Desarrollo local: usar proxy CORS externo
-      if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        const fullUrl = `${DEEZER_CONFIG.apiBaseUrl}${normalizedEndpoint}`;
-        return `${DEEZER_CONFIG.corsProxy}${encodeURIComponent(fullUrl)}`;
-      }
-
-      // Producción: usar proxy nginx interno
-      return `/deezer-api${normalizedEndpoint}`;
+      return `${DEEZER_CONFIG.corsProxy}${encodeURIComponent(fullUrl)}`;
     }
 
-    // Fallback (SSR u otros entornos)
-    return `${DEEZER_CONFIG.apiBaseUrl}${normalizedEndpoint}`;
+    // Fallback para SSR (no aplica en este proyecto)
+    return fullUrl;
   }
 
   // ==========================================================================
