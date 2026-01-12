@@ -1,39 +1,53 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  computed,
+  inject,
+  ChangeDetectionStrategy,
+  DestroyRef
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { forkJoin, of, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, catchError, tap } from 'rxjs/operators';
+
 import { Card } from '../../components/shared/card/card';
 import { SearchBar } from '../../components/shared/search-bar/search-bar';
-import { Button } from '../../components/shared/button/button';
 import { Spinner } from '../../components/shared/spinner/spinner';
-import { RatingComponent } from '../../components/shared/rating/rating';
 import { InfiniteScrollComponent } from '../../components/shared/infinite-scroll/infinite-scroll';
-import { AlbumStateService } from '../../services/album-state.service';
-import { AppStateService } from '../../services/app-state';
+import { Tabs, Tab } from '../../components/shared/tabs/tabs';
+import { DeezerService, DeezerAlbum, DeezerArtist } from '../../services/deezer.service';
 
-type FilterType = 'all' | 'albums' | 'artists' | 'users' | 'reviews';
+// Tipos de filtro disponibles
+type FilterType = 'all' | 'albums' | 'artists';
 
+// Interfaz unificada para resultados de búsqueda
 interface SearchResultItem {
   id: number | string;
-  type: 'album' | 'artist' | 'user' | 'review';
+  type: 'album' | 'artist';
   title: string;
   subtitle?: string;
   imageUrl: string;
   rating?: number;
-  reviewCount?: number;
-  description?: string;
+  fans?: number;
 }
 
+// Constantes de paginación
+const PAGE_SIZE = 25;
+const INITIAL_LOAD = 25;
+
 /**
- * SearchResultsComponent - Página de Resultados de Búsqueda
+ * SearchResultsComponent - Página de Resultados de Búsqueda Optimizada
  *
- * OPTIMIZACIONES IMPLEMENTADAS:
- * - ChangeDetectionStrategy.OnPush para mejor rendimiento
- * - TrackBy en @for para evitar re-renders innecesarios
- * - Conexión con AlbumStateService para datos reactivos
- * - Infinite scroll para paginación automática
- * - Debounce en búsqueda (a través de SearchBar)
- * - Conservación de scroll position durante carga
+ * CARACTERÍSTICAS:
+ * - Búsqueda real contra API de Deezer
+ * - Tabs para filtrar por tipo (Todos, Álbumes, Artistas)
+ * - Paginación con scroll infinito (25 + 25 items)
+ * - ChangeDetectionStrategy.OnPush para rendimiento
+ * - Debounce en búsqueda para evitar peticiones excesivas
+ * - TrackBy para optimizar renderizado de listas
  */
 @Component({
   selector: 'app-search-results',
@@ -42,10 +56,9 @@ interface SearchResultItem {
     CommonModule,
     Card,
     SearchBar,
-    Button,
     Spinner,
-    RatingComponent,
-    InfiniteScrollComponent
+    InfiniteScrollComponent,
+    Tabs
   ],
   templateUrl: './search-results.html',
   styleUrls: ['./search-results.scss'],
@@ -54,254 +67,365 @@ interface SearchResultItem {
 export default class SearchResultsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private albumState = inject(AlbumStateService);
-  private appState = inject(AppStateService);
+  private deezerService = inject(DeezerService);
   private destroyRef = inject(DestroyRef);
 
+  // ==========================================================================
+  // ESTADO DE LA PÁGINA
+  // ==========================================================================
+
+  /** Término de búsqueda actual */
   searchTerm = signal<string>('');
+
+  /** Filtro activo (tab seleccionado) */
   activeFilter = signal<FilterType>('all');
 
-  // Estado de carga (conectado al servicio)
-  isLoading = this.albumState.isLoading;
-  isLoadingMore = this.albumState.isLoadingMore;
-  hasMore = this.albumState.hasMore;
+  /** Estado de carga inicial */
+  isLoading = signal<boolean>(false);
 
-  // Resultados de búsqueda (se cargan desde el servicio)
-  allResults = signal<SearchResultItem[]>([]);
+  /** Estado de carga de más resultados */
+  isLoadingMore = signal<boolean>(false);
 
-  // Computed: filtrar resultados según el filtro activo
-  filteredResults = computed(() => {
+  /** Resultados de álbumes (completos para paginación) */
+  private allAlbums = signal<SearchResultItem[]>([]);
+
+  /** Resultados de artistas (completos para paginación) */
+  private allArtists = signal<SearchResultItem[]>([]);
+
+  /** Offset actual para paginación */
+  private currentOffset = signal<number>(INITIAL_LOAD);
+
+  /** Subject para búsqueda reactiva */
+  private searchSubject = new Subject<string>();
+
+  // ==========================================================================
+  // TABS CONFIGURATION
+  // ==========================================================================
+
+  /** Configuración de pestañas */
+  tabs = computed<Tab[]>(() => {
+    const counts = this.resultsCount();
+    return [
+      { id: 'all', label: `Todos (${counts.all})` },
+      { id: 'albums', label: `💿 Álbumes (${counts.albums})` },
+      { id: 'artists', label: `🎤 Artistas (${counts.artists})` }
+    ];
+  });
+
+  // ==========================================================================
+  // COMPUTED PROPERTIES
+  // ==========================================================================
+
+  /** Todos los resultados combinados */
+  private allResults = computed<SearchResultItem[]>(() => {
+    return [...this.allAlbums(), ...this.allArtists()];
+  });
+
+  /** Resultados visibles según paginación y filtro */
+  filteredResults = computed<SearchResultItem[]>(() => {
     const filter = this.activeFilter();
-    const results = this.allResults();
+    const offset = this.currentOffset();
 
-    if (filter === 'all') {
-      return results;
+    let results: SearchResultItem[];
+
+    switch (filter) {
+      case 'albums':
+        results = this.allAlbums();
+        break;
+      case 'artists':
+        results = this.allArtists();
+        break;
+      default:
+        results = this.allResults();
     }
 
-    return results.filter(item => {
-      switch (filter) {
-        case 'albums':
-          return item.type === 'album';
-        case 'artists':
-          return item.type === 'artist';
-        case 'users':
-          return item.type === 'user';
-        case 'reviews':
-          return item.type === 'review';
-        default:
-          return true;
-      }
-    });
+    // Retornar solo los primeros 'offset' items (paginación)
+    return results.slice(0, offset);
   });
 
-  // Computed: contar resultados por tipo
-  resultsCount = computed(() => {
-    const results = this.allResults();
-    return {
-      all: results.length,
-      albums: results.filter(r => r.type === 'album').length,
-      artists: results.filter(r => r.type === 'artist').length,
-      users: results.filter(r => r.type === 'user').length,
-      reviews: results.filter(r => r.type === 'review').length
-    };
+  /** Conteo de resultados por tipo */
+  resultsCount = computed(() => ({
+    all: this.allAlbums().length + this.allArtists().length,
+    albums: this.allAlbums().length,
+    artists: this.allArtists().length
+  }));
+
+  /** ¿Hay más resultados para cargar? */
+  hasMore = computed<boolean>(() => {
+    const filter = this.activeFilter();
+    const offset = this.currentOffset();
+
+    switch (filter) {
+      case 'albums':
+        return offset < this.allAlbums().length;
+      case 'artists':
+        return offset < this.allArtists().length;
+      default:
+        return offset < this.allResults().length;
+    }
   });
 
-  // Computed: paginación info
-  paginationInfo = computed(() => this.albumState.pagination());
+  /** Información de paginación */
+  paginationInfo = computed(() => ({
+    showing: this.filteredResults().length,
+    total: this.resultsCount()[this.activeFilter()],
+    hasMore: this.hasMore()
+  }));
+
+  // ==========================================================================
+  // LIFECYCLE
+  // ==========================================================================
 
   ngOnInit(): void {
-    // Suscribirse a cambios en query params (q y filter)
+    this.setupSearchSubscription();
+    this.subscribeToRouteParams();
+  }
+
+  /**
+   * Configura la suscripción reactiva para búsqueda con debounce
+   */
+  private setupSearchSubscription(): void {
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => {
+        this.isLoading.set(true);
+        this.resetPagination();
+      }),
+      switchMap(query => this.executeSearch(query)),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe();
+  }
+
+  /**
+   * Suscribirse a cambios en query params
+   */
+  private subscribeToRouteParams(): void {
     this.route.queryParams.pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(params => {
-      // Leer término de búsqueda
       const query = params['q'] || '';
+      const filter = params['filter'] as FilterType;
+
       this.searchTerm.set(query);
 
-      // Leer filtro de query params si existe
-      const filter = params['filter'] as FilterType;
-      if (filter && ['albums', 'artists', 'users', 'reviews'].includes(filter)) {
+      if (filter && ['albums', 'artists'].includes(filter)) {
         this.activeFilter.set(filter);
       } else {
         this.activeFilter.set('all');
       }
 
       if (query) {
-        this.performSearch(query);
+        this.searchSubject.next(query);
       }
     });
-
-    // Leer estado de navegación (NavigationExtras state)
-    const navState = history.state;
-    if (navState?.previousSearch) {
-      console.log('Volviendo de:', navState.previousSearch);
-    }
   }
 
   // ==========================================================================
-  // TRACKBY FUNCTIONS - OPTIMIZACIÓN DE RENDIMIENTO
+  // BÚSQUEDA
   // ==========================================================================
 
   /**
-   * TrackBy para resultados - evita re-renders innecesarios
+   * Ejecuta búsqueda paralela de álbumes y artistas
    */
-  trackByResultId(index: number, result: SearchResultItem): number | string {
-    return result.id;
+  private executeSearch(query: string) {
+    if (!query.trim()) {
+      this.clearResults();
+      return of(null);
+    }
+
+    // Búsqueda paralela: 50 álbumes + 50 artistas
+    return forkJoin({
+      albums: this.deezerService.searchAlbums(query, 50).pipe(catchError(() => of([]))),
+      artists: this.deezerService.searchArtists(query, 50).pipe(catchError(() => of([])))
+    }).pipe(
+      tap(({ albums, artists }) => {
+        // Mapear resultados a formato unificado
+        const mappedAlbums = albums.map(album => this.mapAlbumToResult(album));
+        const mappedArtists = artists.map(artist => this.mapArtistToResult(artist));
+
+        this.allAlbums.set(mappedAlbums);
+        this.allArtists.set(mappedArtists);
+        this.isLoading.set(false);
+      }),
+      catchError(error => {
+        console.error('Error en búsqueda:', error);
+        this.isLoading.set(false);
+        return of(null);
+      })
+    );
+  }
+
+  /**
+   * Mapea álbum de Deezer a formato de resultado
+   */
+  private mapAlbumToResult(album: DeezerAlbum): SearchResultItem {
+    return {
+      id: album.id,
+      type: 'album',
+      title: album.title,
+      subtitle: album.artist?.name || 'Artista desconocido',
+      imageUrl: this.deezerService.getBestAlbumCover(album),
+      fans: album.fans
+    };
+  }
+
+  /**
+   * Mapea artista de Deezer a formato de resultado
+   */
+  private mapArtistToResult(artist: DeezerArtist): SearchResultItem {
+    return {
+      id: artist.id,
+      type: 'artist',
+      title: artist.name,
+      subtitle: artist.nb_fan ? `${this.formatNumber(artist.nb_fan)} fans` : '',
+      imageUrl: this.deezerService.getBestArtistPicture(artist),
+      fans: artist.nb_fan
+    };
+  }
+
+  /**
+   * Formatea números grandes (1000 -> 1K, 1000000 -> 1M)
+   */
+  private formatNumber(num: number): string {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(0)}K`;
+    return num.toString();
+  }
+
+  /**
+   * Limpia todos los resultados
+   */
+  private clearResults(): void {
+    this.allAlbums.set([]);
+    this.allArtists.set([]);
+    this.isLoading.set(false);
+    this.resetPagination();
+  }
+
+  /**
+   * Reinicia la paginación
+   */
+  private resetPagination(): void {
+    this.currentOffset.set(INITIAL_LOAD);
   }
 
   // ==========================================================================
-  // BÚSQUEDA Y FILTRADO
-  // ==========================================================================
-
-  performSearch(query: string): void {
-    // Usar el servicio de estado para búsqueda reactiva
-    this.albumState.search(query);
-
-    // El servicio actualiza isLoading automáticamente
-    // y emite resultados a través de signals
-
-    // TODO: Cuando el backend esté listo, mapear resultados del servicio
-    // this.allResults.set(this.albumState.albums().map(album => ({
-    //   id: album.id,
-    //   type: 'album' as const,
-    //   title: album.title,
-    //   subtitle: album.artist,
-    //   imageUrl: album.coverUrl,
-    //   rating: album.averageRating,
-    //   reviewCount: album.totalReviews
-    // })));
-  }
-
-  setFilter(filter: FilterType): void {
-    this.activeFilter.set(filter);
-  }
-
-  isFilterActive(filter: FilterType): boolean {
-    return this.activeFilter() === filter;
-  }
-
-  // ==========================================================================
-  // INFINITE SCROLL
+  // PAGINACIÓN (INFINITE SCROLL)
   // ==========================================================================
 
   /**
-   * Cargar más resultados (infinite scroll)
+   * Cargar más resultados (scroll infinito)
    */
   loadMoreResults(): void {
-    if (this.hasMore() && !this.isLoadingMore()) {
-      this.albumState.loadMore();
+    if (!this.hasMore() || this.isLoadingMore()) return;
+
+    this.isLoadingMore.set(true);
+
+    // Simular delay para UX (los datos ya están cargados)
+    setTimeout(() => {
+      this.currentOffset.update(offset => offset + PAGE_SIZE);
+      this.isLoadingMore.set(false);
+    }, 300);
+  }
+
+  // ==========================================================================
+  // TABS & FILTROS
+  // ==========================================================================
+
+  /**
+   * Cambiar tab/filtro activo
+   */
+  onTabChange(tabId: string | number): void {
+    const filter = tabId as FilterType;
+    this.activeFilter.set(filter);
+    this.resetPagination();
+
+    // Actualizar URL sin recargar
+    this.updateQueryParams(filter);
+  }
+
+  /**
+   * Actualiza query params en la URL
+   */
+  private updateQueryParams(filter: FilterType): void {
+    const extras: NavigationExtras = {
+      queryParams: { filter: filter === 'all' ? null : filter },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    };
+    this.router.navigate([], extras);
+  }
+
+  // ==========================================================================
+  // BÚSQUEDA DESDE BARRA
+  // ==========================================================================
+
+  /**
+   * Nueva búsqueda desde la barra de búsqueda
+   */
+  newSearch(query: string): void {
+    if (query.trim()) {
+      this.router.navigate(['/search'], {
+        queryParams: { q: query },
+        queryParamsHandling: 'merge',
+        replaceUrl: false
+      });
     }
+  }
+
+  // ==========================================================================
+  // NAVEGACIÓN
+  // ==========================================================================
+
+  /**
+   * Ver detalle de un resultado
+   */
+  viewResult(result: SearchResultItem): void {
+    const extras: NavigationExtras = {
+      state: {
+        fromSearch: true,
+        searchTerm: this.searchTerm()
+      }
+    };
+
+    const route = result.type === 'album' ? '/album' : '/artist';
+    this.router.navigate([route, result.id], extras);
+  }
+
+  /**
+   * Volver a la página anterior
+   */
+  goBack(): void {
+    this.router.navigate(['/']);
+  }
+
+  // ==========================================================================
+  // TRACKBY (OPTIMIZACIÓN)
+  // ==========================================================================
+
+  /**
+   * TrackBy para lista de resultados
+   */
+  trackByResultId(index: number, result: SearchResultItem): string {
+    return `${result.type}-${result.id}`;
   }
 
   // ==========================================================================
   // HELPERS
   // ==========================================================================
 
+  /**
+   * Obtiene el icono según el tipo
+   */
   getResultIcon(type: string): string {
-    switch (type) {
-      case 'album':
-        return '💿';
-      case 'artist':
-        return '🎤';
-      case 'user':
-        return '👤';
-      case 'review':
-        return '📝';
-      default:
-        return '🔍';
-    }
+    return type === 'album' ? '💿' : '🎤';
   }
 
+  /**
+   * Obtiene el label del tipo
+   */
   getResultTypeLabel(type: string): string {
-    switch (type) {
-      case 'album':
-        return 'Álbum';
-      case 'artist':
-        return 'Artista';
-      case 'user':
-        return 'Usuario';
-      case 'review':
-        return 'Reseña';
-      default:
-        return '';
-    }
-  }
-
-  // ============================================
-  // NAVEGACIÓN PROGRAMÁTICA
-  // ============================================
-
-  /**
-   * Navegar al resultado con NavigationExtras state
-   * Pasa información del contexto de búsqueda para uso en la página destino
-   */
-  viewResult(result: SearchResultItem): void {
-    // NavigationExtras con state para pasar datos entre rutas
-    const extras: NavigationExtras = {
-      state: {
-        fromSearch: true,
-        searchTerm: this.searchTerm(),
-        resultPosition: this.filteredResults().indexOf(result) + 1,
-        totalResults: this.filteredResults().length
-      }
-    };
-
-    switch (result.type) {
-      case 'album':
-        // Navegar con fragment para ir directamente a info
-        this.router.navigate(['/album', result.id], {
-          ...extras,
-          fragment: 'info'
-        });
-        break;
-      case 'artist':
-        this.router.navigate(['/artist', result.id], extras);
-        break;
-      case 'user':
-        this.router.navigate(['/profile', result.id], extras);
-        break;
-      case 'review':
-        // Navegar al álbum y scroll directo a reviews
-        this.router.navigate(['/album', result.id], {
-          ...extras,
-          fragment: 'reviews'
-        });
-        break;
-    }
-  }
-
-  /**
-   * Nueva búsqueda con queryParamsHandling para preservar parámetros
-   */
-  newSearch(query: string): void {
-    if (query.trim()) {
-      const extras: NavigationExtras = {
-        queryParams: { q: query },
-        // 'merge' preserva otros query params existentes
-        queryParamsHandling: 'merge',
-        // No añadir al historial cada búsqueda intermedia
-        replaceUrl: false
-      };
-      this.router.navigate(['/search'], extras);
-    }
-  }
-
-  /**
-   * Aplicar filtro actualizando query params
-   */
-  applyFilterWithQueryParams(filter: FilterType): void {
-    this.setFilter(filter);
-
-    // Actualizar URL con filtro actual sin perder el término de búsqueda
-    const extras: NavigationExtras = {
-      queryParams: { filter: filter === 'all' ? null : filter },
-      queryParamsHandling: 'merge',
-      replaceUrl: true // Reemplazar en historial, no apilar
-    };
-    this.router.navigate([], extras);
-  }
-
-  goBack(): void {
-    this.router.navigate(['/']);
+    return type === 'album' ? 'Álbum' : 'Artista';
   }
 }

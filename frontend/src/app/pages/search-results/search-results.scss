@@ -55,7 +55,7 @@
   /* ========================================
      BARRA DE BÚSQUEDA
      ======================================== */
-  &__search-bar {
+  &__search-section {
     padding: vars.$espaciado-m;
     background-color: var(--bg-primary);
     border-bottom: vars.$borde-brutal-thin;
@@ -64,6 +64,52 @@
 
     @include mixins.respond-to('tablet') {
       padding: vars.$espaciado-m vars.$espaciado-s;
+    }
+  }
+
+  /* ========================================
+     TABS DE FILTROS
+     ======================================== */
+  &__tabs-section {
+    padding: vars.$espaciado-s vars.$espaciado-m;
+    background-color: var(--bg-secondary);
+    border-bottom: vars.$borde-brutal-thick;
+
+    @include mixins.respond-to('tablet') {
+      padding: vars.$espaciado-s;
+    }
+  }
+
+  /* ========================================
+     BOTÓN VOLVER
+     ======================================== */
+  &__back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: vars.$espaciado-xs;
+    padding: vars.$espaciado-s vars.$espaciado-m;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: vars.$borde-brutal-medium;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all vars.$transicion-rapida;
+    box-shadow: vars.$sombra-brutal-xs;
+
+    &:hover {
+      background-color: var(--color-primary);
+      transform: translateY(-2px);
+      box-shadow: vars.$sombra-brutal-s;
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: vars.$sombra-brutal-active;
+    }
+
+    @include mixins.respond-to('tablet') {
+      padding: vars.$espaciado-xs vars.$espaciado-s;
+      @include mixins.font-size-line('texto-pequeno-m');
     }
   }
 
@@ -183,6 +229,20 @@
     bottom: vars.$espaciado-s;
     right: vars.$espaciado-s;
     background-color: var(--color-primary);
+    color: var(--text-dark);
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+    border-radius: vars.$radio-xxl;
+    @include mixins.font-size-line('texto-pequeno-s');
+    font-weight: 600;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--shadow-color) 20%, transparent);
+    z-index: 10;
+  }
+
+  &__fans {
+    position: absolute;
+    bottom: vars.$espaciado-s;
+    right: vars.$espaciado-s;
+    background-color: var(--color-secondary);
     color: var(--text-dark);
     padding: vars.$espaciado-xs vars.$espaciado-s;
     border-radius: vars.$radio-xxl;
