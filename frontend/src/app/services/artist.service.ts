@@ -19,8 +19,6 @@ import { DeezerService, DeezerArtist, DeezerAlbum } from './deezer.service';
 export class ArtistService extends BaseHttpService {
   private deezer = inject(DeezerService);
 
-  private readonly USE_DEEZER = true;
-
   // ==========================================================================
   // MÉTODOS PRINCIPALES
   // ==========================================================================
@@ -29,71 +27,56 @@ export class ArtistService extends BaseHttpService {
    * Obtiene artistas populares del chart
    */
   getPopularArtists(limit: number = 25): Observable<Artist[]> {
-    if (this.USE_DEEZER) {
-      return this.deezer.getChartArtists(limit).pipe(
-        map(artists => artists.map(a => this.mapDeezerArtistToArtist(a))),
-        catchError(() => this.getAllArtistsMock())
-      );
-    }
-    return this.getAllArtistsMock();
+    return this.deezer.getChartArtists(limit).pipe(
+      map(artists => artists.map(a => this.mapDeezerArtistToArtist(a))),
+      catchError(() => of([]))
+    );
   }
 
   /**
    * Obtiene un artista por su ID
    */
   getArtistById(id: string): Observable<Artist | null> {
-    if (this.USE_DEEZER) {
-      return this.deezer.getArtistById(id).pipe(
-        map(artist => artist ? this.mapDeezerArtistToArtist(artist) : null),
-        catchError(() => this.getArtistByIdBackend(id))
-      );
-    }
-    return this.getArtistByIdBackend(id);
+    return this.deezer.getArtistById(id).pipe(
+      map(artist => artist ? this.mapDeezerArtistToArtist(artist) : null),
+      catchError(() => this.getArtistByIdBackend(id))
+    );
   }
 
   /**
    * Busca artistas por término
    */
   searchArtists(query: string): Observable<Artist[]> {
-    if (this.USE_DEEZER) {
-      return this.deezer.searchArtists(query, 25).pipe(
-        map(artists => artists.map(a => this.mapDeezerArtistToArtist(a))),
-        catchError(() => this.searchArtistsMock(query))
-      );
-    }
-    return this.searchArtistsMock(query);
+    return this.deezer.searchArtists(query, 25).pipe(
+      map(artists => artists.map(a => this.mapDeezerArtistToArtist(a))),
+      catchError(() => of([]))
+    );
   }
 
   /**
    * Obtiene los álbumes de un artista
    */
   getArtistAlbums(artistId: string): Observable<Album[]> {
-    if (this.USE_DEEZER) {
-      return this.deezer.getArtistAlbums(artistId, 25).pipe(
-        map(albums => albums.map(a => this.mapDeezerAlbumToAlbum(a))),
-        catchError(() => this.getArtistAlbumsMock(artistId))
-      );
-    }
-    return this.getArtistAlbumsMock(artistId);
+    return this.deezer.getArtistAlbums(artistId, 25).pipe(
+      map(albums => albums.map(a => this.mapDeezerAlbumToAlbum(a))),
+      catchError(() => of([]))
+    );
   }
 
   /**
    * Obtiene los top tracks de un artista
    */
   getArtistTopTracks(artistId: string): Observable<any[]> {
-    if (this.USE_DEEZER) {
-      return this.deezer.getArtistTopTracks(artistId, 10).pipe(
-        map(tracks => tracks.map(t => ({
-          id: String(t.id),
-          title: t.title,
-          duration: this.deezer.formatDuration(t.duration),
-          previewUrl: t.preview,
-          coverUrl: t.album?.cover_medium || ''
-        }))),
-        catchError(() => of([]))
-      );
-    }
-    return of([]);
+    return this.deezer.getArtistTopTracks(artistId, 10).pipe(
+      map(tracks => tracks.map(t => ({
+        id: String(t.id),
+        title: t.title,
+        duration: this.deezer.formatDuration(t.duration),
+        previewUrl: t.preview,
+        coverUrl: t.album?.cover_medium || ''
+      }))),
+      catchError(() => of([]))
+    );
   }
 
   /**
@@ -102,7 +85,7 @@ export class ArtistService extends BaseHttpService {
   getAllArtists(): Observable<Artist[]> {
     return this.get<ArtistaResponse[]>(`${API_CONFIG.baseUrl}${API_ENDPOINTS.artistas.getAll}`).pipe(
       map(artistas => artistas.map(a => mapArtistaResponseToLegacy(a))),
-      catchError(() => this.getAllArtistsMock())
+      catchError(() => of([]))
     );
   }
 
@@ -208,58 +191,5 @@ export class ArtistService extends BaseHttpService {
       averageRating: 0,
       totalReviews: deezerAlbum.fans || 0
     };
-  }
-
-  // ==========================================================================
-  // MÉTODOS MOCK
-  // ==========================================================================
-
-  private getAllArtistsMock(): Observable<Artist[]> {
-    const mockArtists: Artist[] = [
-      {
-        id: 'artist-1',
-        name: 'Pink Floyd',
-        bio: 'Banda de rock progresivo inglesa formada en Londres en 1965.',
-        photoUrl: 'https://picsum.photos/seed/artist1/400/400',
-        genre: 'Progressive Rock',
-        activeYears: '1965-1995, 2005-2014',
-        albums: 15,
-        monthlyListeners: 25000000
-      },
-      {
-        id: 'artist-2',
-        name: 'The Beatles',
-        bio: 'Banda de rock inglesa formada en Liverpool en 1960.',
-        photoUrl: 'https://picsum.photos/seed/artist2/400/400',
-        genre: 'Rock',
-        activeYears: '1960-1970',
-        albums: 13,
-        monthlyListeners: 35000000
-      },
-      {
-        id: 'artist-3',
-        name: 'Michael Jackson',
-        bio: 'El Rey del Pop.',
-        photoUrl: 'https://picsum.photos/seed/artist3/400/400',
-        genre: 'Pop',
-        activeYears: '1964-2009',
-        albums: 10,
-        monthlyListeners: 30000000
-      }
-    ];
-
-    return of(mockArtists);
-  }
-
-  private searchArtistsMock(query: string): Observable<Artist[]> {
-    return this.getAllArtistsMock().pipe(
-      map(artists => artists.filter(a =>
-        a.name.toLowerCase().includes(query.toLowerCase())
-      ))
-    );
-  }
-
-  private getArtistAlbumsMock(artistId: string): Observable<Album[]> {
-    return of([]);
   }
 }

@@ -144,7 +144,7 @@ export class DeezerService {
    */
   private buildUrl(endpoint: string): string {
     const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    
+
     // Usar el proxy del backend: /api/deezer/...
     // API_CONFIG.baseUrl ya contiene /api, así que añadimos /deezer
     const baseUrl = API_CONFIG.baseUrl.replace(/\/api$/, '');

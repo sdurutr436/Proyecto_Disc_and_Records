@@ -369,8 +369,8 @@ export class ReviewStateService extends BaseHttpService {
       }),
       catchError(err => {
         console.error(`Error fetching reviews for album ${albumId}:`, err);
-        // Devolver datos mock si el backend no responde
-        return of(this.getMockReviews());
+        // Devolver array vacío si el backend no responde
+        return of([]);
       }),
       finalize(() => {
         this._loadingAlbums.update(set => {
@@ -383,43 +383,5 @@ export class ReviewStateService extends BaseHttpService {
       tap(() => {}),
       switchMap(() => of(this._reviewsByAlbum().get(albumId) || []))
     );
-  }
-
-  /**
-   * Genera reseñas mock para desarrollo
-   */
-  private getMockReviews(): Review[] {
-    return [
-      {
-        id: 'mock-1',
-        userId: 'user-1',
-        userName: 'Carlos Méndez',
-        userAvatar: 'https://i.pravatar.cc/150?img=1',
-        rating: 5,
-        content: 'Una obra maestra absoluta. Cada canción fluye perfectamente hacia la siguiente.',
-        date: new Date('2025-01-10'),
-        likes: 42
-      },
-      {
-        id: 'mock-2',
-        userId: 'user-2',
-        userName: 'María García',
-        userAvatar: 'https://i.pravatar.cc/150?img=2',
-        rating: 4,
-        content: 'Álbum increíble, aunque algunos temas son mejores que otros.',
-        date: new Date('2025-01-08'),
-        likes: 28
-      },
-      {
-        id: 'mock-3',
-        userId: 'user-3',
-        userName: 'Juan López',
-        userAvatar: 'https://i.pravatar.cc/150?img=3',
-        rating: 5,
-        content: 'De mis álbumes favoritos de todos los tiempos. Producción impecable.',
-        date: new Date('2025-01-05'),
-        likes: 35
-      }
-    ];
   }
 }

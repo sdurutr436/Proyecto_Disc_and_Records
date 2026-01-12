@@ -5,13 +5,13 @@
     <!-- ============================================ -->
     <aside class="profile__sidebar">
       <app-card
-        [title]="userProfile.name"
-        [subtitle]="'Miembro desde ' + userProfile.memberSince"
-        [imageUrl]="userProfile.avatarUrl"
-        [imageAlt]="'Avatar de ' + userProfile.name"
+        [title]="userProfile().name"
+        [subtitle]="'Miembro desde ' + userProfile().memberSince"
+        [imageUrl]="userProfile().avatarUrl"
+        [imageAlt]="'Avatar de ' + userProfile().name"
         cardType="profile"
         variant="normal"
-        [badges]="favoriteGenres"
+        [badges]="favoriteGenres()"
         [actions]="[
           { label: 'Editar Perfil', variant: 'primary', callback: editProfile },
           { label: 'Compartir', variant: 'secondary', callback: shareProfile }
@@ -22,11 +22,11 @@
       <!-- Estadísticas adicionales -->
       <div class="profile__stats">
         <div class="profile__stat">
-          <span class="profile__stat-value">{{ userProfile.totalReviews }}</span>
+          <span class="profile__stat-value">{{ userProfile().totalReviews }}</span>
           <span class="profile__stat-label">Reseñas</span>
         </div>
         <div class="profile__stat">
-          <span class="profile__stat-value">{{ userProfile.totalAlbums }}</span>
+          <span class="profile__stat-value">{{ userProfile().totalAlbums }}</span>
           <span class="profile__stat-label">Álbumes</span>
         </div>
       </div>

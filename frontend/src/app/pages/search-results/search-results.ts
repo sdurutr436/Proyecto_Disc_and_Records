@@ -66,78 +66,8 @@ export default class SearchResultsComponent implements OnInit {
   isLoadingMore = this.albumState.isLoadingMore;
   hasMore = this.albumState.hasMore;
 
-  // Mock data inicial - En producción se reemplazará por datos del servicio
-  allResults = signal<SearchResultItem[]>([
-    {
-      id: 1,
-      type: 'album',
-      title: 'Random Access Memories',
-      subtitle: 'Daft Punk',
-      imageUrl: 'https://picsum.photos/seed/search1/200/200',
-      rating: 5,
-      reviewCount: 342
-    },
-    {
-      id: 2,
-      type: 'album',
-      title: 'The Dark Side of the Moon',
-      subtitle: 'Pink Floyd',
-      imageUrl: 'https://picsum.photos/seed/search2/200/200',
-      rating: 5,
-      reviewCount: 521
-    },
-    {
-      id: 3,
-      type: 'artist',
-      title: 'Daft Punk',
-      subtitle: 'Artista',
-      imageUrl: 'https://picsum.photos/seed/search3/200/200',
-      description: 'Dúo francés de música electrónica'
-    },
-    {
-      id: 4,
-      type: 'user',
-      title: 'PerreteGordete',
-      subtitle: 'Usuario',
-      imageUrl: 'https://picsum.photos/seed/search4/200/200',
-      description: 'Miembro desde Enero 2025'
-    },
-    {
-      id: 5,
-      type: 'review',
-      title: 'Reseña de "Thriller"',
-      subtitle: 'por MusicLover123',
-      imageUrl: 'https://picsum.photos/seed/search5/200/200',
-      rating: 4,
-      description: 'El rey del pop en su máximo esplendor. Temas inolvidables que han marcado generaciones...'
-    },
-    {
-      id: 6,
-      type: 'album',
-      title: 'Avantasia',
-      subtitle: 'Avantasia',
-      imageUrl: 'https://picsum.photos/seed/search6/200/200',
-      rating: 5,
-      reviewCount: 89
-    },
-    {
-      id: 7,
-      type: 'album',
-      title: 'Hammer King',
-      subtitle: 'Hammer King',
-      imageUrl: 'https://picsum.photos/seed/search7/200/200',
-      rating: 4,
-      reviewCount: 45
-    },
-    {
-      id: 8,
-      type: 'artist',
-      title: 'Pink Floyd',
-      subtitle: 'Artista',
-      imageUrl: 'https://picsum.photos/seed/search8/200/200',
-      description: 'Banda británica de rock progresivo'
-    }
-  ]);
+  // Resultados de búsqueda (se cargan desde el servicio)
+  allResults = signal<SearchResultItem[]>([]);
 
   // Computed: filtrar resultados según el filtro activo
   filteredResults = computed(() => {

@@ -114,16 +114,12 @@ export class AuthService {
   private eventBus = inject(EventBusService);
   private notificationStream = inject(NotificationStreamService);
 
-  // Flag para determinar si usar API real o mock
-  // Cambiar a true cuando el backend esté disponible
-  private readonly USE_REAL_API = true;
-
   /**
    * WORKFLOW: Login de Usuario
    *
    * 1. Componente llama a login()
    * 2. Servicio valida datos (opcional, si no se valida antes)
-   * 3. Servicio hace llamada a backend (o mock)
+   * 3. Servicio hace llamada a backend
    * 4. Si éxito:
    *    a. Actualiza AppState con usuario
    *    b. Persiste token si existe
@@ -149,10 +145,7 @@ export class AuthService {
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      // Usar API real o mock según configuración
-      const response = this.USE_REAL_API
-        ? await this.loginHttp(credentials)
-        : await this.simulateBackendLogin(credentials);
+      const response = await this.loginHttp(credentials);
 
       if (response.success && response.user) {
         // 1. Actualizar estado global
@@ -219,10 +212,7 @@ export class AuthService {
    */
   async register(data: RegisterData): Promise<AuthResponse> {
     try {
-      // Usar API real o mock según configuración
-      const response = this.USE_REAL_API
-        ? await this.registerHttp(data)
-        : await this.simulateBackendRegister(data);
+      const response = await this.registerHttp(data);
 
       if (response.success) {
         // Notificación de éxito
@@ -337,11 +327,6 @@ export class AuthService {
     const token = this.getAuthToken();
 
     if (!token) {
-      return false;
-    }
-
-    if (!this.USE_REAL_API) {
-      // En modo mock, no podemos validar el token
       return false;
     }
 
@@ -587,87 +572,5 @@ export class AuthService {
     return firstValueFrom(
       this.http.post<AuthResponse>(url, { email })
     );
-  }
-
-  /**
-   * MÉTODOS PRIVADOS: Simulación de backend
-   * TODO: Eliminar cuando el backend esté disponible
-   */
-
-  private async simulateBackendLogin(
-    credentials: LoginCredentials
-  ): Promise<AuthResponse> {
-    // Simular delay de red
-    await this.delay(1000);
-
-    // Simular validación de credenciales
-    if (credentials.email === 'demo@example.com' && credentials.password === 'Demo1234!') {
-      return {
-        success: true,
-        message: 'Login exitoso',
-        user: {
-          id: 1,
-          username: 'DemoUser',
-          email: credentials.email,
-          avatarUrl: '/assets/avatar-placeholder.png',
-          preferences: {
-            language: 'es',
-            notifications: true,
-            autoplay: false,
-            volume: 70,
-          },
-        },
-        token: 'fake-jwt-token-' + Date.now(),
-      };
-    }
-
-    return {
-      success: false,
-      message: 'Email o contraseña incorrectos',
-    };
-  }
-
-  private async simulateBackendRegister(
-    data: RegisterData
-  ): Promise<AuthResponse> {
-    await this.delay(1500);
-
-    // Simular verificación de email duplicado
-    if (data.email === 'taken@example.com') {
-      return {
-        success: false,
-        message: 'Este email ya está registrado',
-      };
-    }
-
-    return {
-      success: true,
-      message: 'Registro exitoso',
-      user: {
-        id: Math.floor(Math.random() * 1000),
-        username: data.username,
-        email: data.email,
-        preferences: {
-          language: 'es',
-          notifications: true,
-          autoplay: false,
-          volume: 70,
-        },
-      },
-      token: 'fake-jwt-token-' + Date.now(),
-    };
-  }
-
-  private async simulatePasswordReset(email: string): Promise<AuthResponse> {
-    await this.delay(1000);
-
-    return {
-      success: true,
-      message: 'Email de recuperación enviado',
-    };
-  }
-
-  private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

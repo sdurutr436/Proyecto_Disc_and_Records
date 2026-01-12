@@ -412,8 +412,9 @@ export class AlbumStateService extends BaseHttpService {
           last: true
         })),
         catchError(err => {
-          console.warn('Error en búsqueda, usando datos mock:', err);
-          return of(this.getMockPageResponse(page, size));
+          console.error('Error en búsqueda:', err);
+          this._error.set('Error al buscar álbumes');
+          return of({ content: [], page: 0, size, totalElements: 0, totalPages: 0, first: true, last: true });
         }),
         finalize(() => {
           this._isLoading.set(false);
@@ -425,8 +426,9 @@ export class AlbumStateService extends BaseHttpService {
     // Sin búsqueda, usar endpoint paginado
     return this.get<PageResponse<AlbumResponse>>(API_ENDPOINTS.albumes.getPaginado, { params }).pipe(
       catchError(err => {
-        console.warn('Backend no disponible, usando datos mock:', err);
-        return of(this.getMockPageResponse(page, size));
+        console.error('Error cargando álbumes:', err);
+        this._error.set('Error al cargar álbumes. Verifica tu conexión.');
+        return of({ content: [], page: 0, size, totalElements: 0, totalPages: 0, first: true, last: true });
       }),
       finalize(() => {
         this._isLoading.set(false);
@@ -502,76 +504,5 @@ export class AlbumStateService extends BaseHttpService {
     this._isLoading.set(false);
     this._isLoadingMore.set(false);
     this.notifications.error('Error', 'No se pudieron cargar los álbumes');
-  }
-
-  /**
-   * Genera respuesta mock para desarrollo (simula respuesta del backend)
-   */
-  private getMockPageResponse(page: number, size: number): PageResponse<AlbumResponse> {
-    // Mock albums en formato backend
-    const mockAlbumsBackend: AlbumResponse[] = [
-      {
-        id: 1,
-        tituloAlbum: 'The Dark Side of the Moon',
-        anioSalida: 1973,
-        portadaUrl: 'https://picsum.photos/seed/album1/400/400',
-        puntuacionMedia: 4.8,
-        artista: { id: 1, nombreArtista: 'Pink Floyd', puntuacionMedia: 4.7 }
-      },
-      {
-        id: 2,
-        tituloAlbum: 'Abbey Road',
-        anioSalida: 1969,
-        portadaUrl: 'https://picsum.photos/seed/album2/400/400',
-        puntuacionMedia: 4.9,
-        artista: { id: 2, nombreArtista: 'The Beatles', puntuacionMedia: 4.8 }
-      },
-      {
-        id: 3,
-        tituloAlbum: 'Thriller',
-        anioSalida: 1982,
-        portadaUrl: 'https://picsum.photos/seed/album3/400/400',
-        puntuacionMedia: 4.7,
-        artista: { id: 3, nombreArtista: 'Michael Jackson', puntuacionMedia: 4.6 }
-      },
-      {
-        id: 4,
-        tituloAlbum: 'Rumours',
-        anioSalida: 1977,
-        portadaUrl: 'https://picsum.photos/seed/album4/400/400',
-        puntuacionMedia: 4.6,
-        artista: { id: 4, nombreArtista: 'Fleetwood Mac', puntuacionMedia: 4.5 }
-      },
-      {
-        id: 5,
-        tituloAlbum: 'Back in Black',
-        anioSalida: 1980,
-        portadaUrl: 'https://picsum.photos/seed/album5/400/400',
-        puntuacionMedia: 4.5,
-        artista: { id: 5, nombreArtista: 'AC/DC', puntuacionMedia: 4.4 }
-      },
-      {
-        id: 6,
-        tituloAlbum: 'Nevermind',
-        anioSalida: 1991,
-        portadaUrl: 'https://picsum.photos/seed/album6/400/400',
-        puntuacionMedia: 4.7,
-        artista: { id: 6, nombreArtista: 'Nirvana', puntuacionMedia: 4.6 }
-      }
-    ];
-
-    const startIndex = page * size;
-    const endIndex = Math.min(startIndex + size, mockAlbumsBackend.length);
-    const content = mockAlbumsBackend.slice(startIndex, endIndex);
-
-    return {
-      content,
-      page,
-      size,
-      totalElements: mockAlbumsBackend.length,
-      totalPages: Math.ceil(mockAlbumsBackend.length / size),
-      first: page === 0,
-      last: endIndex >= mockAlbumsBackend.length
-    };
   }
 }

@@ -21,9 +21,6 @@ import { API_ENDPOINTS } from '../config/api.config';
 export class SongService extends BaseHttpService {
   private readonly deezer = inject(DeezerService);
 
-  // Flag para alternar entre Deezer y mock
-  private readonly USE_DEEZER = true;
-
   // ==============================================
   // MÉTODOS PÚBLICOS - DEEZER + BACKEND
   // ==============================================
@@ -32,28 +29,21 @@ export class SongService extends BaseHttpService {
    * Obtiene tracks populares del chart
    */
   getPopularTracks(limit: number = 50): Observable<Song[]> {
-    if (this.USE_DEEZER) {
-      return this.deezer.getChartTracks(limit).pipe(
-        map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
-        catchError(() => of([]))
-      );
-    }
-    return of([]);
+    return this.deezer.getChartTracks(limit).pipe(
+      map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
+      catchError(() => of([]))
+    );
   }
 
   /**
    * Obtiene canciones de un álbum desde Deezer
    */
   getAlbumTracks(albumId: string): Observable<Song[]> {
-    if (!this.USE_DEEZER) {
-      return this.getAlbumTracksMock(albumId);
-    }
-
     return this.deezer.getAlbumTracks(albumId).pipe(
       map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
       catchError(error => {
         console.error('Error obteniendo tracks de Deezer:', error);
-        return this.getAlbumTracksMock(albumId);
+        return of([]);
       })
     );
   }
@@ -62,7 +52,7 @@ export class SongService extends BaseHttpService {
    * Busca canciones por término usando Deezer
    */
   searchSongs(query: string): Observable<Song[]> {
-    if (!this.USE_DEEZER || !query.trim()) {
+    if (!query.trim()) {
       return of([]);
     }
 
@@ -79,15 +69,11 @@ export class SongService extends BaseHttpService {
    * Obtiene una canción por su ID de Deezer
    */
   getSongById(id: string): Observable<Song | null> {
-    if (!this.USE_DEEZER) {
-      return this.getSongByIdMock(id);
-    }
-
     return this.deezer.getTrackById(id).pipe(
       map(track => track ? this.mapDeezerTrackToSong(track, 1) : null),
       catchError(error => {
         console.error('Error obteniendo track de Deezer:', error);
-        return this.getSongByIdMock(id);
+        return of(null);
       })
     );
   }
@@ -96,10 +82,6 @@ export class SongService extends BaseHttpService {
    * Obtiene las top tracks de un artista
    */
   getArtistTopTracks(artistId: string): Observable<Song[]> {
-    if (!this.USE_DEEZER) {
-      return of([]);
-    }
-
     return this.deezer.getArtistTopTracks(artistId, 10).pipe(
       map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
       catchError(error => {
@@ -217,66 +199,5 @@ export class SongService extends BaseHttpService {
       totalReviews: 0,
       description: ''
     };
-  }
-
-  // ==============================================
-  // MÉTODOS MOCK (Fallback para desarrollo)
-  // ==============================================
-
-  private mockSongs: Song[] = [
-    {
-      id: 'song-1',
-      title: 'Bohemian Rhapsody',
-      artist: 'Queen',
-      artistId: 'artist-4',
-      album: 'A Night at the Opera',
-      albumId: '4',
-      duration: '5:55',
-      releaseYear: 1975,
-      genre: 'Rock',
-      coverUrl: 'https://picsum.photos/seed/song1/400/400',
-      description: 'Una obra maestra del rock progresivo.',
-      averageRating: 4.9,
-      totalReviews: 5421
-    },
-    {
-      id: 'song-2',
-      title: 'Imagine',
-      artist: 'John Lennon',
-      artistId: 'artist-5',
-      album: 'Imagine',
-      albumId: '5',
-      duration: '3:03',
-      releaseYear: 1971,
-      genre: 'Rock',
-      coverUrl: 'https://picsum.photos/seed/song2/400/400',
-      description: 'Un himno pacifista que trasciende generaciones.',
-      averageRating: 4.8,
-      totalReviews: 3892
-    },
-    {
-      id: 'song-3',
-      title: 'Billie Jean',
-      artist: 'Michael Jackson',
-      artistId: 'artist-3',
-      album: 'Thriller',
-      albumId: '3',
-      duration: '4:54',
-      releaseYear: 1982,
-      genre: 'Pop',
-      coverUrl: 'https://picsum.photos/seed/song3/400/400',
-      description: 'Una de las canciones más reconocibles de la historia del pop.',
-      averageRating: 4.7,
-      totalReviews: 4123
-    }
-  ];
-
-  private getAlbumTracksMock(albumId: string): Observable<Song[]> {
-    return of(this.mockSongs.filter(s => s.albumId === albumId));
-  }
-
-  private getSongByIdMock(id: string): Observable<Song | null> {
-    const song = this.mockSongs.find(s => s.id === id);
-    return of(song || null);
   }
 }

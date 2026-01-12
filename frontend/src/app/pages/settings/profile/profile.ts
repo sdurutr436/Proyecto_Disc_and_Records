@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Alert } from '../../../components/shared/alert/alert';
 import { Button } from '../../../components/shared/button/button';
 import { FormInput } from '../../../components/shared/form-input/form-input';
 import { CanComponentDeactivate } from '../../../guards/unsaved-changes.guard';
+import { AppStateService } from '../../../services/app-state';
 
 @Component({
   selector: 'app-settings-profile',
@@ -13,17 +14,19 @@ import { CanComponentDeactivate } from '../../../guards/unsaved-changes.guard';
   templateUrl: './profile.html',
   styleUrl: './profile.scss'
 })
-export default class SettingsProfileComponent implements CanComponentDeactivate {
+export default class SettingsProfileComponent implements CanComponentDeactivate, OnInit {
+  private readonly appState = inject(AppStateService);
+
   isLoading = signal(false);
   successMessage = signal<string | null>(null);
   errorMessage = signal<string | null>(null);
 
-  // Foto de perfil actual (mock)
+  // Foto de perfil actual
   currentAvatar = signal('assets/profile-placeholder.svg');
 
   // Formulario de perfil
   profileForm = new FormGroup({
-    username: new FormControl('PerreteGordete', {
+    username: new FormControl('', {
       nonNullable: true,
       validators: [
         Validators.required,
@@ -33,6 +36,15 @@ export default class SettingsProfileComponent implements CanComponentDeactivate 
       ]
     })
   });
+
+  ngOnInit(): void {
+    const user = this.appState.currentUser();
+    if (user) {
+      this.profileForm.patchValue({ username: user.username });
+      this.currentAvatar.set(user.avatarUrl || 'assets/profile-placeholder.svg');
+      this.profileForm.markAsPristine();
+    }
+  }
 
   /**
    * Maneja el cambio de foto de perfil

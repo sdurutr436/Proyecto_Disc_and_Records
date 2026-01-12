@@ -66,122 +66,23 @@ export default class ProfileComponent implements OnInit {
   hasMoreReviews = signal<boolean>(true);
   hasMoreAlbums = signal<boolean>(true);
 
-  // Datos del usuario (conectado a AppStateService)
-  userProfile = {
-    name: 'PerreteGordete',
+  // Datos del usuario (se cargan desde AppStateService)
+  userProfile = signal({
+    name: '',
     avatarUrl: 'assets/profile-placeholder.svg',
-    memberSince: 'Enero 2025',
-    totalReviews: 42,
-    totalAlbums: 156
-  };
+    memberSince: '',
+    totalReviews: 0,
+    totalAlbums: 0
+  });
 
-  // Géneros favoritos (badges)
-  favoriteGenres = [
-    'Heavy Metal 50%',
-    'J-Pop 25%',
-    'Pop Internacional 7%',
-    'Metal 8%',
-    'Rock 10%'
-  ];
+  // Géneros favoritos (se cargarán dinámicamente)
+  favoriteGenres = signal<string[]>([]);
 
-  // Mock data - Reseñas (se conectará al ReviewStateService)
-  reviews = signal<Review[]>([
-    {
-      id: 1,
-      albumTitle: 'Random Access Memories',
-      albumArtist: 'Daft Punk',
-      albumImageUrl: 'https://picsum.photos/seed/rev1/200/200',
-      rating: 5,
-      reviewText: 'Una obra maestra del pop electrónico. Cada pista es un viaje.',
-      date: '2025-12-15'
-    },
-    {
-      id: 2,
-      albumTitle: 'The Dark Side of the Moon',
-      albumArtist: 'Pink Floyd',
-      albumImageUrl: 'https://picsum.photos/seed/rev2/200/200',
-      rating: 5,
-      reviewText: 'Álbum conceptual perfecto. Producción impecable.',
-      date: '2025-12-10'
-    },
-    {
-      id: 3,
-      albumTitle: 'Thriller',
-      albumArtist: 'Michael Jackson',
-      albumImageUrl: 'https://picsum.photos/seed/rev3/200/200',
-      rating: 4,
-      reviewText: 'El rey del pop en su máximo esplendor. Temas inolvidables.',
-      date: '2025-12-05'
-    }
-  ]);
+  // Reseñas del usuario (se cargan desde ReviewStateService)
+  reviews = signal<Review[]>([]);
 
-  // Mock data - Álbumes escuchados
-  albums = signal<Album[]>([
-    {
-      id: 1,
-      title: 'Avantasia',
-      artist: 'Avantasia',
-      imageUrl: 'https://picsum.photos/seed/alb1/200/200',
-      rating: 5,
-      listenedDate: '2025-12-20'
-    },
-    {
-      id: 2,
-      title: 'De Aquí No Sales Vivo',
-      artist: 'Calle 13',
-      imageUrl: 'https://picsum.photos/seed/alb2/200/200',
-      rating: 4,
-      listenedDate: '2025-12-18'
-    },
-    {
-      id: 3,
-      title: 'Black Sabbath',
-      artist: 'Black Sabbath',
-      imageUrl: 'https://picsum.photos/seed/alb3/200/200',
-      rating: 5,
-      listenedDate: '2025-12-15'
-    },
-    {
-      id: 4,
-      title: 'Los Funkcheros Cabrones',
-      artist: 'Varios',
-      imageUrl: 'https://picsum.photos/seed/alb4/200/200',
-      rating: 3,
-      listenedDate: '2025-12-12'
-    },
-    {
-      id: 5,
-      title: 'Hammer King',
-      artist: 'Hammer King',
-      imageUrl: 'https://picsum.photos/seed/alb5/200/200',
-      rating: 4,
-      listenedDate: '2025-12-10'
-    },
-    {
-      id: 6,
-      title: 'Holy Diver',
-      artist: 'Dio',
-      imageUrl: 'https://picsum.photos/seed/alb6/200/200',
-      rating: 5,
-      listenedDate: '2025-12-08'
-    },
-    {
-      id: 7,
-      title: 'Random Access Memories',
-      artist: 'Daft Punk',
-      imageUrl: 'https://picsum.photos/seed/alb7/200/200',
-      rating: 5,
-      listenedDate: '2025-12-05'
-    },
-    {
-      id: 8,
-      title: 'The Last Stand',
-      artist: 'Sabaton',
-      imageUrl: 'https://picsum.photos/seed/alb8/200/200',
-      rating: 4,
-      listenedDate: '2025-12-01'
-    }
-  ]);
+  // Álbumes escuchados (se cargan desde el backend)
+  albums = signal<Album[]>([]);
 
   ngOnInit(): void {
     this.loadUserData();
@@ -194,19 +95,19 @@ export default class ProfileComponent implements OnInit {
     const user = this.appState.currentUser();
 
     if (user) {
-      this.userProfile = {
+      this.userProfile.set({
         name: user.username,
         avatarUrl: user.avatarUrl || 'assets/profile-placeholder.svg',
-        memberSince: 'Enero 2025',
+        memberSince: user.createdAt ? new Date(user.createdAt).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }) : '',
         totalReviews: this.reviewState.userReviewsCount(),
-        totalAlbums: 156
-      };
+        totalAlbums: 0 // Se actualizará cuando tengamos endpoint de álbumes escuchados
+      });
 
       // Cargar reseñas del usuario
       this.reviewState.loadUserReviews(user.id);
     }
 
-    // Simular fin de carga
+    // Finalizar carga
     setTimeout(() => this.isLoading.set(false), 500);
   }
 
