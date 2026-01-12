@@ -1,43 +1,228 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, delay, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Injectable, inject } from '@angular/core';
+import { Observable, of, map, catchError } from 'rxjs';
 import { Song, Review } from '../models/data.models';
 import { BaseHttpService } from './base-http.service';
+import { DeezerService, DeezerTrack } from './deezer.service';
 import { API_ENDPOINTS } from '../config/api.config';
 
 /**
- * SongService - Servicio de gestión de canciones
+ * SongService - Servicio híbrido de gestión de canciones
  *
- * ARQUITECTURA: Hereda de BaseHttpService
- * - Operaciones CRUD completas (GET, POST, PUT, PATCH, DELETE)
- * - Métodos HTTP listos para producción (comentados)
- * - Datos mock para desarrollo (activos)
- * - Gestión de reseñas de canciones
+ * ARQUITECTURA HÍBRIDA:
+ * - Deezer API: Datos de canciones (tracks), metadatos, búsqueda
+ * - Backend propio: Reseñas de usuarios, ratings personalizados
  *
- * MIGRACIÓN A API REAL:
- * 1. Descomentar métodos HTTP (getSongByIdHttp, etc.)
- * 2. Cambiar los métodos públicos para usar las versiones HTTP
- * 3. Eliminar o comentar datos mock
- *
- * @example
- * ```typescript
- * // Desarrollo (actual)
- * getSongById(id: string) {
- *   return this.getSongByIdMock(id);
- * }
- *
- * // Producción (cuando backend esté listo)
- * getSongById(id: string) {
- *   return this.getSongByIdHttp(id);
- * }
- * ```
+ * Las canciones se obtienen de Deezer API (tracks) y las reseñas/ratings
+ * del backend propio, combinando ambas fuentes.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class SongService extends BaseHttpService {
+  private readonly deezer = inject(DeezerService);
 
-  // Datos mock para desarrollo
+  // Flag para alternar entre Deezer y mock
+  private readonly USE_DEEZER = true;
+
+  // ==============================================
+  // MÉTODOS PÚBLICOS - DEEZER + BACKEND
+  // ==============================================
+
+  /**
+   * Obtiene tracks populares del chart
+   */
+  getPopularTracks(limit: number = 50): Observable<Song[]> {
+    if (this.USE_DEEZER) {
+      return this.deezer.getChartTracks(limit).pipe(
+        map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
+        catchError(() => of([]))
+      );
+    }
+    return of([]);
+  }
+
+  /**
+   * Obtiene canciones de un álbum desde Deezer
+   */
+  getAlbumTracks(albumId: string): Observable<Song[]> {
+    if (!this.USE_DEEZER) {
+      return this.getAlbumTracksMock(albumId);
+    }
+
+    return this.deezer.getAlbumTracks(albumId).pipe(
+      map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
+      catchError(error => {
+        console.error('Error obteniendo tracks de Deezer:', error);
+        return this.getAlbumTracksMock(albumId);
+      })
+    );
+  }
+
+  /**
+   * Busca canciones por término usando Deezer
+   */
+  searchSongs(query: string): Observable<Song[]> {
+    if (!this.USE_DEEZER || !query.trim()) {
+      return of([]);
+    }
+
+    return this.deezer.searchTracks(query, 25).pipe(
+      map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
+      catchError(error => {
+        console.error('Error buscando tracks en Deezer:', error);
+        return of([]);
+      })
+    );
+  }
+
+  /**
+   * Obtiene una canción por su ID de Deezer
+   */
+  getSongById(id: string): Observable<Song | null> {
+    if (!this.USE_DEEZER) {
+      return this.getSongByIdMock(id);
+    }
+
+    return this.deezer.getTrackById(id).pipe(
+      map(track => track ? this.mapDeezerTrackToSong(track, 1) : null),
+      catchError(error => {
+        console.error('Error obteniendo track de Deezer:', error);
+        return this.getSongByIdMock(id);
+      })
+    );
+  }
+
+  /**
+   * Obtiene las top tracks de un artista
+   */
+  getArtistTopTracks(artistId: string): Observable<Song[]> {
+    if (!this.USE_DEEZER) {
+      return of([]);
+    }
+
+    return this.deezer.getArtistTopTracks(artistId, 10).pipe(
+      map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
+      catchError(error => {
+        console.error('Error obteniendo top tracks del artista:', error);
+        return of([]);
+      })
+    );
+  }
+
+  // ==============================================
+  // RESEÑAS - BACKEND PROPIO
+  // ==============================================
+
+  /**
+   * Obtiene las reseñas de una canción desde el backend
+   */
+  getSongReviews(songId: string): Observable<Review[]> {
+    return this.get<Review[]>(API_ENDPOINTS.songs.getReviews(songId)).pipe(
+      catchError(error => {
+        console.error('Error obteniendo reseñas del backend:', error);
+        return of([]);
+      })
+    );
+  }
+
+  /**
+   * Añade una reseña a una canción
+   */
+  addSongReview(songId: string, review: Partial<Review>): Observable<Review> {
+    const reviewData = {
+      ...review,
+      songId,
+      date: new Date()
+    };
+    return this.post<Review>(API_ENDPOINTS.songs.addReview(songId), reviewData);
+  }
+
+  /**
+   * Actualiza una reseña
+   */
+  updateReview(cancionId: number, usuarioId: number, review: Review): Observable<Review> {
+    return this.put<Review>(API_ENDPOINTS.resenas.cancionUpdate(cancionId, usuarioId), review);
+  }
+
+  /**
+   * Elimina una reseña
+   */
+  deleteReview(cancionId: number, usuarioId: number): Observable<void> {
+    return this.delete<void>(API_ENDPOINTS.resenas.cancionDelete(cancionId, usuarioId));
+  }
+
+  // ==============================================
+  // OPERACIONES CRUD BACKEND (Para canciones propias)
+  // ==============================================
+
+  /**
+   * Obtiene todas las canciones del backend
+   */
+  getAllSongsFromBackend(): Observable<Song[]> {
+    return this.get<Song[]>(API_ENDPOINTS.songs.getAll);
+  }
+
+  /**
+   * Crea una nueva canción en el backend
+   */
+  createSong(song: Omit<Song, 'id'>): Observable<Song> {
+    return this.post<Song>(API_ENDPOINTS.songs.create, song);
+  }
+
+  /**
+   * Actualiza una canción en el backend
+   */
+  updateSong(id: string, song: Song): Observable<Song> {
+    return this.put<Song>(API_ENDPOINTS.songs.update(id), song);
+  }
+
+  /**
+   * Elimina una canción del backend
+   */
+  deleteSong(id: string): Observable<void> {
+    return this.delete<void>(API_ENDPOINTS.songs.delete(id));
+  }
+
+  // ==============================================
+  // MAPEO DEEZER → MODELO LOCAL
+  // ==============================================
+
+  /**
+   * Mapea un track de Deezer al modelo Song local
+   */
+  private mapDeezerTrackToSong(track: DeezerTrack, trackNumber: number): Song {
+    const album = track.album;
+    const artist = track.artist;
+
+    return {
+      id: String(track.id),
+      title: track.title,
+      artist: artist?.name || 'Artista Desconocido',
+      artistId: String(artist?.id || ''),
+      album: album?.title || '',
+      albumId: String(album?.id || ''),
+      duration: this.deezer.formatDuration(track.duration),
+      releaseYear: album?.release_date
+        ? this.deezer.extractYear(album.release_date)
+        : new Date().getFullYear(),
+      genre: '',
+      coverUrl: album?.cover_medium || album?.cover || '',
+      previewUrl: track.preview || '',
+      spotifyUrl: track.link || '',
+      trackNumber: track.track_position || trackNumber,
+      discNumber: track.disk_number || 1,
+      explicit: track.explicit_lyrics || false,
+      popularity: track.rank || 0,
+      averageRating: 0,
+      totalReviews: 0,
+      description: ''
+    };
+  }
+
+  // ==============================================
+  // MÉTODOS MOCK (Fallback para desarrollo)
+  // ==============================================
+
   private mockSongs: Song[] = [
     {
       id: 'song-1',
@@ -50,7 +235,7 @@ export class SongService extends BaseHttpService {
       releaseYear: 1975,
       genre: 'Rock',
       coverUrl: 'https://picsum.photos/seed/song1/400/400',
-      description: 'Una obra maestra del rock progresivo. Considerada una de las mejores canciones de todos los tiempos.',
+      description: 'Una obra maestra del rock progresivo.',
       averageRating: 4.9,
       totalReviews: 5421
     },
@@ -65,7 +250,7 @@ export class SongService extends BaseHttpService {
       releaseYear: 1971,
       genre: 'Rock',
       coverUrl: 'https://picsum.photos/seed/song2/400/400',
-      description: 'Un himno pacifista que trasciende generaciones. La canción más icónica de John Lennon en solitario.',
+      description: 'Un himno pacifista que trasciende generaciones.',
       averageRating: 4.8,
       totalReviews: 3892
     },
@@ -80,254 +265,18 @@ export class SongService extends BaseHttpService {
       releaseYear: 1982,
       genre: 'Pop',
       coverUrl: 'https://picsum.photos/seed/song3/400/400',
-      description: 'El video musical revolucionó MTV. Una de las canciones más reconocibles de la historia del pop.',
+      description: 'Una de las canciones más reconocibles de la historia del pop.',
       averageRating: 4.7,
       totalReviews: 4123
     }
   ];
 
-  private mockReviews: { [songId: string]: Review[] } = {
-    'song-1': [
-      {
-        id: 'rs1-1',
-        userId: 'u2',
-        userName: 'Sarah Rock',
-        userAvatar: 'https://i.pravatar.cc/150?img=2',
-        rating: 5,
-        content: 'Simplemente perfecta. La voz de Freddie Mercury es inigualable.',
-        date: new Date('2024-02-10'),
-        likes: 89
-      }
-    ]
-  };
-
-  // ==============================================
-  // MÉTODOS PÚBLICOS - OPERACIONES CRUD
-  // ==============================================
-
-  /**
-   * [GET] Obtiene todas las canciones
-   */
-  getAllSongs(): Observable<Song[]> {
-    return this.getAllSongsMock();
-    // return this.getAllSongsHttp(); // ⬅️ Descomentar para usar API real
-  }
-
-  /**
-   * [GET] Obtiene una canción por su ID
-   */
-  getSongById(id: string): Observable<Song | null> {
-    return this.getSongByIdMock(id);
-    // return this.getSongByIdHttp(id); // ⬅️ Descomentar para usar API real
-  }
-
-  /**
-   * [POST] Crea una nueva canción
-   */
-  createSong(song: Omit<Song, 'id'>): Observable<Song> {
-    return this.createSongMock(song);
-    // return this.createSongHttp(song); // ⬅️ Descomentar para usar API real
-  }
-
-  /**
-   * [PUT] Actualiza una canción completa
-   */
-  updateSong(id: string, song: Song): Observable<Song> {
-    return this.updateSongMock(id, song);
-    // return this.updateSongHttp(id, song); // ⬅️ Descomentar para usar API real
-  }
-
-  /**
-   * [PATCH] Actualiza parcialmente una canción
-   */
-  patchSong(id: string, updates: Partial<Song>): Observable<Song> {
-    return this.patchSongMock(id, updates);
-    // return this.patchSongHttp(id, updates); // ⬅️ Descomentar para usar API real
-  }
-
-  /**
-   * [DELETE] Elimina una canción
-   */
-  deleteSong(id: string): Observable<void> {
-    return this.deleteSongMock(id);
-    // return this.deleteSongHttp(id); // ⬅️ Descomentar para usar API real
-  }
-
-  /**
-   * [GET] Busca canciones por término
-   */
-  searchSongs(query: string): Observable<Song[]> {
-    return this.searchSongsMock(query);
-    // return this.searchSongsHttp(query); // ⬅️ Descomentar para usar API real
-  }
-
-  /**
-   * [GET] Obtiene las reseñas de una canción
-   */
-  getSongReviews(songId: string): Observable<Review[]> {
-    return this.getSongReviewsMock(songId);
-    // return this.getSongReviewsHttp(songId); // ⬅️ Descomentar para usar API real
-  }
-
-  /**
-   * [POST] Añade una reseña a una canción
-   */
-  addSongReview(songId: string, review: Partial<Review>): Observable<Review> {
-    return this.addSongReviewMock(songId, review);
-    // return this.addSongReviewHttp(songId, review); // ⬅️ Descomentar para usar API real
-  }
-
-  // ==============================================
-  // MÉTODOS HTTP (Listos para producción)
-  // ==============================================
-
-  private getAllSongsHttp(): Observable<Song[]> {
-    return this.get<Song[]>(API_ENDPOINTS.songs.getAll);
-  }
-
-  private getSongByIdHttp(id: string): Observable<Song | null> {
-    return this.get<Song>(API_ENDPOINTS.songs.getById(id)).pipe(
-      catchError(error => {
-        if (error.status === 404) {
-          return of(null);
-        }
-        return throwError(() => error);
-      })
-    );
-  }
-
-  private createSongHttp(song: Omit<Song, 'id'>): Observable<Song> {
-    return this.post<Song>(API_ENDPOINTS.songs.create, song);
-  }
-
-  private updateSongHttp(id: string, song: Song): Observable<Song> {
-    return this.put<Song>(API_ENDPOINTS.songs.update(id), song);
-  }
-
-  private patchSongHttp(id: string, updates: Partial<Song>): Observable<Song> {
-    return this.patch<Song>(API_ENDPOINTS.songs.update(id), updates);
-  }
-
-  private deleteSongHttp(id: string): Observable<void> {
-    return this.delete<void>(API_ENDPOINTS.songs.delete(id));
-  }
-
-  private searchSongsHttp(query: string): Observable<Song[]> {
-    return this.get<Song[]>(API_ENDPOINTS.songs.search, {
-      params: { q: query }
-    });
-  }
-
-  private getSongReviewsHttp(songId: string): Observable<Review[]> {
-    return this.get<Review[]>(API_ENDPOINTS.songs.getReviews(songId));
-  }
-
-  private addSongReviewHttp(songId: string, review: Partial<Review>): Observable<Review> {
-    return this.post<Review>(API_ENDPOINTS.songs.addReview(songId), review);
-  }
-
-  // ==============================================
-  // MÉTODOS MOCK (Desarrollo)
-  // ==============================================
-
-  private getAllSongsMock(): Observable<Song[]> {
-    return of(this.mockSongs).pipe(delay(300));
+  private getAlbumTracksMock(albumId: string): Observable<Song[]> {
+    return of(this.mockSongs.filter(s => s.albumId === albumId));
   }
 
   private getSongByIdMock(id: string): Observable<Song | null> {
     const song = this.mockSongs.find(s => s.id === id);
-
-    if (!song) {
-      return throwError(() => new Error(`Song with id ${id} not found`)).pipe(delay(300));
-    }
-
-    return of(song).pipe(delay(500));
-  }
-
-  private createSongMock(song: Omit<Song, 'id'>): Observable<Song> {
-    const newSong: Song = {
-      ...song,
-      id: `song-${Date.now()}`
-    };
-
-    this.mockSongs.push(newSong);
-
-    return of(newSong).pipe(delay(400));
-  }
-
-  private updateSongMock(id: string, song: Song): Observable<Song> {
-    const index = this.mockSongs.findIndex(s => s.id === id);
-
-    if (index === -1) {
-      return throwError(() => new Error(`Song with id ${id} not found`)).pipe(delay(300));
-    }
-
-    this.mockSongs[index] = { ...song, id };
-
-    return of(this.mockSongs[index]).pipe(delay(400));
-  }
-
-  private patchSongMock(id: string, updates: Partial<Song>): Observable<Song> {
-    const index = this.mockSongs.findIndex(s => s.id === id);
-
-    if (index === -1) {
-      return throwError(() => new Error(`Song with id ${id} not found`)).pipe(delay(300));
-    }
-
-    this.mockSongs[index] = {
-      ...this.mockSongs[index],
-      ...updates,
-      id
-    };
-
-    return of(this.mockSongs[index]).pipe(delay(400));
-  }
-
-  private deleteSongMock(id: string): Observable<void> {
-    const index = this.mockSongs.findIndex(s => s.id === id);
-
-    if (index === -1) {
-      return throwError(() => new Error(`Song with id ${id} not found`)).pipe(delay(300));
-    }
-
-    this.mockSongs.splice(index, 1);
-
-    return of(void 0).pipe(delay(400));
-  }
-
-  private searchSongsMock(query: string): Observable<Song[]> {
-    const results = this.mockSongs.filter(song =>
-      song.title.toLowerCase().includes(query.toLowerCase()) ||
-      song.artist.toLowerCase().includes(query.toLowerCase()) ||
-      song.album.toLowerCase().includes(query.toLowerCase()) ||
-      song.genre.toLowerCase().includes(query.toLowerCase())
-    );
-    return of(results).pipe(delay(400));
-  }
-
-  private getSongReviewsMock(songId: string): Observable<Review[]> {
-    const reviews = this.mockReviews[songId] || [];
-    return of(reviews).pipe(delay(300));
-  }
-
-  private addSongReviewMock(songId: string, review: Partial<Review>): Observable<Review> {
-    const newReview: Review = {
-      id: `review-${Date.now()}`,
-      userId: 'mock-user-id',
-      userName: 'Usuario Mock',
-      userAvatar: 'https://i.pravatar.cc/150?img=10',
-      rating: review.rating || 5,
-      content: review.content || '',
-      date: new Date(),
-      likes: 0,
-      ...review
-    };
-
-    if (!this.mockReviews[songId]) {
-      this.mockReviews[songId] = [];
-    }
-    this.mockReviews[songId].push(newReview);
-
-    return of(newReview).pipe(delay(400));
+    return of(song || null);
   }
 }
