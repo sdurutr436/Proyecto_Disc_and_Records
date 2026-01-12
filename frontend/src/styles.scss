@@ -16,6 +16,7 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  overflow-x: hidden; // Previene scroll horizontal
 }
 
 body {
@@ -25,6 +26,7 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
+  overflow-x: hidden; // Previene scroll horizontal
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

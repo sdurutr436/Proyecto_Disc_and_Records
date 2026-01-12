@@ -761,6 +761,16 @@ app-breadcrumbs {
   border-radius: $radio-m;
   padding: $espaciado-l;
   margin-bottom: $espaciado-l;
+  overflow: hidden; // Prevenir desborde
+  max-width: 100%; // No exceder contenedor
+
+  @include mixins.respond-to('tablet') {
+    padding: $espaciado-m;
+  }
+
+  @include mixins.respond-to('mobile') {
+    padding: $espaciado-s;
+  }
 
   &:last-child {
     margin-bottom: 0;
@@ -770,6 +780,8 @@ app-breadcrumbs {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: $espaciado-xs;
     margin-bottom: $espaciado-m;
     padding-bottom: $espaciado-s;
     border-bottom: $borde-brutal-thin;
@@ -779,6 +791,10 @@ app-breadcrumbs {
       margin: 0;
       color: var(--text-primary);
       text-transform: uppercase;
+
+      @include mixins.respond-to('tablet') {
+        font-size: $tamanio-fuente-h5;
+      }
     }
   }
 
@@ -813,6 +829,33 @@ app-breadcrumbs {
     h1, h2, h3, p, div {
       margin: 0;
       color: var(--text-primary);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    // Reducir tamaños de heading en móvil para evitar desborde
+    @include mixins.respond-to('tablet') {
+      h1 {
+        font-size: $tamanio-fuente-h2;
+      }
+      h2 {
+        font-size: $tamanio-fuente-h3;
+      }
+      h3 {
+        font-size: $tamanio-fuente-h4;
+      }
+    }
+
+    @include mixins.respond-to('mobile') {
+      h1 {
+        font-size: $tamanio-fuente-h3;
+      }
+      h2 {
+        font-size: $tamanio-fuente-h4;
+      }
+      h3 {
+        font-size: $tamanio-fuente-h5;
+      }
     }
   }
 
@@ -841,20 +884,46 @@ app-breadcrumbs {
 .monoton-sample {
   color: var(--color-primary);
   line-height: 1.4; // Espacio vertical para que las líneas decorativas no se superpongan
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 
   &--lg {
     font-size: calc($tamanio-fuente-h1 * 1.33);
     line-height: 1.5;
+
+    @include mixins.respond-to('tablet') {
+      font-size: $tamanio-fuente-h2;
+    }
+
+    @include mixins.respond-to('mobile') {
+      font-size: $tamanio-fuente-h3;
+    }
   }
 
   &--md {
     font-size: $tamanio-fuente-h2;
     line-height: 1.45;
+
+    @include mixins.respond-to('tablet') {
+      font-size: $tamanio-fuente-h3;
+    }
+
+    @include mixins.respond-to('mobile') {
+      font-size: $tamanio-fuente-h4;
+    }
   }
 
   &--sm {
     font-size: $tamanio-fuente-h3;
     line-height: 1.4;
+
+    @include mixins.respond-to('tablet') {
+      font-size: $tamanio-fuente-h4;
+    }
+
+    @include mixins.respond-to('mobile') {
+      font-size: $tamanio-fuente-h5;
+    }
   }
 }
 
@@ -885,8 +954,17 @@ app-breadcrumbs {
     gap: $espaciado-s;
   }
 
+  @include mixins.respond-to('mobile') {
+    grid-template-columns: 1fr;
+    gap: $espaciado-xs;
+  }
+
   &--semantic {
     grid-template-columns: repeat(auto-fit, minmax(calc($espaciado-xxl * 3.6), 1fr));
+
+    @include mixins.respond-to('mobile') {
+      grid-template-columns: 1fr;
+    }
   }
 }
 

@@ -9,6 +9,7 @@
 html {
   font-size: 16px; // Base para rem
   scroll-behavior: smooth;
+  overflow-x: hidden; // Previene scroll horizontal global
 }
 
 body {
@@ -17,8 +18,25 @@ body {
   line-height: vars.$altura-linea-parrafo;
   color: var(--text-primary);
   background-color: var(--bg-primary);
+  overflow-x: hidden; // Previene scroll horizontal global
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Reglas globales para prevenir desborde --- */
+*, *::before, *::after {
+  box-sizing: border-box; // Asegurar box-sizing consistente
+}
+
+img, video, iframe, embed, object {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Contenedores principales no excedan viewport --- */
+main, section, article, aside, nav, header, footer {
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* --- Encabezados --- */
@@ -27,6 +45,18 @@ h1 {
   line-height: vars.$altura-linea-h1;
   font-weight: 700;
   margin-bottom: vars.$espaciado-m;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+
+  @media (max-width: vars.$breakpoint-tablet) {
+    font-size: vars.$tamanio-fuente-h2;
+    line-height: vars.$altura-linea-h2;
+  }
+
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    font-size: vars.$tamanio-fuente-h3;
+    line-height: vars.$altura-linea-h3;
+  }
 }
 
 h2 {
@@ -34,6 +64,13 @@ h2 {
   line-height: vars.$altura-linea-h2;
   font-weight: 600;
   margin-bottom: vars.$espaciado-s;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+
+  @media (max-width: vars.$breakpoint-tablet) {
+    font-size: vars.$tamanio-fuente-h3;
+    line-height: vars.$altura-linea-h3;
+  }
 }
 
 h3 {
@@ -41,6 +78,13 @@ h3 {
   line-height: vars.$altura-linea-h3;
   font-weight: 600;
   margin-bottom: vars.$espaciado-s;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+
+  @media (max-width: vars.$breakpoint-tablet) {
+    font-size: vars.$tamanio-fuente-h4;
+    line-height: vars.$altura-linea-h4;
+  }
 }
 
 h4, h5, h6 {
@@ -48,6 +92,8 @@ h4, h5, h6 {
   line-height: vars.$altura-linea-h4;
   font-weight: 500;
   margin-bottom: vars.$espaciado-xs;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* --- Párrafos y texto --- */
