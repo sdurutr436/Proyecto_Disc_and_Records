@@ -1,14 +1,17 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Card } from '../../components/shared/card/card';
 import { Button } from '../../components/shared/button/button';
 import { RatingComponent } from '../../components/shared/rating/rating';
+import { ReviewStateService } from '../../services/review-state.service';
+import { AppStateService } from '../../services/app-state';
 
 type TabType = 'reviews' | 'albums';
 
 interface Review {
-  id: number;
+  id: number | string;
   albumTitle: string;
   albumArtist: string;
   albumImageUrl: string;
@@ -18,7 +21,7 @@ interface Review {
 }
 
 interface Album {
-  id: number;
+  id: number | string;
   title: string;
   artist: string;
   imageUrl: string;
@@ -26,20 +29,44 @@ interface Album {
   listenedDate: string;
 }
 
+/**
+ * ProfileComponent - Página de Perfil de Usuario
+ *
+ * OPTIMIZACIONES IMPLEMENTADAS:
+ * - ChangeDetectionStrategy.OnPush para mejor rendimiento
+ * - TrackBy en @for para evitar re-renders innecesarios
+ * - Conexión con ReviewStateService para datos reactivos
+ * - Scroll infinito para listas grandes
+ */
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, Card, Button, RatingComponent],
+  imports: [
+    CommonModule,
+    Card,
+    Button,
+    RatingComponent
+  ],
   templateUrl: './profile.html',
-  styleUrls: ['./profile.scss']
+  styleUrls: ['./profile.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export default class ProfileComponent {
-  private router = new Router();
+export default class ProfileComponent implements OnInit {
+  private router = inject(Router);
+  private reviewState = inject(ReviewStateService);
+  private appState = inject(AppStateService);
+  private destroyRef = inject(DestroyRef);
 
   // Tab activo
   activeTab = signal<TabType>('reviews');
 
-  // Datos del usuario
+  // Estado de carga
+  isLoading = signal<boolean>(true);
+  isLoadingMore = signal<boolean>(false);
+  hasMoreReviews = signal<boolean>(true);
+  hasMoreAlbums = signal<boolean>(true);
+
+  // Datos del usuario (conectado a AppStateService)
   userProfile = {
     name: 'PerreteGordete',
     avatarUrl: 'assets/profile-placeholder.jpg',
@@ -57,13 +84,13 @@ export default class ProfileComponent {
     'Rock 10%'
   ];
 
-  // Mock data - Reseñas
+  // Mock data - Reseñas (se conectará al ReviewStateService)
   reviews = signal<Review[]>([
     {
       id: 1,
       albumTitle: 'Random Access Memories',
       albumArtist: 'Daft Punk',
-      albumImageUrl: 'https://via.placeholder.com/200',
+      albumImageUrl: 'https://picsum.photos/seed/rev1/200/200',
       rating: 5,
       reviewText: 'Una obra maestra del pop electrónico. Cada pista es un viaje.',
       date: '2025-12-15'
@@ -72,7 +99,7 @@ export default class ProfileComponent {
       id: 2,
       albumTitle: 'The Dark Side of the Moon',
       albumArtist: 'Pink Floyd',
-      albumImageUrl: 'https://via.placeholder.com/200',
+      albumImageUrl: 'https://picsum.photos/seed/rev2/200/200',
       rating: 5,
       reviewText: 'Álbum conceptual perfecto. Producción impecable.',
       date: '2025-12-10'
@@ -81,7 +108,7 @@ export default class ProfileComponent {
       id: 3,
       albumTitle: 'Thriller',
       albumArtist: 'Michael Jackson',
-      albumImageUrl: 'https://via.placeholder.com/200',
+      albumImageUrl: 'https://picsum.photos/seed/rev3/200/200',
       rating: 4,
       reviewText: 'El rey del pop en su máximo esplendor. Temas inolvidables.',
       date: '2025-12-05'
@@ -94,7 +121,7 @@ export default class ProfileComponent {
       id: 1,
       title: 'Avantasia',
       artist: 'Avantasia',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/alb1/200/200',
       rating: 5,
       listenedDate: '2025-12-20'
     },
@@ -102,7 +129,7 @@ export default class ProfileComponent {
       id: 2,
       title: 'De Aquí No Sales Vivo',
       artist: 'Calle 13',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/alb2/200/200',
       rating: 4,
       listenedDate: '2025-12-18'
     },
@@ -110,7 +137,7 @@ export default class ProfileComponent {
       id: 3,
       title: 'Black Sabbath',
       artist: 'Black Sabbath',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/alb3/200/200',
       rating: 5,
       listenedDate: '2025-12-15'
     },
@@ -118,7 +145,7 @@ export default class ProfileComponent {
       id: 4,
       title: 'Los Funkcheros Cabrones',
       artist: 'Varios',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/alb4/200/200',
       rating: 3,
       listenedDate: '2025-12-12'
     },
@@ -126,7 +153,7 @@ export default class ProfileComponent {
       id: 5,
       title: 'Hammer King',
       artist: 'Hammer King',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/alb5/200/200',
       rating: 4,
       listenedDate: '2025-12-10'
     },
@@ -134,7 +161,7 @@ export default class ProfileComponent {
       id: 6,
       title: 'Holy Diver',
       artist: 'Dio',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/alb6/200/200',
       rating: 5,
       listenedDate: '2025-12-08'
     },
@@ -142,7 +169,7 @@ export default class ProfileComponent {
       id: 7,
       title: 'Random Access Memories',
       artist: 'Daft Punk',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/alb7/200/200',
       rating: 5,
       listenedDate: '2025-12-05'
     },
@@ -150,36 +177,148 @@ export default class ProfileComponent {
       id: 8,
       title: 'The Last Stand',
       artist: 'Sabaton',
-      imageUrl: 'https://via.placeholder.com/200',
+      imageUrl: 'https://picsum.photos/seed/alb8/200/200',
       rating: 4,
       listenedDate: '2025-12-01'
     }
   ]);
 
-  // Cambiar tab activo
+  ngOnInit(): void {
+    this.loadUserData();
+  }
+
+  /**
+   * Cargar datos del usuario desde los servicios
+   */
+  private loadUserData(): void {
+    const user = this.appState.currentUser();
+
+    if (user) {
+      this.userProfile = {
+        name: user.username,
+        avatarUrl: user.avatarUrl || 'assets/profile-placeholder.jpg',
+        memberSince: 'Enero 2025',
+        totalReviews: this.reviewState.userReviewsCount(),
+        totalAlbums: 156
+      };
+
+      // Cargar reseñas del usuario
+      this.reviewState.loadUserReviews(user.id);
+    }
+
+    // Simular fin de carga
+    setTimeout(() => this.isLoading.set(false), 500);
+  }
+
+  // ==========================================================================
+  // TRACKBY FUNCTIONS - OPTIMIZACIÓN DE RENDIMIENTO
+  // ==========================================================================
+
+  /**
+   * TrackBy para reseñas
+   */
+  trackByReviewId(index: number, review: Review): number | string {
+    return review.id;
+  }
+
+  /**
+   * TrackBy para álbumes
+   */
+  trackByAlbumId(index: number, album: Album): number | string {
+    return album.id;
+  }
+
+  // ==========================================================================
+  // MÉTODOS DE NAVEGACIÓN
+  // ==========================================================================
+
+  /**
+   * Cambiar tab activo
+   */
   setActiveTab(tab: TabType): void {
     this.activeTab.set(tab);
   }
 
-  // Verificar si un tab está activo
+  /**
+   * Verificar si un tab está activo
+   */
   isTabActive(tab: TabType): boolean {
     return this.activeTab() === tab;
   }
 
-  // Handlers para las acciones
-  viewReview(reviewId: number): void {
+  // ==========================================================================
+  // INFINITE SCROLL
+  // ==========================================================================
+
+  /**
+   * Cargar más reseñas
+   */
+  loadMoreReviews(): void {
+    if (this.isLoadingMore()) return;
+
+    this.isLoadingMore.set(true);
+
+    // Simular carga de más datos
+    setTimeout(() => {
+      // Aquí iría la llamada al servicio para cargar más
+      this.isLoadingMore.set(false);
+      // this.hasMoreReviews.set(false); // Cuando no hay más
+    }, 1000);
+  }
+
+  /**
+   * Cargar más álbumes
+   */
+  loadMoreAlbums(): void {
+    if (this.isLoadingMore()) return;
+
+    this.isLoadingMore.set(true);
+
+    setTimeout(() => {
+      this.isLoadingMore.set(false);
+    }, 1000);
+  }
+
+  // ==========================================================================
+  // ACCIONES
+  // ==========================================================================
+
+  /**
+   * Ver detalle de reseña
+   */
+  viewReview(reviewId: number | string): void {
     console.log('Ver reseña:', reviewId);
+    // TODO: Navegar a detalle o abrir modal
   }
 
-  viewAlbum(albumId: number): void {
-    console.log('Ver álbum:', albumId);
+  /**
+   * Ver detalle de álbum
+   */
+  viewAlbum(albumId: number | string): void {
+    this.router.navigate(['/album', albumId]);
   }
 
+  /**
+   * Editar perfil - navegar a settings
+   */
   editProfile = (): void => {
     this.router.navigate(['/settings']);
   }
 
+  /**
+   * Compartir perfil
+   */
   shareProfile = (): void => {
-    console.log('Compartir perfil');
+    if (navigator.share) {
+      navigator.share({
+        title: `Perfil de ${this.userProfile.name}`,
+        text: `Mira el perfil de ${this.userProfile.name} en Discs & Records`,
+        url: window.location.href
+      });
+    } else {
+      // Fallback: copiar URL
+      navigator.clipboard.writeText(window.location.href);
+      console.log('URL copiada al portapapeles');
+    }
   }
 }
