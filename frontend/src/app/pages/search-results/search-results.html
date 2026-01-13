@@ -1,16 +1,23 @@
 <main class="search-results">
-  <!-- ============================================ -->
-  <!-- HEADER: Término de búsqueda y navegación    -->
-  <!-- ============================================ -->
+  <section class="search-results__search-section">
+    <div class="search-results__search-wrapper">
+      <button
+        type="button"
+        class="search-results__back-btn"
+        (click)="goBack()"
+        aria-label="Volver al inicio"
+      >
+        ←
+      </button>
+      <app-search-bar
+        [placeholder]="'Buscar álbumes, artistas...'"
+        [navigateOnSearch]="false"
+        (onSearch)="newSearch($event)"
+      />
+    </div>
+  </section>
+
   <header class="search-results__header">
-    <button
-      type="button"
-      class="search-results__back-btn"
-      (click)="goBack()"
-      aria-label="Volver al inicio"
-    >
-      ← Volver
-    </button>
     <div class="search-results__header-content">
       @if (searchTerm()) {
         <h1 class="search-results__title">
@@ -27,19 +34,6 @@
     </div>
   </header>
 
-  <!-- ============================================ -->
-  <!-- BARRA DE BÚSQUEDA                           -->
-  <!-- ============================================ -->
-  <section class="search-results__search-section">
-    <app-search-bar
-      [placeholder]="'Buscar álbumes, artistas...'"
-      (onSearch)="newSearch($event)"
-    />
-  </section>
-
-  <!-- ============================================ -->
-  <!-- TABS DE FILTROS                             -->
-  <!-- ============================================ -->
   <section class="search-results__tabs-section">
     <app-tabs
       [tabs]="tabs()"
@@ -48,9 +42,6 @@
     />
   </section>
 
-  <!-- ============================================ -->
-  <!-- LOADING STATE                               -->
-  <!-- ============================================ -->
   @if (isLoading()) {
     <section class="search-results__loading" aria-busy="true">
       <app-spinner />
@@ -58,9 +49,6 @@
     </section>
   }
 
-  <!-- ============================================ -->
-  <!-- RESULTADOS                                  -->
-  <!-- ============================================ -->
   @if (!isLoading()) {
     @if (filteredResults().length > 0) {
       <section class="search-results__content" aria-label="Resultados de búsqueda">
@@ -92,7 +80,6 @@
           }
         </div>
 
-        <!-- Infinite Scroll -->
         <app-infinite-scroll
           [loading]="isLoadingMore()"
           [hasMore]="hasMore()"
@@ -103,9 +90,6 @@
       </section>
     }
 
-    <!-- ============================================ -->
-    <!-- ESTADO VACÍO                                -->
-    <!-- ============================================ -->
     @if (filteredResults().length === 0 && searchTerm()) {
       <section class="search-results__empty" aria-label="Sin resultados">
         <div class="search-results__empty-icon">🔍</div>

@@ -191,18 +191,18 @@
 .main__container {
   max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
-  padding: vars.$espaciado-xl vars.$espaciado-xl; // Aumentado padding general
+  padding: vars.$espaciado-s vars.$espaciado-xl;
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: vars.$espaciado-l;
 
   @media (min-width: vars.$breakpoint-tablet) {
-    padding: vars.$espaciado-xl vars.$espaciado-l;
+    padding: vars.$espaciado-s vars.$espaciado-l;
   }
 
   @media (min-width: vars.$breakpoint-desktop) {
-    padding: vars.$espaciado-xl vars.$espaciado-xl;
+    padding: vars.$espaciado-s vars.$espaciado-xl;
   }
 
   // Móvil pequeño: reducir padding al mínimo

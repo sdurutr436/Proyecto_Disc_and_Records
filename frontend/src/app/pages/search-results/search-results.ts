@@ -167,10 +167,12 @@ export default class SearchResultsComponent implements OnInit {
     const filter = this.activeFilter();
     const offset = this.currentOffset();
 
-    // En búsqueda general, hay más si la API tiene más datos o hay datos sin mostrar
     if (this.isGeneralSearch()) {
-      const hasLocalMore = offset < this.allAlbums().length;
-      return hasLocalMore || this.hasMoreFromApi();
+      if (filter === 'albums' || filter === 'all') {
+        const hasLocalMore = offset < this.allAlbums().length;
+        return hasLocalMore || this.hasMoreFromApi();
+      }
+      return offset < this.allArtists().length;
     }
 
     switch (filter) {
@@ -259,7 +261,7 @@ export default class SearchResultsComponent implements OnInit {
       this.isGeneralSearch.set(true);
       this.apiOffset.set(0);
       this.hasMoreFromApi.set(true);
-      
+
       return this.deezerService.getChartAlbums(SEARCH_LIMIT, 0).pipe(
         tap((albums) => {
           const mappedAlbums = albums.map(album => this.mapAlbumToResult(album));
@@ -372,14 +374,15 @@ export default class SearchResultsComponent implements OnInit {
     if (!this.hasMore() || this.isLoadingMore()) return;
 
     this.isLoadingMore.set(true);
+    const filter = this.activeFilter();
 
-    // Si es búsqueda general y necesitamos más datos de la API
-    if (this.isGeneralSearch() && this.currentOffset() >= this.allAlbums().length && this.hasMoreFromApi()) {
-      this.loadMoreFromApi();
-      return;
+    if (this.isGeneralSearch() && (filter === 'albums' || filter === 'all')) {
+      if (this.currentOffset() >= this.allAlbums().length && this.hasMoreFromApi()) {
+        this.loadMoreFromApi();
+        return;
+      }
     }
 
-    // Paginación local (datos ya cargados)
     setTimeout(() => {
       this.currentOffset.update(offset => offset + PAGE_SIZE);
       this.isLoadingMore.set(false);
@@ -391,7 +394,7 @@ export default class SearchResultsComponent implements OnInit {
    */
   private loadMoreFromApi(): void {
     const currentApiOffset = this.apiOffset();
-    
+
     this.deezerService.getChartAlbums(SEARCH_LIMIT, currentApiOffset).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({

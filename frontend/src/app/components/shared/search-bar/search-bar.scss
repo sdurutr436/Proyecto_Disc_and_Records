@@ -55,20 +55,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: calc($espaciado-xxl - $espaciado-s);
-    height: calc($espaciado-xxl - $espaciado-s);
+    width: 1.5rem;
+    height: 1.5rem;
     border: none;
     background: transparent;
     color: var(--text-secondary);
     cursor: pointer;
     border-radius: 50%;
     transition: all 0.2s ease;
-    font-size: 1.25rem;
+    font-size: 0.875rem;
     padding: 0;
+    margin-right: 0.25rem;
 
     &:hover {
-      background-color: var(--color-error);
-      color: var(--text-white);
+      color: var(--color-error);
     }
 
     &:active {

@@ -44,7 +44,7 @@ export class SearchBar implements OnInit, OnDestroy {
   @Input() debounceMs = 300;
 
   /** Número mínimo de caracteres para buscar */
-  @Input() minChars = 2;
+  @Input() minChars = 0;
 
   /** Si es true, navega automáticamente a /search */
   @Input() navigateOnSearch = true;
@@ -79,14 +79,12 @@ export class SearchBar implements OnInit, OnDestroy {
       debounceTime(this.debounceMs),
       distinctUntilChanged(),
       filter(term => {
-        // Si está vacío, emitir para limpiar resultados
         if (!term.trim()) {
           this.onSearchInstant.emit('');
           this.isSearching.set(false);
           return false;
         }
-        // Solo buscar si supera el mínimo de caracteres
-        return term.trim().length >= this.minChars;
+        return true;
       }),
       takeUntil(this.destroy$)
     ).subscribe(term => {
@@ -107,7 +105,7 @@ export class SearchBar implements OnInit, OnDestroy {
    */
   handleSearch(): void {
     const term = this.searchTerm().trim();
-    if (term && term.length >= this.minChars) {
+    if (term) {
       this.isSearching.set(true);
       this.onSearch.emit(term);
 
