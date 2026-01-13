@@ -90,6 +90,7 @@ El frontend estará disponible en `http://localhost:4200`
 
 - **[Documentación de Diseño CSS](/docs/design/DOCUMENTACION.md)** - Principios visuales, arquitectura CSS, showcase
 - **[Documentación Backend](/docs/backend/DOCUMENTACION.md)** - Modelo E-R, entidades, relaciones, queries
+- **[Proxy Deezer](/docs/backend/DEEZER_PROXY.md)** - Caché, rate limiting y cooldown para API de Deezer
 - **[Decisiones de Diseño](/DECISIONES_DISEÑO.md)** - Decisiones pendientes y propuestas
 - **[Showcase Netlify](https://styles-disc-n-records-showcase.netlify.app/showcase.html)** - Demostración de componentes
 
