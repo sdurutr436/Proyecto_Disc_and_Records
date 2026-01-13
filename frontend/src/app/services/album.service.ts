@@ -5,6 +5,8 @@ import { Album, Track, Review, AlbumResponse, AlbumStats, mapAlbumResponseToLega
 import { BaseHttpService } from './base-http.service';
 import { API_CONFIG, API_ENDPOINTS } from '../config/api.config';
 import { DeezerService, DeezerAlbum } from './deezer.service';
+import { MockDeezerService } from './mock-deezer.service';
+import { environment } from '../../environments/environment';
 
 /**
  * AlbumService - Servicio de gestión de álbumes
@@ -23,15 +25,25 @@ import { DeezerService, DeezerAlbum } from './deezer.service';
 })
 export class AlbumService extends BaseHttpService {
   private deezer = inject(DeezerService);
+  private mockDeezer = inject(MockDeezerService);
+
+  private get useMock(): boolean {
+    return environment.useMockData;
+  }
 
   // ==========================================================================
-  // MÉTODOS PRINCIPALES - DEEZER + BACKEND
+  // MÉTODOS PRINCIPALES - DEEZER + BACKEND (o MOCK)
   // ==========================================================================
 
   /**
-   * Obtiene 50 álbumes populares de Deezer (Charts)
+   * Obtiene 50 álbumes populares de Deezer (Charts) o mock
    */
   getNewReleases(): Observable<Album[]> {
+    if (this.useMock) {
+      return this.mockDeezer.getChartAlbums(50).pipe(
+        map(albums => albums.map(da => this.mapDeezerAlbumToAlbum(da)))
+      );
+    }
     return this.deezer.getChartAlbums(50).pipe(
       map(deezerAlbums => deezerAlbums.map(da => this.mapDeezerAlbumToAlbum(da))),
       catchError(error => {
@@ -45,6 +57,11 @@ export class AlbumService extends BaseHttpService {
    * Obtiene un álbum por su ID
    */
   getAlbumById(id: string): Observable<Album | null> {
+    if (this.useMock) {
+      return this.mockDeezer.getAlbumById(id).pipe(
+        map(album => album ? this.mapDeezerAlbumToAlbum(album) : null)
+      );
+    }
     return this.deezer.getAlbumById(id).pipe(
       map(deezerAlbum => deezerAlbum ? this.mapDeezerAlbumToAlbum(deezerAlbum) : null),
       catchError(() => this.getAlbumByIdBackend(id))
@@ -55,6 +72,11 @@ export class AlbumService extends BaseHttpService {
    * Busca álbumes por término
    */
   searchAlbums(query: string): Observable<Album[]> {
+    if (this.useMock) {
+      return this.mockDeezer.searchAlbums(query, 25).pipe(
+        map(albums => albums.map(da => this.mapDeezerAlbumToAlbum(da)))
+      );
+    }
     return this.deezer.searchAlbums(query, 25).pipe(
       map(deezerAlbums => deezerAlbums.map(da => this.mapDeezerAlbumToAlbum(da))),
       catchError(() => of([]))
@@ -62,34 +84,41 @@ export class AlbumService extends BaseHttpService {
   }
 
   /**
-   * Obtiene las canciones de un álbum de Deezer
+   * Obtiene las canciones de un álbum
    */
   getAlbumTracks(albumId: string): Observable<Track[]> {
-    return this.deezer.getAlbumTracks(albumId).pipe(
+    const source = this.useMock ? this.mockDeezer : this.deezer;
+    return source.getAlbumTracks(albumId).pipe(
       map(tracks => tracks.map((t, index) => ({
         id: String(t.id),
         number: t.track_position || index + 1,
         title: t.title,
-        duration: this.deezer.formatDuration(t.duration)
+        duration: source.formatDuration(t.duration)
       }))),
       catchError(() => of([]))
     );
   }
 
   /**
-   * Obtiene las reseñas de un álbum desde el backend
+   * Obtiene las reseñas de un álbum desde el backend o mock
    */
   getAlbumReviews(albumId: string): Observable<Review[]> {
+    if (this.useMock) {
+      return this.mockDeezer.getAlbumReviews(albumId);
+    }
     return this.getAlbumReviewsBackend(albumId);
   }
 
   /**
-   * Obtiene las estadísticas de un álbum desde el backend
+   * Obtiene las estadísticas de un álbum desde el backend o mock
    * (reviewCount, ratingCount, averageRating, listenedCount)
    * 
    * Estas métricas vienen del backend propio, NO de Deezer.
    */
   getAlbumStats(albumId: string): Observable<AlbumStats> {
+    if (this.useMock) {
+      return this.mockDeezer.getAlbumStats(albumId);
+    }
     const numericId = parseInt(albumId, 10);
     if (isNaN(numericId)) {
       return of({ reviewCount: 0, ratingCount: 0, averageRating: null, listenedCount: 0 });
@@ -167,13 +196,14 @@ export class AlbumService extends BaseHttpService {
    * del backend propio, NO de Deezer (fans no es lo mismo que reviews).
    */
   private mapDeezerAlbumToAlbum(deezerAlbum: DeezerAlbum): Album {
+    const source = this.useMock ? this.mockDeezer : this.deezer;
     return {
       id: String(deezerAlbum.id),
       title: deezerAlbum.title,
       artist: deezerAlbum.artist?.name || 'Artista Desconocido',
       artistId: String(deezerAlbum.artist?.id || ''),
-      coverUrl: this.deezer.getBestAlbumCover(deezerAlbum),
-      releaseYear: this.deezer.extractYear(deezerAlbum.release_date),
+      coverUrl: source.getBestAlbumCover(deezerAlbum),
+      releaseYear: source.extractYear(deezerAlbum.release_date),
       genre: deezerAlbum.genres?.data?.[0]?.name || '',
       tracks: deezerAlbum.nb_tracks || 0,
       duration: '',

@@ -243,13 +243,15 @@ export class DetailComponent implements OnInit, OnDestroy {
 
     return reviews.map(review => {
       const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
-      const dateStr = review.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+      const dateObj = typeof review.date === 'string' ? new Date(review.date) : review.date;
+      const dateStr = dateObj.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+      const userName = review.userName || review.username || 'Usuario';
 
       return `<div class="review-card">
         <div class="review-card__header">
-          <img src="${review.userAvatar}" alt="${review.userName}" class="review-card__avatar" />
+          <img src="${review.userAvatar}" alt="${userName}" class="review-card__avatar" />
           <div class="review-card__user-info">
-            <h5 class="review-card__user-name">${review.userName}</h5>
+            <h5 class="review-card__user-name">${userName}</h5>
             <div class="review-card__meta">
               <span class="review-card__rating">${stars}</span>
               <span class="review-card__date">${dateStr}</span>

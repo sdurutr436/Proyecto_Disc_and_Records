@@ -5,6 +5,8 @@ import { Artist, Album, ArtistaResponse, mapArtistaResponseToLegacy } from '../m
 import { BaseHttpService } from './base-http.service';
 import { API_CONFIG, API_ENDPOINTS } from '../config/api.config';
 import { DeezerService, DeezerArtist, DeezerAlbum } from './deezer.service';
+import { MockDeezerService } from './mock-deezer.service';
+import { environment } from '../../environments/environment';
 
 /**
  * ArtistService - Servicio de gestión de artistas
@@ -18,6 +20,11 @@ import { DeezerService, DeezerArtist, DeezerAlbum } from './deezer.service';
 })
 export class ArtistService extends BaseHttpService {
   private deezer = inject(DeezerService);
+  private mockDeezer = inject(MockDeezerService);
+
+  private get useMock(): boolean {
+    return environment.useMockData;
+  }
 
   // ==========================================================================
   // MÉTODOS PRINCIPALES
@@ -27,7 +34,8 @@ export class ArtistService extends BaseHttpService {
    * Obtiene artistas populares del chart
    */
   getPopularArtists(limit: number = 25): Observable<Artist[]> {
-    return this.deezer.getChartArtists(limit).pipe(
+    const source = this.useMock ? this.mockDeezer : this.deezer;
+    return source.getChartArtists(limit).pipe(
       map(artists => artists.map(a => this.mapDeezerArtistToArtist(a))),
       catchError(() => of([]))
     );
@@ -37,6 +45,11 @@ export class ArtistService extends BaseHttpService {
    * Obtiene un artista por su ID
    */
   getArtistById(id: string): Observable<Artist | null> {
+    if (this.useMock) {
+      return this.mockDeezer.getArtistById(id).pipe(
+        map(artist => artist ? this.mapDeezerArtistToArtist(artist) : null)
+      );
+    }
     return this.deezer.getArtistById(id).pipe(
       map(artist => artist ? this.mapDeezerArtistToArtist(artist) : null),
       catchError(() => this.getArtistByIdBackend(id))
@@ -47,7 +60,8 @@ export class ArtistService extends BaseHttpService {
    * Busca artistas por término
    */
   searchArtists(query: string): Observable<Artist[]> {
-    return this.deezer.searchArtists(query, 25).pipe(
+    const source = this.useMock ? this.mockDeezer : this.deezer;
+    return source.searchArtists(query, 25).pipe(
       map(artists => artists.map(a => this.mapDeezerArtistToArtist(a))),
       catchError(() => of([]))
     );
@@ -57,7 +71,8 @@ export class ArtistService extends BaseHttpService {
    * Obtiene los álbumes de un artista
    */
   getArtistAlbums(artistId: string): Observable<Album[]> {
-    return this.deezer.getArtistAlbums(artistId, 25).pipe(
+    const source = this.useMock ? this.mockDeezer : this.deezer;
+    return source.getArtistAlbums(artistId, 25).pipe(
       map(albums => albums.map(a => this.mapDeezerAlbumToAlbum(a))),
       catchError(() => of([]))
     );
@@ -67,11 +82,12 @@ export class ArtistService extends BaseHttpService {
    * Obtiene los top tracks de un artista
    */
   getArtistTopTracks(artistId: string): Observable<any[]> {
-    return this.deezer.getArtistTopTracks(artistId, 10).pipe(
+    const source = this.useMock ? this.mockDeezer : this.deezer;
+    return source.getArtistTopTracks(artistId, 10).pipe(
       map(tracks => tracks.map(t => ({
         id: String(t.id),
         title: t.title,
-        duration: this.deezer.formatDuration(t.duration),
+        duration: source.formatDuration(t.duration),
         previewUrl: t.preview,
         coverUrl: t.album?.cover_medium || ''
       }))),
