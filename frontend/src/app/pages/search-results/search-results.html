@@ -1,14 +1,14 @@
 <main class="search-results">
   <section class="search-results__search-section">
     <div class="search-results__search-wrapper">
-      <button
-        type="button"
-        class="search-results__back-btn"
-        (click)="goBack()"
+      <app-button
+        variant="secondary"
+        size="sm"
+        (clicked)="goBack()"
         aria-label="Volver al inicio"
       >
         ←
-      </button>
+      </app-button>
       <app-search-bar
         [placeholder]="'Buscar álbumes, artistas...'"
         [navigateOnSearch]="false"
@@ -16,23 +16,6 @@
       />
     </div>
   </section>
-
-  <header class="search-results__header">
-    <div class="search-results__header-content">
-      @if (searchTerm()) {
-        <h1 class="search-results__title">
-          Resultados para: <span class="search-results__query">"{{ searchTerm() }}"</span>
-        </h1>
-      } @else {
-        <h1 class="search-results__title">
-          Todos los <span class="search-results__query">Álbumes</span>
-        </h1>
-      }
-      <p class="search-results__count">
-        Mostrando {{ paginationInfo().showing }} de {{ paginationInfo().total }} resultados
-      </p>
-    </div>
-  </header>
 
   <section class="search-results__tabs-section">
     <app-tabs

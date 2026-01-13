@@ -1,5 +1,0 @@
-id,activo,avatar,biografia,contrasena,fecha_registro,mail,nombre_usuario,role
-1,1,NULL,NULL,$2a$10$HR0gAdekvFwZBCqUrsa4s.a44b6M2FReTWPOUzYnx8H8GM8xRK5.i,"2026-01-11 23:13:41.343071",admin@test.com,admin,ROLE_ADMIN
-2,1,NULL,NULL,$2a$10$mJR42Eu2PAfKvyNb/6eiReGjuLnLFZYbYPhYZzKY6Vq0cey1BbIEu,"2026-01-11 23:15:16.635887",test@example.com,test1,ROLE_USER
-3,1,NULL,NULL,$2a$10$xCFEe7rKQabrSTr8DFizD.uXReMsH0t2ZS0Z.p7ck.V34fNzB.cXy,"2026-01-12 09:09:35.756639",hola@hola.es,HolaQueTal,ROLE_USER
-4,1,NULL,NULL,$2a$10$odgS2/LO4jT9Z73AByay5OStSmYAau2QJYSOuZgoZUrYZ9F8DtWQa,"2026-01-12 09:17:20.704664",test@test.com,test3,ROLE_USER

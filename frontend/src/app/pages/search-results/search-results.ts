@@ -18,6 +18,7 @@ import { SearchBar } from '../../components/shared/search-bar/search-bar';
 import { Spinner } from '../../components/shared/spinner/spinner';
 import { InfiniteScrollComponent } from '../../components/shared/infinite-scroll/infinite-scroll';
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
+import { Button } from '../../components/shared/button/button';
 import { DeezerService, DeezerAlbum, DeezerArtist } from '../../services/deezer.service';
 
 // Tipos de filtro disponibles
@@ -61,7 +62,8 @@ const LOAD_MORE_DELAY_MS = 300;
     SearchBar,
     Spinner,
     InfiniteScrollComponent,
-    Tabs
+    Tabs,
+    Button
   ],
   templateUrl: './search-results.html',
   styleUrls: ['./search-results.scss'],
