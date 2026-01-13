@@ -248,6 +248,18 @@ export interface Album {
 }
 
 /**
+ * Estadísticas de un álbum desde el backend propio
+ * (NO de Deezer - estas son métricas de usuarios reales)
+ */
+export interface AlbumStats {
+  albumId?: number;
+  reviewCount: number;
+  ratingCount: number;
+  averageRating: number | null;
+  listenedCount: number;
+}
+
+/**
  * @deprecated Usar ArtistaResponse directamente
  */
 export interface Artist {

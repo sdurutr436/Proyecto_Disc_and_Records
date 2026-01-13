@@ -95,6 +95,18 @@ public interface UsuarioAlbumRepository extends JpaRepository<UsuarioAlbum, Usua
     Long contarResenasPorAlbum(@Param("albumId") Long albumId);
     
     /**
+     * Contar puntuaciones de un álbum (usuarios que han dado rating)
+     */
+    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.album.id = :albumId AND ua.puntuacion IS NOT NULL")
+    Long contarPuntuacionesPorAlbum(@Param("albumId") Long albumId);
+    
+    /**
+     * Contar usuarios que han escuchado un álbum
+     */
+    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.album.id = :albumId AND ua.escuchado = true")
+    Long contarEscuchadosPorAlbum(@Param("albumId") Long albumId);
+    
+    /**
      * Top álbumes mejor puntuados
      */
     @Query("SELECT ua.album.tituloAlbum, AVG(ua.puntuacion) as promedio, COUNT(ua) as total " +

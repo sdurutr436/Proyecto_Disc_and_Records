@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Album, Track, Review, AlbumResponse, mapAlbumResponseToLegacy } from '../models/data.models';
+import { Album, Track, Review, AlbumResponse, AlbumStats, mapAlbumResponseToLegacy } from '../models/data.models';
 import { BaseHttpService } from './base-http.service';
 import { API_CONFIG, API_ENDPOINTS } from '../config/api.config';
 import { DeezerService, DeezerAlbum } from './deezer.service';
@@ -84,6 +84,23 @@ export class AlbumService extends BaseHttpService {
   }
 
   /**
+   * Obtiene las estadísticas de un álbum desde el backend
+   * (reviewCount, ratingCount, averageRating, listenedCount)
+   * 
+   * Estas métricas vienen del backend propio, NO de Deezer.
+   */
+  getAlbumStats(albumId: string): Observable<AlbumStats> {
+    const numericId = parseInt(albumId, 10);
+    if (isNaN(numericId)) {
+      return of({ reviewCount: 0, ratingCount: 0, averageRating: null, listenedCount: 0 });
+    }
+
+    return this.get<AlbumStats>(`${API_CONFIG.baseUrl}/albumes/${numericId}/stats`).pipe(
+      catchError(() => of({ reviewCount: 0, ratingCount: 0, averageRating: null, listenedCount: 0 }))
+    );
+  }
+
+  /**
    * Obtiene todos los álbumes (para admin/listados)
    */
   getAllAlbums(): Observable<Album[]> {
@@ -144,6 +161,10 @@ export class AlbumService extends BaseHttpService {
 
   /**
    * Convierte un álbum de Deezer al modelo Album del frontend
+   * 
+   * NOTA: averageRating y totalReviews se inicializan a 0.
+   * Estas métricas deben obtenerse del endpoint /api/albumes/{id}/stats
+   * del backend propio, NO de Deezer (fans no es lo mismo que reviews).
    */
   private mapDeezerAlbumToAlbum(deezerAlbum: DeezerAlbum): Album {
     return {
@@ -158,8 +179,8 @@ export class AlbumService extends BaseHttpService {
       duration: '',
       label: deezerAlbum.label || '',
       description: '',
-      averageRating: 0,
-      totalReviews: deezerAlbum.fans || 0
+      averageRating: 0, // Se obtiene de /api/albumes/{id}/stats
+      totalReviews: 0   // Se obtiene de /api/albumes/{id}/stats
     };
   }
 

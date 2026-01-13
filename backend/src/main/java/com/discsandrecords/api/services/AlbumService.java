@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.discsandrecords.api.dto.AlbumResponseDTO;
+import com.discsandrecords.api.dto.AlbumStatsDTO;
 import com.discsandrecords.api.dto.ArtistaResponseDTO;
 import com.discsandrecords.api.dto.CreateAlbumDTO;
 import com.discsandrecords.api.dto.PageResponseDTO;
@@ -143,6 +144,35 @@ public class AlbumService {
         }
 
         albumRepository.delete(album);
+    }
+
+    /**
+     * Obtiene las estadísticas de un álbum (reviews, ratings, listeners).
+     * Estas métricas vienen del backend propio, NO de Deezer (fans).
+     * 
+     * @param albumId ID del álbum (puede ser de Deezer)
+     * @return Estadísticas del álbum
+     */
+    @Transactional(readOnly = true)
+    public AlbumStatsDTO obtenerEstadisticas(Long albumId) {
+        // Obtener estadísticas aunque el álbum no exista en nuestra BD
+        // (para álbumes de Deezer que aún no hemos guardado)
+        Long reviewCount = usuarioAlbumRepository.contarResenasPorAlbum(albumId);
+        Long ratingCount = usuarioAlbumRepository.contarPuntuacionesPorAlbum(albumId);
+        Long listenedCount = usuarioAlbumRepository.contarEscuchadosPorAlbum(albumId);
+        Double avgRating = usuarioAlbumRepository.calcularPuntuacionMedia(albumId);
+        
+        BigDecimal averageRating = avgRating != null 
+            ? BigDecimal.valueOf(avgRating).setScale(2, RoundingMode.HALF_UP)
+            : null;
+        
+        return new AlbumStatsDTO(
+            albumId,
+            reviewCount != null ? reviewCount : 0,
+            ratingCount != null ? ratingCount : 0,
+            averageRating,
+            listenedCount != null ? listenedCount : 0
+        );
     }
 
     /**

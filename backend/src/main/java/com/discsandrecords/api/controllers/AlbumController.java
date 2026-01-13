@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.discsandrecords.api.dto.AlbumResponseDTO;
+import com.discsandrecords.api.dto.AlbumStatsDTO;
 import com.discsandrecords.api.dto.CreateAlbumDTO;
 import com.discsandrecords.api.dto.PageResponseDTO;
 import com.discsandrecords.api.services.AlbumService;
@@ -104,6 +105,19 @@ public class AlbumController {
     })
     public ResponseEntity<List<AlbumResponseDTO>> listarPorArtista(@PathVariable Long idArtista) {
         return ResponseEntity.ok(albumService.listarPorArtista(idArtista));
+    }
+
+    @GetMapping("/{id}/stats")
+    @Operation(
+        summary = "Obtener estadísticas de un álbum", 
+        description = "Devuelve métricas calculadas desde reseñas de usuarios (NO de Deezer). " +
+                      "Incluye: número de reseñas, puntuaciones, rating medio y usuarios que lo han escuchado."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Estadísticas del álbum"),
+    })
+    public ResponseEntity<AlbumStatsDTO> obtenerEstadisticas(@PathVariable Long id) {
+        return ResponseEntity.ok(albumService.obtenerEstadisticas(id));
     }
 
     // ==========================================
