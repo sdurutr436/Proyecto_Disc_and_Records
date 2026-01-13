@@ -232,17 +232,19 @@ export class ResponsiveTabs implements AfterContentInit, AfterViewInit, OnDestro
     // Solo configurar si estamos en modo tabs
     if (this.displayMode() !== 'tabs') return;
 
+    // MEJORA 1.2: Usamos Renderer2.addClass para manipular clases de forma segura (SSR-compatible)
     this.listeners.push(this.renderer.listen(slider, 'mousedown', (e: MouseEvent) => {
       this.isDown = true;
       this.isDragging = false;
-      slider.classList.add('active');
+      this.renderer.addClass(slider, 'active');
       this.startX = e.pageX - slider.offsetLeft;
       this.scrollLeft = slider.scrollLeft;
     }));
 
+    // MEJORA 1.2: Usamos Renderer2.removeClass para quitar clases de forma segura
     const stopDragging = () => {
       this.isDown = false;
-      slider.classList.remove('active');
+      this.renderer.removeClass(slider, 'active');
       setTimeout(() => this.isDragging = false, 50);
     };
 

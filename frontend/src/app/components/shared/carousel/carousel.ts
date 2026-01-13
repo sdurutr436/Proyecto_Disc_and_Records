@@ -1,5 +1,16 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy, ChangeDetectorRef, Renderer2, inject } from '@angular/core';
 
+/**
+ * Carousel Component
+ *
+ * BLOQUE 1 - MANIPULACIÓN DEL DOM:
+ * - @ViewChild para obtener referencia al track del carousel (1.1)
+ * - Renderer2 para modificar estilos de forma segura (1.2)
+ *
+ * ELEMENTO ACCEDIDO: carouselTrack - El contenedor de slides
+ * USO: Control de scroll horizontal y efectos visuales
+ * CICLO DE VIDA: ngAfterViewInit (cuando el DOM está disponible)
+ */
 @Component({
   selector: 'app-carousel',
   standalone: true,
@@ -8,8 +19,23 @@ import { Component, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy, Chan
   styleUrl: './carousel.scss'
 })
 export class Carousel implements AfterViewInit, OnDestroy {
+  /**
+   * MEJORA 1.2: Inyectamos Renderer2 para manipulación segura del DOM
+   * Renderer2 es la forma recomendada en Angular para:
+   * - Compatibilidad con SSR (Server-Side Rendering)
+   * - Seguridad (no expone nativeElement directamente)
+   * - Abstracción del DOM para diferentes plataformas
+   */
+  private renderer = inject(Renderer2);
+
   @Input() title: string = '';
   @Input() itemsToShow: number = 4;
+
+  /**
+   * MEJORA 1.1: ViewChild con ElementRef tipado
+   * Referencia al contenedor de slides del carousel
+   * Se accede en ngAfterViewInit cuando el DOM está disponible
+   */
   @ViewChild('carouselTrack') carouselTrack!: ElementRef<HTMLDivElement>;
 
   currentIndex: number = 0;
@@ -106,26 +132,34 @@ export class Carousel implements AfterViewInit, OnDestroy {
 
   /**
    * MANIPULACIÓN DOM AVANZADA: Modificar estilos dinámicamente
-   * Añade un efecto de highlight al track del carousel
-   * NOTA: Mejor práctica es usar clases CSS en lugar de manipular estilos inline
+   * MEJORA 1.2: Usamos Renderer2.addClass/removeClass en lugar de classList.toggle
+   * Esto garantiza compatibilidad con SSR y mejora la seguridad
    */
   toggleHighlight(): void {
     if (!this.carouselTrack) return;
 
     const track = this.carouselTrack.nativeElement;
+    const hasClass = track.classList.contains('carousel__track--highlighted');
 
-    // Mejor práctica: toggle de clase CSS en lugar de manipular estilos
-    track.classList.toggle('carousel__track--highlighted');
+    // Usamos Renderer2 para toggle seguro de clases
+    if (hasClass) {
+      this.renderer.removeClass(track, 'carousel__track--highlighted');
+    } else {
+      this.renderer.addClass(track, 'carousel__track--highlighted');
+    }
   }
 
   /**
    * MANIPULACIÓN DOM: Cambiar opacidad dinámicamente
+   * MEJORA 1.2: Usamos Renderer2.setStyle en lugar de nativeElement.style
+   * Renderer2 es la forma segura y recomendada para modificar estilos en Angular
    */
   setOpacity(value: number): void {
     if (!this.carouselTrack) return;
 
-    // MANIPULACIÓN DIRECTA: modificar estilo de opacidad
-    this.carouselTrack.nativeElement.style.opacity = value.toString();
-    this.carouselTrack.nativeElement.style.transition = 'opacity 0.3s ease';
+    const track = this.carouselTrack.nativeElement;
+    // Usamos Renderer2 para establecer estilos de forma segura
+    this.renderer.setStyle(track, 'opacity', value.toString());
+    this.renderer.setStyle(track, 'transition', 'opacity 0.3s ease');
   }
 }

@@ -1,15 +1,40 @@
-import { Component, input, signal, HostListener } from '@angular/core';
+import { Component, input, signal, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
+/**
+ * Contador global para generar IDs únicos de tooltips
+ */
+let tooltipIdCounter = 0;
+
+/**
+ * Tooltip Component
+ *
+ * BLOQUE 3.5 - TOOLTIP ACCESIBLE:
+ * - Soporte de foco con focusin/focusout para accesibilidad por teclado
+ * - aria-describedby para vincular elemento con tooltip
+ * - Delays configurables para mejor UX
+ * - Animación suave de entrada/salida
+ *
+ * EVENTOS SOPORTADOS (BLOQUE 2.2):
+ * - mouseenter/mouseleave: hover con ratón
+ * - focusin/focusout: navegación por teclado
+ *
+ * @example
+ * ```html
+ * <app-tooltip text="Información adicional" position="top">
+ *   <button>Hover o enfoca aquí</button>
+ * </app-tooltip>
+ * ```
+ */
 @Component({
   selector: 'app-tooltip',
   imports: [CommonModule],
   templateUrl: './tooltip.html',
   styleUrl: './tooltip.scss',
 })
-export class Tooltip {
+export class Tooltip implements OnDestroy {
   /**
    * Texto del tooltip
    */
@@ -35,19 +60,66 @@ export class Tooltip {
    */
   isVisible = signal(false);
 
-  private showTimeout: any;
-  private hideTimeout: any;
+  /**
+   * ID único para aria-describedby
+   * Permite vincular el tooltip con el elemento que lo describe
+   */
+  readonly tooltipId = `tooltip-${++tooltipIdCounter}`;
+
+  private showTimeout: ReturnType<typeof setTimeout> | null = null;
+  private hideTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  // =========================================================================
+  // BLOQUE 2.2: EVENTOS DE MOUSE
+  // =========================================================================
 
   /**
    * Mostrar tooltip al hacer hover
    */
   @HostListener('mouseenter')
   onMouseEnter() {
+    this.scheduleShow();
+  }
+
+  /**
+   * Ocultar tooltip al quitar el hover
+   */
+  @HostListener('mouseleave')
+  onMouseLeave() {
+    this.scheduleHide();
+  }
+
+  // =========================================================================
+  // BLOQUE 2.2 & 3.5: EVENTOS DE FOCUS (Accesibilidad)
+  // =========================================================================
+
+  /**
+   * Mostrar tooltip cuando un elemento hijo recibe foco
+   * MEJORA 3.5: Permite navegación por teclado accesible
+   */
+  @HostListener('focusin')
+  onFocusIn() {
+    this.scheduleShow();
+  }
+
+  /**
+   * Ocultar tooltip cuando el foco sale del elemento
+   */
+  @HostListener('focusout')
+  onFocusOut() {
+    this.scheduleHide();
+  }
+
+  // =========================================================================
+  // MÉTODOS PRIVADOS
+  // =========================================================================
+
+  /**
+   * Programar la aparición del tooltip con delay
+   */
+  private scheduleShow(): void {
     // Cancelar cualquier hideTimeout pendiente
-    if (this.hideTimeout) {
-      clearTimeout(this.hideTimeout);
-      this.hideTimeout = null;
-    }
+    this.clearHideTimeout();
 
     // Mostrar tooltip después del delay
     this.showTimeout = setTimeout(() => {
@@ -56,15 +128,11 @@ export class Tooltip {
   }
 
   /**
-   * Ocultar tooltip al quitar el hover
+   * Programar la ocultación del tooltip con delay
    */
-  @HostListener('mouseleave')
-  onMouseLeave() {
+  private scheduleHide(): void {
     // Cancelar cualquier showTimeout pendiente
-    if (this.showTimeout) {
-      clearTimeout(this.showTimeout);
-      this.showTimeout = null;
-    }
+    this.clearShowTimeout();
 
     // Ocultar tooltip después del delay
     this.hideTimeout = setTimeout(() => {
@@ -73,10 +141,31 @@ export class Tooltip {
   }
 
   /**
+   * Limpiar timeout de mostrar
+   */
+  private clearShowTimeout(): void {
+    if (this.showTimeout) {
+      clearTimeout(this.showTimeout);
+      this.showTimeout = null;
+    }
+  }
+
+  /**
+   * Limpiar timeout de ocultar
+   */
+  private clearHideTimeout(): void {
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+      this.hideTimeout = null;
+    }
+  }
+
+  /**
    * Limpiar timeouts al destruir el componente
+   * Evita memory leaks y llamadas a componentes destruidos
    */
   ngOnDestroy() {
-    if (this.showTimeout) clearTimeout(this.showTimeout);
-    if (this.hideTimeout) clearTimeout(this.hideTimeout);
+    this.clearShowTimeout();
+    this.clearHideTimeout();
   }
 }

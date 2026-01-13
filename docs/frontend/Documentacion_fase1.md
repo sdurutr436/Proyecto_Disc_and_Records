@@ -2,18 +2,22 @@
 
 > **Proyecto:** Discs & Records
 > **Tipo:** Aplicación web estilo Letterboxd para música
-> **Fecha:** 17 de diciembre de 2025
+> **Fecha:** 17 de diciembre de 2025 (Actualizado: 13 de enero de 2026)
 
 ---
 
 ## Índice
 
 1. [Manipulación del DOM en componentes](#manipulación-del-dom-en-componentes)
-2. [Creación y eliminación programática (toasts)](#creación-y-eliminación-programática-toasts)
-3. [Sistema de eventos](#sistema-de-eventos)
-4. [Componentes interactivos](#componentes-interactivos)
-5. [Theme Switcher](#theme-switcher)
-6. [Arquitectura de eventos](#arquitectura-de-eventos-readme-técnico)
+2. [Tabla ViewChild/ElementRef](#tabla-viewchildelementref)
+3. [Renderer2 - Buenas prácticas](#renderer2---buenas-prácticas)
+4. [Creación y eliminación programática (toasts)](#creación-y-eliminación-programática-toasts)
+5. [Sistema de eventos](#sistema-de-eventos)
+6. [Tabla de eventos en templates](#tabla-de-eventos-en-templates)
+7. [Tabla HostListener global](#tabla-hostlistener-global)
+8. [Componentes interactivos](#componentes-interactivos)
+9. [Theme Switcher](#theme-switcher)
+10. [Arquitectura de eventos](#arquitectura-de-eventos-readme-técnico)
 
 ---
 
@@ -27,12 +31,70 @@ El componente `Tabs` obtiene una referencia al contenedor de navegación para co
 @ViewChild('tabsNav') tabsNav!: ElementRef<HTMLElement>;
 ```
 
-### Modificación dinámica de propiedades/estilos
-En el carrusel se aplican estilos de forma dinámica cuando la UI lo necesita (por ejemplo, un highlight temporal o cambios de opacidad).
-Este patrón se usa de manera limitada y controlada, priorizando el renderizado declarativo de Angular.
+### Modificación dinámica de propiedades/estilos con Renderer2
+En lugar de manipular directamente `classList` o `style`, usamos `Renderer2` para garantizar compatibilidad con SSR y seguridad:
+```ts
+// ❌ Antes (manipulación directa)
+slider.classList.add('tabs--grabbing');
+element.style.opacity = '0.5';
+
+// ✅ Ahora (con Renderer2)
+this.renderer.addClass(slider, 'tabs--grabbing');
+this.renderer.setStyle(element, 'opacity', '0.5');
+```
+
+---
+
+## Tabla ViewChild/ElementRef
+
+| Componente | Elemento | Uso | Ciclo de vida |
+|------------|----------|-----|---------------|
+| `Tabs` | `tabsNav` (nav container) | Scroll horizontal, drag-to-scroll | `ngAfterViewInit` |
+| `Tabs` | `tabButtons` (QueryList) | Navegación por teclado, gestión de foco | `ngAfterViewInit` |
+| `TabGroup` | `tabsNav` (nav container) | Scroll horizontal, drag-to-scroll | `ngAfterViewInit` |
+| `ResponsiveTabs` | `tabsNav` (nav container) | Scroll horizontal en modo tabs | `ngAfterViewInit` |
+| `Carousel` | `carouselTrack` (div) | Scroll suave, efectos visuales | `ngAfterViewInit` |
+| `Accordion` | `accordionHeaders` (QueryList) | Navegación por teclado, foco | `ngAfterViewInit` |
+| `InfiniteScroll` | `elementRef` (host) | Observer de intersección | `ngAfterViewInit` |
+| `Notification` | `elementRef` (host) | Medir altura para apilado | `ngAfterViewInit` |
+
+---
+
+## Renderer2 - Buenas prácticas
+
+### ¿Por qué usar Renderer2?
+
+| Característica | Manipulación directa | Renderer2 |
+|----------------|---------------------|-----------|
+| **Compatibilidad SSR** | ❌ No | ✅ Sí |
+| **Seguridad XSS** | ❌ Expone nativeElement | ✅ Abstrae el DOM |
+| **Plataforma universal** | ❌ Solo navegador | ✅ Web Workers, etc. |
+| **Testing** | ❌ Difícil de mockear | ✅ Fácil de testear |
+
+### Métodos principales de Renderer2
+
+```ts
+// Clases CSS
+renderer.addClass(element, 'active');
+renderer.removeClass(element, 'active');
+
+// Estilos inline
+renderer.setStyle(element, 'opacity', '0.5');
+renderer.removeStyle(element, 'opacity');
+
+// Atributos
+renderer.setAttribute(element, 'aria-expanded', 'true');
+renderer.removeAttribute(element, 'aria-expanded');
+
+// Listeners (con cleanup automático)
+const unlisten = renderer.listen(element, 'click', handler);
+// En ngOnDestroy: unlisten();
+```
+
+---
 
 ## Creación y eliminación programática (toasts)
-El sistema de notificaciones crea componentes en tiempo de ejecución y los inserta directamente en `document.body`, retirándolos cuando el componente emite `dismissed` (patrón típico de *toast*). [file:9]
+El sistema de notificaciones crea componentes en tiempo de ejecución y los inserta directamente en `document.body`, retirándolos cuando el componente emite `dismissed` (patrón típico de *toast*).
 
 ```ts
 // Crear + insertar
@@ -47,96 +109,104 @@ this.appRef.detachView(componentRef.hostView);
 componentRef.destroy();
 ```
 
+### Limpieza en ngOnDestroy
+
+Es fundamental limpiar listeners y timeouts para evitar memory leaks:
+
+```ts
+ngOnDestroy() {
+  // Limpiar listeners de Renderer2
+  this.listeners.forEach(unlisten => unlisten());
+  
+  // Limpiar timeouts
+  if (this.showTimeout) clearTimeout(this.showTimeout);
+  if (this.hideTimeout) clearTimeout(this.hideTimeout);
+}
+```
+
 ---
 
 ## Sistema de eventos
 La interacción se implementa combinando:
-- Event binding en templates (principalmente `click`).
+- Event binding en templates (click, keydown, focus, blur).
 - `@HostListener` para eventos a nivel de componente o documento (ESC, click fuera, hover).
-- Listeners controlados con `Renderer2.listen`/`addEventListener` cuando se necesita scroll/drag con configuraciones específicas (por ejemplo `{ passive: false }`).
+- Listeners controlados con `Renderer2.listen` cuando se necesita scroll/drag con configuraciones específicas.
 
-### Eventos de teclado
-Los modales se cierran con `ESC` desde el propio componente `Modal`, evitando duplicar la lógica en el layout.
-```ts
-@HostListener('document:keydown.escape')
-onEscapeKey() {
-  if (this.isVisible()) {
-    this.close();
-  }
-}
-```
+---
 
-El componente `Tabs` permite navegación por teclado (flecha izquierda/derecha), delegando la lógica en un método común que hace wrap-around y salta pestañas deshabilitadas.
-```ts
-@HostListener('keydown.arrowleft')
-onArrowLeft() { this.navigateTabs(-1); }
+## Tabla de eventos en templates
 
-@HostListener('keydown.arrowright')
-onArrowRight() { this.navigateTabs(1); }
-```
+| Template | Evento | Handler | Resultado |
+|----------|--------|---------|-----------|
+| `accordion.html` | `(click)` | `toggle(item.id)` | Expande/colapsa sección |
+| `accordion.html` | `(keydown)` | `onHeaderKeydown($event, i, item.id)` | Navegación ArrowUp/Down/Home/End |
+| `accordion.html` | `(focus)` | `onHeaderFocus(i)` | Actualiza índice enfocado |
+| `tabs.html` | `(click)` | `selectTab(tab.id)` | Selecciona pestaña |
+| `tabs.html` | `(keydown)` | `onTabKeydown($event, i)` | Navegación ArrowLeft/Right/Home/End |
+| `tabs.html` | `(focus)` | `onTabFocus(i)` | Actualiza índice enfocado |
+| `modal.html` | `(click)` overlay | `onOverlayClick($event)` | Cierra modal |
+| `modal.html` | `(click)` content | `onContentClick($event)` | stopPropagation |
+| `header.html` | `(click)` | `toggleMenu()` | Abre/cierra menú móvil |
+| `header.html` | `(click)` | `toggleTheme()` | Cambia tema claro/oscuro |
 
-### Eventos de mouse
-El tooltip se muestra/oculta con hover y permite delays configurables para mejorar la experiencia (evita parpadeos).
-```ts
-@HostListener('mouseenter')
-onMouseEnter() {
-  this.showTimeout = setTimeout(() => this.isVisible.set(true), this.showDelay());
-}
+---
 
-@HostListener('mouseleave')
-onMouseLeave() {
-  this.hideTimeout = setTimeout(() => this.isVisible.set(false), this.hideDelay());
-}
-```
+## Tabla HostListener global
 
-### Prevenir comportamiento por defecto
-En `Tabs` se usa `preventDefault()` para dos casos típicos:
-- Evitar selección de texto durante drag-to-scroll.
-- Bloquear el scroll vertical de la página cuando se traduce `wheel` vertical a scroll horizontal.
-
-```ts
-// Dentro de mousemove durante drag
-e.preventDefault();
-
-// Wheel handler con passive:false
-e.preventDefault();
-slider.scrollLeft += e.deltaY;
-```
+| Componente | Evento global | Función | Descripción |
+|------------|---------------|---------|-------------|
+| `Modal` | `document:keydown.escape` | `onEscapeKey()` | Cierra modal con ESC |
+| `Modal` | `keydown` (Tab) | `onKeydown($event)` | Focus trap dentro del modal |
+| `Header` | `document:keydown.escape` | `onEscapeKey()` | Cierra menú móvil con ESC |
+| `Header` | `document:click` | `onDocumentClick($event)` | Cierra menú al click fuera |
+| `Tooltip` | `mouseenter` | `onMouseEnter()` | Muestra tooltip |
+| `Tooltip` | `mouseleave` | `onMouseLeave()` | Oculta tooltip |
+| `Tooltip` | `focusin` | `onFocusIn()` | Muestra tooltip (accesibilidad) |
+| `Tooltip` | `focusout` | `onFocusOut()` | Oculta tooltip |
+| `ResponsiveTabs` | `window:resize` | `onResize()` | Detecta cambio viewport |
 
 ---
 
 ## Componentes interactivos
+
 ### Menú hamburguesa (layout)
 El menú móvil se gestiona desde `Header` con estado reactivo (`signal`) y se cierra en dos escenarios:
 - Al pulsar `ESC`.
 - Al hacer click fuera del contenedor del menú móvil.
 
 ### Modales
-El layout integra tres modales (login/register/forgot-password) y delega el comportamiento de cierre en el propio componente `Modal` (overlay + ESC) mediante `onClose`.
-Además, el modal bloquea el scroll del body mientras está abierto para evitar scroll del contenido de fondo.
+El layout integra tres modales (login/register/forgot-password) con las siguientes mejoras de accesibilidad:
+- **Focus restore**: Al cerrar, el foco vuelve al elemento que abrió el modal.
+- **Focus trap**: Tab/Shift+Tab navegan solo dentro del modal.
+- **stopPropagation**: Clicks en el contenido no cierran el modal.
+- Cierre con ESC y click en overlay.
 
 ### Acordeones
-El acordeón soporta dos modos:
+El acordeón soporta navegación completa por teclado:
+- **ArrowUp/ArrowDown**: Navegar entre headers (con wrap-around).
+- **Home/End**: Ir al primer/último header.
+- **Enter/Space**: Toggle del item.
+- **Roving tabindex**: Solo el header enfocado tiene tabindex=0.
+
+Modos soportados:
 - `single`: solo una sección abierta.
 - `multiple`: varias secciones abiertas simultáneamente.
 
-```ts
-toggle(itemId: string | number) {
-  const currentOpen = new Set(this.openItems());
-  if (currentOpen.has(itemId)) currentOpen.delete(itemId);
-  else {
-    if (this.mode() === 'single') currentOpen.clear();
-    currentOpen.add(itemId);
-  }
-  this.openItems.set(currentOpen);
-}
-```
-
 ### Tabs
-Las pestañas combinan interacción por click, navegación por teclado y scroll horizontal cuando el listado de tabs excede el ancho disponible (drag/wheel).
+Las pestañas implementan el patrón WAI-ARIA:
+- **role="tablist"** en el contenedor.
+- **role="tab"** en cada botón.
+- **aria-selected** indica el tab activo.
+- **ArrowLeft/ArrowRight**: Navegar entre tabs.
+- **Home/End**: Ir al primer/último tab habilitado.
+- Salta automáticamente tabs deshabilitados.
 
 ### Tooltips
-Los tooltips se renderizan/ocultan por estado (`signal`) controlado por `mouseenter/mouseleave` con delays.
+Los tooltips son accesibles por teclado:
+- **focusin/focusout**: Mismo comportamiento que hover.
+- **aria-describedby**: Vincula contenido con tooltip.
+- **role="tooltip"** para identificación.
+- Delays configurables para mejor UX.
 
 ---
 
@@ -166,29 +236,82 @@ toggleTheme(): void {
 Para mantener consistencia y evitar duplicidad de lógica:
 - Los componentes encapsulan su comportamiento (ej. `Modal` maneja ESC/overlay/focus).
 - El layout orquesta estado y composición (ej. `Header` decide qué modal está abierto).
-- Los componentes con interacción avanzada limpian listeners en `ngOnDestroy` para evitar memory leaks (ej. `Tabs`).
+- Los componentes con interacción avanzada limpian listeners en `ngOnDestroy` para evitar memory leaks.
 
-### Diagrama de flujo (eventos principales)
-```mermaid
-flowchart TD
-  U[Usuario] -->|Click abrir modal| H[Header: activeModal]
-  H -->|isOpen=true| M[Modal: open()]
-  U -->|ESC| E[Modal: document keydown.escape]
-  E -->|close + onClose.emit| H
-  U -->|Hover| T[Tooltip: mouseenter/mouseleave]
-  U -->|Wheel/Drag| TB[Tabs: listeners DOM]
-  U -->|Toggle| TS[ThemeService]
+### Diagrama de flujo de eventos
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        FLUJO DE EVENTOS                                 │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  USUARIO                                                                │
+│     │                                                                   │
+│     ▼                                                                   │
+│  ┌──────────────────┐                                                   │
+│  │   Evento DOM     │  click, keydown, focus, mouseenter...            │
+│  └────────┬─────────┘                                                   │
+│           │                                                             │
+│           ▼                                                             │
+│  ┌──────────────────┐                                                   │
+│  │  Template HTML   │  (click)="handler($event)"                       │
+│  │  Event Binding   │  (keydown.enter)="submit()"                      │
+│  └────────┬─────────┘                                                   │
+│           │                                                             │
+│           ▼                                                             │
+│  ┌──────────────────┐                                                   │
+│  │  Componente TS   │  Handler procesa evento                          │
+│  │  (Handler)       │  Valida, transforma datos                        │
+│  └────────┬─────────┘                                                   │
+│           │                                                             │
+│           ▼                                                             │
+│  ┌──────────────────┐                                                   │
+│  │  Estado (Signal) │  signal.set(), signal.update()                   │
+│  │  o Servicio      │  service.method()                                │
+│  └────────┬─────────┘                                                   │
+│           │                                                             │
+│           ▼                                                             │
+│  ┌──────────────────┐                                                   │
+│  │  Vista (DOM)     │  Actualización reactiva automática               │
+│  │  Actualizada     │  Change Detection de Angular                     │
+│  └──────────────────┘                                                   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Compatibilidad navegadores (eventos/APIs usados)
-| Evento / API | Chrome | Firefox | Edge | Safari | Uso |
-|---|---:|---:|---:|---:|---|
-| click | Sí | Sí | Sí | Sí | Menús, tabs, modales, theme toggle. |
-| mouseenter / mouseleave | Sí | Sí | Sí | Sí | Tooltip. |
-| document:click | Sí | Sí | Sí | Sí | Click fuera (menú). |
-| document:keydown.escape | Sí | Sí | Sí | Sí | Cierre por ESC (menú/modal). |
-| keydown (Tab) | Sí | Sí | Sí | Sí | Trap focus modal. |
-| mousedown/mousemove/mouseup/mouseleave | Sí | Sí | Sí | Sí | Drag-to-scroll tabs. |
-| wheel + passive:false | Sí | Sí | Sí | Sí | Scroll horizontal tabs. |
-| matchMedia(prefers-color-scheme) | Sí | Sí | Sí | Sí | Tema por sistema. |
-| localStorage | Sí | Sí | Sí | Sí | Persistencia tema. |
+### Leyenda del diagrama
+
+| Elemento | Descripción |
+|----------|-------------|
+| **Usuario** | Interactúa con la interfaz mediante ratón, teclado o touch |
+| **Evento DOM** | Evento nativo del navegador capturado por Angular |
+| **Template** | Binding de evento en HTML con sintaxis `(evento)` |
+| **Componente** | Clase TypeScript que procesa el evento |
+| **Estado** | Signals o servicios que almacenan datos reactivos |
+| **Vista** | DOM actualizado automáticamente por Angular |
+
+---
+
+## Compatibilidad navegadores (eventos/APIs usados)
+
+| Evento / API | Chrome | Firefox | Edge | Safari | Versión mínima | Uso |
+|---|:---:|:---:|:---:|:---:|---|---|
+| click | ✅ | ✅ | ✅ | ✅ | Todos | Menús, tabs, modales, theme toggle |
+| mouseenter / mouseleave | ✅ | ✅ | ✅ | ✅ | Todos | Tooltip |
+| focusin / focusout | ✅ | ✅ | ✅ | ✅ | Todos | Tooltip accesible |
+| document:click | ✅ | ✅ | ✅ | ✅ | Todos | Click fuera (menú) |
+| document:keydown.escape | ✅ | ✅ | ✅ | ✅ | Todos | Cierre por ESC |
+| keydown (Tab) | ✅ | ✅ | ✅ | ✅ | Todos | Trap focus modal |
+| keydown (Arrows) | ✅ | ✅ | ✅ | ✅ | Todos | Navegación accordion/tabs |
+| mousedown/move/up | ✅ | ✅ | ✅ | ✅ | Todos | Drag-to-scroll tabs |
+| wheel + passive:false | ✅ | ✅ | ✅ | ✅ | Todos | Scroll horizontal tabs |
+| matchMedia | ✅ | ✅ | ✅ | ✅ | Chrome 9+ | Tema por sistema |
+| localStorage | ✅ | ✅ | ✅ | ✅ | Todos | Persistencia tema |
+| ResizeObserver | ✅ | ✅ | ✅ | ✅ | Chrome 64+ | Carousel responsive |
+| IntersectionObserver | ✅ | ✅ | ✅ | ✅ | Chrome 51+ | Infinite scroll |
+
+### Fallbacks
+
+- **ResizeObserver**: Si no está disponible, se usa `window.resize` como fallback.
+- **IntersectionObserver**: Polyfill disponible para navegadores antiguos.
+- **CSS animations**: Degradación graceful a transiciones simples.

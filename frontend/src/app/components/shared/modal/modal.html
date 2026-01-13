@@ -8,13 +8,21 @@
     stroke="currentColor"
     stroke-width="2"
     stroke-linecap="round"
-    stroke-linejoin="round">
+    stroke-linejoin="round"
+    aria-hidden="true">
     <line x1="18" y1="6" x2="6" y2="18"></line>
     <line x1="6" y1="6" x2="18" y2="18"></line>
   </svg>
 </ng-template>
 
-<!-- Modal overlay: sólo visible cuando isVisible() es true -->
+<!--
+  BLOQUE 3.2 - MODAL ACCESIBLE
+  - role="dialog" y aria-modal="true" para identificar el modal
+  - Click en overlay cierra el modal
+  - stopPropagation en contenido evita cierre accidental
+  - Focus trap con Tab/Shift+Tab
+  - Cierre con ESC (HostListener global)
+-->
 @if (isVisible()) {
 <div
   class="modal__overlay"
@@ -23,8 +31,11 @@
   aria-modal="true"
   [attr.aria-labelledby]="title() ? 'modal-title' : null">
 
-  <!-- Contenido del modal -->
-  <div class="modal__content">
+  <!--
+    MEJORA 2.3: stopPropagation en el contenido
+    Evita que clicks dentro del modal cierren el overlay
+  -->
+  <div class="modal__content" (click)="onContentClick($event)">
     <!-- Header del modal (solo si hay título) -->
     @if (title()) {
     <div class="modal__header">

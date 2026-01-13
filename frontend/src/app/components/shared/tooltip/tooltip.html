@@ -1,20 +1,28 @@
-<div class="tooltip-wrapper">
-  <!-- Contenido sobre el que se hace hover -->
+<!--
+  BLOQUE 3.5 - TOOLTIP ACCESIBLE
+  - aria-describedby vincula el contenido con el tooltip
+  - role="tooltip" para identificar el elemento
+  - Soporta hover Y focus para accesibilidad por teclado
+-->
+<div class="tooltip-wrapper" [attr.aria-describedby]="isVisible() ? tooltipId : null">
+  <!-- Contenido sobre el que se hace hover/focus -->
   <ng-content></ng-content>
 
-  <!-- Tooltip flotante -->
+  <!-- Tooltip flotante con animación -->
   @if (isVisible()) {
   <div
+    [id]="tooltipId"
     class="tooltip"
     [class.tooltip--top]="position() === 'top'"
     [class.tooltip--bottom]="position() === 'bottom'"
     [class.tooltip--left]="position() === 'left'"
     [class.tooltip--right]="position() === 'right'"
-    role="tooltip">
+    role="tooltip"
+    aria-live="polite">
     {{ text() }}
-    
+
     <!-- Flecha del tooltip -->
-    <div class="tooltip__arrow"></div>
+    <div class="tooltip__arrow" aria-hidden="true"></div>
   </div>
   }
 </div>
