@@ -55,7 +55,7 @@
                 </div>
                 @if (result.fans) {
                   <div class="search-results__fans">
-                    ❤️ {{ result.fans | number }}
+                    <lucide-icon name="heart" [size]="14"></lucide-icon> {{ result.fans | number }}
                   </div>
                 }
               </app-card>
@@ -75,7 +75,9 @@
 
     @if (filteredResults().length === 0 && searchTerm()) {
       <section class="search-results__empty" aria-label="Sin resultados">
-        <div class="search-results__empty-icon">🔍</div>
+        <div class="search-results__empty-icon">
+          <lucide-icon name="search" [size]="48"></lucide-icon>
+        </div>
         <h2 class="search-results__empty-title">No se encontraron resultados</h2>
         <p class="search-results__empty-text">
           No encontramos ningún resultado para <strong>"{{ searchTerm() }}"</strong>

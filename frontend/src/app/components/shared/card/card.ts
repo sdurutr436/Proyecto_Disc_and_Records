@@ -1,6 +1,7 @@
 import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { LucideAngularModule } from 'lucide-angular';
 
 
 // Interfaz para las acciones de los botones
@@ -13,7 +14,7 @@ export interface CardAction {
 
 @Component({
   selector: 'app-card',
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './card.html',
   styleUrl: './card.scss',
 })

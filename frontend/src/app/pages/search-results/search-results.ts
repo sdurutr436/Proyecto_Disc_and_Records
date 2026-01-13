@@ -20,6 +20,7 @@ import { InfiniteScrollComponent } from '../../components/shared/infinite-scroll
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
 import { Button } from '../../components/shared/button/button';
 import { DeezerService, DeezerAlbum, DeezerArtist } from '../../services/deezer.service';
+import { LucideAngularModule } from 'lucide-angular';
 
 // Tipos de filtro disponibles
 type FilterType = 'all' | 'albums';
@@ -63,7 +64,8 @@ const LOAD_MORE_DELAY_MS = 300;
     Spinner,
     InfiniteScrollComponent,
     Tabs,
-    Button
+    Button,
+    LucideAngularModule
   ],
   templateUrl: './search-results.html',
   styleUrls: ['./search-results.scss'],

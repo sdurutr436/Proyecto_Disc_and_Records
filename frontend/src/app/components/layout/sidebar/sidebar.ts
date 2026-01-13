@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [],
+  imports: [LucideAngularModule],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
 })

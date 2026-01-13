@@ -195,7 +195,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: vars.$espaciado-l;
+  gap: vars.$espaciado-xs;
 
   @media (min-width: vars.$breakpoint-tablet) {
     padding: vars.$espaciado-s vars.$espaciado-l;
@@ -208,7 +208,7 @@
   // Móvil pequeño: reducir padding al mínimo
   @include mix.mobile-sm-down {
     padding: vars.$espaciado-s vars.$espaciado-xs;
-    gap: vars.$espaciado-m;
+    gap: vars.$espaciado-xs;
   }
 }
 

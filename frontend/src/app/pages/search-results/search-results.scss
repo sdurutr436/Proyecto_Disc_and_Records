@@ -142,13 +142,13 @@
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(vars.$ancho-maximo-card-polaroid, 1fr));
-    gap: vars.$espaciado-m;
+    gap: vars.$espaciado-s;
     max-width: vars.$ancho-maximo-contenedor;
     margin: 0 auto;
 
     @include mixins.respond-to('desktop') {
       grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-      gap: vars.$espaciado-m;
+      gap: vars.$espaciado-s;
     }
 
     @include mixins.respond-to('tablet') {
