@@ -126,6 +126,12 @@
 			<version>2.7.0</version>
 		</dependency>
 
+		<!-- Caffeine Cache para proxy Deezer -->
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
