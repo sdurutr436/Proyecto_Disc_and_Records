@@ -9,7 +9,10 @@
       (click)="selectTab(tab.id)"
       type="button"
     >
-      {{ tab.label }}
+      @if (tab.icon) {
+        <lucide-icon [name]="tab.icon" [size]="16" class="tabs__icon"></lucide-icon>
+      }
+      <span>{{ tab.label }}</span>
     </button>
   }
 </nav>

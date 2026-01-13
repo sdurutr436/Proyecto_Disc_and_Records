@@ -22,7 +22,7 @@ import { Button } from '../../components/shared/button/button';
 import { DeezerService, DeezerAlbum, DeezerArtist } from '../../services/deezer.service';
 
 // Tipos de filtro disponibles
-type FilterType = 'all' | 'albums' | 'artists';
+type FilterType = 'all' | 'albums';
 
 // Interfaz unificada para resultados de búsqueda
 interface SearchResultItem {
@@ -120,9 +120,8 @@ export default class SearchResultsComponent implements OnInit {
   tabs = computed<Tab[]>(() => {
     const counts = this.resultsCount();
     return [
-      { id: 'all', label: `Todos (${counts.all})` },
-      { id: 'albums', label: `💿 Álbumes (${counts.albums})` },
-      { id: 'artists', label: `🎤 Artistas (${counts.artists})` }
+      { id: 'all', label: `Todos (${counts.all})`, icon: 'layout-grid' },
+      { id: 'albums', label: `Álbumes (${counts.albums})`, icon: 'disc-3' }
     ];
   });
 
@@ -146,9 +145,6 @@ export default class SearchResultsComponent implements OnInit {
       case 'albums':
         results = this.allAlbums();
         break;
-      case 'artists':
-        results = this.allArtists();
-        break;
       default:
         results = this.allResults();
     }
@@ -159,9 +155,8 @@ export default class SearchResultsComponent implements OnInit {
 
   /** Conteo de resultados por tipo */
   resultsCount = computed(() => ({
-    all: this.allAlbums().length + this.allArtists().length,
-    albums: this.allAlbums().length,
-    artists: this.allArtists().length
+    all: this.allAlbums().length,
+    albums: this.allAlbums().length
   }));
 
   /** ¿Hay más resultados para cargar? */
@@ -170,18 +165,13 @@ export default class SearchResultsComponent implements OnInit {
     const offset = this.currentOffset();
 
     if (this.isGeneralSearch()) {
-      if (filter === 'albums' || filter === 'all') {
-        const hasLocalMore = offset < this.allAlbums().length;
-        return hasLocalMore || this.hasMoreFromApi();
-      }
-      return offset < this.allArtists().length;
+      const hasLocalMore = offset < this.allAlbums().length;
+      return hasLocalMore || this.hasMoreFromApi();
     }
 
     switch (filter) {
       case 'albums':
         return offset < this.allAlbums().length;
-      case 'artists':
-        return offset < this.allArtists().length;
       default:
         return offset < this.allResults().length;
     }

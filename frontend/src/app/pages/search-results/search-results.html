@@ -1,29 +1,29 @@
 <main class="search-results">
-  <section class="search-results__search-section">
+  <nav class="search-results__search-section">
     <div class="search-results__search-wrapper">
       <app-button
         variant="secondary"
-        size="sm"
+        size="md"
         (clicked)="goBack()"
         aria-label="Volver al inicio"
       >
         ←
       </app-button>
       <app-search-bar
-        [placeholder]="'Buscar álbumes, artistas...'"
+        [placeholder]="'Buscar álbumes...'"
         [navigateOnSearch]="false"
         (onSearch)="newSearch($event)"
       />
     </div>
-  </section>
+  </nav>
 
-  <section class="search-results__tabs-section">
+  <nav class="search-results__tabs-section">
     <app-tabs
       [tabs]="tabs()"
       [activeTabId]="activeFilter()"
       (tabChange)="onTabChange($event)"
     />
-  </section>
+  </nav>
 
   @if (isLoading()) {
     <section class="search-results__loading" aria-busy="true">

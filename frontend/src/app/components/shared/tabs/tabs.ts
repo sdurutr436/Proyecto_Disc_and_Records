@@ -1,5 +1,6 @@
 import { Component, input, output, ViewChild, ElementRef, AfterViewInit, OnDestroy, Renderer2, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, Disc3, LayoutGrid } from 'lucide-angular';
 
 /**
  * Representa la estructura de datos para una pestaña individual.
@@ -9,6 +10,8 @@ export interface Tab {
   id: string | number;
   /** Texto a mostrar en el botón de la pestaña. */
   label: string;
+  /** Nombre del icono Lucide (opcional). */
+  icon?: string;
   /** Si es true, la pestaña aparecerá deshabilitada y no será clicable. */
   disabled?: boolean;
 }
@@ -27,7 +30,7 @@ export interface Tab {
  */
 @Component({
   selector: 'app-tabs',
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './tabs.html',
   styleUrl: './tabs.scss',
   standalone: true
