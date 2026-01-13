@@ -210,7 +210,8 @@ export default class SearchResultsComponent implements OnInit {
       const query = params['q'] || '';
       const filter = params['filter'] as FilterType;
 
-      this.searchTerm.set(query);
+      // Si es '*', mostramos "Todos los álbumes" como título
+      this.searchTerm.set(query === '*' ? '' : query);
 
       if (filter && ['albums', 'artists'].includes(filter)) {
         this.activeFilter.set(filter);
@@ -230,11 +231,29 @@ export default class SearchResultsComponent implements OnInit {
 
   /**
    * Ejecuta búsqueda paralela de álbumes y artistas
+   * Si query es '*', carga todos los álbumes del chart
    */
   private executeSearch(query: string) {
     if (!query.trim()) {
       this.clearResults();
       return of(null);
+    }
+
+    // Búsqueda especial: '*' carga todos los álbumes populares
+    if (query === '*') {
+      return this.deezerService.getChartAlbums(SEARCH_LIMIT).pipe(
+        tap((albums) => {
+          const mappedAlbums = albums.map(album => this.mapAlbumToResult(album));
+          this.allAlbums.set(mappedAlbums);
+          this.allArtists.set([]); // No mostramos artistas en modo "todos"
+          this.isLoading.set(false);
+        }),
+        catchError(error => {
+          console.error('Error cargando álbumes:', error);
+          this.isLoading.set(false);
+          return of(null);
+        })
+      );
     }
 
     // Búsqueda paralela: SEARCH_LIMIT álbumes + SEARCH_LIMIT artistas

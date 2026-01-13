@@ -7,25 +7,27 @@
   <div class="main-nav__desktop">
     <ul class="main-nav__list">
       <li class="main-nav__item">
-        <a href="#" class="main-nav__link">MI LISTA</a>
+        <button type="button" class="main-nav__link main-nav__link--button" (click)="navigateToMyList()">MI LISTA</button>
       </li>
-      <li class="main-nav__item">
+      <!-- ARTISTAS: Oculto para MVP (funcionalidad futura) -->
+      <!-- <li class="main-nav__item">
         <a href="#" class="main-nav__link">ARTISTAS</a>
-      </li>
+      </li> -->
       <li class="main-nav__item">
-        <a href="#" class="main-nav__link">PRÓXIMAMENTE</a>
+        <button type="button" class="main-nav__link main-nav__link--button" (click)="navigateToAllAlbums()">ÁLBUMES</button>
       </li>
-      <li class="main-nav__item">
-        <a href="#" class="main-nav__link">ÁLBUMES</a>
-      </li>
-      <li class="main-nav__item">
+      <!-- CANCIONES: Oculto para MVP (funcionalidad futura) -->
+      <!-- <li class="main-nav__item">
         <a href="#" class="main-nav__link">CANCIONES</a>
-      </li>
+      </li> -->
       @if (isAdmin()) {
         <li class="main-nav__item">
           <a routerLink="/admin" class="main-nav__link">ADMIN</a>
         </li>
       }
+      <li class="main-nav__item">
+        <button type="button" class="main-nav__link main-nav__link--button" (click)="navigateToRoadmap()">PRÓXIMAMENTE</button>
+      </li>
 
       <!-- Theme Switcher Desktop -->
       <li class="main-nav__item main-nav__item--theme">
@@ -89,14 +91,16 @@
       id="mobile-menu"
       class="main-nav__menu"
       [class.main-nav__menu--open]="isMenuOpen()">
-      <li class="main-nav__item"><a href="#" class="main-nav__link" (click)="closeMenu()">MI LISTA</a></li>
-      <li class="main-nav__item"><a href="#" class="main-nav__link" (click)="closeMenu()">ARTISTAS</a></li>
-      <li class="main-nav__item"><a href="#" class="main-nav__link" (click)="closeMenu()">PRÓXIMAMENTE</a></li>
-      <li class="main-nav__item"><a href="#" class="main-nav__link" (click)="closeMenu()">ÁLBUMES</a></li>
-      <li class="main-nav__item"><a href="#" class="main-nav__link" (click)="closeMenu()">CANCIONES</a></li>
+      <li class="main-nav__item"><button type="button" class="main-nav__link main-nav__link--button" (click)="navigateToMyList()">MI LISTA</button></li>
+      <!-- ARTISTAS: Oculto para MVP (funcionalidad futura) -->
+      <!-- <li class="main-nav__item"><a href="#" class="main-nav__link" (click)="closeMenu()">ARTISTAS</a></li> -->
+      <li class="main-nav__item"><button type="button" class="main-nav__link main-nav__link--button" (click)="navigateToAllAlbums()">ÁLBUMES</button></li>
+      <!-- CANCIONES: Oculto para MVP (funcionalidad futura) -->
+      <!-- <li class="main-nav__item"><a href="#" class="main-nav__link" (click)="closeMenu()">CANCIONES</a></li> -->
       @if (isAdmin()) {
         <li class="main-nav__item"><a routerLink="/admin" class="main-nav__link" (click)="closeMenu()">ADMIN</a></li>
       }
+      <li class="main-nav__item"><button type="button" class="main-nav__link main-nav__link--button" (click)="navigateToRoadmap()">PRÓXIMAMENTE</button></li>
 
       <!-- Theme Switcher Móvil -->
       <li class="main-nav__item main-nav__item--theme">

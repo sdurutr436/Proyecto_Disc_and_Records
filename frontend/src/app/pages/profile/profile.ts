@@ -1,6 +1,6 @@
 import { Component, signal, inject, OnInit, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Card } from '../../components/shared/card/card';
 import { Button } from '../../components/shared/button/button';
@@ -53,6 +53,7 @@ interface Album {
 })
 export default class ProfileComponent implements OnInit {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private reviewState = inject(ReviewStateService);
   private appState = inject(AppStateService);
   private destroyRef = inject(DestroyRef);
@@ -86,6 +87,21 @@ export default class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUserData();
+    this.subscribeToQueryParams();
+  }
+
+  /**
+   * Suscribirse a cambios en query params para cambiar el tab
+   */
+  private subscribeToQueryParams(): void {
+    this.route.queryParams.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(params => {
+      const tab = params['tab'] as TabType;
+      if (tab && ['reviews', 'albums'].includes(tab)) {
+        this.activeTab.set(tab);
+      }
+    });
   }
 
   /**

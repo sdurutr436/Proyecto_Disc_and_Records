@@ -1,0 +1,136 @@
+<main class="info">
+  <div class="info__container">
+    <!-- ============================================ -->
+    <!-- HEADER: Título de la página                 -->
+    <!-- ============================================ -->
+    <header class="info__header">
+      <h1 class="info__title">Información</h1>
+    </header>
+
+    <!-- ============================================ -->
+    <!-- TABS DE NAVEGACIÓN                          -->
+    <!-- ============================================ -->
+    <section class="info__tabs-section">
+      <app-tabs
+        [tabs]="tabs"
+        [activeTabId]="activeTab()"
+        (tabChange)="onTabChange($event)"
+      />
+    </section>
+
+    <!-- ============================================ -->
+    <!-- CONTENIDO SEGÚN TAB ACTIVO                  -->
+    <!-- ============================================ -->
+    <section class="info__content">
+      <!-- TAB: API DE DESARROLLO -->
+      @if (activeTab() === 'api') {
+        <article class="info__panel">
+          <div class="info__panel-icon">🔧</div>
+          <h2 class="info__panel-title">API de Desarrollo</h2>
+          <div class="info__panel-content">
+            <p>
+              Nuestra API está actualmente en desarrollo. Próximamente ofreceremos
+              documentación completa para desarrolladores que quieran integrar
+              Discs & Records en sus aplicaciones.
+            </p>
+            <div class="info__coming-soon">
+              <span class="info__badge">Próximamente</span>
+            </div>
+          </div>
+        </article>
+      }
+
+      <!-- TAB: SOBRE NOSOTROS -->
+      @if (activeTab() === 'about') {
+        <article class="info__panel">
+          <div class="info__panel-icon">👥</div>
+          <h2 class="info__panel-title">Sobre Nosotros</h2>
+          <div class="info__panel-content">
+            <p>
+              <strong>Discs & Records</strong> es una plataforma creada por y para
+              amantes de la música. Nuestro objetivo es crear una comunidad donde
+              puedas descubrir, calificar y compartir tus álbumes favoritos.
+            </p>
+            <p>
+              Creemos que cada álbum cuenta una historia y merece ser recordado.
+              Por eso hemos creado un espacio donde tu opinión importa.
+            </p>
+            <h3>Nuestra Misión</h3>
+            <p>
+              Conectar a los amantes de la música a través de reseñas honestas
+              y recomendaciones personalizadas.
+            </p>
+          </div>
+        </article>
+      }
+
+      <!-- TAB: CONTACTO -->
+      @if (activeTab() === 'contact') {
+        <article class="info__panel">
+          <div class="info__panel-icon">📧</div>
+          <h2 class="info__panel-title">Contacto</h2>
+          <div class="info__panel-content">
+            <p>
+              ¿Tienes preguntas, sugerencias o comentarios? Nos encantaría
+              escucharte.
+            </p>
+            <div class="info__contact-methods">
+              <div class="info__contact-item">
+                <span class="info__contact-icon">📧</span>
+                <div>
+                  <strong>Email</strong>
+                  <p>contacto&#64;discsandrecords.com</p>
+                </div>
+              </div>
+              <div class="info__contact-item">
+                <span class="info__contact-icon">🐦</span>
+                <div>
+                  <strong>Twitter</strong>
+                  <p>&#64;DiscsAndRecords</p>
+                </div>
+              </div>
+              <div class="info__contact-item">
+                <span class="info__contact-icon">📸</span>
+                <div>
+                  <strong>Instagram</strong>
+                  <p>&#64;discsandrecords</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      }
+
+      <!-- TAB: PRIVACIDAD -->
+      @if (activeTab() === 'privacy') {
+        <article class="info__panel">
+          <div class="info__panel-icon">🔒</div>
+          <h2 class="info__panel-title">Política de Privacidad</h2>
+          <div class="info__panel-content">
+            <p>
+              En <strong>Discs & Records</strong> nos tomamos muy en serio
+              la privacidad de nuestros usuarios.
+            </p>
+            <h3>Datos que recopilamos</h3>
+            <ul>
+              <li>Información de registro (nombre de usuario, email)</li>
+              <li>Preferencias musicales y reseñas</li>
+              <li>Datos de uso anónimos para mejorar el servicio</li>
+            </ul>
+            <h3>Uso de los datos</h3>
+            <p>
+              Tus datos se utilizan únicamente para proporcionarte una
+              experiencia personalizada. Nunca vendemos ni compartimos tu
+              información con terceros.
+            </p>
+            <h3>Tus derechos</h3>
+            <p>
+              Puedes solicitar la eliminación de tu cuenta y datos en
+              cualquier momento contactándonos.
+            </p>
+          </div>
+        </article>
+      }
+    </section>
+  </div>
+</main>

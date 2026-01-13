@@ -62,8 +62,17 @@ export class Home implements OnInit {
   trendingAlbums = signal<AlbumView[]>([]);
   recentReviews = signal<AlbumView[]>([]);
 
+  // Mis últimos álbumes reseñados (solo si el usuario está autenticado)
+  myReviewedAlbums = signal<AlbumView[]>([]);
+
+  // Verificar si el usuario está autenticado
+  get isAuthenticated(): boolean {
+    return this.appState.isAuthenticated();
+  }
+
   ngOnInit(): void {
     this.loadAlbums();
+    this.loadMyReviewedAlbums();
   }
 
   /**
@@ -99,6 +108,25 @@ export class Home implements OnInit {
           this.isLoading.set(false);
         }
       });
+  }
+
+  /**
+   * Cargar los últimos álbumes reseñados por el usuario
+   * Solo se cargan si el usuario está autenticado
+   */
+  private loadMyReviewedAlbums(): void {
+    if (!this.isAuthenticated) {
+      this.myReviewedAlbums.set([]);
+      return;
+    }
+
+    // TODO: Cuando esté disponible el endpoint, cargar reseñas reales del usuario
+    // Por ahora usamos datos de ejemplo o los del ReviewStateService
+    const userReviews = this.reviewState.userReviewsCount();
+
+    // Si hay reseñas del usuario, mostrar placeholder
+    // En producción esto vendría del backend
+    this.myReviewedAlbums.set([]);
   }
 
   /**

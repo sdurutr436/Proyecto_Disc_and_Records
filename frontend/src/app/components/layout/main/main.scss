@@ -54,6 +54,14 @@
   }
 
   @include mix.focus-visible(vars.$color-contraste-light, -3px);
+
+  // Estilo para botones que actúan como links
+  &--button {
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 /* --- Item especial para theme toggle --- */

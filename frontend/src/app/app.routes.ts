@@ -45,6 +45,18 @@ export const routes: Routes = [
     data: { preload: true, critical: true, delay: 1000, breadcrumb: 'Búsqueda' } // ✅ Precarga con delay - función crítica
   },
   {
+    path: 'roadmap',
+    loadComponent: () => import('./pages/roadmap/roadmap'),
+    title: 'Próximamente - Discs & Records',
+    data: { preload: false, breadcrumb: 'Próximamente' }
+  },
+  {
+    path: 'info',
+    loadComponent: () => import('./pages/info/info'),
+    title: 'Información - Discs & Records',
+    data: { preload: false, breadcrumb: 'Información' }
+  },
+  {
     path: 'profile',
     loadComponent: () => import('./pages/profile/profile'),
     title: 'Perfil de Usuario - Discs & Records',

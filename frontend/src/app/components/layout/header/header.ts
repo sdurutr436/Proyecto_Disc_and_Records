@@ -38,6 +38,7 @@ export class Header implements OnInit, OnDestroy {
     // Escuchar el evento personalizado desde cualquier componente
     if (typeof window !== 'undefined') {
       window.addEventListener('open-register-modal', this.handleOpenRegisterModal);
+      window.addEventListener('open-login-modal', this.handleOpenLoginModal);
     }
   }
 
@@ -45,14 +46,22 @@ export class Header implements OnInit, OnDestroy {
     // Limpiar el listener al destruir el componente
     if (typeof window !== 'undefined') {
       window.removeEventListener('open-register-modal', this.handleOpenRegisterModal);
+      window.removeEventListener('open-login-modal', this.handleOpenLoginModal);
     }
   }
 
   /**
-   * Manejador del evento personalizado
+   * Manejador del evento personalizado de registro
    */
   private handleOpenRegisterModal = () => {
     this.openRegisterModal();
+  };
+
+  /**
+   * Manejador del evento personalizado de login
+   */
+  private handleOpenLoginModal = () => {
+    this.openLoginModal();
   };
 
   // ============================================

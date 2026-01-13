@@ -1,6 +1,6 @@
 import { Component, signal, inject, HostListener, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ThemeService } from '../../../services/theme';
 import { AuthService } from '../../../services/auth';
 import { AppStateService } from '../../../services/app-state';
@@ -14,10 +14,11 @@ import { BreadcrumbService } from '../../../services/breadcrumb.service';
   styleUrl: './main.scss',
 })
 export class Main {
+  private router = inject(Router);
   themeService = inject(ThemeService);
   breadcrumbService = inject(BreadcrumbService);
   private authService = inject(AuthService);
-  private appState = inject(AppStateService);
+  appState = inject(AppStateService);
 
   // Menú móvil del nav
   isMenuOpen = signal(false);
@@ -29,6 +30,41 @@ export class Main {
     const user = this.appState.currentUser();
     return user?.role === 'admin' || user?.role === 'moderator';
   });
+
+  /**
+   * Navegar a Mi Lista:
+   * - Si está autenticado: va al perfil, pestaña de álbumes
+   * - Si no está autenticado: abre el modal de login
+   */
+  navigateToMyList(): void {
+    this.closeMenu();
+    if (this.appState.isAuthenticated()) {
+      // Navegar al perfil con el tab de álbumes
+      this.router.navigate(['/profile'], { queryParams: { tab: 'albums' } });
+    } else {
+      // Disparar evento para abrir modal de login
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('open-login-modal'));
+      }
+    }
+  }
+
+  /**
+   * Navegar a la búsqueda de todos los álbumes
+   */
+  navigateToAllAlbums(): void {
+    this.closeMenu();
+    // Navegar a búsqueda con query especial para mostrar todos
+    this.router.navigate(['/search'], { queryParams: { q: '*', filter: 'albums' } });
+  }
+
+  /**
+   * Navegar a la página de Roadmap/Próximamente
+   */
+  navigateToRoadmap(): void {
+    this.closeMenu();
+    this.router.navigate(['/roadmap']);
+  }
 
   toggleMenu(): void {
     this.isMenuOpen.update((open) => !open);

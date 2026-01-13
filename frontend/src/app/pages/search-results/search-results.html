@@ -12,9 +12,15 @@
       ← Volver
     </button>
     <div class="search-results__header-content">
-      <h1 class="search-results__title">
-        Resultados para: <span class="search-results__query">"{{ searchTerm() }}"</span>
-      </h1>
+      @if (searchTerm()) {
+        <h1 class="search-results__title">
+          Resultados para: <span class="search-results__query">"{{ searchTerm() }}"</span>
+        </h1>
+      } @else {
+        <h1 class="search-results__title">
+          Todos los <span class="search-results__query">Álbumes</span>
+        </h1>
+      }
       <p class="search-results__count">
         Mostrando {{ paginationInfo().showing }} de {{ paginationInfo().total }} resultados
       </p>

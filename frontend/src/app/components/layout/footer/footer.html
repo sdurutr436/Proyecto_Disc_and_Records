@@ -5,21 +5,25 @@
 
     <!-- Columna izquierda: 3 botones apilados -->
     <div class="footer__buttons-left">
-      <a routerLink="/404" class="footer__btn footer__btn--left-top">API de Desarrollo</a>
-      <a routerLink="/profile" class="footer__btn footer__btn--left-middle">Mi perfil</a>
-      <a routerLink="/404" class="footer__btn footer__btn--left-bottom">Contacto</a>
+      <a routerLink="/info" [queryParams]="{tab: 'api'}" class="footer__btn footer__btn--left-top">API de Desarrollo</a>
+      <a routerLink="/roadmap" class="footer__btn footer__btn--left-middle">Próximamente</a>
+      <a routerLink="/info" [queryParams]="{tab: 'contact'}" class="footer__btn footer__btn--left-bottom">Contacto</a>
     </div>
 
-    <!-- Centro: Logo SIN barras de colores dentro -->
-    <div class="footer__logo-wrapper">
+    <!-- Centro: Logo clicable para ir a Home -->
+    <button
+      type="button"
+      class="footer__logo-wrapper footer__logo-wrapper--clickable"
+      (click)="navigateToHome()"
+      aria-label="Ir a la página principal">
       <img src="/assets/logo.png" alt="Discs & Records" class="footer__logo" />
-    </div>
+    </button>
 
     <!-- Columna derecha: 3 botones apilados -->
     <div class="footer__buttons-right">
-      <a routerLink="/404" class="footer__btn footer__btn--right-top">Sobre nosotros</a>
-      <a routerLink="/profile" class="footer__btn footer__btn--right-middle">Mi perfil</a>
-      <a routerLink="/404" class="footer__btn footer__btn--right-bottom">Privacidad</a>
+      <a routerLink="/info" [queryParams]="{tab: 'about'}" class="footer__btn footer__btn--right-top">Sobre nosotros</a>
+      <a routerLink="/info" class="footer__btn footer__btn--right-middle">Información</a>
+      <a routerLink="/info" [queryParams]="{tab: 'privacy'}" class="footer__btn footer__btn--right-bottom">Privacidad</a>
     </div>
   </div>
 </footer>

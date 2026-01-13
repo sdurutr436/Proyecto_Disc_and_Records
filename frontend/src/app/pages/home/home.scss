@@ -30,7 +30,7 @@
   }
 
   &__hero-content {
-    max-width: 50rem;
+    max-width: 70rem;
     width: 100%;
   }
 
@@ -105,11 +105,9 @@
      ======================================== */
   &__section {
     padding: 3rem 2rem;
-    background-color: var(--bg-primary);
+    background-color: transparent;
 
-    &:nth-child(even) {
-      background-color: var(--bg-secondary);
-    }
+    /* Sin fondo alternante - todos transparentes */
 
     @media (max-width: $breakpoint-tablet) {
       padding: 2rem 1rem;
@@ -117,6 +115,12 @@
 
     @media (max-width: $breakpoint-mobile-sm) {
       padding: 1.5rem 0.5rem;
+    }
+
+    // Sección personal (mis reseñas) con un estilo distintivo
+    &--personal {
+      border-top: 0.125rem dashed var(--color-primary);
+      margin-top: 1rem;
     }
   }
 
