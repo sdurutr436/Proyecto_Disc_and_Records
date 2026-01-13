@@ -300,6 +300,34 @@
   }
 
   /* ========================================
+     COOLDOWN MESSAGE (Rate Limiting)
+     ======================================== */
+  &__cooldown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: vars.$espaciado-s;
+    padding: vars.$espaciado-s vars.$espaciado-m;
+    margin: vars.$espaciado-s auto;
+    max-width: 25rem;
+    background-color: var(--color-warning-light, #fff3cd);
+    border: vars.$borde-brutal-thick;
+    box-shadow: vars.$sombra-brutal-s;
+    @include mixins.font-size-line('texto-pequeno-m');
+    color: var(--color-warning-dark, #856404);
+
+    lucide-icon {
+      flex-shrink: 0;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  }
+
+  /* ========================================
      EMPTY STATE
      ======================================== */
   &__empty {

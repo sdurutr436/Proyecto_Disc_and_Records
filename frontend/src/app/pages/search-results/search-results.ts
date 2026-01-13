@@ -10,8 +10,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin, of, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, catchError, tap } from 'rxjs/operators';
+import { forkJoin, of, Subject, EMPTY } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, catchError, tap, filter } from 'rxjs/operators';
 
 import { Card } from '../../components/shared/card/card';
 import { SearchBar } from '../../components/shared/search-bar/search-bar';
@@ -20,6 +20,7 @@ import { InfiniteScrollComponent } from '../../components/shared/infinite-scroll
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
 import { Button } from '../../components/shared/button/button';
 import { DeezerService, DeezerAlbum, DeezerArtist } from '../../services/deezer.service';
+import { DeezerRateLimitService } from '../../services/deezer-rate-limit.service';
 import { LucideAngularModule } from 'lucide-angular';
 
 // Tipos de filtro disponibles
@@ -33,7 +34,6 @@ interface SearchResultItem {
   subtitle?: string;
   imageUrl: string;
   rating?: number;
-  fans?: number;
 }
 
 // Constantes de paginación
@@ -76,6 +76,9 @@ export default class SearchResultsComponent implements OnInit {
   private router = inject(Router);
   private deezerService = inject(DeezerService);
   private destroyRef = inject(DestroyRef);
+  
+  /** Servicio de rate limiting de Deezer */
+  rateLimitService = inject(DeezerRateLimitService);
 
   // ==========================================================================
   // ESTADO DE LA PÁGINA
@@ -110,6 +113,9 @@ export default class SearchResultsComponent implements OnInit {
 
   /** Indica si hay más resultados disponibles en la API */
   private hasMoreFromApi = signal<boolean>(true);
+
+  /** Último query buscado (para evitar duplicados) */
+  private lastSearchedQuery = signal<string>('');
 
   /** Subject para búsqueda reactiva */
   private searchSubject = new Subject<string>();
@@ -197,14 +203,20 @@ export default class SearchResultsComponent implements OnInit {
 
   /**
    * Configura la suscripción reactiva para búsqueda con debounce
+   * Incluye protección contra rate limiting
    */
   private setupSearchSubscription(): void {
     this.searchSubject.pipe(
       debounceTime(DEBOUNCE_TIME_MS),
       distinctUntilChanged(),
-      tap(() => {
+      // Filtrar si estamos en cooldown
+      filter(() => !this.rateLimitService.isInCooldown()),
+      // Filtrar si es la misma query que ya buscamos
+      filter(query => query !== this.lastSearchedQuery()),
+      tap((query) => {
         this.isLoading.set(true);
         this.resetPagination();
+        this.lastSearchedQuery.set(query);
       }),
       switchMap(query => this.executeSearch(query)),
       takeUntilDestroyed(this.destroyRef)
@@ -243,11 +255,18 @@ export default class SearchResultsComponent implements OnInit {
   /**
    * Ejecuta búsqueda paralela de álbumes y artistas
    * Si query es '*', carga todos los álbumes del chart con paginación infinita
+   * Incluye manejo de rate limiting
    */
   private executeSearch(query: string) {
     if (!query.trim()) {
       this.clearResults();
       return of(null);
+    }
+
+    // No buscar si estamos en cooldown
+    if (this.rateLimitService.isInCooldown()) {
+      this.isLoading.set(false);
+      return EMPTY;
     }
 
     // Búsqueda especial: '*' carga todos los álbumes populares con paginación
@@ -267,6 +286,8 @@ export default class SearchResultsComponent implements OnInit {
         }),
         catchError(error => {
           console.error('Error cargando álbumes:', error);
+          // Manejar rate limiting
+          this.rateLimitService.handleRateLimitError(error);
           this.isLoading.set(false);
           return of(null);
         })
@@ -293,6 +314,8 @@ export default class SearchResultsComponent implements OnInit {
       }),
       catchError(error => {
         console.error('Error en búsqueda:', error);
+        // Manejar rate limiting
+        this.rateLimitService.handleRateLimitError(error);
         this.isLoading.set(false);
         return of(null);
       })
@@ -301,6 +324,7 @@ export default class SearchResultsComponent implements OnInit {
 
   /**
    * Mapea álbum de Deezer a formato de resultado
+   * NOTA: No incluimos fans - las métricas vienen del backend propio
    */
   private mapAlbumToResult(album: DeezerAlbum): SearchResultItem {
     return {
@@ -308,32 +332,22 @@ export default class SearchResultsComponent implements OnInit {
       type: 'album',
       title: album.title,
       subtitle: album.artist?.name || 'Artista desconocido',
-      imageUrl: this.deezerService.getBestAlbumCover(album),
-      fans: album.fans
+      imageUrl: this.deezerService.getBestAlbumCover(album)
     };
   }
 
   /**
    * Mapea artista de Deezer a formato de resultado
+   * NOTA: No incluimos fans - las métricas vienen del backend propio
    */
   private mapArtistToResult(artist: DeezerArtist): SearchResultItem {
     return {
       id: artist.id,
       type: 'artist',
       title: artist.name,
-      subtitle: artist.nb_fan ? `${this.formatNumber(artist.nb_fan)} fans` : '',
-      imageUrl: this.deezerService.getBestArtistPicture(artist),
-      fans: artist.nb_fan
+      subtitle: '',
+      imageUrl: this.deezerService.getBestArtistPicture(artist)
     };
-  }
-
-  /**
-   * Formatea números grandes (1000 -> 1K, 1000000 -> 1M)
-   */
-  private formatNumber(num: number): string {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(0)}K`;
-    return num.toString();
   }
 
   /**
@@ -363,8 +377,14 @@ export default class SearchResultsComponent implements OnInit {
   /**
    * Cargar más resultados (scroll infinito)
    * En búsqueda general, carga más desde la API de Deezer
+   * Respeta el cooldown de rate limiting
    */
   loadMoreResults(): void {
+    // No cargar si estamos en cooldown
+    if (this.rateLimitService.isInCooldown()) {
+      return;
+    }
+
     if (!this.hasMore() || this.isLoadingMore()) return;
 
     this.isLoadingMore.set(true);
@@ -385,8 +405,15 @@ export default class SearchResultsComponent implements OnInit {
 
   /**
    * Cargar más álbumes desde la API de Deezer (búsqueda general)
+   * Incluye manejo de errores de rate limiting
    */
   private loadMoreFromApi(): void {
+    // No cargar si estamos en cooldown
+    if (this.rateLimitService.isInCooldown()) {
+      this.isLoadingMore.set(false);
+      return;
+    }
+
     const currentApiOffset = this.apiOffset();
 
     this.deezerService.getChartAlbums(SEARCH_LIMIT, currentApiOffset).pipe(
@@ -407,7 +434,11 @@ export default class SearchResultsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error cargando más álbumes:', error);
-        this.hasMoreFromApi.set(false);
+        // Manejar rate limiting
+        if (this.rateLimitService.handleRateLimitError(error)) {
+          // Parar el scroll infinito durante cooldown
+          this.hasMoreFromApi.set(false);
+        }
         this.isLoadingMore.set(false);
       }
     });

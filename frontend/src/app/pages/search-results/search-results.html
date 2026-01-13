@@ -53,15 +53,17 @@
                 <div class="search-results__badge">
                   {{ getResultIcon(result.type) }} {{ getResultTypeLabel(result.type) }}
                 </div>
-                @if (result.fans) {
-                  <div class="search-results__fans">
-                    <lucide-icon name="heart" [size]="14"></lucide-icon> {{ result.fans | number }}
-                  </div>
-                }
               </app-card>
             </article>
           }
         </div>
+
+        @if (rateLimitService.inCooldown()) {
+          <div class="search-results__cooldown" role="alert">
+            <lucide-icon name="clock" [size]="20"></lucide-icon>
+            <span>{{ rateLimitService.statusMessage() }}</span>
+          </div>
+        }
 
         <app-infinite-scroll
           [loading]="isLoadingMore()"
