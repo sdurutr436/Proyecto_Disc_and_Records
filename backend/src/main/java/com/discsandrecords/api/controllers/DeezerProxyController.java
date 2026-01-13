@@ -61,17 +61,22 @@ public class DeezerProxyController {
                 fullUrl += "?" + queryString;
             }
 
-            // Hacer la petición a Deezer
+            System.out.println("[DeezerProxy] Requesting: " + fullUrl);
+
+            // Hacer la petición a Deezer con headers más realistas
             HttpRequest deezerRequest = HttpRequest.newBuilder()
                     .uri(URI.create(fullUrl))
                     .header("Accept", "application/json")
-                    .header("User-Agent", "DiscsAndRecords/1.0")
+                    .header("Accept-Language", "es-ES,es;q=0.9,en;q=0.8")
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                     .timeout(Duration.ofSeconds(30))
                     .GET()
                     .build();
 
             HttpResponse<String> response = httpClient.send(deezerRequest, 
                     HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("[DeezerProxy] Response status: " + response.statusCode());
 
             // Preparar headers de respuesta
             HttpHeaders headers = new HttpHeaders();
