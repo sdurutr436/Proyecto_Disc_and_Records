@@ -191,7 +191,7 @@
 .main__container {
   max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
-  padding: vars.$espaciado-l vars.$espaciado-m;
+  padding: vars.$espaciado-xl vars.$espaciado-xl; // Aumentado padding general
   width: 100%;
   display: flex;
   flex-direction: column;

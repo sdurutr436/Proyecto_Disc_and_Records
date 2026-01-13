@@ -13,25 +13,30 @@
     align-items: center;
     justify-content: center;
     min-height: 50vh;
-    padding: 3rem 2rem;
+    padding: 2rem 1rem; // Reducido para menos concentración
     background-color: var(--bg-primary);
     text-align: center;
     border-bottom: 0.125rem solid var(--border-color);
 
     @media (max-width: $breakpoint-tablet) {
-      padding: 2rem 1rem;
+      padding: 1.5rem 0.75rem;
       min-height: 40vh;
     }
 
     @media (max-width: $breakpoint-mobile-sm) {
-      padding: 1.5rem 0.5rem;
+      padding: 1rem 0.5rem;
       min-height: 35vh;
     }
   }
 
   &__hero-content {
-    max-width: 70rem;
+    max-width: 100%; // Sin límite - ocupa todo el ancho disponible
     width: 100%;
+    padding: 0 2rem; // Padding lateral para separar del borde
+
+    @media (max-width: $breakpoint-tablet) {
+      padding: 0 1rem;
+    }
   }
 
   &__slogan {
@@ -85,18 +90,19 @@
      SECCIÓN DE BÚSQUEDA
      ======================================== */
   &__search {
-    padding: 2rem;
+    padding: 2rem 3rem; // Más padding horizontal para dar espacio al buscador
     background-color: var(--bg-primary);
     display: flex;
     justify-content: center;
     border-bottom: 0.125rem solid var(--border-color);
+    width: 100%;
 
     @media (max-width: $breakpoint-tablet) {
-      padding: 1.5rem 1rem;
+      padding: 1.5rem 2rem;
     }
 
     @media (max-width: $breakpoint-mobile-sm) {
-      padding: 1rem 0.5rem;
+      padding: 1rem 1rem;
     }
   }
 

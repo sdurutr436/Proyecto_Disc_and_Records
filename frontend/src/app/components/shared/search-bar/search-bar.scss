@@ -3,7 +3,7 @@
 .search-bar {
   width: 100%;
   min-width: 18.75rem;
-  max-width: 50rem; // Ampliado para mejor UX en pantallas grandes
+  max-width: 100%; // Sin límite - ocupa todo el ancho disponible
   margin: 0 auto;
 
   // Móvil pequeño: ajustar ancho mínimo
