@@ -47,8 +47,9 @@ public class DeezerProxyController {
     private static final Logger log = LoggerFactory.getLogger(DeezerProxyController.class);
     private static final String DEEZER_API_BASE = "https://api.deezer.com";
     
+    // Timeouts aumentados para evitar 504 en conexiones lentas
     private static final HttpClient httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(10))
+            .connectTimeout(Duration.ofSeconds(30))
             .build();
 
     private final DeezerCacheService cacheService;
@@ -160,7 +161,7 @@ public class DeezerProxyController {
                     .uri(URI.create(fullUrl))
                     .header("Accept", "application/json")
                     .header("User-Agent", "DiscsAndRecords/1.0")
-                    .timeout(Duration.ofSeconds(30))
+                    .timeout(Duration.ofSeconds(45))
                     .GET()
                     .build();
 
