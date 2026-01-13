@@ -10,7 +10,7 @@
      HEADER: Título y contador
      ======================================== */
   &__header {
-    padding: vars.$espaciado-m;
+    padding: vars.$espaciado-m vars.$espaciado-xl; // Más padding lateral en desktop
     background-color: var(--bg-secondary);
     border-bottom: vars.$borde-brutal-thick;
     display: flex;
@@ -79,7 +79,7 @@
      TABS DE FILTROS
      ======================================== */
   &__tabs-section {
-    padding: vars.$espaciado-s vars.$espaciado-m;
+    padding: vars.$espaciado-s vars.$espaciado-xl; // Más padding lateral en desktop
     background-color: var(--bg-secondary);
     border-bottom: vars.$borde-brutal-thick;
 

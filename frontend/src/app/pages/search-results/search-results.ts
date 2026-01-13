@@ -95,8 +95,17 @@ export default class SearchResultsComponent implements OnInit {
   /** Resultados de artistas (completos para paginación) */
   private allArtists = signal<SearchResultItem[]>([]);
 
-  /** Offset actual para paginación */
+  /** Offset actual para paginación visual */
   private currentOffset = signal<number>(INITIAL_LOAD);
+
+  /** Offset actual para paginación de API (búsqueda general) */
+  private apiOffset = signal<number>(0);
+
+  /** Indica si es búsqueda general (query '*') */
+  private isGeneralSearch = signal<boolean>(false);
+
+  /** Indica si hay más resultados disponibles en la API */
+  private hasMoreFromApi = signal<boolean>(true);
 
   /** Subject para búsqueda reactiva */
   private searchSubject = new Subject<string>();
@@ -157,6 +166,12 @@ export default class SearchResultsComponent implements OnInit {
   hasMore = computed<boolean>(() => {
     const filter = this.activeFilter();
     const offset = this.currentOffset();
+
+    // En búsqueda general, hay más si la API tiene más datos o hay datos sin mostrar
+    if (this.isGeneralSearch()) {
+      const hasLocalMore = offset < this.allAlbums().length;
+      return hasLocalMore || this.hasMoreFromApi();
+    }
 
     switch (filter) {
       case 'albums':
@@ -231,7 +246,7 @@ export default class SearchResultsComponent implements OnInit {
 
   /**
    * Ejecuta búsqueda paralela de álbumes y artistas
-   * Si query es '*', carga todos los álbumes del chart
+   * Si query es '*', carga todos los álbumes del chart con paginación infinita
    */
   private executeSearch(query: string) {
     if (!query.trim()) {
@@ -239,13 +254,19 @@ export default class SearchResultsComponent implements OnInit {
       return of(null);
     }
 
-    // Búsqueda especial: '*' carga todos los álbumes populares
+    // Búsqueda especial: '*' carga todos los álbumes populares con paginación
     if (query === '*') {
-      return this.deezerService.getChartAlbums(SEARCH_LIMIT).pipe(
+      this.isGeneralSearch.set(true);
+      this.apiOffset.set(0);
+      this.hasMoreFromApi.set(true);
+      
+      return this.deezerService.getChartAlbums(SEARCH_LIMIT, 0).pipe(
         tap((albums) => {
           const mappedAlbums = albums.map(album => this.mapAlbumToResult(album));
           this.allAlbums.set(mappedAlbums);
           this.allArtists.set([]); // No mostramos artistas en modo "todos"
+          this.apiOffset.set(SEARCH_LIMIT);
+          this.hasMoreFromApi.set(albums.length >= SEARCH_LIMIT);
           this.isLoading.set(false);
         }),
         catchError(error => {
@@ -255,6 +276,10 @@ export default class SearchResultsComponent implements OnInit {
         })
       );
     }
+
+    // Búsqueda normal: no es infinita
+    this.isGeneralSearch.set(false);
+    this.hasMoreFromApi.set(false);
 
     // Búsqueda paralela: SEARCH_LIMIT álbumes + SEARCH_LIMIT artistas
     return forkJoin({
@@ -323,6 +348,9 @@ export default class SearchResultsComponent implements OnInit {
     this.allArtists.set([]);
     this.isLoading.set(false);
     this.resetPagination();
+    this.isGeneralSearch.set(false);
+    this.hasMoreFromApi.set(false);
+    this.apiOffset.set(0);
   }
 
   /**
@@ -338,17 +366,54 @@ export default class SearchResultsComponent implements OnInit {
 
   /**
    * Cargar más resultados (scroll infinito)
+   * En búsqueda general, carga más desde la API de Deezer
    */
   loadMoreResults(): void {
     if (!this.hasMore() || this.isLoadingMore()) return;
 
     this.isLoadingMore.set(true);
 
-    // Simular delay para UX (los datos ya están cargados)
+    // Si es búsqueda general y necesitamos más datos de la API
+    if (this.isGeneralSearch() && this.currentOffset() >= this.allAlbums().length && this.hasMoreFromApi()) {
+      this.loadMoreFromApi();
+      return;
+    }
+
+    // Paginación local (datos ya cargados)
     setTimeout(() => {
       this.currentOffset.update(offset => offset + PAGE_SIZE);
       this.isLoadingMore.set(false);
     }, LOAD_MORE_DELAY_MS);
+  }
+
+  /**
+   * Cargar más álbumes desde la API de Deezer (búsqueda general)
+   */
+  private loadMoreFromApi(): void {
+    const currentApiOffset = this.apiOffset();
+    
+    this.deezerService.getChartAlbums(SEARCH_LIMIT, currentApiOffset).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: (albums) => {
+        if (albums.length > 0) {
+          const mappedAlbums = albums.map(album => this.mapAlbumToResult(album));
+          // Añadir a los álbumes existentes
+          this.allAlbums.update(existing => [...existing, ...mappedAlbums]);
+          this.apiOffset.update(offset => offset + SEARCH_LIMIT);
+          this.hasMoreFromApi.set(albums.length >= SEARCH_LIMIT);
+        } else {
+          this.hasMoreFromApi.set(false);
+        }
+        this.currentOffset.update(offset => offset + PAGE_SIZE);
+        this.isLoadingMore.set(false);
+      },
+      error: (error) => {
+        console.error('Error cargando más álbumes:', error);
+        this.hasMoreFromApi.set(false);
+        this.isLoadingMore.set(false);
+      }
+    });
   }
 
   // ==========================================================================

@@ -189,8 +189,8 @@ export class DeezerService {
   /**
    * Obtiene álbumes del chart (equivalente a getNewReleases de Spotify)
    */
-  getChartAlbums(limit: number = 50): Observable<DeezerAlbum[]> {
-    const url = this.buildUrl(`/chart/0/albums?limit=${limit}`);
+  getChartAlbums(limit: number = 50, index: number = 0): Observable<DeezerAlbum[]> {
+    const url = this.buildUrl(`/chart/0/albums?limit=${limit}&index=${index}`);
     return this.http.get<{ data: DeezerAlbum[] }>(url).pipe(
       map(response => response.data || []),
       catchError(error => {
