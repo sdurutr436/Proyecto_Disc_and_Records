@@ -1,7 +1,7 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withPreloading, withDebugTracing, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideLucideIcons, Disc3, LayoutGrid, ArrowLeft, Search, Heart } from 'lucide-angular';
+import { LUCIDE_ICONS, LucideIconProvider, Disc3, LayoutGrid, ArrowLeft, Search, Heart } from 'lucide-angular';
 
 import { routes } from './app.routes';
 import { NetworkAwarePreloadingStrategy } from './services/network-aware-preloading-strategy';
@@ -74,7 +74,7 @@ export const appConfig: ApplicationConfig = {
     ),
 
     // Iconos Lucide
-    provideLucideIcons({ Disc3, LayoutGrid, ArrowLeft, Search, Heart })
+    { provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider({ Disc3, LayoutGrid, ArrowLeft, Search, Heart }) }
   ]
 };
 
