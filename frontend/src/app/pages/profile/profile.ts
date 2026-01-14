@@ -7,7 +7,6 @@ import { Button } from '../../components/shared/button/button';
 import { RatingComponent } from '../../components/shared/rating/rating';
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
 import { SearchBar } from '../../components/shared/search-bar/search-bar';
-import { Carousel } from '../../components/shared/carousel/carousel';
 import { ReviewStateService } from '../../services/review-state.service';
 import { AppStateService } from '../../services/app-state';
 import { Review, Album } from '../../models/data.models';
@@ -59,8 +58,7 @@ interface PaginatedReviewsWithAlbumData extends Omit<PaginatedReviews, 'reviews'
     Button,
     RatingComponent,
     Tabs,
-    SearchBar,
-    Carousel
+    SearchBar
   ],
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss'],

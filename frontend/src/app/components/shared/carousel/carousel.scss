@@ -142,51 +142,37 @@
   // VARIANTE CON 2 FILAS
   // ========================================
   &__track--rows-2 {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 12.5rem));
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: row dense;
     gap: vars.$espaciado-s;
     min-height: auto;
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: start;
     overflow-x: hidden;
     overflow-y: visible;
 
     @include mix.tablet-only {
+      grid-template-columns: repeat(auto-fill, minmax(9rem, 10.625rem));
       gap: vars.$espaciado-xs;
     }
 
     @include mix.mobile-down {
+      grid-template-columns: repeat(auto-fill, minmax(8rem, 9.375rem));
       gap: vars.$espaciado-xs;
     }
 
     @include mix.mobile-sm-down {
-      gap: vars.$espaciado-xs;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: auto;
     }
 
-    // Tamaño de items para 2 filas - porcentajes
+    // Override tamaño de items para grid
     > * {
-      flex: 0 0 calc(20% - vars.$espaciado-s);
-      width: calc(20% - vars.$espaciado-s);
-      min-width: 9rem;
-      max-width: 12.5rem;
-
-      @include mix.tablet-only {
-        flex: 0 0 calc(25% - vars.$espaciado-xs);
-        width: calc(25% - vars.$espaciado-xs);
-        min-width: 8rem;
-      }
-
-      @include mix.mobile-down {
-        flex: 0 0 calc(33.33% - vars.$espaciado-xs);
-        width: calc(33.33% - vars.$espaciado-xs);
-        min-width: 7rem;
-      }
-
-      @include mix.mobile-sm-down {
-        flex: 0 0 calc(50% - vars.$espaciado-xs);
-        width: calc(50% - vars.$espaciado-xs);
-        min-width: 6rem;
-      }
+      flex: none;
+      width: 100%;
+      min-width: 0;
+      max-width: none;
     }
   }
 
