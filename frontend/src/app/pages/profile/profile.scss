@@ -50,9 +50,16 @@
      SIDEBAR: Card de Perfil (1/3)
      ======================================== */
   &__sidebar {
+    position: sticky;
+    top: vars.$espaciado-s;
+    height: fit-content;
     display: flex;
     flex-direction: column;
     gap: vars.$espaciado-m;
+
+    @include mixins.respond-to('tablet') {
+      position: static;
+    }
   }
 
   /* ========================================
