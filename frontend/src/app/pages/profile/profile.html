@@ -1,4 +1,5 @@
-<main class="profile">
+<!-- PERFIL DE USUARIO - Estructura idéntica a detail.html -->
+<div class="profile">
   @if (isLoading()) {
     <div class="profile__loading">
       <p>Cargando perfil...</p>
@@ -8,83 +9,104 @@
 
       <!-- ===================================================
            COLUMNA IZQUIERDA: Card de Perfil (1/3)
-           ================================================== -->
+           Estructura idéntica a detail-card
+           =================================================== -->
       <aside class="profile__sidebar">
-        <app-card
-          [cardType]="'profile'"
-          [imageUrl]="userProfile().avatarUrl"
-          [imageAlt]="userProfile().name"
-          [imageShape]="'circle'"
-          [imageSize]="'large'"
-          [title]="userProfile().name"
-          [subtitle]="'Miembro desde ' + formatDate(userProfile().memberSince)"
-          [badges]="genreBadges()"
-          [actions]="profileActions()"
-          [layout]="'vertical'"
-        ></app-card>
+        <div class="profile-card">
+          <!-- Foto de perfil (círculo) -->
+          <div class="profile-card__cover">
+            <img
+              [src]="userProfile().avatarUrl"
+              [alt]="userProfile().name"
+              class="profile-card__image"
+            />
+          </div>
+
+          <!-- Info del usuario -->
+          <div class="profile-card__info">
+            <h1 class="profile-card__title">{{ userProfile().name }}</h1>
+            <p class="profile-card__subtitle">
+              Miembro desde {{ formatDate(userProfile().memberSince) }}
+            </p>
+
+            <!-- Géneros favoritos -->
+            <div class="profile-card__section">
+              <h3 class="profile-card__section-title">Géneros favoritos</h3>
+              <div class="profile-card__badges">
+                @for (badge of genreBadges(); track $index) {
+                  <span class="profile-card__badge">{{ badge }}</span>
+                }
+                @empty {
+                  <p class="profile-card__empty-text">Sin información de géneros</p>
+                }
+              </div>
+            </div>
+
+            <!-- Botón editar perfil -->
+            <div class="profile-card__actions">
+              @for (action of profileActions(); track action.label) {
+                <app-button
+                  variant="primary"
+                  size="md"
+                  [fullWidth]="true"
+                  (clicked)="action.callback ? action.callback() : null"
+                >
+                  {{ action.label }}
+                </app-button>
+              }
+            </div>
+          </div>
+        </div>
       </aside>
 
       <!-- ===================================================
            COLUMNA DERECHA: Tabs + Contenido (2/3)
-           ================================================== -->
+           Estructura idéntica a detail__content
+           =================================================== -->
       <main class="profile__content">
 
-        <!-- TABS DE NAVEGACIÓN -->
-        <app-tabs
-          [tabs]="profileTabs()"
-          [activeTabId]="activeTab()"
-          (tabChange)="onTabChange($event)"
-        ></app-tabs>
+        <!-- TABS - Envueltas en section como en detail -->
+        <section class="profile-tabs-section">
+          <app-tabs
+            [tabs]="profileTabs()"
+            [activeTabId]="activeTab()"
+            (tabChange)="onTabChange($event)"
+          ></app-tabs>
 
-        <!-- ===================================================
-             TAB 1: RESEÑAS
-             ================================================== -->
-        @if (activeTab() === 'reviews') {
-          <div class="profile-reviews" role="tabpanel" id="tabpanel-reviews">
-            <div class="profile-reviews__container">
-
+          <!-- TAB 1: RESEÑAS -->
+          @if (activeTab() === 'reviews') {
+            <div class="tab-content tab-content--reviews" role="tabpanel" id="tabpanel-reviews">
               @if (hasReviews()) {
-                <!-- Lista de reseñas (paginada 3 por página) -->
-                <div class="profile-reviews__list">
+                <!-- Lista de reseñas -->
+                <div class="reviews-list">
                   @for (review of currentReviews(); track trackByReviewId($index, review)) {
-                    <article class="review-card" (click)="viewReview(review.id)">
-                      <!-- Imagen del álbum -->
-                      <div class="review-card__image">
+                    <div class="review-card" (click)="viewReview(review.id)">
+                      <div class="review-card__header">
                         <img
                           [src]="review.albumImageUrl"
                           [alt]="review.albumTitle"
+                          class="review-card__avatar"
                         />
-                      </div>
-
-                      <!-- Contenido de la reseña -->
-                      <div class="review-card__content">
-                        <!-- Header con título, artista y rating -->
-                        <div class="review-card__header">
-                          <h3 class="review-card__title">{{ review.albumTitle }}</h3>
+                        <div class="review-card__user-info">
+                          <h5 class="review-card__user-name">{{ review.albumTitle }}</h5>
                           <p class="review-card__artist">{{ review.albumArtist }}</p>
-                          <div class="review-card__rating">
+                          <div class="review-card__meta">
                             <app-rating
                               [rating]="review.rating"
-                              size="medium"
+                              size="small"
                             ></app-rating>
+                            <span class="review-card__date">{{ formatDate(review.date) }}</span>
                           </div>
                         </div>
-
-                        <!-- Texto de la reseña -->
-                        <p class="review-card__text">{{ review.content }}</p>
-
-                        <!-- Fecha -->
-                        <time class="review-card__date">
-                          {{ formatDate(review.date) }}
-                        </time>
                       </div>
-                    </article>
+                      <p class="review-card__content">{{ review.content }}</p>
+                    </div>
                   }
                 </div>
 
-                <!-- PAGINACIÓN -->
+                <!-- Paginación -->
                 @if (totalReviewPages() > 1) {
-                  <div class="profile-reviews__pagination">
+                  <div class="profile__pagination">
                     <app-button
                       variant="secondary"
                       size="md"
@@ -108,12 +130,11 @@
                     </app-button>
                   </div>
                 }
-
               } @else {
                 <!-- Estado vacío -->
-                <div class="profile-reviews__empty">
-                  <p class="profile-reviews__empty-title">Aún no has escrito ninguna reseña</p>
-                  <p class="profile-reviews__empty-subtitle">Comienza a compartir tus opiniones sobre álbumes</p>
+                <div class="profile__empty-state">
+                  <p class="profile__empty-title">Aún no has escrito ninguna reseña</p>
+                  <p class="profile__empty-subtitle">Comienza a compartir tus opiniones sobre álbumes</p>
                   <app-button
                     variant="primary"
                     size="md"
@@ -123,35 +144,28 @@
                   </app-button>
                 </div>
               }
-
             </div>
-          </div>
-        }
+          }
 
-        <!-- ===================================================
-             TAB 2: ÁLBUMES
-             ================================================== -->
-        @if (activeTab() === 'albums') {
-          <div class="profile-albums" role="tabpanel" id="tabpanel-albums">
+          <!-- TAB 2: ÁLBUMES -->
+          @if (activeTab() === 'albums') {
+            <div class="tab-content tab-content--albums" role="tabpanel" id="tabpanel-albums">
+              <!-- Barra de búsqueda -->
+              <div class="profile__search">
+                <app-search-bar
+                  placeholder="Buscar en mis álbumes..."
+                  [instant]="true"
+                  (onSearchInstant)="onSearchAlbums($event)"
+                ></app-search-bar>
+              </div>
 
-            <!-- Barra de búsqueda -->
-            <div class="profile-albums__search">
-              <app-search-bar
-                placeholder="Buscar en mis álbumes..."
-                [instant]="true"
-                (onSearchInstant)="onSearchAlbums($event)"
-              ></app-search-bar>
-            </div>
-
-            @if (hasFilteredAlbums()) {
-              <!-- Carrusel de álbumes con cards dentro -->
-              <div class="profile-albums__carousel">
+              @if (hasFilteredAlbums()) {
+                <!-- Carrusel de álbumes -->
                 <app-carousel
                   [itemsToShow]="4"
                   [rows]="2"
                   title="Mis álbumes"
                 >
-                  <!-- Cards dentro del carrusel usando content projection -->
                   @for (album of filteredAlbums(); track trackByAlbumId($index, album)) {
                     <app-card
                       [title]="album.title"
@@ -164,42 +178,40 @@
                     ></app-card>
                   }
                 </app-carousel>
-              </div>
-
-            } @else {
-              @if (albumSearchTerm().length > 0) {
-                <!-- Sin resultados de búsqueda -->
-                <div class="profile-albums__empty">
-                  <p class="profile-albums__empty-title">
-                    No se encontraron resultados para "{{ albumSearchTerm() }}"
-                  </p>
-                  <p class="profile-albums__empty-subtitle">
-                    Intenta con otro término de búsqueda
-                  </p>
-                </div>
               } @else {
-                <!-- Sin álbumes -->
-                <div class="profile-albums__empty">
-                  <p class="profile-albums__empty-title">Aún no has añadido álbumes a tu lista</p>
-                  <p class="profile-albums__empty-subtitle">
-                    Explora y añade álbumes a tu colección personal
-                  </p>
-                  <app-button
-                    variant="primary"
-                    size="md"
-                    (clicked)="viewAlbum(101)"
-                  >
-                    Explorar álbumes
-                  </app-button>
-                </div>
+                @if (albumSearchTerm().length > 0) {
+                  <!-- Sin resultados de búsqueda -->
+                  <div class="profile__empty-state">
+                    <p class="profile__empty-title">
+                      No se encontraron resultados para "{{ albumSearchTerm() }}"
+                    </p>
+                    <p class="profile__empty-subtitle">
+                      Intenta con otro término de búsqueda
+                    </p>
+                  </div>
+                } @else {
+                  <!-- Sin álbumes -->
+                  <div class="profile__empty-state">
+                    <p class="profile__empty-title">Aún no has añadido álbumes a tu lista</p>
+                    <p class="profile__empty-subtitle">
+                      Explora y añade álbumes a tu colección personal
+                    </p>
+                    <app-button
+                      variant="primary"
+                      size="md"
+                      (clicked)="viewAlbum(101)"
+                    >
+                      Explorar álbumes
+                    </app-button>
+                  </div>
+                }
               }
-            }
-
-          </div>
-        }
+            </div>
+          }
+        </section>
 
       </main>
 
     </div>
   }
-</main>
+</div>
