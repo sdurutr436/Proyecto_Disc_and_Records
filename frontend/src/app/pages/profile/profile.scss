@@ -2,7 +2,6 @@
 @use '../../../styles/01-tools/mixins' as mixins;
 
 .profile {
-  width: 100%;
   min-height: 100vh;
   padding: vars.$espaciado-m;
   background-color: var(--bg-primary);
@@ -11,23 +10,39 @@
     padding: vars.$espaciado-s;
   }
 
-  // Móvil pequeño: padding mínimo
   @media (max-width: vars.$breakpoint-mobile-sm) {
     padding: vars.$espaciado-xs;
   }
 
   /* ========================================
-     CONTENEDOR PRINCIPAL
+     LOADING STATE
+     ======================================== */
+  &__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    font-size: vars.$tamanio-fuente-h4;
+    color: var(--text-secondary);
+  }
+
+  /* ========================================
+     CONTENEDOR PRINCIPAL (1/3 + 2/3)
      ======================================== */
   &__container {
-    max-width: 87.5rem;
+    max-width: 87.5rem; // 1400px
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: vars.$espaciado-m;
 
-    @include mixins.respond-to('desktop') {
+    @include mixins.respond-to('tablet') {
       grid-template-columns: 1fr;
+      gap: vars.$espaciado-s;
+    }
+
+    @media (max-width: vars.$breakpoint-mobile-sm) {
+      gap: vars.$espaciado-xs;
     }
   }
 
@@ -40,129 +55,240 @@
     gap: vars.$espaciado-m;
   }
 
-  &__stats {
-    display: flex;
-    gap: vars.$espaciado-s;
-    padding: vars.$espaciado-m;
-    background-color: var(--bg-secondary);
-    border: vars.$borde-brutal-thick;
-    box-shadow: vars.$sombra-brutal-s;
-  }
-
-  &__stat {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: vars.$espaciado-xs;
-    padding: vars.$espaciado-s;
-    background-color: var(--bg-primary);
-    border: vars.$borde-brutal-thin;
-    text-align: center;
-  }
-
-  &__stat-value {
-    @include mixins.font-size-line('h2');
-    font-weight: 700;
-    color: var(--color-primary);
-    line-height: 1;
-  }
-
-  &__stat-label {
-    @include mixins.font-size-line('texto-pequeno-m');
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-
   /* ========================================
-     CONTENIDO PRINCIPAL: Tabs + Contenido (2/3)
+     CONTENIDO: Tabs (2/3)
      ======================================== */
   &__content {
     display: flex;
     flex-direction: column;
     gap: 0;
+    overflow: hidden;
+  }
+}
+
+/* ========================================
+   CARD DE PERFIL (SIDEBAR)
+   ========================================*/
+.profile-card {
+  background-color: var(--bg-secondary);
+  border: vars.$borde-brutal-thick;
+  box-shadow: vars.$sombra-brutal-m;
+  border-radius: vars.$radio-l;
+  overflow: hidden;
+  padding: vars.$espaciado-m;
+
+  @include mixins.respond-to('tablet') {
+    padding: vars.$espaciado-s;
   }
 
-  /* ========================================
-     TABS DE NAVEGACIÓN
-     ======================================== */
-  &__tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: vars.$borde-brutal-thick;
-    background-color: var(--bg-secondary);
-    padding: 0;
-  }
-
-  &__tab {
-    flex: 1;
-
-    @include mixins.respond-to('tablet') {
-      @include mixins.font-size-line('texto-pequeno-m');
-    }
-  }
-
-  /* ========================================
-     CONTENIDO DE TABS
-     ======================================== */
-  &__tab-content {
-    min-height: 25rem;
-    padding: vars.$espaciado-m;
+  /* Foto circular de perfil */
+  &__image {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: vars.$radio-l;
+    overflow: hidden;
+    margin-bottom: vars.$espaciado-m;
     background-color: var(--bg-primary);
     border: vars.$borde-brutal-thick;
-    border-top: none;
 
     @include mixins.respond-to('tablet') {
-      padding: vars.$espaciado-s;
-    }
-
-    @media (max-width: vars.$breakpoint-mobile-sm) {
-      padding: vars.$espaciado-xs;
-      min-height: 15rem;
-      border-left: none;
-      border-right: none;
+      margin-bottom: vars.$espaciado-s;
     }
   }
 
-  /* ========================================
-     VISTA: RESEÑAS
-     ======================================== */
-  &__reviews {
+  &__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$espaciado-m;
+
+    @include mixins.respond-to('tablet') {
+      gap: vars.$espaciado-s;
+    }
+  }
+
+  /* Nombre del usuario */
+  &__name {
+    @include mixins.font-size-line('h3');
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    text-align: center;
+    word-wrap: break-word;
+  }
+
+  /* Miembro desde */
+  &__since {
+    @include mixins.font-size-line('texto-pequeno-m');
+    color: var(--text-secondary);
+    text-align: center;
+    margin: 0;
+    font-style: italic;
+  }
+
+  /* Sección de géneros */
+  &__genres {
+    border-top: vars.$borde-brutal-thin;
+    border-bottom: vars.$borde-brutal-thin;
+    padding: vars.$espaciado-s 0;
+  }
+
+  &__section-title {
+    @include mixins.font-size-line('texto-pequeno-s');
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 vars.$espaciado-s 0;
+  }
+
+  &__genre-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: vars.$espaciado-xs;
+    justify-content: center;
+  }
+
+  &__empty-text {
+    @include mixins.font-size-line('texto-pequeno-s');
+    color: var(--text-placeholder);
+    text-align: center;
+    margin: 0;
+    font-style: italic;
+  }
+
+  /* Botón de acción */
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$espaciado-s;
+  }
+}
+
+/* ========================================
+   TAB 1: RESEÑAS
+   ======================================== */
+.profile-reviews {
+  padding: vars.$espaciado-m;
+  background-color: var(--bg-primary);
+  border: vars.$borde-brutal-thick;
+  border-top: none;
+  min-height: 30rem;
+
+  @include mixins.respond-to('tablet') {
+    padding: vars.$espaciado-s;
+  }
+
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    padding: vars.$espaciado-xs;
+    border-left: none;
+    border-right: none;
+    min-height: 20rem;
+  }
+
+  &__container {
     display: flex;
     flex-direction: column;
     gap: vars.$espaciado-m;
   }
 
-  &__review-card {
-    display: grid;
-    grid-template-columns: 9.375rem 1fr;
+  /* Lista de reseñas */
+  &__list {
+    display: flex;
+    flex-direction: column;
     gap: vars.$espaciado-m;
-    padding: vars.$espaciado-m;
-    background-color: var(--bg-secondary);
-    border: vars.$borde-brutal-thick;
-    box-shadow: vars.$sombra-brutal-s;
-    transition: all vars.$transicion-base;
-    @include mixins.brutal-interaction(vars.$sombra-brutal-s, vars.$sombra-brutal-active);
 
     @include mixins.respond-to('tablet') {
-      grid-template-columns: 6.25rem 1fr;
       gap: vars.$espaciado-s;
-      padding: vars.$espaciado-s;
-    }
-
-    @media (max-width: vars.$breakpoint-mobile-sm) {
-      grid-template-columns: 4.5rem 1fr;
-      gap: vars.$espaciado-xs;
-      padding: vars.$espaciado-xs;
     }
   }
 
-  &__review-image {
-    width: 9.375rem;
-    height: 9.375rem;
+  /* Paginación */
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: vars.$espaciado-m;
+    padding-top: vars.$espaciado-m;
+    border-top: vars.$borde-brutal-thin;
+    flex-wrap: wrap;
+
+    @include mixins.respond-to('tablet') {
+      gap: vars.$espaciado-s;
+      padding-top: vars.$espaciado-s;
+    }
+  }
+
+  /* Estado vacío */
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: vars.$espaciado-m;
+    padding: vars.$espaciado-xl;
+    text-align: center;
+    min-height: 25rem;
+
+    @include mixins.respond-to('tablet') {
+      padding: vars.$espaciado-m;
+      min-height: 15rem;
+    }
+  }
+
+  &__empty-title {
+    @include mixins.font-size-line('h4');
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  &__empty-subtitle {
+    @include mixins.font-size-line('parrafo');
+    color: var(--text-secondary);
+    margin: 0;
+  }
+}
+
+/* ========================================
+   CARD DE RESEÑA
+   ======================================== */
+.review-card {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: vars.$espaciado-m;
+  padding: vars.$espaciado-m;
+  background-color: var(--bg-secondary);
+  border: vars.$borde-brutal-thick;
+  box-shadow: vars.$sombra-brutal-s;
+  border-radius: vars.$radio-m;
+  cursor: pointer;
+  transition: all vars.$transicion-base;
+
+  @include mixins.brutal-interaction;
+
+  @include mixins.respond-to('tablet') {
+    grid-template-columns: 7rem 1fr;
+    gap: vars.$espaciado-s;
+    padding: vars.$espaciado-s;
+  }
+
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    grid-template-columns: 5rem 1fr;
+    gap: vars.$espaciado-xs;
+    padding: vars.$espaciado-xs;
+  }
+
+  &__image {
+    width: 10rem;
+    height: 10rem;
     border: vars.$borde-brutal-thick;
+    border-radius: vars.$radio-m;
     overflow: hidden;
     background-color: var(--bg-primary);
     flex-shrink: 0;
@@ -174,121 +300,162 @@
     }
 
     @include mixins.respond-to('tablet') {
-      width: 6.25rem;
-      height: 6.25rem;
+      width: 7rem;
+      height: 7rem;
     }
 
     @media (max-width: vars.$breakpoint-mobile-sm) {
-      width: 4.5rem;
-      height: 4.5rem;
+      width: 5rem;
+      height: 5rem;
     }
   }
 
-  &__review-content {
+  &__content {
     display: flex;
     flex-direction: column;
     gap: vars.$espaciado-s;
+
+    @include mixins.respond-to('tablet') {
+      gap: vars.$espaciado-xs;
+    }
   }
 
-  &__review-header {
+  &__header {
     display: flex;
     flex-direction: column;
     gap: vars.$espaciado-xs;
   }
 
-  &__review-title {
-    @include mixins.font-size-line('h4');
+  &__title {
+    @include mixins.font-size-line('h5');
     font-weight: 700;
     color: var(--text-primary);
     margin: 0;
   }
 
-  &__review-artist {
-    @include mixins.font-size-line('parrafo');
+  &__artist {
+    @include mixins.font-size-line('texto-pequeno-m');
     color: var(--text-secondary);
     margin: 0;
   }
 
-  &__review-rating {
+  &__rating {
     display: flex;
     gap: vars.$espaciado-xs;
-    margin-top: vars.$espaciado-xs;
-
-    .star {
-      color: var(--text-placeholder);
-      font-size: 1rem;
-
-      &--filled {
-        color: var(--color-primary);
-      }
-    }
   }
 
-  &__review-text {
+  &__text {
     @include mixins.font-size-line('parrafo');
     color: var(--text-primary);
     margin: 0;
     line-height: 1.6;
   }
 
-  &__review-date {
+  &__date {
     @include mixins.font-size-line('texto-pequeno-s');
     color: var(--text-placeholder);
     font-style: italic;
-  }
-
-  /* ========================================
-     VISTA: ÁLBUMES
-     ======================================== */
-  &__albums {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
-    gap: vars.$espaciado-m;
-
-    @include mixins.respond-to('desktop') {
-      grid-template-columns: repeat(auto-fill, minmax(9.375rem, 1fr));
-      gap: vars.$espaciado-s;
-    }
-
-    @include mixins.respond-to('tablet') {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  &__album-card {
-    cursor: pointer;
-    position: relative;
-  }
-
-  &__album-rating {
-    position: absolute;
-    bottom: vars.$espaciado-s;
-    right: vars.$espaciado-s;
-    background-color: var(--color-primary);
-    color: var(--text-dark);
-    padding: vars.$espaciado-xs vars.$espaciado-s;
-    border-radius: vars.$radio-xxl;
-    @include mixins.font-size-line('texto-pequeno-s');
-    font-weight: 600;
-    box-shadow: 0 0.125rem 0.5rem color-mix(in srgb, var(--shadow-color) 20%, transparent);
-    z-index: 10;
+    margin-top: auto;
   }
 }
 
 /* ========================================
-   ANIMACIONES
+   INFORMACIÓN DE PAGINACIÓN
    ======================================== */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(1.25rem);
+.pagination__info {
+  @include mixins.font-size-line('texto-pequeno-m');
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ========================================
+   TAB 2: ÁLBUMES
+   ======================================== */
+.profile-albums {
+  padding: vars.$espaciado-m;
+  background-color: var(--bg-primary);
+  border: vars.$borde-brutal-thick;
+  border-top: none;
+  min-height: 30rem;
+
+  @include mixins.respond-to('tablet') {
+    padding: vars.$espaciado-s;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    padding: vars.$espaciado-xs;
+    border-left: none;
+    border-right: none;
+    min-height: 20rem;
+  }
+
+  /* Barra de búsqueda */
+  &__search {
+    margin-bottom: vars.$espaciado-m;
+
+    @include mixins.respond-to('tablet') {
+      margin-bottom: vars.$espaciado-s;
+    }
+  }
+
+  /* Carrusel/grid de álbumes */
+  &__carousel {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$espaciado-m;
+
+    @include mixins.respond-to('tablet') {
+      gap: vars.$espaciado-s;
+    }
+  }
+
+  /* Estado vacío */
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: vars.$espaciado-m;
+    padding: vars.$espaciado-xl;
+    text-align: center;
+    min-height: 25rem;
+
+    @include mixins.respond-to('tablet') {
+      padding: vars.$espaciado-m;
+      min-height: 15rem;
+    }
+  }
+
+  &__empty-title {
+    @include mixins.font-size-line('h4');
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  &__empty-subtitle {
+    @include mixins.font-size-line('parrafo');
+    color: var(--text-secondary);
+    margin: 0;
   }
 }
 
-.profile__tab-content {
-  animation: slideIn 0.4s ease-out;
+/* ========================================
+   GRID DE ÁLBUMES (2 filas en desktop)
+   ======================================== */
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: vars.$espaciado-m;
+
+  @include mixins.respond-to('tablet') {
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: vars.$espaciado-s;
+  }
+
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    gap: vars.$espaciado-xs;
+  }
 }

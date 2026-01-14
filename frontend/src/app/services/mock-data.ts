@@ -551,3 +551,217 @@ export const DEFAULT_ALBUM_STATS: AlbumStats = {
   averageRating: null,
   listenedCount: 0
 };
+
+// =============================================================================
+// 👤 MOCK PROFILE DATA - DATOS DEL PERFIL DE USUARIO
+// =============================================================================
+
+/**
+ * Interface para estadísticas de géneros
+ */
+export interface GenreStats {
+  name: string;
+  count: number;
+  percentage: number;
+}
+
+/**
+ * Interface para reseñas paginadas
+ */
+export interface PaginatedReviews {
+  reviews: Review[];
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+}
+
+/**
+ * Calcular estadísticas de géneros desde álbumes
+ * Retorna top 5 géneros + "Otros" si hay más de 5
+ * Ordenado por cantidad descendente
+ */
+export function calculateGenreStats(albums: Album[]): GenreStats[] {
+  if (albums.length === 0) return [];
+
+  const genreCounts = new Map<string, number>();
+
+  albums.forEach(album => {
+    const genre = album.genre || 'Desconocido';
+    genreCounts.set(genre, (genreCounts.get(genre) || 0) + 1);
+  });
+
+  const total = albums.length;
+  const stats: GenreStats[] = Array.from(genreCounts.entries())
+    .map(([name, count]) => ({
+      name,
+      count,
+      percentage: Math.round((count / total) * 100)
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  // Tomar top 5 y agrupar el resto como "Otros"
+  if (stats.length > 5) {
+    const top5 = stats.slice(0, 5);
+    const others = stats.slice(5);
+    const othersCount = others.reduce((sum, g) => sum + g.count, 0);
+    const othersPercentage = Math.round((othersCount / total) * 100);
+
+    return [
+      ...top5,
+      { name: 'Otros', count: othersCount, percentage: othersPercentage }
+    ];
+  }
+
+  return stats;
+}
+
+/**
+ * Paginar reseñas del usuario
+ * @param allReviews Array de todas las reseñas
+ * @param page Número de página (1-based)
+ * @param pageSize Cantidad de elementos por página (default: 3)
+ */
+export function paginateReviews(
+  allReviews: Review[],
+  page: number = 1,
+  pageSize: number = 3
+): PaginatedReviews {
+  const totalPages = Math.ceil(allReviews.length / pageSize);
+  const startIndex = (page - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const reviews = allReviews.slice(startIndex, endIndex);
+
+  return {
+    reviews,
+    currentPage: page,
+    totalPages,
+    pageSize
+  };
+}
+
+/**
+ * Filtrar álbumes por término de búsqueda
+ * Busca en título y artista
+ */
+export function filterAlbums(albums: Album[], searchTerm: string): Album[] {
+  if (!searchTerm.trim()) return albums;
+
+  const term = searchTerm.toLowerCase();
+  return albums.filter(album =>
+    album.title.toLowerCase().includes(term) ||
+    album.artist.toLowerCase().includes(term)
+  );
+}
+
+/**
+ * Datos mock de álbumes escuchados por el usuario
+ * Para simular lista de "mis álbumes" en el perfil
+ */
+export const MOCK_USER_ALBUMS: Album[] = [
+  { id: '101', title: 'The Wall', artist: 'Pink Floyd', artistId: '1', genre: 'Rock Progresivo', coverUrl: 'https://picsum.photos/seed/wall/300', releaseYear: 1979, tracks: 26, duration: '6:32:00', label: 'Harvest', description: '', averageRating: 4.9, totalReviews: 1243 },
+  { id: '102', title: 'The Dark Side of the Moon', artist: 'Pink Floyd', artistId: '1', genre: 'Rock Progresivo', coverUrl: 'https://picsum.photos/seed/darkside/300', releaseYear: 1973, tracks: 10, duration: '4:13:00', label: 'Harvest', description: '', averageRating: 4.9, totalReviews: 2156 },
+  { id: '103', title: 'Hotel California', artist: 'Eagles', artistId: '2', genre: 'Rock Clásico', coverUrl: 'https://picsum.photos/seed/hotelca/300', releaseYear: 1976, tracks: 12, duration: '3:35:00', label: 'Asylum', description: '', averageRating: 4.8, totalReviews: 987 },
+  { id: '104', title: 'Rumours', artist: 'Fleetwood Mac', artistId: '3', genre: 'Rock Pop', coverUrl: 'https://picsum.photos/seed/rumours/300', releaseYear: 1977, tracks: 14, duration: '3:50:00', label: 'Warner Bros', description: '', averageRating: 4.9, totalReviews: 3456 },
+  { id: '105', title: 'To Pimp a Butterfly', artist: 'Kendrick Lamar', artistId: '4', genre: 'Hip-Hop', coverUrl: 'https://picsum.photos/seed/butterfly/300', releaseYear: 2015, tracks: 16, duration: '3:54:00', label: 'Top Dawg', description: '', averageRating: 4.7, totalReviews: 1567 },
+  { id: '106', title: 'A Night at the Opera', artist: 'Queen', artistId: '5', genre: 'Rock Progresivo', coverUrl: 'https://picsum.photos/seed/opera/300', releaseYear: 1975, tracks: 11, duration: '3:57:00', label: 'EMI', description: '', averageRating: 4.8, totalReviews: 654 },
+  { id: '107', title: 'Appetite for Destruction', artist: 'Guns N\' Roses', artistId: '6', genre: 'Hard Rock', coverUrl: 'https://picsum.photos/seed/appetite/300', releaseYear: 1987, tracks: 12, duration: '3:48:00', label: 'Geffen', description: '', averageRating: 4.6, totalReviews: 876 },
+  { id: '108', title: 'Abbey Road', artist: 'The Beatles', artistId: '7', genre: 'Rock Clásico', coverUrl: 'https://picsum.photos/seed/abbey/300', releaseYear: 1969, tracks: 17, duration: '3:41:00', label: 'Apple', description: '', averageRating: 4.8, totalReviews: 1234 },
+  { id: '109', title: 'Random Access Memories', artist: 'Daft Punk', artistId: '8', genre: 'Electrónico', coverUrl: 'https://picsum.photos/seed/daftpunk/300', releaseYear: 2013, tracks: 13, duration: '3:42:00', label: 'Columbia', description: '', averageRating: 4.8, totalReviews: 2345 },
+  { id: '110', title: 'The Marshall Mathers LP', artist: 'Eminem', artistId: '9', genre: 'Hip-Hop', coverUrl: 'https://picsum.photos/seed/eminem/300', releaseYear: 2000, tracks: 20, duration: '3:42:00', label: 'Aftermath', description: '', averageRating: 4.7, totalReviews: 1098 },
+  { id: '111', title: 'Nevermind', artist: 'Nirvana', artistId: '10', genre: 'Grunge', coverUrl: 'https://picsum.photos/seed/nevermind/300', releaseYear: 1991, tracks: 12, duration: '3:42:00', label: 'DGC', description: '', averageRating: 4.8, totalReviews: 543 },
+  { id: '112', title: 'Automatic for the People', artist: 'R.E.M.', artistId: '11', genre: 'Alternative Rock', coverUrl: 'https://picsum.photos/seed/rem/300', releaseYear: 1992, tracks: 12, duration: '3:44:00', label: 'Warner Bros', description: '', averageRating: 4.5, totalReviews: 765 }
+];
+
+/**
+ * Reseñas mock del usuario autenticado
+ * Para simular en perfil "mis reseñas"
+ * 
+ * NOTA: Agregamos albumTitle y albumArtist dinámicamente desde las props,
+ * pero incluimos albumImageUrl en este mock para renderizar en la vista
+ */
+export const MOCK_USER_REVIEWS: (Review & { albumTitle: string; albumArtist: string; albumImageUrl: string })[] = [
+  {
+    id: '1',
+    albumId: '101',
+    userId: '3',
+    userName: 'Usuario Mock',
+    userAvatar: 'https://picsum.photos/seed/user/100',
+    rating: 5,
+    content: 'The Wall es una obra maestra absoluta. Cada canción cuenta una historia única y el concepto del álbum es genial. La producción es perfecta para la época.',
+    date: '2024-12-10',
+    likes: 23,
+    albumTitle: 'The Wall',
+    albumArtist: 'Pink Floyd',
+    albumImageUrl: 'https://picsum.photos/seed/wall/300'
+  },
+  {
+    id: '2',
+    albumId: '104',
+    userId: '3',
+    userName: 'Usuario Mock',
+    userAvatar: 'https://picsum.photos/seed/user/100',
+    rating: 4,
+    content: 'Rumours es un álbum increíble. El flujo entre canciones es perfecto y cada track tiene algo especial que ofrecer.',
+    date: '2024-11-25',
+    likes: 17,
+    albumTitle: 'Rumours',
+    albumArtist: 'Fleetwood Mac',
+    albumImageUrl: 'https://picsum.photos/seed/rumours/300'
+  },
+  {
+    id: '3',
+    albumId: '109',
+    userId: '3',
+    userName: 'Usuario Mock',
+    userAvatar: 'https://picsum.photos/seed/user/100',
+    rating: 5,
+    content: 'Random Access Memories me llevó en un viaje musical maravilloso. Es funk puro disfrazado de electrónica moderna. Genial.',
+    date: '2024-10-08',
+    likes: 34,
+    albumTitle: 'Random Access Memories',
+    albumArtist: 'Daft Punk',
+    albumImageUrl: 'https://picsum.photos/seed/daftpunk/300'
+  },
+  {
+    id: '4',
+    albumId: '106',
+    userId: '3',
+    userName: 'Usuario Mock',
+    userAvatar: 'https://picsum.photos/seed/user/100',
+    rating: 5,
+    content: 'A Night at the Opera puede ser el mejor álbum de Queen. Bohemian Rhapsody es épica pero canciones como Somebody to Love son igual de brillantes.',
+    date: '2024-09-12',
+    likes: 45,
+    albumTitle: 'A Night at the Opera',
+    albumArtist: 'Queen',
+    albumImageUrl: 'https://picsum.photos/seed/opera/300'
+  },
+  {
+    id: '5',
+    albumId: '111',
+    userId: '3',
+    userName: 'Usuario Mock',
+    userAvatar: 'https://picsum.photos/seed/user/100',
+    rating: 5,
+    content: 'Nevermind definió una generación. La angustia, la rabia, la tristeza... todo está perfectamente capturado en cada nota. Un álbum obligatorio.',
+    date: '2024-08-30',
+    likes: 56,
+    albumTitle: 'Nevermind',
+    albumArtist: 'Nirvana',
+    albumImageUrl: 'https://picsum.photos/seed/nevermind/300'
+  },
+  {
+    id: '6',
+    albumId: '102',
+    userId: '3',
+    userName: 'Usuario Mock',
+    userAvatar: 'https://picsum.photos/seed/user/100',
+    rating: 5,
+    content: 'The Dark Side of the Moon es simplemente perfecto. La secuencia de canciones, la producción, los temas... es un viaje completo de principio a fin.',
+    date: '2024-07-15',
+    likes: 89,
+    albumTitle: 'The Dark Side of the Moon',
+    albumArtist: 'Pink Floyd',
+    albumImageUrl: 'https://picsum.photos/seed/darkside/300'
+  }
+];
