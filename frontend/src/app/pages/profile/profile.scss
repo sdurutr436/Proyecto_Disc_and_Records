@@ -61,6 +61,7 @@
     display: flex;
     flex-direction: column;
     gap: vars.$espaciado-m;
+    min-width: 0; // Evita que el grid se expanda más allá del viewport
   }
 
   /* ========================================
