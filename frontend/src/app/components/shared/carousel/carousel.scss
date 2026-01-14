@@ -139,37 +139,39 @@
   }
 
   // ========================================
-  // VARIANTE CON 2 FILAS
+  // VARIANTE CON 2 FILAS - CARRUSEL HORIZONTAL
   // ========================================
   &__track--rows-2 {
     display: grid;
-    // Número fijo de columnas para evitar desbordamiento
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    // 2 filas fijas, columnas se generan automáticamente hacia la derecha
     grid-template-rows: repeat(2, auto);
-    grid-auto-flow: row;
+    grid-auto-flow: column;
+    grid-auto-columns: 12.5rem;
     gap: vars.$espaciado-s;
     min-height: auto;
     align-items: start;
-    overflow-x: hidden;
-    overflow-y: visible;
+    width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: visible;
+    @include mix.hide-scrollbar;
 
     @include mix.tablet-only {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-auto-columns: 10.625rem;
       gap: vars.$espaciado-xs;
     }
 
     @include mix.mobile-down {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-columns: 9.375rem;
       gap: vars.$espaciado-xs;
     }
 
     @include mix.mobile-sm-down {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-columns: 8rem;
     }
 
-    // Override tamaño de items para grid
+    // Override tamaño de items para grid - permitir que el grid controle el ancho
     > * {
       flex: none;
       width: 100%;
