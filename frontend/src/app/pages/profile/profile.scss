@@ -420,22 +420,6 @@
     }
   }
   
-  app-carousel {
-    display: block;
-    margin: 0;
-    padding: 0 vars.$espaciado-m;
-    overflow: hidden;
-    max-width: 100%;
-    
-    @include mixins.respond-to('tablet') {
-      padding: 0 vars.$espaciado-s;
-    }
-    
-    @media (max-width: vars.$breakpoint-mobile-sm) {
-      padding: 0 vars.$espaciado-xs;
-    }
-  }
-  
   .profile__empty-state {
     padding-left: vars.$espaciado-m;
     padding-right: vars.$espaciado-m;
@@ -443,6 +427,54 @@
     @include mixins.respond-to('tablet') {
       padding-left: vars.$espaciado-s;
       padding-right: vars.$espaciado-s;
+    }
+  }
+  
+  // Override agresivo para el carrusel - usando ::ng-deep
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep app-carousel,
+  ::ng-deep .carousel {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    box-sizing: border-box;
+    
+    .carousel__container {
+      overflow: hidden !important;
+      max-width: 100%;
+    }
+    
+    .carousel__track {
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      max-width: 100%;
+      
+      // Forzar flex en lugar de grid para 2 filas
+      &--rows-2 {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        grid-auto-flow: unset !important;
+        justify-content: flex-start;
+        
+        > * {
+          flex: 0 0 calc(20% - vars.$espaciado-s) !important;
+          min-width: 10rem !important;
+          max-width: 12.5rem !important;
+        }
+        
+        @include mixins.respond-to('tablet') {
+          > * {
+            flex: 0 0 calc(33.33% - vars.$espaciado-s) !important;
+          }
+        }
+        
+        @include mixins.respond-to('mobile') {
+          > * {
+            flex: 0 0 calc(50% - vars.$espaciado-xs) !important;
+          }
+        }
+      }
     }
   }
 }

@@ -142,38 +142,51 @@
   // VARIANTE CON 2 FILAS
   // ========================================
   &__track--rows-2 {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 12.5rem);
-    grid-template-rows: repeat(2, auto);
-    grid-auto-flow: column;
+    display: flex;
+    flex-wrap: wrap;
     gap: vars.$espaciado-s;
-    min-height: calc(17.5rem * 2 + vars.$espaciado-s);
-    align-items: start;
+    min-height: auto;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow-x: hidden;
+    overflow-y: visible;
 
     @include mix.tablet-only {
-      grid-template-columns: repeat(auto-fill, 10.625rem);
       gap: vars.$espaciado-xs;
-      min-height: calc(15.625rem * 2 + vars.$espaciado-xs);
     }
 
     @include mix.mobile-down {
-      grid-template-columns: repeat(auto-fill, 9.375rem);
       gap: vars.$espaciado-xs;
-      min-height: calc(14.375rem * 2 + vars.$espaciado-xs);
     }
 
     @include mix.mobile-sm-down {
-      grid-template-columns: repeat(auto-fill, 8rem);
-      grid-template-rows: repeat(2, auto);
-      min-height: auto;
+      gap: vars.$espaciado-xs;
     }
 
-    // Override tamaño de items para grid
+    // Tamaño de items para 2 filas - porcentajes
     > * {
-      flex: none;
-      width: auto;
-      min-width: 0;
-      max-width: none;
+      flex: 0 0 calc(20% - vars.$espaciado-s);
+      width: calc(20% - vars.$espaciado-s);
+      min-width: 9rem;
+      max-width: 12.5rem;
+
+      @include mix.tablet-only {
+        flex: 0 0 calc(25% - vars.$espaciado-xs);
+        width: calc(25% - vars.$espaciado-xs);
+        min-width: 8rem;
+      }
+
+      @include mix.mobile-down {
+        flex: 0 0 calc(33.33% - vars.$espaciado-xs);
+        width: calc(33.33% - vars.$espaciado-xs);
+        min-width: 7rem;
+      }
+
+      @include mix.mobile-sm-down {
+        flex: 0 0 calc(50% - vars.$espaciado-xs);
+        width: calc(50% - vars.$espaciado-xs);
+        min-width: 6rem;
+      }
     }
   }
 
