@@ -401,6 +401,8 @@
 .tab-content--albums {
   padding: vars.$espaciado-m;
   overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
 
   @include mixins.respond-to('tablet') {
     padding: vars.$espaciado-s;
@@ -408,6 +410,13 @@
 
   @media (max-width: vars.$breakpoint-mobile-sm) {
     padding: vars.$espaciado-xs;
+  }
+
+  // Forzar límite en el carrusel
+  app-carousel {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .profile__search {

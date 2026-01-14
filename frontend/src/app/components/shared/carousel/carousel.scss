@@ -150,9 +150,10 @@
     gap: vars.$espaciado-s;
     min-height: auto;
     align-items: start;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: visible;
-    @include mix.hide-scrollbar;
+    max-width: 100%;
+    box-sizing: border-box;
 
     @include mix.tablet-only {
       grid-template-columns: repeat(4, minmax(0, 1fr));
