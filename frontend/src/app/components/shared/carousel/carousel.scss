@@ -155,16 +155,21 @@
     box-sizing: border-box;
     overflow-x: auto;
     overflow-y: visible;
+    scroll-behavior: smooth;
     @include mix.hide-scrollbar;
+    // Padding para que las cards no queden pegadas a los bordes
+    padding: vars.$espaciado-s vars.$espaciado-xs vars.$espaciado-l vars.$espaciado-xs;
 
     @include mix.tablet-only {
       grid-auto-columns: 10.625rem;
       gap: vars.$espaciado-xs;
+      padding: vars.$espaciado-xs vars.$espaciado-xs vars.$espaciado-m vars.$espaciado-xs;
     }
 
     @include mix.mobile-down {
       grid-auto-columns: 9.375rem;
       gap: vars.$espaciado-xs;
+      padding: vars.$espaciado-xs vars.$espaciado-xs vars.$espaciado-s vars.$espaciado-xs;
     }
 
     @include mix.mobile-sm-down {
