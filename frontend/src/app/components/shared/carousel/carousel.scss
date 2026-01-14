@@ -138,6 +138,52 @@
     transition: all 0.3s ease;
   }
 
+  // ========================================
+  // VARIANTE CON 2 FILAS
+  // ========================================
+  &__track--rows-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 12.5rem);
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+    gap: vars.$espaciado-s;
+    min-height: calc(17.5rem * 2 + vars.$espaciado-s);
+    align-items: start;
+
+    @include mix.tablet-only {
+      grid-template-columns: repeat(auto-fill, 10.625rem);
+      gap: vars.$espaciado-xs;
+      min-height: calc(15.625rem * 2 + vars.$espaciado-xs);
+    }
+
+    @include mix.mobile-down {
+      grid-template-columns: repeat(auto-fill, 9.375rem);
+      gap: vars.$espaciado-xs;
+      min-height: calc(14.375rem * 2 + vars.$espaciado-xs);
+    }
+
+    @include mix.mobile-sm-down {
+      grid-template-columns: repeat(auto-fill, 8rem);
+      grid-template-rows: repeat(2, auto);
+      min-height: auto;
+    }
+
+    // Override tamaño de items para grid
+    > * {
+      flex: none;
+      width: auto;
+      min-width: 0;
+      max-width: none;
+    }
+  }
+
+  // Variante multi-row general
+  &--multi-row {
+    .carousel__nav {
+      top: 40%;
+    }
+  }
+
   &__nav {
     position: absolute;
     top: 50%;
