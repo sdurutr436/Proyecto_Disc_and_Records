@@ -149,7 +149,7 @@
     height: 80%;
     object-fit: cover;
     display: block;
-    border-radius: 50%;
+    border-radius: vars.$radio-m;
     border: vars.$borde-brutal-thick;
     transition: transform vars.$transicion-base;
 
@@ -256,6 +256,7 @@
    ======================================== */
 .tab-content {
   padding: vars.$espaciado-m;
+  overflow: hidden;
 
   @include mixins.respond-to('tablet') {
     padding: vars.$espaciado-s;
@@ -392,4 +393,52 @@
   color: var(--text-secondary);
   font-weight: 600;
   white-space: nowrap;
+}
+
+/* ========================================
+   FIX CARRUSEL DESBORDANTE
+   Evita overflow horizontal en tab de álbumes
+   ======================================== */
+.tab-content--albums {
+  padding-left: 0;
+  padding-right: 0;
+  
+  .profile__search {
+    padding-left: vars.$espaciado-m;
+    padding-right: vars.$espaciado-m;
+    
+    @include mixins.respond-to('tablet') {
+      padding-left: vars.$espaciado-s;
+      padding-right: vars.$espaciado-s;
+    }
+    
+    @media (max-width: vars.$breakpoint-mobile-sm) {
+      padding-left: vars.$espaciado-xs;
+      padding-right: vars.$espaciado-xs;
+    }
+  }
+  
+  app-carousel {
+    display: block;
+    margin: 0;
+    padding: 0 vars.$espaciado-m;
+    
+    @include mixins.respond-to('tablet') {
+      padding: 0 vars.$espaciado-s;
+    }
+    
+    @media (max-width: vars.$breakpoint-mobile-sm) {
+      padding: 0 vars.$espaciado-xs;
+    }
+  }
+  
+  .profile__empty-state {
+    padding-left: vars.$espaciado-m;
+    padding-right: vars.$espaciado-m;
+    
+    @include mixins.respond-to('tablet') {
+      padding-left: vars.$espaciado-s;
+      padding-right: vars.$espaciado-s;
+    }
+  }
 }
