@@ -160,23 +160,24 @@
               </div>
 
               @if (hasFilteredAlbums()) {
-                <!-- Grid de álbumes (sin carrusel para evitar overflow) -->
-                <div class="albums-grid">
-                  <h3 class="albums-grid__title">Mis álbumes</h3>
-                  <div class="albums-grid__container">
-                    @for (album of filteredAlbums(); track trackByAlbumId($index, album)) {
-                      <app-card
-                        [title]="album.title"
-                        [subtitle]="album.artist"
-                        [imageUrl]="album.coverUrl"
-                        cardType="polaroid"
-                        variant="vinilo"
-                        hoverEffect="lift"
-                        (click)="viewAlbum(album.id)"
-                      ></app-card>
-                    }
-                  </div>
-                </div>
+                <!-- Carrusel de álbumes -->
+                <app-carousel
+                  [itemsToShow]="4"
+                  [rows]="2"
+                  title="Mis álbumes"
+                >
+                  @for (album of filteredAlbums(); track trackByAlbumId($index, album)) {
+                    <app-card
+                      [title]="album.title"
+                      [subtitle]="album.artist"
+                      [imageUrl]="album.coverUrl"
+                      cardType="polaroid"
+                      variant="vinilo"
+                      hoverEffect="lift"
+                      (click)="viewAlbum(album.id)"
+                    ></app-card>
+                  }
+                </app-carousel>
               } @else {
                 @if (albumSearchTerm().length > 0) {
                   <!-- Sin resultados de búsqueda -->

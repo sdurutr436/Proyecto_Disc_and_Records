@@ -396,8 +396,7 @@
 }
 
 /* ========================================
-   FIX CARRUSEL DESBORDANTE
-   Usando grid simple en lugar de carrusel
+   FIX CARRUSEL EN TAB ALBUMS
    ======================================== */
 .tab-content--albums {
   padding: vars.$espaciado-m;
@@ -421,52 +420,6 @@
   
   .profile__empty-state {
     padding: vars.$espaciado-m 0;
-  }
-}
-
-/* ========================================
-   GRID DE ÁLBUMES
-   Reemplazo del carrusel problemático
-   ======================================== */
-.albums-grid {
-  width: 100%;
-  
-  &__title {
-    font-family: vars.$fuente-secundaria, cursive;
-    font-size: 2rem;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin: 0 0 vars.$espaciado-m 0;
-    color: var(--text-primary);
-    text-shadow:
-      0.125rem 0.125rem 0px var(--color-primary),
-      0.25rem 0.25rem 0px var(--color-secondary);
-    
-    @include mixins.respond-to('tablet') {
-      font-size: 1.5rem;
-      text-shadow: 0.1rem 0.1rem 0px var(--color-primary);
-    }
-    
-    @media (max-width: vars.$breakpoint-mobile-sm) {
-      font-size: 1.25rem;
-    }
-  }
-  
-  &__container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-    gap: vars.$espaciado-m;
-    
-    @include mixins.respond-to('tablet') {
-      grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
-      gap: vars.$espaciado-s;
-    }
-    
-    @media (max-width: vars.$breakpoint-mobile-sm) {
-      grid-template-columns: repeat(2, 1fr);
-      gap: vars.$espaciado-xs;
-    }
   }
 }
 

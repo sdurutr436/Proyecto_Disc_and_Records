@@ -143,28 +143,29 @@
   // ========================================
   &__track--rows-2 {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(10rem, 12.5rem));
+    // Número fijo de columnas para evitar desbordamiento
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     grid-template-rows: repeat(2, auto);
-    grid-auto-flow: row dense;
+    grid-auto-flow: row;
     gap: vars.$espaciado-s;
     min-height: auto;
     align-items: start;
-    overflow-x: hidden;
+    overflow-x: auto;
     overflow-y: visible;
+    @include mix.hide-scrollbar;
 
     @include mix.tablet-only {
-      grid-template-columns: repeat(auto-fill, minmax(9rem, 10.625rem));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: vars.$espaciado-xs;
     }
 
     @include mix.mobile-down {
-      grid-template-columns: repeat(auto-fill, minmax(8rem, 9.375rem));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: vars.$espaciado-xs;
     }
 
     @include mix.mobile-sm-down {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: auto;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     // Override tamaño de items para grid
