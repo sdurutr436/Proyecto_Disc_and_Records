@@ -402,6 +402,8 @@
 .tab-content--albums {
   padding-left: 0;
   padding-right: 0;
+  overflow: hidden;
+  max-width: 100%;
   
   .profile__search {
     padding-left: vars.$espaciado-m;
@@ -422,6 +424,8 @@
     display: block;
     margin: 0;
     padding: 0 vars.$espaciado-m;
+    overflow: hidden;
+    max-width: 100%;
     
     @include mixins.respond-to('tablet') {
       padding: 0 vars.$espaciado-s;
@@ -441,4 +445,10 @@
       padding-right: vars.$espaciado-s;
     }
   }
+}
+
+/* Fix adicional para profile-tabs-section */
+.profile-tabs-section {
+  overflow: hidden;
+  max-width: 100%;
 }
