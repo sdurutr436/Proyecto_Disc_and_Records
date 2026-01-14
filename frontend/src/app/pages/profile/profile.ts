@@ -2,10 +2,9 @@ import { Component, signal, inject, OnInit, ChangeDetectionStrategy, DestroyRef,
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Card } from '../../components/shared/card/card';
+import { Card, CardAction } from '../../components/shared/card/card';
 import { Button } from '../../components/shared/button/button';
 import { RatingComponent } from '../../components/shared/rating/rating';
-import { Badge } from '../../components/shared/badge/badge';
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
 import { SearchBar } from '../../components/shared/search-bar/search-bar';
 import { Carousel } from '../../components/shared/carousel/carousel';
@@ -59,7 +58,6 @@ interface PaginatedReviewsWithAlbumData extends Omit<PaginatedReviews, 'reviews'
     Card,
     Button,
     RatingComponent,
-    Badge,
     Tabs,
     SearchBar,
     Carousel
@@ -96,6 +94,30 @@ export default class ProfileComponent implements OnInit {
   // SIGNALS - GÉNEROS (1/3 izquierda)
   // ========================================
   genreStats = signal<GenreStats[]>([]);
+
+  // ========================================
+  // COMPUTED - BADGES Y ACTIONS PARA CARD PROFILE
+  // ========================================
+  /**
+   * Genera los badges de géneros en formato string[] para el card component
+   * Muestra top 5 géneros con porcentaje
+   */
+  genreBadges = computed((): string[] => {
+    return this.genreStats().map(genre => `${genre.name} ${genre.percentage}%`);
+  });
+
+  /**
+   * Genera las acciones para el card de perfil
+   */
+  profileActions = computed((): CardAction[] => {
+    return [
+      {
+        label: '✏️ Editar Perfil',
+        variant: 'primary',
+        callback: () => this.editProfile()
+      }
+    ];
+  });
 
   // ========================================
   // SIGNALS - RESEÑAS CON PAGINACIÓN (Tab 1)

@@ -10,56 +10,18 @@
            COLUMNA IZQUIERDA: Card de Perfil (1/3)
            ================================================== -->
       <aside class="profile__sidebar">
-        <div class="profile-card">
-          <!-- Foto de perfil -->
-          <div class="profile-card__image">
-            <img
-              [src]="userProfile().avatarUrl"
-              [alt]="userProfile().name"
-              class="profile-card__photo"
-            />
-          </div>
-
-          <!-- Info del usuario -->
-          <div class="profile-card__info">
-            <!-- Nombre del usuario -->
-            <h2 class="profile-card__name">{{ userProfile().name }}</h2>
-
-            <!-- Miembro desde -->
-            <p class="profile-card__since">
-              Miembro desde {{ formatDate(userProfile().memberSince) }}
-            </p>
-
-            <!-- Géneros escuchados (badges) -->
-            <div class="profile-card__genres">
-              <h3 class="profile-card__section-title">Géneros favoritos</h3>
-              <div class="profile-card__genre-badges">
-                @for (genre of genreStats(); track trackByGenreIndex($index)) {
-                  <app-badge
-                    [text]="genre.name + ' ' + genre.percentage + '%'"
-                    variant="primary"
-                    size="md"
-                  ></app-badge>
-                }
-                @empty {
-                  <p class="profile-card__empty-text">Sin información de géneros</p>
-                }
-              </div>
-            </div>
-
-            <!-- Botón de acción -->
-            <div class="profile-card__actions">
-              <app-button
-                variant="primary"
-                size="md"
-                [fullWidth]="true"
-                (clicked)="editProfile()"
-              >
-                ✏️ Editar Perfil
-              </app-button>
-            </div>
-          </div>
-        </div>
+        <app-card
+          [cardType]="'profile'"
+          [imageUrl]="userProfile().avatarUrl"
+          [imageAlt]="userProfile().name"
+          [imageShape]="'circle'"
+          [imageSize]="'large'"
+          [title]="userProfile().name"
+          [subtitle]="'Miembro desde ' + formatDate(userProfile().memberSince)"
+          [badges]="genreBadges()"
+          [actions]="profileActions()"
+          [layout]="'vertical'"
+        ></app-card>
       </aside>
 
       <!-- ===================================================
@@ -182,16 +144,14 @@
             </div>
 
             @if (hasFilteredAlbums()) {
-              <!-- Carrusel de álbumes -->
+              <!-- Carrusel de álbumes con cards dentro -->
               <div class="profile-albums__carousel">
                 <app-carousel
                   [itemsToShow]="4"
+                  [rows]="2"
                   title="Mis álbumes"
                 >
-                </app-carousel>
-
-                <!-- Grid manual de álbumes (2 filas en desktop) -->
-                <div class="albums-grid">
+                  <!-- Cards dentro del carrusel usando content projection -->
                   @for (album of filteredAlbums(); track trackByAlbumId($index, album)) {
                     <app-card
                       [title]="album.title"
@@ -203,7 +163,7 @@
                       (click)="viewAlbum(album.id)"
                     ></app-card>
                   }
-                </div>
+                </app-carousel>
               </div>
 
             } @else {

@@ -68,107 +68,9 @@
 
 /* ========================================
    CARD DE PERFIL (SIDEBAR)
-   ========================================*/
-.profile-card {
-  background-color: var(--bg-secondary);
-  border: vars.$borde-brutal-thick;
-  box-shadow: vars.$sombra-brutal-m;
-  border-radius: vars.$radio-l;
-  overflow: hidden;
-  padding: vars.$espaciado-m;
-
-  @include mixins.respond-to('tablet') {
-    padding: vars.$espaciado-s;
-  }
-
-  /* Foto circular de perfil */
-  &__image {
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: vars.$radio-l;
-    overflow: hidden;
-    margin-bottom: vars.$espaciado-m;
-    background-color: var(--bg-primary);
-    border: vars.$borde-brutal-thick;
-
-    @include mixins.respond-to('tablet') {
-      margin-bottom: vars.$espaciado-s;
-    }
-  }
-
-  &__photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  &__info {
-    display: flex;
-    flex-direction: column;
-    gap: vars.$espaciado-m;
-
-    @include mixins.respond-to('tablet') {
-      gap: vars.$espaciado-s;
-    }
-  }
-
-  /* Nombre del usuario */
-  &__name {
-    @include mixins.font-size-line('h3');
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 0;
-    text-align: center;
-    word-wrap: break-word;
-  }
-
-  /* Miembro desde */
-  &__since {
-    @include mixins.font-size-line('texto-pequeno-m');
-    color: var(--text-secondary);
-    text-align: center;
-    margin: 0;
-    font-style: italic;
-  }
-
-  /* Sección de géneros */
-  &__genres {
-    border-top: vars.$borde-brutal-thin;
-    border-bottom: vars.$borde-brutal-thin;
-    padding: vars.$espaciado-s 0;
-  }
-
-  &__section-title {
-    @include mixins.font-size-line('texto-pequeno-s');
-    font-weight: 700;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0 0 vars.$espaciado-s 0;
-  }
-
-  &__genre-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: vars.$espaciado-xs;
-    justify-content: center;
-  }
-
-  &__empty-text {
-    @include mixins.font-size-line('texto-pequeno-s');
-    color: var(--text-placeholder);
-    text-align: center;
-    margin: 0;
-    font-style: italic;
-  }
-
-  /* Botón de acción */
-  &__actions {
-    display: flex;
-    flex-direction: column;
-    gap: vars.$espaciado-s;
-  }
-}
+   Ahora usa el componente compartido <app-card cardType="profile">
+   Los estilos se definen en card.scss
+   ======================================== */
 
 /* ========================================
    TAB 1: RESEÑAS
@@ -442,20 +344,7 @@
 }
 
 /* ========================================
-   GRID DE ÁLBUMES (2 filas en desktop)
+   GRID DE ÁLBUMES
+   Ya no se usa - las cards están dentro del carrusel
+   con soporte para 2 filas via carousel--rows-2
    ======================================== */
-.albums-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
-  gap: vars.$espaciado-m;
-
-  @include mixins.respond-to('tablet') {
-    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-    gap: vars.$espaciado-s;
-  }
-
-  @media (max-width: vars.$breakpoint-mobile-sm) {
-    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
-    gap: vars.$espaciado-xs;
-  }
-}
