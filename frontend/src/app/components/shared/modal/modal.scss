@@ -23,13 +23,15 @@
 
 /* --- Contenido del modal --- */
 .modal__content {
-  @include mix.brutal-box(var(--bg-primary), vars.$borde-brutal-thick, vars.$sombra-brutal-m, vars.$radio-m);
+  @include mix.brutal-box(var(--bg-primary), vars.$borde-brutal-thick, vars.$sombra-brutal-m, vars.$radio-l);
   max-width: vars.$ancho-maximo-modal;
   width: 100%;
   max-height: 90vh;
   overflow: hidden;
   @include mix.flex-column(0);
   animation: modal-slideUp vars.$duracion-normal vars.$curva-brutal;
+  // Necesario para posicionar el botón X flotante dentro del contenedor
+  position: relative;
 }
 
 @keyframes modal-slideUp {
@@ -105,6 +107,18 @@
     box-shadow: 0.0625rem 0.0625rem 0 var(--shadow-color);
     transform: translate(0.0625rem, 0.0625rem);
   }
+
+  // Móvil: ajustar posición para no interferir con el contenido
+  @include mix.mobile-down {
+    top: vars.$espaciado-xs;
+    right: vars.$espaciado-xs;
+    padding: vars.$espaciado-xs;
+
+    svg {
+      width: vars.$icono-s;
+      height: vars.$icono-s;
+    }
+  }
 }
 
 /* --- Body del modal --- */
@@ -117,6 +131,11 @@
   font-size: vars.$tamanio-fuente-texto-pequeno-m;
   line-height: 1.6;
 
+  /* Cuando hay botón flotante (sin header), añadir padding-top para evitar overlap */
+  .modal__close--floating + & {
+    padding-top: vars.$espaciado-xl;
+  }
+
   /* Formularios dentro del modal no necesitan borde/box-shadow extra */
   .login-form,
   .register-form,
@@ -126,6 +145,11 @@
     padding: 0;
     max-width: 100%;
   }
+}
+
+/* Cuando no hay header, el body necesita padding superior extra */
+.modal__content:has(.modal__close--floating) .modal__body {
+  padding-top: vars.$espaciado-xl;
 }
 
 /* --- Footer del modal (opcional) --- */

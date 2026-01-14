@@ -5,6 +5,8 @@ import { AppStateService, User } from './app-state';
 import { EventBusService, EventType } from './event-bus';
 import { NotificationStreamService } from './notification-stream';
 import { API_CONFIG, API_ENDPOINTS, STORAGE_KEYS } from '../config/api.config';
+import { environment } from '../../environments/environment';
+import { findMockUser, MOCK_USERS } from './mock-data';
 
 /**
  * Interfaz de credenciales de login
@@ -144,6 +146,14 @@ export class AuthService {
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
+      // ═══════════════════════════════════════════════════════════════════
+      // 🎭 MOCK AUTH - Solo cuando useMockData está activo
+      // ═══════════════════════════════════════════════════════════════════
+      if (environment.useMockData) {
+        return this.loginMock(credentials);
+      }
+      // ═══════════════════════════════════════════════════════════════════
+
       const response = await this.loginHttp(credentials);
 
       if (response.success && response.user) {
@@ -586,5 +596,85 @@ export class AuthService {
     return firstValueFrom(
       this.http.post<AuthResponse>(url, { email })
     );
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 🎭 MOCK AUTH - SOLO PARA DESARROLLO UI/UX
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ╔═════════════════════════════════════════════════════════════════════════╗
+  // ║  CREDENCIALES MOCK DISPONIBLES:                                         ║
+  // ║                                                                         ║
+  // ║  Email                    │ Password   │ Rol                            ║
+  // ║  ─────────────────────────┼────────────┼─────────────────               ║
+  // ║  admin@mock.dev           │ admin123   │ ADMIN                          ║
+  // ║  mod@mock.dev             │ mod123     │ MODERATOR                      ║
+  // ║  user@mock.dev            │ user123    │ USER                           ║
+  // ║                                                                         ║
+  // ║  ⚠️  Desactivar: useMockData = false en environment.ts                 ║
+  // ╚═════════════════════════════════════════════════════════════════════════╝
+
+  /**
+   * [MOCK] Login con datos estáticos para desarrollo UI/UX
+   *
+   * NO hace llamadas HTTP - Solo valida contra MOCK_USERS
+   * Token generado es fake (mock-token-xxx)
+   */
+  private async loginMock(credentials: LoginCredentials): Promise<AuthResponse> {
+    // Simular delay de red
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    const user = findMockUser(credentials.email, credentials.password);
+
+    if (user) {
+      // Actualizar estado
+      this.appState.setUser(user);
+
+      // Token fake para mock
+      const fakeToken = `mock-token-${user.role}-${Date.now()}`;
+      this.saveAuthToken(fakeToken);
+
+      // Emitir evento
+      this.eventBus.emit({
+        type: EventType.USER_LOGIN,
+        payload: { userId: user.id, username: user.username },
+        source: 'AuthService.loginMock',
+      });
+
+      // Notificación especial para mock
+      this.notificationStream.success(
+        '🎭 Login Mock',
+        `Bienvenido ${user.username} (${(user.role ?? 'user').toUpperCase()})`
+      );
+
+      console.log('🎭 MOCK AUTH: Login exitoso', {
+        email: user.email,
+        role: user.role,
+        token: fakeToken
+      });
+
+      return {
+        success: true,
+        message: 'Login mock exitoso',
+        token: fakeToken,
+        user
+      };
+    }
+
+    // Credenciales inválidas - mostrar ayuda
+    console.warn('🎭 MOCK AUTH: Credenciales inválidas. Usuarios disponibles:', MOCK_USERS.map(u => ({
+      email: u.email,
+      password: u.password,
+      role: u.role
+    })));
+
+    this.notificationStream.error(
+      '🎭 Mock: Credenciales inválidas',
+      'Usa: admin@mock.dev / admin123'
+    );
+
+    return {
+      success: false,
+      message: 'Credenciales mock inválidas. Prueba: admin@mock.dev / admin123'
+    };
   }
 }

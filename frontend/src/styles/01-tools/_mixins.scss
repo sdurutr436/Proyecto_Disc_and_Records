@@ -195,7 +195,7 @@
   color: var(--text-primary);
   background-color: var(--bg-primary);
   border: vars.$borde-brutal-medium;
-  border-radius: vars.$radio-s;
+  border-radius: vars.$radio-m;
   box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   outline: none;
@@ -372,7 +372,7 @@
   $bg: var(--bg-secondary),
   $border: vars.$borde-brutal-thick,
   $shadow: vars.$sombra-brutal-s,
-  $radius: vars.$radio-s
+  $radius: vars.$radio-l
 ) {
   background-color: $bg;
   border: $border;

@@ -9,6 +9,84 @@
 
 import { DeezerAlbum, DeezerArtist, DeezerTrack } from './deezer.service';
 import { Album, Artist, Track, Review, AlbumStats } from '../models/data.models';
+import { User } from './app-state';
+
+// =============================================================================
+// 🎭 MOCK USERS - CREDENCIALES DE PRUEBA
+// =============================================================================
+// ╔═══════════════════════════════════════════════════════════════════════════╗
+// ║  USUARIOS MOCK PARA DESARROLLO UI/UX                                      ║
+// ║                                                                           ║
+// ║  Email                    │ Password   │ Rol                              ║
+// ║  ─────────────────────────┼────────────┼─────────────────                 ║
+// ║  admin@mock.dev           │ admin123   │ ADMIN                            ║
+// ║  mod@mock.dev             │ mod123     │ MODERATOR                        ║
+// ║  user@mock.dev            │ user123    │ USER                             ║
+// ║                                                                           ║
+// ║  ⚠️  SOLO FUNCIONA CON useMockData: true en environment.ts               ║
+// ╚═══════════════════════════════════════════════════════════════════════════╝
+
+export interface MockUser {
+  id: number;
+  email: string;
+  password: string;
+  username: string;
+  role: 'admin' | 'moderator' | 'user';
+  avatar: string;
+}
+
+export const MOCK_USERS: MockUser[] = [
+  {
+    id: 1,
+    email: 'admin@mock.dev',
+    password: 'admin123',
+    username: 'Admin Mock',
+    role: 'admin',
+    avatar: 'https://picsum.photos/seed/admin/100'
+  },
+  {
+    id: 2,
+    email: 'mod@mock.dev',
+    password: 'mod123',
+    username: 'Moderador Mock',
+    role: 'moderator',
+    avatar: 'https://picsum.photos/seed/mod/100'
+  },
+  {
+    id: 3,
+    email: 'user@mock.dev',
+    password: 'user123',
+    username: 'Usuario Mock',
+    role: 'user',
+    avatar: 'https://picsum.photos/seed/user/100'
+  }
+];
+
+/**
+ * Busca un usuario mock por credenciales
+ * @returns User compatible con AppState o null si no existe
+ */
+export function findMockUser(email: string, password: string): User | null {
+  const mockUser = MOCK_USERS.find(
+    u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+  );
+
+  if (!mockUser) return null;
+
+  return {
+    id: mockUser.id,
+    username: mockUser.username,
+    email: mockUser.email,
+    role: mockUser.role,
+    avatarUrl: mockUser.avatar,
+    preferences: {
+      language: 'es',
+      notifications: true,
+      autoplay: false,
+      volume: 70
+    }
+  };
+}
 
 // =============================================================================
 // MOCK ARTISTS
