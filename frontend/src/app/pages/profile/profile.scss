@@ -401,23 +401,23 @@
 .tab-content--albums {
   padding: vars.$espaciado-m;
   overflow: hidden;
-  
+
   @include mixins.respond-to('tablet') {
     padding: vars.$espaciado-s;
   }
-  
+
   @media (max-width: vars.$breakpoint-mobile-sm) {
     padding: vars.$espaciado-xs;
   }
-  
+
   .profile__search {
     margin-bottom: vars.$espaciado-m;
-    
+
     @include mixins.respond-to('tablet') {
       margin-bottom: vars.$espaciado-s;
     }
   }
-  
+
   .profile__empty-state {
     padding: vars.$espaciado-m 0;
   }
