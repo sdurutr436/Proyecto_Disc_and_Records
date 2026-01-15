@@ -5,8 +5,12 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "build:analyze": "ng build --configuration production --source-map && npx source-map-explorer dist/Proyecto_Disc_and_Records/browser/*.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:ci": "ng test --no-watch --browsers=ChromeHeadless --code-coverage",
+    "test:coverage": "ng test --no-watch --code-coverage",
     "lint": "ng lint"
   },
   "prettier": {

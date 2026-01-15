@@ -1,0 +1,24 @@
+# Configuración de navegadores objetivo para Discs & Records
+# Este archivo define los navegadores que Angular soportará en producción
+# https://browsersl.ist/
+
+# Navegadores modernos (últimas 2 versiones)
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Safari versions
+last 2 Edge versions
+
+# iOS Safari para dispositivos móviles Apple
+last 2 iOS versions
+
+# Android Chrome para dispositivos móviles Android
+last 2 ChromeAndroid versions
+
+# No soportar IE11 (obsoleto)
+not IE 11
+
+# No soportar navegadores con menos del 0.5% de uso global
+not < 0.5%
+
+# Soportar navegadores que aún reciben actualizaciones de seguridad
+not dead
