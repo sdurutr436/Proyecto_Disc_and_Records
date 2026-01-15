@@ -2,6 +2,7 @@ package com.discsandrecords.api.repositories;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,10 +16,10 @@ import com.discsandrecords.api.entities.UsuarioAlbumId;
 /**
  * UsuarioAlbumRepository - Repositorio JPA para Reseñas de Álbumes
  * 
- * Contiene métodos derivados y @Query personalizadas para:
- * - Gestión de reseñas y puntuaciones
- * - Estadísticas y rankings
- * - Análisis de actividad de usuarios
+ * REGLAS DE NEGOCIO:
+ * - Las reseñas/puntuaciones solo son visibles si escuchado = true
+ * - La media del álbum solo cuenta usuarios con escuchado = true
+ * - Al quitar de lista, los datos se conservan pero no son públicos
  */
 @Repository
 public interface UsuarioAlbumRepository extends JpaRepository<UsuarioAlbum, UsuarioAlbumId> {
@@ -32,123 +33,161 @@ public interface UsuarioAlbumRepository extends JpaRepository<UsuarioAlbum, Usua
     long countByAlbumId(Long albumId);
     long countByUsuarioId(Long usuarioId);
     
+    /**
+     * Verificar si un usuario tiene un álbum en su lista (escuchado = true)
+     */
+    @Query("SELECT CASE WHEN COUNT(ua) > 0 THEN true ELSE false END FROM UsuarioAlbum ua " +
+           "WHERE ua.usuario.id = :usuarioId AND ua.album.id = :albumId AND ua.escuchado = true")
+    boolean existeEnLista(@Param("usuarioId") Long usuarioId, @Param("albumId") Long albumId);
+    
+    /**
+     * Obtener registro incluso si está oculto (para restaurar)
+     */
+    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.album.id = :albumId")
+    Optional<UsuarioAlbum> findByUsuarioAndAlbum(@Param("usuarioId") Long usuarioId, @Param("albumId") Long albumId);
+    
     // ==========================================
-    // QUERIES PERSONALIZADAS - RESEÑAS
+    // QUERIES - LISTA DE ÁLBUMES DEL USUARIO
     // ==========================================
     
     /**
-     * Obtener reseñas de álbumes por usuario (con texto)
-     */
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
-    List<UsuarioAlbum> findResenasAlbumesByUsuarioId(@Param("usuarioId") Long usuarioId);
-    
-    /**
-     * Obtener todas las reseñas de un álbum (con texto)
-     */
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.album.id = :albumId AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
-    List<UsuarioAlbum> findResenasPorAlbumId(@Param("albumId") Long albumId);
-    
-    /**
-     * Reseñas recientes (últimas N)
-     */
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
-    List<UsuarioAlbum> findResenasRecientes(Pageable pageable);
-    
-    /**
-     * Reseñas por rango de fecha
-     */
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.fechaResena BETWEEN :fechaInicio AND :fechaFin ORDER BY ua.fechaResena DESC")
-    List<UsuarioAlbum> findResenasPorFecha(@Param("fechaInicio") Instant fechaInicio, @Param("fechaFin") Instant fechaFin);
-    
-    /**
-     * Álbumes escuchados por un usuario
+     * Álbumes en la lista del usuario (escuchado = true)
      */
     @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true ORDER BY ua.fechaAgregada DESC")
-    List<UsuarioAlbum> findEscuchadosPorUsuario(@Param("usuarioId") Long usuarioId);
+    List<UsuarioAlbum> findAlbumesEnLista(@Param("usuarioId") Long usuarioId);
     
     /**
-     * Contar álbumes escuchados por un usuario específico
+     * Álbumes en la lista del usuario con paginación
+     */
+    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true ORDER BY ua.fechaAgregada DESC")
+    List<UsuarioAlbum> findAlbumesEnLista(@Param("usuarioId") Long usuarioId, Pageable pageable);
+    
+    /**
+     * Contar álbumes en la lista del usuario
      */
     @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true")
-    Long contarEscuchadosPorUsuario(@Param("usuarioId") Long usuarioId);
-    
-    /**
-     * Contar reseñas (con texto) de un usuario
-     */
-    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.textoResena IS NOT NULL")
-    Long contarResenasPorUsuario(@Param("usuarioId") Long usuarioId);
+    Long contarAlbumesEnLista(@Param("usuarioId") Long usuarioId);
     
     // ==========================================
-    // QUERIES PERSONALIZADAS - ESTADÍSTICAS
+    // QUERIES - RESEÑAS PÚBLICAS (escuchado = true)
+    // ==========================================
+    
+    /**
+     * Reseñas de un usuario (solo visibles - escuchado = true y con texto)
+     */
+    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId " +
+           "AND ua.escuchado = true AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
+    List<UsuarioAlbum> findResenasVisiblesByUsuario(@Param("usuarioId") Long usuarioId);
+    
+    /**
+     * Reseñas de un álbum (solo visibles - escuchado = true y con texto)
+     * Ordenadas de más nueva a más antigua
+     */
+    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.album.id = :albumId " +
+           "AND ua.escuchado = true AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
+    List<UsuarioAlbum> findResenasVisiblesByAlbum(@Param("albumId") Long albumId);
+    
+    /**
+     * Reseñas recientes visibles (para home/feed)
+     */
+    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.escuchado = true " +
+           "AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
+    List<UsuarioAlbum> findResenasRecientesVisibles(Pageable pageable);
+    
+    // ==========================================
+    // QUERIES - ESTADÍSTICAS (solo escuchado = true)
     // ==========================================
     
     /**
      * Calcular puntuación media de un álbum
+     * SOLO cuenta usuarios que tienen el álbum en su lista (escuchado = true)
      */
-    @Query("SELECT AVG(ua.puntuacion) FROM UsuarioAlbum ua WHERE ua.album.id = :albumId AND ua.puntuacion IS NOT NULL")
+    @Query("SELECT AVG(ua.puntuacion) FROM UsuarioAlbum ua " +
+           "WHERE ua.album.id = :albumId AND ua.escuchado = true AND ua.puntuacion IS NOT NULL")
     Double calcularPuntuacionMedia(@Param("albumId") Long albumId);
     
     /**
-     * Contar reseñas (con texto) de un álbum
+     * Contar puntuaciones válidas de un álbum (escuchado = true)
      */
+    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua " +
+           "WHERE ua.album.id = :albumId AND ua.escuchado = true AND ua.puntuacion IS NOT NULL")
+    Long contarPuntuacionesValidas(@Param("albumId") Long albumId);
+    
+    /**
+     * Contar reseñas visibles de un álbum
+     */
+    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua " +
+           "WHERE ua.album.id = :albumId AND ua.escuchado = true AND ua.textoResena IS NOT NULL")
+    Long contarResenasVisibles(@Param("albumId") Long albumId);
+    
+    /**
+     * Contar usuarios que tienen un álbum en su lista
+     */
+    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.album.id = :albumId AND ua.escuchado = true")
+    Long contarUsuariosConAlbum(@Param("albumId") Long albumId);
+    
+    /**
+     * Contar reseñas visibles del usuario
+     */
+    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua " +
+           "WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true AND ua.textoResena IS NOT NULL")
+    Long contarResenasVisiblesPorUsuario(@Param("usuarioId") Long usuarioId);
+    
+    // ==========================================
+    // QUERIES LEGACY (mantener compatibilidad)
+    // ==========================================
+    
+    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
+    List<UsuarioAlbum> findResenasAlbumesByUsuarioId(@Param("usuarioId") Long usuarioId);
+    
+    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.album.id = :albumId AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
+    List<UsuarioAlbum> findResenasPorAlbumId(@Param("albumId") Long albumId);
+    
+    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
+    List<UsuarioAlbum> findResenasRecientes(Pageable pageable);
+    
+    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.fechaResena BETWEEN :fechaInicio AND :fechaFin ORDER BY ua.fechaResena DESC")
+    List<UsuarioAlbum> findResenasPorFecha(@Param("fechaInicio") Instant fechaInicio, @Param("fechaFin") Instant fechaFin);
+    
+    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true ORDER BY ua.fechaAgregada DESC")
+    List<UsuarioAlbum> findEscuchadosPorUsuario(@Param("usuarioId") Long usuarioId);
+    
+    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true")
+    Long contarEscuchadosPorUsuario(@Param("usuarioId") Long usuarioId);
+    
+    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.textoResena IS NOT NULL")
+    Long contarResenasPorUsuario(@Param("usuarioId") Long usuarioId);
+    
     @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.album.id = :albumId AND ua.textoResena IS NOT NULL")
     Long contarResenasPorAlbum(@Param("albumId") Long albumId);
     
-    /**
-     * Contar puntuaciones de un álbum (usuarios que han dado rating)
-     */
     @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.album.id = :albumId AND ua.puntuacion IS NOT NULL")
     Long contarPuntuacionesPorAlbum(@Param("albumId") Long albumId);
     
-    /**
-     * Contar usuarios que han escuchado un álbum
-     */
     @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.album.id = :albumId AND ua.escuchado = true")
     Long contarEscuchadosPorAlbum(@Param("albumId") Long albumId);
     
-    /**
-     * Top álbumes mejor puntuados
-     */
     @Query("SELECT ua.album.tituloAlbum, AVG(ua.puntuacion) as promedio, COUNT(ua) as total " +
-           "FROM UsuarioAlbum ua WHERE ua.puntuacion IS NOT NULL " +
+           "FROM UsuarioAlbum ua WHERE ua.puntuacion IS NOT NULL AND ua.escuchado = true " +
            "GROUP BY ua.album.id, ua.album.tituloAlbum HAVING COUNT(ua) >= 1 ORDER BY promedio DESC")
     List<Object[]> albumesMejorPuntuados(Pageable pageable);
     
-    /**
-     * Distribución de puntuaciones (cuántas de cada nota)
-     */
-    @Query("SELECT ua.puntuacion, COUNT(ua) FROM UsuarioAlbum ua WHERE ua.puntuacion IS NOT NULL GROUP BY ua.puntuacion ORDER BY ua.puntuacion")
+    @Query("SELECT ua.puntuacion, COUNT(ua) FROM UsuarioAlbum ua WHERE ua.puntuacion IS NOT NULL AND ua.escuchado = true GROUP BY ua.puntuacion ORDER BY ua.puntuacion")
     List<Object[]> distribucionPuntuaciones();
     
-    /**
-     * Usuarios más activos en reseñas de álbumes
-     */
     @Query("SELECT ua.usuario.nombreUsuario, COUNT(ua) as total FROM UsuarioAlbum ua " +
-           "WHERE ua.textoResena IS NOT NULL GROUP BY ua.usuario.id, ua.usuario.nombreUsuario ORDER BY total DESC")
+           "WHERE ua.textoResena IS NOT NULL AND ua.escuchado = true GROUP BY ua.usuario.id, ua.usuario.nombreUsuario ORDER BY total DESC")
     List<Object[]> usuariosMasActivos(Pageable pageable);
     
-    /**
-     * Total de reseñas en el sistema
-     */
-    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.textoResena IS NOT NULL")
+    @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.textoResena IS NOT NULL AND ua.escuchado = true")
     Long contarTotalResenas();
     
-    /**
-     * Total de álbumes escuchados
-     */
     @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.escuchado = true")
     Long contarTotalEscuchados();
     
-    /**
-     * Puntuación media dada por un usuario (en todos sus álbumes)
-     */
-    @Query("SELECT AVG(ua.puntuacion) FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.puntuacion IS NOT NULL")
+    @Query("SELECT AVG(ua.puntuacion) FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.puntuacion IS NOT NULL AND ua.escuchado = true")
     Double calcularPuntuacionMediaPorUsuario(@Param("usuarioId") Long usuarioId);
     
-    /**
-     * Géneros más escuchados por un usuario
-     * Retorna: [generoId, nombreGenero, color, conteo]
-     */
     @Query("SELECT ag.genero.id, ag.genero.nombreGenero, ag.genero.color, COUNT(ua) as conteo " +
            "FROM UsuarioAlbum ua " +
            "JOIN AlbumGenero ag ON ua.album.id = ag.album.id " +

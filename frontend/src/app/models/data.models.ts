@@ -392,3 +392,53 @@ export function mapResenaToLegacy(resena: ResenaAlbumResponse): Review {
     likes: 0 // No disponible en DTO actual
   };
 }
+
+// =============================================================================
+// MODELOS LISTA DE ÁLBUMES DEL USUARIO
+// =============================================================================
+
+/**
+ * Álbum en la lista del usuario
+ * Mapea: AlbumEnListaDTO.java
+ */
+export interface AlbumEnLista {
+  albumId: number;
+  titulo: string;
+  portadaUrl: string | null;
+  artista: string | null;
+  anio: number;
+  puntuacion: number | null;
+  tieneResena: boolean;
+  fechaAgregada: string;
+  fechaResena: string | null;
+}
+
+/**
+ * DTO para añadir álbum a la lista
+ * Mapea: AgregarAlbumListaDTO.java
+ */
+export interface AgregarAlbumListaDTO {
+  usuarioId: number;
+  albumId: number;
+}
+
+/**
+ * DTO para puntuar un álbum
+ * Mapea: PuntuarAlbumDTO.java
+ */
+export interface PuntuarAlbumDTO {
+  usuarioId: number;
+  albumId: number;
+  puntuacion: number;
+}
+
+/**
+ * Estado del álbum para el usuario actual
+ */
+export interface EstadoAlbumUsuario {
+  enLista: boolean;
+  puntuacion: number | null;
+  tieneResena: boolean;
+  fechaAgregada: string | null;
+}
+

@@ -91,6 +91,10 @@ public class ResenaService {
         return toResenaAlbumDTO(resena);
     }
 
+    /**
+     * Crear o actualizar reseña de álbum
+     * REGLA: El álbum DEBE estar en la lista del usuario (escuchado = true)
+     */
     public ResenaAlbumResponseDTO crearResenaAlbum(CreateResenaAlbumDTO dto) {
         Usuario usuario = usuarioRepository.findById(dto.usuarioId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario", "id", dto.usuarioId()));
@@ -98,29 +102,53 @@ public class ResenaService {
         Album album = albumRepository.findById(dto.albumId())
                 .orElseThrow(() -> new ResourceNotFoundException("Álbum", "id", dto.albumId()));
 
-        // REGLA DE NEGOCIO: Un usuario solo puede tener una reseña por álbum
-        UsuarioAlbumId id = new UsuarioAlbumId(dto.usuarioId(), dto.albumId());
-        if (usuarioAlbumRepository.existsById(id)) {
-            throw new DuplicateResourceException("Reseña", "usuario-álbum", 
-                    dto.usuarioId() + "-" + dto.albumId());
+        // REGLA DE NEGOCIO: El álbum debe estar en la lista del usuario
+        var existente = usuarioAlbumRepository.findByUsuarioAndAlbum(dto.usuarioId(), dto.albumId());
+        
+        UsuarioAlbum resena;
+        if (existente.isPresent()) {
+            resena = existente.get();
+            
+            // Verificar que está en la lista
+            if (!resena.getEscuchado()) {
+                throw new BusinessRuleException(
+                    "Debes añadir el álbum a tu lista antes de escribir una reseña",
+                    "ALBUM_NO_EN_LISTA"
+                );
+            }
+            
+            // Si ya tiene reseña, es una actualización
+            if (resena.getTextoResena() != null && dto.textoResena() != null) {
+                // Actualizar reseña existente
+                resena.setTextoResena(dto.textoResena());
+                if (dto.puntuacion() != null) {
+                    validarPuntuacion(dto.puntuacion());
+                    resena.setPuntuacion(dto.puntuacion());
+                }
+                resena.setFechaResena(Instant.now());
+            } else {
+                // Añadir reseña por primera vez
+                resena.setTextoResena(dto.textoResena());
+                if (dto.puntuacion() != null) {
+                    validarPuntuacion(dto.puntuacion());
+                    resena.setPuntuacion(dto.puntuacion());
+                }
+                resena.setFechaResena(Instant.now());
+            }
+        } else {
+            // No tiene el álbum en su lista - debe añadirlo primero
+            throw new BusinessRuleException(
+                "Debes añadir el álbum a tu lista antes de escribir una reseña",
+                "ALBUM_NO_EN_LISTA"
+            );
         }
-
-        // REGLA DE NEGOCIO: Validar rango de puntuación
-        validarPuntuacion(dto.puntuacion());
-
-        UsuarioAlbum resena = UsuarioAlbum.builder()
-                .usuario(usuario)
-                .album(album)
-                .escuchado(true)
-                .puntuacion(dto.puntuacion())
-                .textoResena(dto.textoResena())
-                .fechaResena(Instant.now())
-                .build();
 
         UsuarioAlbum guardada = usuarioAlbumRepository.save(resena);
 
         // Recalcular puntuación media del álbum
-        albumService.recalcularPuntuacionMedia(album.getId());
+        if (guardada.getPuntuacion() != null) {
+            albumService.recalcularPuntuacionMedia(album.getId());
+        }
 
         return toResenaAlbumDTO(guardada);
     }

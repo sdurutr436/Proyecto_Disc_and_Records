@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, effect } from '@angular/core';
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule, NavigationExtras } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Button } from '../../components/shared/button/button';
 import { Spinner } from '../../components/shared/spinner/spinner';
@@ -11,15 +11,19 @@ import { RatingComponent } from '../../components/shared/rating/rating';
 import { Badge } from '../../components/shared/badge/badge';
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
 import { InfiniteScrollComponent } from '../../components/shared/infinite-scroll/infinite-scroll';
-import { Album, Artist, Song, Track, Review } from '../../models/data.models';
+import { Album, Artist, Song, Track, Review, ResenaAlbumResponse, mapResenaToLegacy, AlbumStats } from '../../models/data.models';
 import { AlbumService } from '../../services/album.service';
 import { ArtistService } from '../../services/artist.service';
 import { SongService } from '../../services/song.service';
+import { ListaAlbumService } from '../../services/lista-album.service';
+import { ReviewStateService } from '../../services/review-state.service';
+import { AppStateService } from '../../services/app-state';
+import { environment } from '../../../environments/environment';
 
 // Type para el item unificado (puede ser Album, Artist o Song)
 type DetailItem = Album | Artist | Song;
 
-// Interface para estadísticas mock
+// Interface para estadísticas
 interface DetailStats {
   averageRating: number;
   totalRatings: number;
@@ -56,6 +60,19 @@ export class DetailComponent implements OnInit, OnDestroy {
   private fragmentSubscription?: Subscription;
 
   // ========================================
+  // SERVICIOS INYECTADOS
+  // ========================================
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private viewportScroller = inject(ViewportScroller);
+  private albumService = inject(AlbumService);
+  private artistService = inject(ArtistService);
+  private songService = inject(SongService);
+  private listaAlbumService = inject(ListaAlbumService);
+  private reviewStateService = inject(ReviewStateService);
+  private appState = inject(AppStateService);
+
+  // ========================================
   // SIGNALS - Estado principal
   // ========================================
   item = signal<DetailItem | null>(null);
@@ -73,13 +90,20 @@ export class DetailComponent implements OnInit, OnDestroy {
   userReview = signal<UserReview | null>(null);
 
   // ========================================
-  // SIGNALS - Estadísticas (mock)
+  // SIGNALS - Estadísticas
   // ========================================
   stats = signal<DetailStats>({
-    averageRating: 4.2,
-    totalRatings: 1247,
-    totalReviews: 89
+    averageRating: 0,
+    totalRatings: 0,
+    totalReviews: 0
   });
+
+  // ========================================
+  // SIGNALS - Control de carga
+  // ========================================
+  isLoadingEstado = signal<boolean>(false);
+  isSubmittingRating = signal<boolean>(false);
+  needsListFirst = signal<boolean>(false);
 
   // ========================================
   // SIGNALS - Tabs
@@ -192,19 +216,24 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.reviewText().trim().length >= 50 && this.userRating() > 0
   );
 
+  // Verificar si el usuario está logueado
+  isLoggedIn = computed(() => !!this.appState.currentUser());
+
   // Computed para mostrar contenido según tab activo
   isInfoTab = computed(() => this.activeTabId() === 'info');
   isTracksTab = computed(() => this.activeTabId() === 'tracks');
   isReviewsTab = computed(() => this.activeTabId() === 'reviews');
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private viewportScroller: ViewportScroller,
-    private albumService: AlbumService,
-    private artistService: ArtistService,
-    private songService: SongService
-  ) {}
+  constructor() {
+    // Effect para recargar estado cuando cambia el usuario
+    effect(() => {
+      const user = this.appState.currentUser();
+      const item = this.item();
+      if (user && item && this.itemType() === 'album') {
+        this.loadUserAlbumState(item.id);
+      }
+    });
+  }
 
   ngOnInit(): void {
     // ✅ DATOS YA PRECARGADOS POR RESOLVER
@@ -216,6 +245,10 @@ export class DetailComponent implements OnInit, OnDestroy {
       const album = resolvedData['album'] as Album;
       this.item.set(album);
       this.loadAlbumDetails(album.id);
+      // Cargar estado del usuario para este álbum
+      this.loadUserAlbumState(album.id);
+      // Cargar estadísticas reales del álbum
+      this.loadAlbumStats(album.id);
     } else if (resolvedData['artist']) {
       const artist = resolvedData['artist'] as Artist;
       this.item.set(artist);
@@ -225,9 +258,6 @@ export class DetailComponent implements OnInit, OnDestroy {
       this.item.set(song);
       this.loadSongDetails(song.id);
     }
-
-    // Cargar estado mock del usuario
-    this.loadUserState();
 
     // Cargar primera página de reseñas para infinite scroll
     this.loadMoreReviews();
@@ -252,19 +282,101 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   // ========================================
-  // CARGA DE DATOS MOCK
+  // CARGA DE DATOS - REAL Y MOCK
   // ========================================
 
   /**
-   * Carga estado mock del usuario (rating, lista, reseña)
+   * Carga el estado del álbum para el usuario actual (en lista, puntuación, reseña)
    */
-  private loadUserState(): void {
+  private loadUserAlbumState(albumId: string): void {
+    const user = this.appState.currentUser();
+    if (!user) {
+      // Usuario no logueado - resetear estados
+      this.isInUserList.set(false);
+      this.userRating.set(0);
+      this.userReview.set(null);
+      return;
+    }
+
+    if (environment.useMockData) {
+      // Modo mock - usar datos simulados
+      this.loadUserStateMock();
+      return;
+    }
+
+    this.isLoadingEstado.set(true);
+
+    // Cargar estado del álbum para el usuario
+    this.listaAlbumService.getEstadoAlbum(user.id, parseInt(albumId)).subscribe({
+      next: (estado) => {
+        if (estado) {
+          this.isInUserList.set(estado.enLista);
+          this.userRating.set(estado.puntuacion ?? 0);
+        } else {
+          this.isInUserList.set(false);
+          this.userRating.set(0);
+        }
+        this.isLoadingEstado.set(false);
+      },
+      error: () => {
+        this.isInUserList.set(false);
+        this.userRating.set(0);
+        this.isLoadingEstado.set(false);
+      }
+    });
+
+    // Cargar reseña del usuario si existe
+    const existingReview = this.reviewStateService.getUserReviewForAlbum(albumId);
+    if (existingReview) {
+      this.userReview.set({
+        text: existingReview.content,
+        date: typeof existingReview.date === 'string' ? new Date(existingReview.date) : existingReview.date,
+        rating: existingReview.rating
+      });
+    } else {
+      this.userReview.set(null);
+    }
+  }
+
+  /**
+   * Carga estadísticas del álbum desde el backend
+   */
+  private loadAlbumStats(albumId: string): void {
+    if (environment.useMockData) {
+      // Modo mock - usar datos simulados
+      this.stats.set({
+        averageRating: 4.2,
+        totalRatings: 1247,
+        totalReviews: 89
+      });
+      return;
+    }
+
+    // Cargar stats reales desde el backend
+    this.albumService.getAlbumStats(albumId).subscribe({
+      next: (albumStats: AlbumStats) => {
+        this.stats.set({
+          averageRating: albumStats.averageRating ?? 0,
+          totalRatings: albumStats.ratingCount,
+          totalReviews: albumStats.reviewCount
+        });
+      },
+      error: () => {
+        // En caso de error, mantener stats en 0
+        this.stats.set({ averageRating: 0, totalRatings: 0, totalReviews: 0 });
+      }
+    });
+  }
+
+  /**
+   * Carga estado mock del usuario (para desarrollo)
+   */
+  private loadUserStateMock(): void {
     // Simular que el usuario ya ha interactuado con el álbum
     this.userRating.set(4);
     this.isInUserList.set(true);
 
     // Simular que el usuario ya tiene una reseña
-    // Cambiar a null para probar el estado "sin reseña"
     this.userReview.set({
       text: 'Este álbum ha sido una de las mejores sorpresas del año. La producción es impecable y cada canción tiene su propia identidad mientras mantiene la coherencia del conjunto. Recomendado al 100%.',
       date: new Date('2024-12-20'),
@@ -277,9 +389,38 @@ export class DetailComponent implements OnInit, OnDestroy {
    */
   loadMoreReviews(): void {
     if (this.isLoadingMoreReviews() || !this.hasMoreReviews()) return;
+    const item = this.item();
+    if (!item) return;
 
     this.isLoadingMoreReviews.set(true);
 
+    if (environment.useMockData) {
+      // Modo mock - usar datos simulados
+      this.loadMoreReviewsMock();
+      return;
+    }
+
+    // Cargar reseñas reales del backend
+    this.listaAlbumService.getResenasAlbum(parseInt(item.id)).subscribe({
+      next: (resenas: ResenaAlbumResponse[]) => {
+        const reviews = resenas.map(r => mapResenaToLegacy(r));
+        this.displayedReviews.set(reviews);
+        this.reviews.set(reviews);
+        this.hasMoreReviews.set(false); // El backend ya devuelve todas (sin paginación por ahora)
+        this.isLoadingMoreReviews.set(false);
+      },
+      error: () => {
+        this.displayedReviews.set([]);
+        this.hasMoreReviews.set(false);
+        this.isLoadingMoreReviews.set(false);
+      }
+    });
+  }
+
+  /**
+   * Carga más reseñas mock
+   */
+  private loadMoreReviewsMock(): void {
     // Simular carga asíncrona
     setTimeout(() => {
       const start = this.reviewsPage * this.reviewsPageSize;
@@ -389,16 +530,88 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   // Rating system
   setRating(rating: number): void {
-    this.userRating.set(rating);
-    console.log('Rating set:', rating);
+    const user = this.appState.currentUser();
+    const item = this.item();
+
+    if (!user) {
+      // Usuario no logueado - mostrar mensaje
+      this.needsListFirst.set(true);
+      return;
+    }
+
+    if (!item) return;
+
+    // Si no está en la lista, no puede puntuar
+    if (!this.isInUserList()) {
+      this.needsListFirst.set(true);
+      return;
+    }
+
+    // Si está en modo mock, solo actualizar localmente
+    if (environment.useMockData) {
+      this.userRating.set(rating);
+      console.log('Rating set (mock):', rating);
+      return;
+    }
+
+    // Guardar en el backend
+    this.isSubmittingRating.set(true);
+    this.listaAlbumService.puntuarAlbum(parseInt(item.id), rating).subscribe({
+      next: (result) => {
+        if (result) {
+          this.userRating.set(rating);
+          // Recargar estadísticas del álbum
+          this.loadAlbumStats(item.id);
+        }
+        this.isSubmittingRating.set(false);
+      },
+      error: () => {
+        this.isSubmittingRating.set(false);
+      }
+    });
   }
 
   /**
-   * Toggle lista del usuario
+   * Toggle lista del usuario - Añadir o quitar de la lista
    */
   toggleUserList(): void {
-    this.isInUserList.update(current => !current);
-    console.log('Lista actualizada:', this.isInUserList());
+    const user = this.appState.currentUser();
+    const item = this.item();
+
+    if (!user) {
+      // Mostrar mensaje o redirigir a login
+      return;
+    }
+
+    if (!item) return;
+
+    if (environment.useMockData) {
+      this.isInUserList.update(current => !current);
+      console.log('Lista actualizada (mock):', this.isInUserList());
+      return;
+    }
+
+    if (this.isInUserList()) {
+      // Quitar de la lista
+      this.listaAlbumService.quitarDeLista(parseInt(item.id)).subscribe({
+        next: (success) => {
+          if (success) {
+            this.isInUserList.set(false);
+            // La puntuación y reseña se ocultan pero no se eliminan
+          }
+        }
+      });
+    } else {
+      // Añadir a la lista
+      this.listaAlbumService.agregarALista(parseInt(item.id)).subscribe({
+        next: (result) => {
+          if (result !== null) {
+            this.isInUserList.set(true);
+            this.needsListFirst.set(false);
+          }
+        }
+      });
+    }
   }
 
   /**
@@ -426,18 +639,58 @@ export class DetailComponent implements OnInit, OnDestroy {
   submitReview(): void {
     if (!this.canSubmitReview()) return;
 
-    const newUserReview: UserReview = {
-      text: this.reviewText(),
-      date: new Date(),
-      rating: this.userRating()
-    };
+    const user = this.appState.currentUser();
+    const item = this.item();
 
-    this.userReview.set(newUserReview);
-    console.log('Reseña guardada:', newUserReview);
+    if (!user || !item) return;
 
-    // Reset form
-    this.reviewText.set('');
-    this.isWritingReview.set(false);
+    // Si no está en la lista, no puede reseñar
+    if (!this.isInUserList()) {
+      this.needsListFirst.set(true);
+      return;
+    }
+
+    if (environment.useMockData) {
+      // Modo mock
+      const newUserReview: UserReview = {
+        text: this.reviewText(),
+        date: new Date(),
+        rating: this.userRating()
+      };
+
+      this.userReview.set(newUserReview);
+      console.log('Reseña guardada (mock):', newUserReview);
+
+      // Reset form
+      this.reviewText.set('');
+      this.isWritingReview.set(false);
+      return;
+    }
+
+    // Guardar en backend
+    this.listaAlbumService.escribirResena(parseInt(item.id), this.reviewText(), this.userRating()).subscribe({
+      next: (result) => {
+        if (result) {
+          const newUserReview: UserReview = {
+            text: this.reviewText(),
+            date: new Date(),
+            rating: this.userRating()
+          };
+          this.userReview.set(newUserReview);
+
+          // Recargar reseñas y estadísticas
+          this.loadMoreReviews();
+          this.loadAlbumStats(item.id);
+        }
+
+        // Reset form
+        this.reviewText.set('');
+        this.isWritingReview.set(false);
+      },
+      error: () => {
+        // El servicio ya muestra notificación de error
+      }
+    });
   }
 
   cancelReview(): void {
@@ -493,7 +746,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Navegar al perfil de usuario con estado
+   * Navegar al perfil de usuario público
    */
   goToUser(userId: string): void {
     const extras: NavigationExtras = {
@@ -502,7 +755,8 @@ export class DetailComponent implements OnInit, OnDestroy {
         albumId: this.item()?.id
       }
     };
-    this.router.navigate(['/profile', userId], extras);
+    // Usar ruta /user/:id para perfiles públicos
+    this.router.navigate(['/user', userId], extras);
   }
 
   /**

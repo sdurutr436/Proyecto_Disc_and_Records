@@ -34,17 +34,29 @@
               <h3 class="detail-card__section-title">Tu puntuación</h3>
               <app-rating
                 [rating]="userRating()"
-                [interactive]="true"
+                [interactive]="isInUserList()"
                 size="large"
                 (ratingChange)="setRating($event)"
               />
-              @if (hasUserRated()) {
+              @if (!isLoggedIn()) {
+                <p class="detail-card__rating-message detail-card__rating-message--hint">
+                  Inicia sesión para puntuar
+                </p>
+              } @else if (needsListFirst()) {
+                <p class="detail-card__rating-message detail-card__rating-message--warning">
+                  Añade el álbum a tu lista para puntuarlo
+                </p>
+              } @else if (hasUserRated()) {
                 <p class="detail-card__rating-message">
                   Has puntuado con {{ userRating() }} estrella{{ userRating() !== 1 ? 's' : '' }}
                 </p>
-              } @else {
+              } @else if (isInUserList()) {
                 <p class="detail-card__rating-message detail-card__rating-message--hint">
                   Haz clic para puntuar
+                </p>
+              } @else {
+                <p class="detail-card__rating-message detail-card__rating-message--hint">
+                  Añade a tu lista primero
                 </p>
               }
             </div>
@@ -224,9 +236,12 @@
                           [src]="review.userAvatar"
                           [alt]="review.userName || 'Usuario'"
                           class="review-card__avatar"
+                          (click)="goToUser(review.userId)"
                         />
                         <div class="review-card__user-info">
-                          <h5 class="review-card__user-name">{{ review.userName || review.username }}</h5>
+                          <h5 class="review-card__user-name" (click)="goToUser(review.userId)">
+                            {{ review.userName || review.username }}
+                          </h5>
                           <div class="review-card__meta">
                             <span class="review-card__rating">{{ getStarsDisplay(review.rating) }}</span>
                             <span class="review-card__date">{{ formatDate(review.date) }}</span>

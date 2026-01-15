@@ -208,6 +208,11 @@
     &--hint {
       font-style: italic;
     }
+
+    &--warning {
+      color: var(--color-warning, #f59e0b);
+      font-weight: 500;
+    }
   }
 
   &__list-action {
