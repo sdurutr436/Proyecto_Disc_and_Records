@@ -5,6 +5,8 @@ import com.discsandrecords.api.services.ResenaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,8 @@ import java.util.List;
 @Tag(name = "Reseñas", description = "API para gestión de reseñas de álbumes y canciones")
 public class ResenaController {
 
+    private static final Logger log = LoggerFactory.getLogger(ResenaController.class);
+
     private final ResenaService resenaService;
 
     public ResenaController(ResenaService resenaService) {
@@ -42,13 +46,23 @@ public class ResenaController {
     @GetMapping("/albumes/{albumId}")
     @Operation(summary = "Listar reseñas de un álbum")
     public ResponseEntity<List<ResenaAlbumResponseDTO>> listarResenasAlbum(@PathVariable Long albumId) {
-        return ResponseEntity.ok(resenaService.listarResenasAlbum(albumId));
+        try {
+            return ResponseEntity.ok(resenaService.listarResenasAlbum(albumId));
+        } catch (Exception e) {
+            log.warn("Error obteniendo reseñas del álbum {}: {}", albumId, e.getMessage());
+            return ResponseEntity.ok(List.of());
+        }
     }
 
     @GetMapping("/albumes/usuario/{usuarioId}")
     @Operation(summary = "Listar reseñas de álbumes de un usuario")
     public ResponseEntity<List<ResenaAlbumResponseDTO>> listarResenasAlbumUsuario(@PathVariable Long usuarioId) {
-        return ResponseEntity.ok(resenaService.listarResenasUsuario(usuarioId));
+        try {
+            return ResponseEntity.ok(resenaService.listarResenasUsuario(usuarioId));
+        } catch (Exception e) {
+            log.warn("Error obteniendo reseñas del usuario {}: {}", usuarioId, e.getMessage());
+            return ResponseEntity.ok(List.of());
+        }
     }
 
     @GetMapping("/albumes/{albumId}/usuario/{usuarioId}")
