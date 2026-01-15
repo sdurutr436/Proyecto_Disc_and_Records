@@ -82,6 +82,7 @@ export class ListaAlbumService {
 
   /**
    * Obtener estado completo del álbum para el usuario
+   * Devuelve null si el álbum no existe o no está en la lista (404 es esperado)
    */
   getEstadoAlbum(usuarioId: number, albumId: number): Observable<EstadoAlbumUsuario | null> {
     if (environment.useMockData) {
@@ -97,7 +98,18 @@ export class ListaAlbumService {
         tieneResena: album.tieneResena,
         fechaAgregada: album.fechaAgregada
       })),
-      catchError(() => of(null))
+      catchError(error => {
+        // 404 es respuesta esperada cuando el álbum NO está en la lista
+        // No es un error de aplicación, es información válida
+        if (error.status === 404) {
+          // Log como debug, no como error
+          console.debug('Álbum no está en la lista (404 esperado)', error.url);
+          return of(null);
+        }
+        // Para otros errores, sí logear
+        console.error('Error obteniendo estado del álbum:', error);
+        return of(null);
+      })
     );
   }
 
@@ -162,14 +174,25 @@ export class ListaAlbumService {
       return of(null);
     }
 
+    // Validar que los campos requeridos no sean vacíos
+    if (!albumData.tituloAlbum || !albumData.tituloAlbum.trim()) {
+      this.notifications.error('Validación', 'El título del álbum no puede estar vacío');
+      return of(null);
+    }
+
+    if (!albumData.nombreArtista || !albumData.nombreArtista.trim()) {
+      this.notifications.error('Validación', 'El nombre del artista no puede estar vacío');
+      return of(null);
+    }
+
     const dto = {
       usuarioId: user.id,
       albumId: albumData.albumId,
-      tituloAlbum: albumData.tituloAlbum,
-      portadaUrl: albumData.portadaUrl || '',
+      tituloAlbum: albumData.tituloAlbum.trim(),
+      portadaUrl: albumData.portadaUrl?.trim() || null, // null si vacío, no string vacío
       anioSalida: albumData.anioSalida || new Date().getFullYear(),
       artistaId: albumData.artistaId,
-      nombreArtista: albumData.nombreArtista
+      nombreArtista: albumData.nombreArtista.trim()
     };
 
     return this.http.post<AlbumEnLista>(
@@ -180,7 +203,20 @@ export class ListaAlbumService {
         this.notifications.success('Añadido', 'Álbum añadido a tu lista');
       }),
       catchError(error => {
-        const mensaje = error.error?.message || 'No se pudo añadir el álbum';
+        let mensaje = 'No se pudo añadir el álbum';
+
+        // Manejar diferentes tipos de error
+        if (error.status === 400) {
+          // Bad Request - problemas de validación
+          mensaje = error.error?.message || 'Los datos del álbum no son válidos';
+          console.warn('Validación fallida al añadir álbum:', { datos: dto, error: error.error });
+        } else if (error.status === 409) {
+          // Conflict - el álbum ya está en la lista
+          mensaje = error.error?.message || 'El álbum ya está en tu lista';
+        } else {
+          mensaje = error.error?.message || mensaje;
+        }
+
         this.notifications.error('Error', mensaje);
         return of(null);
       })

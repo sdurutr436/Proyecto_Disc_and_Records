@@ -652,14 +652,19 @@ export class DetailComponent implements OnInit, OnDestroy {
       // Añadir a la lista - usar el nuevo método con datos completos de Deezer
       // Cast a Album porque solo se puede agregar álbumes a la lista
       const album = item as Album;
+
+      // Construir datos del álbum con validaciones
       const albumData = {
         albumId: albumIdNum,
-        tituloAlbum: album.title || 'Álbum desconocido',
-        portadaUrl: album.coverUrl || '',
+        tituloAlbum: (album.title || 'Álbum desconocido').trim(),
+        portadaUrl: album.coverUrl ? album.coverUrl.trim() : null, // null si no hay URL
         anioSalida: album.releaseYear || new Date().getFullYear(),
         artistaId: this.parseNumericId(album.artistId) || albumIdNum, // Fallback al albumId
-        nombreArtista: album.artist || 'Artista desconocido'
+        nombreArtista: (album.artist || 'Artista desconocido').trim()
       };
+
+      // Log para debugging
+      console.debug('Añadiendo álbum de Deezer:', albumData);
 
       this.listaAlbumService.agregarAlbumDeezer(albumData).subscribe({
         next: (result) => {
@@ -667,6 +672,9 @@ export class DetailComponent implements OnInit, OnDestroy {
             this.isInUserList.set(true);
             this.needsListFirst.set(false);
           }
+        },
+        error: (error) => {
+          console.error('Error al añadir álbum:', error);
         }
       });
     }
