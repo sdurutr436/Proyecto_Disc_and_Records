@@ -653,13 +653,24 @@ export class DetailComponent implements OnInit, OnDestroy {
       // Cast a Album porque solo se puede agregar álbumes a la lista
       const album = item as Album;
 
-      // Construir datos del álbum con validaciones
+      // Parsear artistaId correctamente - puede venir como string de Deezer
+      // El artistId de Deezer viene del campo album.artistId (string)
+      const artistaIdParsed = this.parseNumericId(album.artistId);
+
+      // Validar que tengamos un artistaId válido
+      if (!artistaIdParsed || artistaIdParsed <= 0) {
+        console.warn('artistaId inválido, usando fallback:', album.artistId);
+      }
+
+      // Construir datos del álbum con validaciones robustas
       const albumData = {
         albumId: albumIdNum,
         tituloAlbum: (album.title || 'Álbum desconocido').trim(),
-        portadaUrl: album.coverUrl ? album.coverUrl.trim() : null, // null si no hay URL
+        portadaUrl: album.coverUrl?.trim() || undefined, // undefined si vacío (no null)
         anioSalida: album.releaseYear || new Date().getFullYear(),
-        artistaId: this.parseNumericId(album.artistId) || albumIdNum, // Fallback al albumId
+        // artistaId: DEBE ser el ID del artista de Deezer (no del álbum)
+        // Si no tenemos artistId válido, es un error - no usar albumId como fallback
+        artistaId: artistaIdParsed || 0, // 0 hará fallar la validación del backend (correcto)
         nombreArtista: (album.artist || 'Artista desconocido').trim()
       };
 

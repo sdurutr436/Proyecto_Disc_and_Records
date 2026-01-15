@@ -174,7 +174,7 @@ export class ListaAlbumService {
       return of(null);
     }
 
-    // Validar que los campos requeridos no sean vacíos
+    // Validar que los campos requeridos no sean vacíos o inválidos
     if (!albumData.tituloAlbum || !albumData.tituloAlbum.trim()) {
       this.notifications.error('Validación', 'El título del álbum no puede estar vacío');
       return of(null);
@@ -182,6 +182,19 @@ export class ListaAlbumService {
 
     if (!albumData.nombreArtista || !albumData.nombreArtista.trim()) {
       this.notifications.error('Validación', 'El nombre del artista no puede estar vacío');
+      return of(null);
+    }
+
+    // Validar IDs numéricos requeridos por el backend
+    if (!albumData.albumId || albumData.albumId <= 0) {
+      console.error('albumId inválido:', albumData.albumId);
+      this.notifications.error('Validación', 'ID de álbum inválido');
+      return of(null);
+    }
+
+    if (!albumData.artistaId || albumData.artistaId <= 0) {
+      console.error('artistaId inválido:', albumData.artistaId);
+      this.notifications.error('Validación', 'ID de artista inválido');
       return of(null);
     }
 
@@ -194,6 +207,9 @@ export class ListaAlbumService {
       artistaId: albumData.artistaId,
       nombreArtista: albumData.nombreArtista.trim()
     };
+
+    // Log para debugging del payload
+    console.debug('DTO enviado a /lista/deezer:', dto);
 
     return this.http.post<AlbumEnLista>(
       `${this.baseUrl}/${user.id}/lista/deezer`,
