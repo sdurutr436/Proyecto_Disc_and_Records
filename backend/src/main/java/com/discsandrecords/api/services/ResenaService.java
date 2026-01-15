@@ -63,13 +63,19 @@ public class ResenaService {
     @Transactional(readOnly = true)
     public List<ResenaAlbumResponseDTO> listarResenasAlbum(Long albumId) {
         if (!albumRepository.existsById(albumId)) {
-            throw new ResourceNotFoundException("Álbum", "id", albumId);
+            // Si el álbum no existe en nuestra BD, devolver lista vacía
+            // (puede ser un álbum de Deezer que aún no se ha guardado)
+            return List.of();
         }
 
-        return usuarioAlbumRepository.findByAlbumId(albumId).stream()
-                .filter(ua -> ua.getTextoResena() != null)
-                .map(this::toResenaAlbumDTO)
-                .toList();
+        try {
+            return usuarioAlbumRepository.findByAlbumId(albumId).stream()
+                    .filter(ua -> ua.getTextoResena() != null && ua.getAlbum() != null)
+                    .map(this::toResenaAlbumDTO)
+                    .toList();
+        } catch (Exception e) {
+            return List.of();
+        }
     }
 
     @Transactional(readOnly = true)
@@ -78,9 +84,16 @@ public class ResenaService {
             throw new ResourceNotFoundException("Usuario", "id", usuarioId);
         }
 
-        return usuarioAlbumRepository.findResenasAlbumesByUsuarioId(usuarioId).stream()
-                .map(this::toResenaAlbumDTO)
-                .toList();
+        try {
+            return usuarioAlbumRepository.findResenasAlbumesByUsuarioId(usuarioId).stream()
+                    .filter(ua -> ua.getAlbum() != null) // Filtrar posibles inconsistencias
+                    .map(this::toResenaAlbumDTO)
+                    .toList();
+        } catch (Exception e) {
+            // Si hay error de integridad, devolver lista vacía
+            // Esto puede pasar si hay registros huérfanos en usuario_album
+            return List.of();
+        }
     }
 
     @Transactional(readOnly = true)
