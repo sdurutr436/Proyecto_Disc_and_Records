@@ -53,13 +53,13 @@ public interface UsuarioAlbumRepository extends JpaRepository<UsuarioAlbum, Usua
     /**
      * Álbumes en la lista del usuario (escuchado = true)
      */
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true ORDER BY ua.fechaAgregada DESC")
+    @Query("SELECT ua FROM UsuarioAlbum ua JOIN FETCH ua.usuario JOIN FETCH ua.album WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true ORDER BY ua.fechaAgregada DESC")
     List<UsuarioAlbum> findAlbumesEnLista(@Param("usuarioId") Long usuarioId);
     
     /**
      * Álbumes en la lista del usuario con paginación
      */
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true ORDER BY ua.fechaAgregada DESC")
+    @Query("SELECT ua FROM UsuarioAlbum ua JOIN FETCH ua.usuario JOIN FETCH ua.album WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true ORDER BY ua.fechaAgregada DESC")
     List<UsuarioAlbum> findAlbumesEnLista(@Param("usuarioId") Long usuarioId, Pageable pageable);
     
     /**
@@ -75,7 +75,7 @@ public interface UsuarioAlbumRepository extends JpaRepository<UsuarioAlbum, Usua
     /**
      * Reseñas de un usuario (solo visibles - escuchado = true y con texto)
      */
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId " +
+    @Query("SELECT ua FROM UsuarioAlbum ua JOIN FETCH ua.usuario JOIN FETCH ua.album WHERE ua.usuario.id = :usuarioId " +
            "AND ua.escuchado = true AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
     List<UsuarioAlbum> findResenasVisiblesByUsuario(@Param("usuarioId") Long usuarioId);
     
@@ -83,14 +83,14 @@ public interface UsuarioAlbumRepository extends JpaRepository<UsuarioAlbum, Usua
      * Reseñas de un álbum (solo visibles - escuchado = true y con texto)
      * Ordenadas de más nueva a más antigua
      */
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.album.id = :albumId " +
+    @Query("SELECT ua FROM UsuarioAlbum ua JOIN FETCH ua.usuario JOIN FETCH ua.album WHERE ua.album.id = :albumId " +
            "AND ua.escuchado = true AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
     List<UsuarioAlbum> findResenasVisiblesByAlbum(@Param("albumId") Long albumId);
     
     /**
      * Reseñas recientes visibles (para home/feed)
      */
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.escuchado = true " +
+    @Query("SELECT ua FROM UsuarioAlbum ua JOIN FETCH ua.usuario JOIN FETCH ua.album WHERE ua.escuchado = true " +
            "AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
     List<UsuarioAlbum> findResenasRecientesVisibles(Pageable pageable);
     
@@ -137,19 +137,19 @@ public interface UsuarioAlbumRepository extends JpaRepository<UsuarioAlbum, Usua
     // QUERIES LEGACY (mantener compatibilidad)
     // ==========================================
     
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
+    @Query("SELECT ua FROM UsuarioAlbum ua JOIN FETCH ua.usuario JOIN FETCH ua.album WHERE ua.usuario.id = :usuarioId AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
     List<UsuarioAlbum> findResenasAlbumesByUsuarioId(@Param("usuarioId") Long usuarioId);
     
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.album.id = :albumId AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
+    @Query("SELECT ua FROM UsuarioAlbum ua JOIN FETCH ua.usuario JOIN FETCH ua.album WHERE ua.album.id = :albumId AND ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
     List<UsuarioAlbum> findResenasPorAlbumId(@Param("albumId") Long albumId);
     
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
+    @Query("SELECT ua FROM UsuarioAlbum ua JOIN FETCH ua.usuario JOIN FETCH ua.album WHERE ua.textoResena IS NOT NULL ORDER BY ua.fechaResena DESC")
     List<UsuarioAlbum> findResenasRecientes(Pageable pageable);
     
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.fechaResena BETWEEN :fechaInicio AND :fechaFin ORDER BY ua.fechaResena DESC")
+    @Query("SELECT ua FROM UsuarioAlbum ua JOIN FETCH ua.usuario JOIN FETCH ua.album WHERE ua.fechaResena BETWEEN :fechaInicio AND :fechaFin ORDER BY ua.fechaResena DESC")
     List<UsuarioAlbum> findResenasPorFecha(@Param("fechaInicio") Instant fechaInicio, @Param("fechaFin") Instant fechaFin);
     
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true ORDER BY ua.fechaAgregada DESC")
+    @Query("SELECT ua FROM UsuarioAlbum ua JOIN FETCH ua.usuario JOIN FETCH ua.album WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true ORDER BY ua.fechaAgregada DESC")
     List<UsuarioAlbum> findEscuchadosPorUsuario(@Param("usuarioId") Long usuarioId);
     
     @Query("SELECT COUNT(ua) FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.escuchado = true")
