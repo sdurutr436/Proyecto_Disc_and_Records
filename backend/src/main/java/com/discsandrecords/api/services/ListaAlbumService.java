@@ -201,28 +201,26 @@ public class ListaAlbumService {
     /**
      * Crea un álbum en la BD local desde los datos de Deezer.
      * También crea el artista si no existe.
+     * 
+     * Usa INSERT nativo para permitir IDs manuales (Deezer IDs)
+     * ya que PostgreSQL SERIAL/IDENTITY ignora el ID en JPA save().
      */
     private Album crearAlbumDesdeDTO(AgregarAlbumDeezerDTO dto) {
-        // Buscar o crear el artista
+        // Buscar o crear el artista usando INSERT nativo
+        if (!artistaRepository.existsById(dto.artistaId())) {
+            artistaRepository.insertarConId(dto.artistaId(), dto.nombreArtista());
+        }
+        
         Artista artista = artistaRepository.findById(dto.artistaId())
-                .orElseGet(() -> {
-                    Artista nuevoArtista = Artista.builder()
-                            .id(dto.artistaId())  // Usar el ID de Deezer
-                            .nombreArtista(dto.nombreArtista())
-                            .build();
-                    return artistaRepository.save(nuevoArtista);
-                });
+                .orElseThrow(() -> new RuntimeException("Error creando artista de Deezer: " + dto.artistaId()));
 
-        // Crear el álbum con el ID de Deezer
-        Album nuevoAlbum = Album.builder()
-                .id(dto.albumId())  // Usar el ID de Deezer
-                .tituloAlbum(dto.tituloAlbum())
-                .portadaUrl(dto.portadaUrl())
-                .anioSalida(dto.anioSalida() != null ? dto.anioSalida() : java.time.Year.now().getValue())
-                .artista(artista)
-                .build();
+        // Crear el álbum usando INSERT nativo
+        Integer anio = dto.anioSalida() != null ? dto.anioSalida() : java.time.Year.now().getValue();
+        albumRepository.insertarConId(dto.albumId(), dto.tituloAlbum(), anio, dto.portadaUrl(), dto.artistaId());
 
-        return albumRepository.save(nuevoAlbum);
+        // Recuperar el álbum creado
+        return albumRepository.findById(dto.albumId())
+                .orElseThrow(() -> new RuntimeException("Error creando álbum de Deezer: " + dto.albumId()));
     }
 
     /**

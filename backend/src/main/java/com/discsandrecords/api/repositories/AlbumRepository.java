@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -97,4 +98,22 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
            "SUM(CASE WHEN a.puntuacionMedia < 3 THEN 1 ELSE 0 END) " +
            "FROM Album a WHERE a.puntuacionMedia IS NOT NULL")
     Object[] distribucionPorPuntuacion();
+    
+    // ==========================================
+    // INSERT CON ID MANUAL (para Deezer)
+    // ==========================================
+    
+    /**
+     * Insertar álbum con ID específico (bypass SERIAL/IDENTITY)
+     * Usado para importar álbumes de Deezer con su ID original
+     */
+    @Modifying
+    @Query(value = "INSERT INTO albumes (id, titulo_album, anio_salida, portada_url, id_artista) " +
+           "VALUES (:id, :titulo, :anio, :portada, :artistaId) " +
+           "ON CONFLICT (id) DO NOTHING", nativeQuery = true)
+    void insertarConId(@Param("id") Long id, 
+                       @Param("titulo") String titulo, 
+                       @Param("anio") Integer anio, 
+                       @Param("portada") String portada, 
+                       @Param("artistaId") Long artistaId);
 }
