@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { PreloadingStrategy, Route } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
@@ -16,6 +16,9 @@ import { Observable, of } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class NetworkAwarePreloadingStrategy implements PreloadingStrategy {
 
+  /** Flag para evitar log repetitivo del tipo de conexión */
+  private hasLoggedConnectionType = false;
+
   preload(route: Route, load: () => Observable<any>): Observable<any> {
     // Detectar tipo de conexión (solo en navegadores compatibles)
     const connection = (navigator as any).connection ||
@@ -30,17 +33,19 @@ export class NetworkAwarePreloadingStrategy implements PreloadingStrategy {
     const effectiveType = connection.effectiveType; // '4g', '3g', '2g', 'slow-2g'
     const saveData = connection.saveData; // true si usuario activó "ahorrar datos"
 
-    console.log(`[Network] Tipo de conexión: ${effectiveType}, Ahorro de datos: ${saveData}`);
+    // Log solo una vez el tipo de conexión (solo en desarrollo)
+    if (!this.hasLoggedConnectionType && isDevMode()) {
+      console.log(`[Network] Tipo de conexión: ${effectiveType}, Ahorro de datos: ${saveData}`);
+      this.hasLoggedConnectionType = true;
+    }
 
     // No precargar si usuario tiene "ahorrar datos" activado
     if (saveData) {
-      console.log(`[Network] Ahorro de datos activado - no precargando '${route.path}'`);
       return of(null);
     }
 
     // Conexión rápida: precargar todo
     if (effectiveType === '4g') {
-      console.log(`[Network] Conexión 4G - precargando '${route.path}'`);
       return load();
     }
 
@@ -48,14 +53,12 @@ export class NetworkAwarePreloadingStrategy implements PreloadingStrategy {
     if (effectiveType === '3g') {
       const isCritical = route.data && route.data['critical'];
       if (isCritical) {
-        console.log(`[Network] Conexión 3G - precargando ruta crítica '${route.path}'`);
         return load();
       }
       return of(null);
     }
 
     // Conexión lenta: no precargar
-    console.log(`[Network] Conexión lenta (${effectiveType}) - no precargando '${route.path}'`);
     return of(null);
   }
 

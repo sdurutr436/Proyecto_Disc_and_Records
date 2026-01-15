@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.discsandrecords.api.dto.AgregarAlbumDeezerDTO;
 import com.discsandrecords.api.dto.AgregarAlbumListaDTO;
 import com.discsandrecords.api.dto.AlbumEnListaDTO;
 import com.discsandrecords.api.dto.PuntuarAlbumDTO;
@@ -106,6 +107,34 @@ public class ListaAlbumController {
         // Asegurar que el usuarioId del path coincide con el del body
         AgregarAlbumListaDTO dtoFinal = new AgregarAlbumListaDTO(usuarioId, dto.albumId());
         AlbumEnListaDTO resultado = listaAlbumService.agregarALista(dtoFinal);
+        
+        return ResponseEntity
+                .created(URI.create("/api/usuarios/" + usuarioId + "/lista/" + dto.albumId()))
+                .body(resultado);
+    }
+
+    /**
+     * Endpoint para añadir álbumes de Deezer que aún no existen en la BD local.
+     * Auto-crea el álbum y artista si es necesario.
+     */
+    @PostMapping("/deezer")
+    @Operation(summary = "Añadir un álbum de Deezer a la lista (auto-crea si no existe)")
+    @PreAuthorize("isAuthenticated() and (#usuarioId == authentication.principal.id or hasRole('ADMIN'))")
+    public ResponseEntity<AlbumEnListaDTO> agregarAlbumDeezer(
+            @PathVariable Long usuarioId,
+            @RequestBody @Valid AgregarAlbumDeezerDTO dto) {
+        
+        // Asegurar que el usuarioId del path coincide con el del body
+        AgregarAlbumDeezerDTO dtoFinal = new AgregarAlbumDeezerDTO(
+            usuarioId, 
+            dto.albumId(), 
+            dto.tituloAlbum(), 
+            dto.portadaUrl(), 
+            dto.anioSalida(), 
+            dto.artistaId(), 
+            dto.nombreArtista()
+        );
+        AlbumEnListaDTO resultado = listaAlbumService.agregarAlbumDeezer(dtoFinal);
         
         return ResponseEntity
                 .created(URI.create("/api/usuarios/" + usuarioId + "/lista/" + dto.albumId()))

@@ -157,7 +157,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   // ========================================
   // HELPER - Validación de IDs numéricos
   // ========================================
-  
+
   /**
    * Parsea un ID string a número, devuelve null si no es válido
    */
@@ -639,8 +639,19 @@ export class DetailComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      // Añadir a la lista
-      this.listaAlbumService.agregarALista(albumIdNum).subscribe({
+      // Añadir a la lista - usar el nuevo método con datos completos de Deezer
+      // Cast a Album porque solo se puede agregar álbumes a la lista
+      const album = item as Album;
+      const albumData = {
+        albumId: albumIdNum,
+        tituloAlbum: album.title || 'Álbum desconocido',
+        portadaUrl: album.coverUrl || '',
+        anioSalida: album.releaseYear || new Date().getFullYear(),
+        artistaId: this.parseNumericId(album.artistId) || albumIdNum, // Fallback al albumId
+        nombreArtista: album.artist || 'Artista desconocido'
+      };
+
+      this.listaAlbumService.agregarAlbumDeezer(albumData).subscribe({
         next: (result) => {
           if (result !== null) {
             this.isInUserList.set(true);

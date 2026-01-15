@@ -102,7 +102,8 @@ export class ListaAlbumService {
   }
 
   /**
-   * Añadir álbum a la lista del usuario
+   * Añadir álbum a la lista del usuario (método legacy - requiere que el álbum exista en BD)
+   * @deprecated Usar agregarAlbumDeezer para álbumes de Deezer
    */
   agregarALista(albumId: number): Observable<AlbumEnLista | null> {
     const user = this.appState.currentUser();
@@ -123,6 +124,56 @@ export class ListaAlbumService {
 
     return this.http.post<AlbumEnLista>(
       `${this.baseUrl}/${user.id}/lista`,
+      dto
+    ).pipe(
+      tap(() => {
+        this.notifications.success('Añadido', 'Álbum añadido a tu lista');
+      }),
+      catchError(error => {
+        const mensaje = error.error?.message || 'No se pudo añadir el álbum';
+        this.notifications.error('Error', mensaje);
+        return of(null);
+      })
+    );
+  }
+
+  /**
+   * Añadir álbum de Deezer a la lista del usuario.
+   * Auto-crea el álbum y artista en el backend si no existen.
+   *
+   * @param albumData Datos completos del álbum de Deezer
+   */
+  agregarAlbumDeezer(albumData: {
+    albumId: number;
+    tituloAlbum: string;
+    portadaUrl?: string;
+    anioSalida?: number;
+    artistaId: number;
+    nombreArtista: string;
+  }): Observable<AlbumEnLista | null> {
+    const user = this.appState.currentUser();
+    if (!user) {
+      this.notifications.warning('Sesión requerida', 'Debes iniciar sesión para añadir álbumes a tu lista');
+      return of(null);
+    }
+
+    if (environment.useMockData) {
+      this.notifications.success('Añadido', 'Álbum añadido a tu lista');
+      return of(null);
+    }
+
+    const dto = {
+      usuarioId: user.id,
+      albumId: albumData.albumId,
+      tituloAlbum: albumData.tituloAlbum,
+      portadaUrl: albumData.portadaUrl || '',
+      anioSalida: albumData.anioSalida || new Date().getFullYear(),
+      artistaId: albumData.artistaId,
+      nombreArtista: albumData.nombreArtista
+    };
+
+    return this.http.post<AlbumEnLista>(
+      `${this.baseUrl}/${user.id}/lista/deezer`,
       dto
     ).pipe(
       tap(() => {

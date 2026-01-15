@@ -8,15 +8,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.discsandrecords.api.dto.AlbumEnListaDTO;
+import com.discsandrecords.api.dto.AgregarAlbumDeezerDTO;
 import com.discsandrecords.api.dto.AgregarAlbumListaDTO;
+import com.discsandrecords.api.dto.AlbumEnListaDTO;
 import com.discsandrecords.api.dto.PuntuarAlbumDTO;
 import com.discsandrecords.api.entities.Album;
+import com.discsandrecords.api.entities.Artista;
 import com.discsandrecords.api.entities.Usuario;
 import com.discsandrecords.api.entities.UsuarioAlbum;
 import com.discsandrecords.api.exceptions.BusinessRuleException;
 import com.discsandrecords.api.exceptions.ResourceNotFoundException;
 import com.discsandrecords.api.repositories.AlbumRepository;
+import com.discsandrecords.api.repositories.ArtistaRepository;
 import com.discsandrecords.api.repositories.UsuarioAlbumRepository;
 import com.discsandrecords.api.repositories.UsuarioRepository;
 
@@ -32,6 +35,10 @@ import com.discsandrecords.api.repositories.UsuarioRepository;
  *    - La puntuación NO cuenta para la media global
  *    - Los datos NO se eliminan - se pueden restaurar
  * 5. La media del álbum solo cuenta puntuaciones de usuarios con el álbum en lista
+ * 
+ * INTEGRACIÓN CON DEEZER:
+ * - Los álbumes de Deezer se auto-crean en la BD local cuando se añaden a una lista
+ * - Esto permite que los usuarios guarden cualquier álbum de Deezer sin pre-existir
  */
 @Service
 @Transactional
@@ -43,15 +50,18 @@ public class ListaAlbumService {
     private final UsuarioAlbumRepository usuarioAlbumRepository;
     private final UsuarioRepository usuarioRepository;
     private final AlbumRepository albumRepository;
+    private final ArtistaRepository artistaRepository;
     private final AlbumService albumService;
 
     public ListaAlbumService(UsuarioAlbumRepository usuarioAlbumRepository,
                              UsuarioRepository usuarioRepository,
                              AlbumRepository albumRepository,
+                             ArtistaRepository artistaRepository,
                              AlbumService albumService) {
         this.usuarioAlbumRepository = usuarioAlbumRepository;
         this.usuarioRepository = usuarioRepository;
         this.albumRepository = albumRepository;
+        this.artistaRepository = artistaRepository;
         this.albumService = albumService;
     }
 
@@ -143,6 +153,76 @@ public class ListaAlbumService {
         }
 
         return toAlbumEnListaDTO(guardado);
+    }
+
+    /**
+     * Añadir álbum de Deezer a la lista del usuario.
+     * AUTO-CREA el álbum y artista si no existen en la BD local.
+     * 
+     * Este método permite que cualquier álbum de Deezer se pueda agregar
+     * a la lista sin necesidad de que exista previamente en nuestra BD.
+     */
+    public AlbumEnListaDTO agregarAlbumDeezer(AgregarAlbumDeezerDTO dto) {
+        Usuario usuario = usuarioRepository.findById(dto.usuarioId())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "id", dto.usuarioId()));
+
+        // Buscar o crear el álbum
+        Album album = albumRepository.findById(dto.albumId())
+                .orElseGet(() -> crearAlbumDesdeDTO(dto));
+
+        // Verificar si ya existe el registro (aunque esté oculto)
+        Optional<UsuarioAlbum> existente = usuarioAlbumRepository.findByUsuarioAndAlbum(dto.usuarioId(), dto.albumId());
+
+        UsuarioAlbum usuarioAlbum;
+        if (existente.isPresent()) {
+            usuarioAlbum = existente.get();
+            if (usuarioAlbum.getEscuchado()) {
+                throw new BusinessRuleException("El álbum ya está en tu lista", "ALBUM_YA_EN_LISTA");
+            }
+            usuarioAlbum.setEscuchado(true);
+            usuarioAlbum.setFechaQuitado(null);
+        } else {
+            usuarioAlbum = UsuarioAlbum.builder()
+                    .usuario(usuario)
+                    .album(album)
+                    .escuchado(true)
+                    .build();
+        }
+
+        UsuarioAlbum guardado = usuarioAlbumRepository.save(usuarioAlbum);
+
+        if (guardado.getPuntuacion() != null) {
+            albumService.recalcularPuntuacionMedia(album.getId());
+        }
+
+        return toAlbumEnListaDTO(guardado);
+    }
+
+    /**
+     * Crea un álbum en la BD local desde los datos de Deezer.
+     * También crea el artista si no existe.
+     */
+    private Album crearAlbumDesdeDTO(AgregarAlbumDeezerDTO dto) {
+        // Buscar o crear el artista
+        Artista artista = artistaRepository.findById(dto.artistaId())
+                .orElseGet(() -> {
+                    Artista nuevoArtista = Artista.builder()
+                            .id(dto.artistaId())  // Usar el ID de Deezer
+                            .nombreArtista(dto.nombreArtista())
+                            .build();
+                    return artistaRepository.save(nuevoArtista);
+                });
+
+        // Crear el álbum con el ID de Deezer
+        Album nuevoAlbum = Album.builder()
+                .id(dto.albumId())  // Usar el ID de Deezer
+                .tituloAlbum(dto.tituloAlbum())
+                .portadaUrl(dto.portadaUrl())
+                .anioSalida(dto.anioSalida() != null ? dto.anioSalida() : java.time.Year.now().getValue())
+                .artista(artista)
+                .build();
+
+        return albumRepository.save(nuevoAlbum);
     }
 
     /**
