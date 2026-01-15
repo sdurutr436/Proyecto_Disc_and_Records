@@ -320,6 +320,18 @@
   &__button {
     margin-top: vars.$espaciado-s;
   }
+
+  // Botones para usuarios no autenticados
+  &__guest-actions {
+    display: flex;
+    gap: vars.$espaciado-s;
+    margin-top: vars.$espaciado-s;
+    flex-wrap: wrap;
+
+    @include mixins.respond-to('mobile') {
+      flex-direction: column;
+    }
+  }
 }
 
 .my-review {

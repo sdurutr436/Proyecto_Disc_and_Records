@@ -107,7 +107,7 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
      * Insertar álbum con ID específico (bypass SERIAL/IDENTITY)
      * Usado para importar álbumes de Deezer con su ID original
      */
-    @Modifying
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "INSERT INTO albumes (id, titulo_album, anio_salida, portada_url, id_artista) " +
            "VALUES (:id, :titulo, :anio, :portada, :artistaId) " +
            "ON CONFLICT (id) DO NOTHING", nativeQuery = true)

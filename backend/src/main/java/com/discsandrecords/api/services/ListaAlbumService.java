@@ -13,7 +13,6 @@ import com.discsandrecords.api.dto.AgregarAlbumListaDTO;
 import com.discsandrecords.api.dto.AlbumEnListaDTO;
 import com.discsandrecords.api.dto.PuntuarAlbumDTO;
 import com.discsandrecords.api.entities.Album;
-import com.discsandrecords.api.entities.Artista;
 import com.discsandrecords.api.entities.Usuario;
 import com.discsandrecords.api.entities.UsuarioAlbum;
 import com.discsandrecords.api.exceptions.BusinessRuleException;
@@ -206,21 +205,47 @@ public class ListaAlbumService {
      * ya que PostgreSQL SERIAL/IDENTITY ignora el ID en JPA save().
      */
     private Album crearAlbumDesdeDTO(AgregarAlbumDeezerDTO dto) {
-        // Buscar o crear el artista usando INSERT nativo
-        if (!artistaRepository.existsById(dto.artistaId())) {
-            artistaRepository.insertarConId(dto.artistaId(), dto.nombreArtista());
+        try {
+            // Buscar o crear el artista usando INSERT nativo
+            if (!artistaRepository.existsById(dto.artistaId())) {
+                artistaRepository.insertarConId(dto.artistaId(), dto.nombreArtista());
+                // Flush para asegurar que el INSERT se ejecuta antes del findById
+                artistaRepository.flush();
+            }
+            
+            // Verificar que el artista existe
+            if (!artistaRepository.existsById(dto.artistaId())) {
+                throw new BusinessRuleException(
+                        "No se pudo crear el artista para el álbum de Deezer", 
+                        "ERROR_CREANDO_ARTISTA");
+            }
+
+            // Verificar si el álbum ya existe (por si otro proceso lo creó mientras tanto)
+            if (albumRepository.existsById(dto.albumId())) {
+                return albumRepository.findById(dto.albumId()).get();
+            }
+
+            // Crear el álbum usando INSERT nativo
+            int anio = dto.anioSalida() != null ? dto.anioSalida() : java.time.Year.now().getValue();
+            String portadaUrl = dto.portadaUrl() != null ? dto.portadaUrl() : "";
+            
+            albumRepository.insertarConId(dto.albumId(), dto.tituloAlbum(), anio, portadaUrl, dto.artistaId());
+            // Flush para asegurar que el INSERT se ejecuta antes del findById
+            albumRepository.flush();
+
+            // Recuperar el álbum creado
+            return albumRepository.findById(dto.albumId())
+                    .orElseThrow(() -> new BusinessRuleException(
+                            "No se pudo crear el álbum de Deezer", 
+                            "ERROR_CREANDO_ALBUM"));
+        } catch (BusinessRuleException e) {
+            throw e;
+        } catch (Exception e) {
+            // Capturar cualquier excepción de BD (duplicados, constraints, etc.)
+            throw new BusinessRuleException(
+                    "Error al procesar el álbum de Deezer: " + e.getMessage(), 
+                    "ERROR_ALBUM_DEEZER");
         }
-        
-        Artista artista = artistaRepository.findById(dto.artistaId())
-                .orElseThrow(() -> new RuntimeException("Error creando artista de Deezer: " + dto.artistaId()));
-
-        // Crear el álbum usando INSERT nativo
-        Integer anio = dto.anioSalida() != null ? dto.anioSalida() : java.time.Year.now().getValue();
-        albumRepository.insertarConId(dto.albumId(), dto.tituloAlbum(), anio, dto.portadaUrl(), dto.artistaId());
-
-        // Recuperar el álbum creado
-        return albumRepository.findById(dto.albumId())
-                .orElseThrow(() -> new RuntimeException("Error creando álbum de Deezer: " + dto.albumId()));
     }
 
     /**

@@ -113,7 +113,7 @@ public interface ArtistaRepository extends JpaRepository<Artista, Long> {
      * Insertar artista con ID específico (bypass SERIAL/IDENTITY)
      * Usado para importar artistas de Deezer con su ID original
      */
-    @Modifying
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "INSERT INTO artistas (id, nombre_artista) VALUES (:id, :nombre) " +
            "ON CONFLICT (id) DO NOTHING", nativeQuery = true)
     void insertarConId(@Param("id") Long id, @Param("nombre") String nombre);

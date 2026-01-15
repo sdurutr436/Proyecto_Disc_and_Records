@@ -117,8 +117,38 @@
         <section class="my-review-section">
           <h2 class="section-title">Mi reseña</h2>
 
-          @if (!hasUserReview()) {
-            <!-- No existe reseña del usuario -->
+          @if (!isLoggedIn()) {
+            <!-- Usuario no autenticado - mostrar mensaje informativo -->
+            <app-alert
+              type="warning"
+              title="Inicia sesión para escribir reseñas"
+              message="Debes estar registrado para compartir tu opinión sobre este álbum."
+            ></app-alert>
+            <div class="my-review-section__guest-actions">
+              <app-button
+                variant="primary"
+                size="md"
+                (clicked)="openLoginModal()"
+              >
+                Iniciar sesión
+              </app-button>
+              <app-button
+                variant="secondary"
+                size="md"
+                (clicked)="openRegisterModal()"
+              >
+                Registrarse
+              </app-button>
+            </div>
+          } @else if (!isInUserList()) {
+            <!-- Usuario autenticado pero álbum no está en lista -->
+            <app-alert
+              type="info"
+              title="Añade el álbum a tu lista"
+              message="Debes añadir este álbum a tu lista de escuchados antes de poder escribir una reseña."
+            ></app-alert>
+          } @else if (!hasUserReview()) {
+            <!-- Usuario autenticado, álbum en lista, pero sin reseña -->
             <app-alert
               type="info"
               message="No has escrito aún una reseña"
@@ -134,8 +164,8 @@
             </div>
           }
 
-          <!-- Botón escribir/editar reseña -->
-          @if (!isWritingReview()) {
+          <!-- Botón escribir/editar reseña (solo para usuarios autenticados con álbum en lista) -->
+          @if (isLoggedIn() && isInUserList() && !isWritingReview()) {
             <app-button
               variant="primary"
               size="md"
@@ -145,7 +175,7 @@
             >
               {{ hasUserReview() ? 'Editar reseña' : 'Escribir reseña' }}
             </app-button>
-          } @else {
+          } @else if (isLoggedIn() && isInUserList() && isWritingReview()) {
             <!-- Formulario de reseña -->
             <div class="review-form">
               <h3 class="review-form__title">{{ hasUserReview() ? 'Edita tu reseña' : 'Escribe tu reseña' }}</h3>

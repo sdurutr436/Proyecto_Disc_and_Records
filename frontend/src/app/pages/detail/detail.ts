@@ -18,6 +18,7 @@ import { SongService } from '../../services/song.service';
 import { ListaAlbumService } from '../../services/lista-album.service';
 import { ReviewStateService } from '../../services/review-state.service';
 import { AppStateService } from '../../services/app-state';
+import { NotificationStreamService } from '../../services/notification-stream';
 import { environment } from '../../../environments/environment';
 
 // Type para el item unificado (puede ser Album, Artist o Song)
@@ -71,6 +72,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   private listaAlbumService = inject(ListaAlbumService);
   private reviewStateService = inject(ReviewStateService);
   private appState = inject(AppStateService);
+  private notifications = inject(NotificationStreamService);
 
   // ========================================
   // SIGNALS - Estado principal
@@ -613,7 +615,15 @@ export class DetailComponent implements OnInit, OnDestroy {
     const item = this.item();
 
     if (!user) {
-      // Mostrar mensaje o redirigir a login
+      // Usuario no autenticado - mostrar mensaje y abrir modal de login
+      this.notifications.warning(
+        'Sesión requerida',
+        'Debes iniciar sesión o registrarte para añadir álbumes a tu lista'
+      );
+      // Disparar evento para abrir modal de login (escuchado por Header)
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('open-login-modal'));
+      }
       return;
     }
 
@@ -678,6 +688,28 @@ export class DetailComponent implements OnInit, OnDestroy {
    * Iniciar escritura de reseña (carga texto existente si hay)
    */
   startWritingReview(): void {
+    // Verificar autenticación antes de abrir el formulario
+    if (!this.appState.currentUser()) {
+      this.notifications.warning(
+        'Sesión requerida',
+        'Debes iniciar sesión o registrarte para escribir una reseña'
+      );
+      // Disparar evento para abrir modal de login (escuchado por Header)
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('open-login-modal'));
+      }
+      return;
+    }
+
+    // Verificar que el álbum esté en la lista
+    if (!this.isInUserList()) {
+      this.notifications.info(
+        'Añade a tu lista primero',
+        'Debes añadir el álbum a tu lista antes de escribir una reseña'
+      );
+      return;
+    }
+
     if (this.hasUserReview()) {
       this.reviewText.set(this.userReview()!.text);
     }
@@ -836,5 +868,27 @@ export class DetailComponent implements OnInit, OnDestroy {
    */
   getStarsDisplay(rating: number): string {
     return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+  }
+
+  // ============================================
+  // MODALES DE AUTENTICACIÓN
+  // ============================================
+
+  /**
+   * Abrir modal de login (dispara evento escuchado por Header)
+   */
+  openLoginModal(): void {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('open-login-modal'));
+    }
+  }
+
+  /**
+   * Abrir modal de registro (dispara evento escuchado por Header)
+   */
+  openRegisterModal(): void {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('open-register-modal'));
+    }
   }
 }
