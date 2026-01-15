@@ -20,6 +20,7 @@ import { InfiniteScrollComponent } from '../../components/shared/infinite-scroll
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
 import { Button } from '../../components/shared/button/button';
 import { DeezerService, DeezerAlbum, DeezerArtist } from '../../services/deezer.service';
+import { MockDeezerService } from '../../services/mock-deezer.service';
 import { DeezerRateLimitService } from '../../services/deezer-rate-limit.service';
 import { LucideAngularModule } from 'lucide-angular';
 
@@ -75,8 +76,9 @@ export default class SearchResultsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private deezerService = inject(DeezerService);
+  private mockDeezerService = inject(MockDeezerService);
   private destroyRef = inject(DestroyRef);
-  
+
   /** Servicio de rate limiting de Deezer */
   rateLimitService = inject(DeezerRateLimitService);
 
@@ -284,12 +286,22 @@ export default class SearchResultsComponent implements OnInit {
           this.hasMoreFromApi.set(albums.length >= SEARCH_LIMIT);
           this.isLoading.set(false);
         }),
-        catchError(error => {
-          console.error('Error cargando álbumes:', error);
-          // Manejar rate limiting
-          this.rateLimitService.handleRateLimitError(error);
-          this.isLoading.set(false);
-          return of(null);
+        catchError(() => {
+          console.warn('⚠️ Deezer no disponible, usando datos de ejemplo');
+          // Fallback a mock data cuando Deezer falla
+          return this.mockDeezerService.getChartAlbums(SEARCH_LIMIT).pipe(
+            tap((albums) => {
+              const mappedAlbums = albums.map(album => this.mapAlbumToResult(album));
+              this.allAlbums.set(mappedAlbums);
+              this.allArtists.set([]);
+              this.hasMoreFromApi.set(false); // Mock no tiene paginación
+              this.isLoading.set(false);
+            }),
+            catchError(() => {
+              this.isLoading.set(false);
+              return of(null);
+            })
+          );
         })
       );
     }
@@ -300,8 +312,18 @@ export default class SearchResultsComponent implements OnInit {
 
     // Búsqueda paralela: SEARCH_LIMIT álbumes + SEARCH_LIMIT artistas
     return forkJoin({
-      albums: this.deezerService.searchAlbums(query, SEARCH_LIMIT).pipe(catchError(() => of([]))),
-      artists: this.deezerService.searchArtists(query, SEARCH_LIMIT).pipe(catchError(() => of([])))
+      albums: this.deezerService.searchAlbums(query, SEARCH_LIMIT).pipe(
+        catchError(() => {
+          console.warn('⚠️ Deezer searchAlbums falló, usando mock');
+          return this.mockDeezerService.searchAlbums(query, SEARCH_LIMIT);
+        })
+      ),
+      artists: this.deezerService.searchArtists(query, SEARCH_LIMIT).pipe(
+        catchError(() => {
+          console.warn('⚠️ Deezer searchArtists falló, usando mock');
+          return this.mockDeezerService.searchArtists(query, SEARCH_LIMIT);
+        })
+      )
     }).pipe(
       tap(({ albums, artists }) => {
         // Mapear resultados a formato unificado
@@ -314,8 +336,6 @@ export default class SearchResultsComponent implements OnInit {
       }),
       catchError(error => {
         console.error('Error en búsqueda:', error);
-        // Manejar rate limiting
-        this.rateLimitService.handleRateLimitError(error);
         this.isLoading.set(false);
         return of(null);
       })

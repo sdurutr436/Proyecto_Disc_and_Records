@@ -198,3 +198,35 @@
 .home__section {
   animation-delay: 0.2s;
 }
+
+// ========================================
+// CAROUSEL LOADING STATE
+// ========================================
+.home__carousel-loading {
+  padding: $espaciado-m;
+}
+
+.home__carousel-title {
+  font-size: $tamanio-fuente-parrafo;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: $espaciado-m;
+  padding-left: $espaciado-s;
+  border-left: 4px solid var(--color-primary);
+}
+
+.home__spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: $espaciado-s;
+}
+
+.home__loading-text {
+  font-size: $tamanio-fuente-texto-pequeno-m;
+  color: var(--text-secondary);
+  margin: 0;
+}

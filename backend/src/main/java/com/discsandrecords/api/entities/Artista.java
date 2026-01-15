@@ -13,8 +13,13 @@ import java.math.BigDecimal;
 @Builder
 public class Artista {
 
+    /**
+     * ID del artista.
+     * Puede ser:
+     * - Un ID generado automáticamente por la BD (para artistas creados localmente)
+     * - Un ID de Deezer (cuando se importa desde la API de Deezer)
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 100)

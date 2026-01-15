@@ -93,6 +93,16 @@ export const loggingInterceptor: HttpInterceptorFn = (
         const elapsedTime = Date.now() - startTime;
         const status = error.status || 'Network Error';
 
+        // Silenciar 404 en endpoints de check de lista (es respuesta esperada, no error)
+        const isListaCheckEndpoint = error.url && (
+          /\/usuarios\/\d+\/lista\/\d+$/.test(error.url) ||
+          (error.url.includes('/lista/') && !error.url.includes('/lista/deezer') && error.url.match(/\/lista\/\d+(\/existe)?$/))
+        );
+        if (error.status === 404 && isListaCheckEndpoint) {
+          // No logear - el 404 en check de lista significa "no está en lista", no es error
+          return;
+        }
+
         console.group(`%c❌ ${status} ${method} ${url}`, 'color: #ef4444; font-weight: bold');
         console.error('📥 Error Response:', {
           status: error.status,

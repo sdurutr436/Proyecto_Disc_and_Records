@@ -81,6 +81,14 @@ export class ReviewStateService extends BaseHttpService {
   }
 
   /**
+   * Helper: Parsea ID string a número, devuelve null si inválido
+   */
+  private parseNumericId(id: string): number | null {
+    const parsed = parseInt(id, 10);
+    return isNaN(parsed) ? null : parsed;
+  }
+
+  /**
    * Configura la suscripción para refrescar reseñas
    */
   private setupRefreshSubscription(): void {
@@ -264,8 +272,14 @@ export class ReviewStateService extends BaseHttpService {
     if (rating !== undefined) dto.puntuacion = rating;
     if (content !== undefined) dto.textoResena = content;
 
+    const albumIdNum = this.parseNumericId(albumId);
+    if (!albumIdNum) {
+      this._isSubmitting.set(false);
+      throw new Error('ID de álbum inválido');
+    }
+
     return this.put<ResenaAlbumResponse>(
-      API_ENDPOINTS.resenas.albumUpdate(parseInt(albumId), user.id),
+      API_ENDPOINTS.resenas.albumUpdate(albumIdNum, user.id),
       dto
     ).pipe(
       map(backendReview => mapResenaToLegacy(backendReview)),
@@ -311,8 +325,14 @@ export class ReviewStateService extends BaseHttpService {
 
     this._isSubmitting.set(true);
 
+    const albumIdNum = this.parseNumericId(albumId);
+    if (!albumIdNum) {
+      this._isSubmitting.set(false);
+      throw new Error('ID de álbum inválido');
+    }
+
     return this.http.delete<void>(
-      this.buildUrl(API_ENDPOINTS.resenas.albumDelete(parseInt(albumId), user.id))
+      this.buildUrl(API_ENDPOINTS.resenas.albumDelete(albumIdNum, user.id))
     ).pipe(
       tap(() => {
         // Remover de reseñas del usuario
@@ -356,7 +376,12 @@ export class ReviewStateService extends BaseHttpService {
    * Fetch de reseñas desde el backend
    */
   private fetchReviewsForAlbum(albumId: string): Observable<Review[]> {
-    return this.get<ResenaAlbumResponse[]>(API_ENDPOINTS.resenas.albumesByAlbum(parseInt(albumId))).pipe(
+    const albumIdNum = this.parseNumericId(albumId);
+    if (!albumIdNum) {
+      return of([]);
+    }
+
+    return this.get<ResenaAlbumResponse[]>(API_ENDPOINTS.resenas.albumesByAlbum(albumIdNum)).pipe(
       tap(reviews => {
         const mappedReviews = reviews.map(r => mapResenaToLegacy(r));
 

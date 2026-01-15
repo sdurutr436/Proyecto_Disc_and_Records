@@ -6,6 +6,7 @@ import { Card } from '../../components/shared/card/card';
 import { SearchBar } from '../../components/shared/search-bar/search-bar';
 import { Button } from '../../components/shared/button/button';
 import { RatingComponent } from '../../components/shared/rating/rating';
+import { Spinner } from '../../components/shared/spinner/spinner';
 import { AlbumStateService } from '../../services/album-state.service';
 import { AlbumService } from '../../services/album.service';
 import { ReviewStateService } from '../../services/review-state.service';
@@ -38,7 +39,8 @@ interface AlbumView {
     Card,
     SearchBar,
     Button,
-    RatingComponent
+    RatingComponent,
+    Spinner
   ],
   templateUrl: './home.html',
   styleUrl: './home.scss',

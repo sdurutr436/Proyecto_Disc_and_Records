@@ -61,6 +61,19 @@ export const errorInterceptor: HttpInterceptorFn = (
         return throwError(() => error);
       }
 
+      // 404 en endpoints de "check existencia" de lista de álbumes es esperado
+      // Significa "no está en la lista", no es un error real de aplicación
+      // Detectar: /usuarios/{id}/lista/{albumId} pero NO /lista/deezer
+      const isListaCheckEndpoint = error.url && (
+        /\/usuarios\/\d+\/lista\/\d+$/.test(error.url) ||
+        (error.url.includes('/lista/') && !error.url.includes('/lista/deezer') && error.url.match(/\/lista\/\d+(\/existe)?$/))
+      );
+      if (error.status === 404 && isListaCheckEndpoint) {
+        // Silenciar completamente: no log, no notificación
+        // El servicio capturará esto con su propio catchError y retornará null/false
+        return throwError(() => error);
+      }
+
       // Log del error (solo en desarrollo y no en modo mock)
       if (!isProduction() && !environment.useMockData) {
         console.error('❌ HTTP Error intercepted:', {

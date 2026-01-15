@@ -56,6 +56,14 @@ export const routes: Routes = [
     title: 'Información - Discs & Records',
     data: { preload: false, breadcrumb: 'Información' }
   },
+  // Perfil público de otros usuarios (accesible sin autenticación)
+  {
+    path: 'user/:id',
+    loadComponent: () => import('./pages/profile/profile'),
+    title: 'Perfil de Usuario - Discs & Records',
+    data: { preload: false, isPublicProfile: true, breadcrumb: 'Usuario' }
+  },
+  // Perfil propio (requiere autenticación)
   {
     path: 'profile',
     loadComponent: () => import('./pages/profile/profile'),

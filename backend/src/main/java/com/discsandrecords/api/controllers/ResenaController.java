@@ -1,16 +1,31 @@
 package com.discsandrecords.api.controllers;
 
-import com.discsandrecords.api.dto.*;
+import java.net.URI;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.discsandrecords.api.dto.CreateResenaAlbumDTO;
+import com.discsandrecords.api.dto.CreateResenaCancionDTO;
+import com.discsandrecords.api.dto.ResenaAlbumResponseDTO;
+import com.discsandrecords.api.dto.ResenaCancionResponseDTO;
+import com.discsandrecords.api.dto.UpdateResenaDTO;
 import com.discsandrecords.api.services.ResenaService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.util.List;
 
 /**
  * ResenaController - Controlador de Gestión de Reseñas
@@ -31,6 +46,8 @@ import java.util.List;
 @Tag(name = "Reseñas", description = "API para gestión de reseñas de álbumes y canciones")
 public class ResenaController {
 
+    private static final Logger log = LoggerFactory.getLogger(ResenaController.class);
+
     private final ResenaService resenaService;
 
     public ResenaController(ResenaService resenaService) {
@@ -42,13 +59,23 @@ public class ResenaController {
     @GetMapping("/albumes/{albumId}")
     @Operation(summary = "Listar reseñas de un álbum")
     public ResponseEntity<List<ResenaAlbumResponseDTO>> listarResenasAlbum(@PathVariable Long albumId) {
-        return ResponseEntity.ok(resenaService.listarResenasAlbum(albumId));
+        try {
+            return ResponseEntity.ok(resenaService.listarResenasAlbum(albumId));
+        } catch (Exception e) {
+            log.warn("Error obteniendo reseñas del álbum {}: {}", albumId, e.getMessage());
+            return ResponseEntity.ok(List.of());
+        }
     }
 
     @GetMapping("/albumes/usuario/{usuarioId}")
     @Operation(summary = "Listar reseñas de álbumes de un usuario")
     public ResponseEntity<List<ResenaAlbumResponseDTO>> listarResenasAlbumUsuario(@PathVariable Long usuarioId) {
-        return ResponseEntity.ok(resenaService.listarResenasUsuario(usuarioId));
+        try {
+            return ResponseEntity.ok(resenaService.listarResenasUsuario(usuarioId));
+        } catch (Exception e) {
+            log.warn("Error obteniendo reseñas del usuario {}: {}", usuarioId, e.getMessage());
+            return ResponseEntity.ok(List.of());
+        }
     }
 
     @GetMapping("/albumes/{albumId}/usuario/{usuarioId}")

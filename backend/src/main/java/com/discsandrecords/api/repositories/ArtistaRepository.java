@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -103,4 +104,17 @@ public interface ArtistaRepository extends JpaRepository<Artista, Long> {
            "(SELECT COUNT(c) FROM Cancion c WHERE c.artista.id = a.id) " +
            "FROM Artista a WHERE a.id = :artistaId")
     Object[] obtenerEstadisticas(@Param("artistaId") Long artistaId);
+    
+    // ==========================================
+    // INSERT CON ID MANUAL (para Deezer)
+    // ==========================================
+    
+    /**
+     * Insertar artista con ID específico (bypass SERIAL/IDENTITY)
+     * Usado para importar artistas de Deezer con su ID original
+     */
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query(value = "INSERT INTO artistas (id, nombre_artista) VALUES (:id, :nombre) " +
+           "ON CONFLICT (id) DO NOTHING", nativeQuery = true)
+    void insertarConId(@Param("id") Long id, @Param("nombre") String nombre);
 }

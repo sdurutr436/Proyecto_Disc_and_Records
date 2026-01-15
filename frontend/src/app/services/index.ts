@@ -21,6 +21,7 @@ export { AlbumService } from './album.service';
 export { ArtistService } from './artist.service';
 export { SongService } from './song.service';
 export { DeezerService } from './deezer.service';
+export { ListaAlbumService } from './lista-album.service';
 
 // Servicios existentes (re-exportar para conveniencia)
 // NOTA: Los nombres de archivo usan el formato corto sin ".service"

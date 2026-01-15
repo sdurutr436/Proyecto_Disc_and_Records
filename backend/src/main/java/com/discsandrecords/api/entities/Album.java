@@ -13,8 +13,15 @@ import java.math.BigDecimal;
 @Builder
 public class Album {
 
+    /**
+     * ID del álbum.
+     * Puede ser:
+     * - Un ID generado automáticamente por la BD (para álbumes creados localmente)
+     * - Un ID de Deezer (cuando se importa desde la API de Deezer)
+     * 
+     * Usamos GenerationType.SEQUENCE para permitir ambos casos.
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 150)

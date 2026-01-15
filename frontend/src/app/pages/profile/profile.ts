@@ -10,7 +10,11 @@ import { SearchBar } from '../../components/shared/search-bar/search-bar';
 import { Carousel } from '../../components/shared/carousel/carousel';
 import { ReviewStateService } from '../../services/review-state.service';
 import { AppStateService } from '../../services/app-state';
-import { Review, Album } from '../../models/data.models';
+import { ListaAlbumService } from '../../services/lista-album.service';
+import { Review, Album, AlbumEnLista, mapResenaToLegacy, UsuarioResponse } from '../../models/data.models';
+import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { API_CONFIG } from '../../config/api.config';
 import {
   calculateGenreStats,
   paginateReviews,
@@ -71,7 +75,20 @@ export default class ProfileComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private reviewState = inject(ReviewStateService);
   private appState = inject(AppStateService);
+  private listaAlbumService = inject(ListaAlbumService);
+  private http = inject(HttpClient);
   private destroyRef = inject(DestroyRef);
+
+  // ========================================
+  // SIGNALS - MODO PÚBLICO VS PROPIO
+  // ========================================
+  isPublicProfile = signal<boolean>(false);
+  viewingUserId = signal<number | null>(null);
+  isOwnProfile = computed(() => {
+    const currentUser = this.appState.currentUser();
+    const viewingId = this.viewingUserId();
+    return !this.isPublicProfile() || (currentUser && viewingId === currentUser.id);
+  });
 
   // ========================================
   // SIGNALS - ESTADO PRINCIPAL
@@ -108,8 +125,12 @@ export default class ProfileComponent implements OnInit {
 
   /**
    * Genera las acciones para el card de perfil
+   * Solo muestra "Editar" si es el perfil propio
    */
   profileActions = computed((): CardAction[] => {
+    if (!this.isOwnProfile()) {
+      return [];
+    }
     return [
       {
         label: '✏️ Editar Perfil',
@@ -164,22 +185,136 @@ export default class ProfileComponent implements OnInit {
   hasFilteredAlbums = computed(() => this.filteredAlbums().length > 0);
 
   ngOnInit(): void {
-    this.loadUserData();
+    // Detectar si es perfil público (ruta /user/:id)
+    const routeData = this.route.snapshot.data;
+    const isPublic = routeData['isPublicProfile'] === true;
+    this.isPublicProfile.set(isPublic);
+
+    if (isPublic) {
+      // Obtener ID del usuario de la URL
+      const userId = this.route.snapshot.paramMap.get('id');
+      if (userId) {
+        const numericId = parseInt(userId, 10);
+        this.viewingUserId.set(numericId);
+        this.loadPublicUserData(numericId);
+      }
+    } else {
+      // Perfil propio
+      this.loadUserData();
+    }
+
     this.calculateGenresFromAlbums();
   }
 
   /**
-   * Cargar datos del usuario desde los servicios
+   * Cargar datos de un usuario público desde el backend
+   */
+  private loadPublicUserData(userId: number): void {
+    if (environment.useMockData) {
+      // Modo mock - simular datos
+      this.userProfile.set({
+        name: `Usuario ${userId}`,
+        avatarUrl: `https://picsum.photos/seed/user${userId}/200`,
+        memberSince: '2023-01-15'
+      });
+      setTimeout(() => this.isLoading.set(false), 300);
+      return;
+    }
+
+    // Cargar usuario real desde backend
+    this.http.get<UsuarioResponse>(`${API_CONFIG.baseUrl}/usuarios/${userId}`)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (user) => {
+          this.userProfile.set({
+            name: user.nombreUsuario,
+            avatarUrl: user.avatar || 'https://picsum.photos/seed/user/200',
+            memberSince: user.fechaRegistro
+          });
+
+          // Cargar álbumes y reseñas del usuario
+          this.loadUserAlbumsAndReviews(userId);
+        },
+        error: () => {
+          // Usuario no encontrado - redirigir a 404
+          this.router.navigate(['/not-found']);
+        }
+      });
+  }
+
+  /**
+   * Cargar álbumes y reseñas de un usuario desde el backend
+   */
+  private loadUserAlbumsAndReviews(userId: number): void {
+    if (environment.useMockData) {
+      this.isLoading.set(false);
+      return;
+    }
+
+    // Cargar lista de álbumes
+    this.listaAlbumService.getListaUsuario(userId).subscribe({
+      next: (albums) => {
+        const mappedAlbums: Album[] = albums.map(a => ({
+          id: String(a.albumId),
+          title: a.titulo,
+          artist: a.artista || 'Desconocido',
+          artistId: '',
+          coverUrl: a.portadaUrl || 'assets/album-placeholder.svg',
+          releaseYear: a.anio,
+          genre: '',
+          tracks: 0,
+          duration: '',
+          label: '',
+          description: '',
+          averageRating: a.puntuacion ?? 0,
+          totalReviews: 0
+        }));
+        this.allUserAlbums.set(mappedAlbums);
+        this.calculateGenresFromAlbums();
+      }
+    });
+
+    // Cargar reseñas del usuario
+    this.listaAlbumService.getResenasUsuario(userId).subscribe({
+      next: (resenas) => {
+        const reviews: ReviewWithAlbumData[] = resenas.map(r => ({
+          id: `${r.usuarioId}-${r.albumId}`,
+          userId: String(r.usuarioId),
+          userName: r.nombreUsuario,
+          userAvatar: r.avatarUsuario || 'assets/profile-placeholder.svg',
+          rating: r.puntuacion,
+          content: r.textoResena,
+          date: new Date(r.fechaResena),
+          likes: 0,
+          albumImageUrl: r.portadaUrl || 'assets/album-placeholder.svg',
+          albumTitle: r.tituloAlbum,
+          albumArtist: ''
+        }));
+        this.allUserReviews.set(reviews);
+      },
+      complete: () => this.isLoading.set(false)
+    });
+  }
+
+  /**
+   * Cargar datos del usuario propio desde los servicios
    */
   private loadUserData(): void {
     const user = this.appState.currentUser();
 
     if (user) {
+      this.viewingUserId.set(user.id);
       this.userProfile.set({
         name: user.username,
         avatarUrl: user.avatarUrl || 'https://picsum.photos/seed/user/200',
         memberSince: '2023-01-15' // TODO: obtener fecha de registro desde backend
       });
+
+      // Cargar datos reales si no estamos en modo mock
+      if (!environment.useMockData) {
+        this.loadUserAlbumsAndReviews(user.id);
+        return;
+      }
     }
 
     // Simular carga
