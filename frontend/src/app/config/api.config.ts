@@ -62,8 +62,9 @@ export const API_CONFIG = {
 
   /**
    * Timeout para peticiones HTTP (ms)
+   * Reducido a 20s: mejor fallar rápido y mostrar error que esperar mucho
    */
-  timeout: 30000,
+  timeout: 20000,
 
   /**
    * Número de reintentos para peticiones fallidas

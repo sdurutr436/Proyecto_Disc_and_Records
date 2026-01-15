@@ -37,6 +37,7 @@ export class AlbumService extends BaseHttpService {
 
   /**
    * Obtiene 50 álbumes populares de Deezer (Charts) o mock
+   * Con fallback automático a mock si Deezer falla
    */
   getNewReleases(): Observable<Album[]> {
     if (this.useMock) {
@@ -47,8 +48,11 @@ export class AlbumService extends BaseHttpService {
     return this.deezer.getChartAlbums(50).pipe(
       map(deezerAlbums => deezerAlbums.map(da => this.mapDeezerAlbumToAlbum(da))),
       catchError(error => {
-        console.error('Error obteniendo álbumes de Deezer:', error);
-        return of([]);
+        console.warn('⚠️ Deezer no disponible, usando datos de ejemplo:', error?.message || error);
+        // Fallback a mock data cuando Deezer falla
+        return this.mockDeezer.getChartAlbums(50).pipe(
+          map(albums => albums.map(da => this.mapDeezerAlbumToAlbum(da)))
+        );
       })
     );
   }
@@ -112,7 +116,7 @@ export class AlbumService extends BaseHttpService {
   /**
    * Obtiene las estadísticas de un álbum desde el backend o mock
    * (reviewCount, ratingCount, averageRating, listenedCount)
-   * 
+   *
    * Estas métricas vienen del backend propio, NO de Deezer.
    */
   getAlbumStats(albumId: string): Observable<AlbumStats> {
@@ -190,7 +194,7 @@ export class AlbumService extends BaseHttpService {
 
   /**
    * Convierte un álbum de Deezer al modelo Album del frontend
-   * 
+   *
    * NOTA: averageRating y totalReviews se inicializan a 0.
    * Estas métricas deben obtenerse del endpoint /api/albumes/{id}/stats
    * del backend propio, NO de Deezer (fans no es lo mismo que reviews).
