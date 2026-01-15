@@ -32,6 +32,12 @@ export class Carousel implements AfterViewInit, OnDestroy {
   @Input() itemsToShow: number = 4;
 
   /**
+   * Número de filas a mostrar en el carrusel (default: 1)
+   * Para mostrar múltiples filas de elementos
+   */
+  @Input() rows: number = 1;
+
+  /**
    * MEJORA 1.1: ViewChild con ElementRef tipado
    * Referencia al contenedor de slides del carousel
    * Se accede en ngAfterViewInit cuando el DOM está disponible

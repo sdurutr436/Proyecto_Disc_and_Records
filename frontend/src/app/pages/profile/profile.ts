@@ -1,32 +1,44 @@
-import { Component, signal, inject, OnInit, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { Component, signal, inject, OnInit, ChangeDetectionStrategy, DestroyRef, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Card } from '../../components/shared/card/card';
+import { Card, CardAction } from '../../components/shared/card/card';
 import { Button } from '../../components/shared/button/button';
 import { RatingComponent } from '../../components/shared/rating/rating';
+import { Tabs, Tab } from '../../components/shared/tabs/tabs';
+import { SearchBar } from '../../components/shared/search-bar/search-bar';
+import { Carousel } from '../../components/shared/carousel/carousel';
 import { ReviewStateService } from '../../services/review-state.service';
 import { AppStateService } from '../../services/app-state';
+import { Review, Album } from '../../models/data.models';
+import {
+  calculateGenreStats,
+  paginateReviews,
+  filterAlbums,
+  MOCK_USER_ALBUMS,
+  MOCK_USER_REVIEWS,
+  GenreStats,
+  PaginatedReviews
+} from '../../services/mock-data';
 
 type TabType = 'reviews' | 'albums';
 
-interface Review {
-  id: number | string;
+/**
+ * Tipo extendido de Review para incluir información del álbum
+ * Usado en la plantilla para mostrar datos del álbum al que pertenece la reseña
+ */
+type ReviewWithAlbumData = Review & {
+  albumImageUrl: string;
   albumTitle: string;
   albumArtist: string;
-  albumImageUrl: string;
-  rating: number;
-  reviewText: string;
-  date: string;
-}
+};
 
-interface Album {
-  id: number | string;
-  title: string;
-  artist: string;
-  imageUrl: string;
-  rating?: number;
-  listenedDate: string;
+/**
+ * Interfaz para PaginatedReviewsWithAlbumData
+ * Personalizada para usar ReviewWithAlbumData en lugar de Review
+ */
+interface PaginatedReviewsWithAlbumData extends Omit<PaginatedReviews, 'reviews'> {
+  reviews: ReviewWithAlbumData[];
 }
 
 /**
@@ -45,7 +57,10 @@ interface Album {
     CommonModule,
     Card,
     Button,
-    RatingComponent
+    RatingComponent,
+    Tabs,
+    SearchBar,
+    Carousel
   ],
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss'],
@@ -58,50 +73,99 @@ export default class ProfileComponent implements OnInit {
   private appState = inject(AppStateService);
   private destroyRef = inject(DestroyRef);
 
+  // ========================================
+  // SIGNALS - ESTADO PRINCIPAL
+  // ========================================
+
   // Tab activo
   activeTab = signal<TabType>('reviews');
 
   // Estado de carga
   isLoading = signal<boolean>(true);
-  isLoadingMore = signal<boolean>(false);
-  hasMoreReviews = signal<boolean>(true);
-  hasMoreAlbums = signal<boolean>(true);
 
-  // Datos del usuario (se cargan desde AppStateService)
+  // Datos del usuario
   userProfile = signal({
-    name: '',
-    avatarUrl: 'assets/profile-placeholder.svg',
-    memberSince: '',
-    totalReviews: 0,
-    totalAlbums: 0
+    name: 'Usuario Mock',
+    avatarUrl: 'https://picsum.photos/seed/user/200',
+    memberSince: '2023-01-15'
   });
 
-  // Géneros favoritos (se cargarán dinámicamente)
-  favoriteGenres = signal<string[]>([]);
+  // ========================================
+  // SIGNALS - GÉNEROS (1/3 izquierda)
+  // ========================================
+  genreStats = signal<GenreStats[]>([]);
 
-  // Reseñas del usuario (se cargan desde ReviewStateService)
-  reviews = signal<Review[]>([]);
+  // ========================================
+  // COMPUTED - BADGES Y ACTIONS PARA CARD PROFILE
+  // ========================================
+  /**
+   * Genera los badges de géneros en formato string[] para el card component
+   * Muestra top 5 géneros con porcentaje
+   */
+  genreBadges = computed((): string[] => {
+    return this.genreStats().map(genre => `${genre.name} ${genre.percentage}%`);
+  });
 
-  // Álbumes escuchados (se cargan desde el backend)
-  albums = signal<Album[]>([]);
+  /**
+   * Genera las acciones para el card de perfil
+   */
+  profileActions = computed((): CardAction[] => {
+    return [
+      {
+        label: '✏️ Editar Perfil',
+        variant: 'primary',
+        callback: () => this.editProfile()
+      }
+    ];
+  });
+
+  // ========================================
+  // SIGNALS - RESEÑAS CON PAGINACIÓN (Tab 1)
+  // ========================================
+  allUserReviews = signal<ReviewWithAlbumData[]>(MOCK_USER_REVIEWS as ReviewWithAlbumData[]);
+  currentReviewPage = signal<number>(1);
+  reviewsPageSize = signal<number>(3);
+
+  paginatedReviews = computed((): PaginatedReviewsWithAlbumData => {
+    const paginated = paginateReviews(
+      this.allUserReviews(),
+      this.currentReviewPage(),
+      this.reviewsPageSize()
+    );
+    return paginated as PaginatedReviewsWithAlbumData;
+  });
+
+  currentReviews = computed(() => this.paginatedReviews().reviews);
+  totalReviewPages = computed(() => this.paginatedReviews().totalPages);
+
+  // ========================================
+  // SIGNALS - ÁLBUMES CON BÚSQUEDA (Tab 2)
+  // ========================================
+  allUserAlbums = signal<Album[]>(MOCK_USER_ALBUMS);
+  albumSearchTerm = signal<string>('');
+
+  filteredAlbums = computed(() => {
+    return filterAlbums(this.allUserAlbums(), this.albumSearchTerm());
+  });
+
+  // ========================================
+  // SIGNALS - TABS CONFIGURATION
+  // ========================================
+  profileTabs = signal<Tab[]>([
+    { id: 'reviews', label: 'Reseñas' },
+    { id: 'albums', label: 'Álbumes' }
+  ]);
+
+  // ========================================
+  // COMPUTED - ESTADO VACÍO
+  // ========================================
+  hasReviews = computed(() => this.allUserReviews().length > 0);
+  hasAlbums = computed(() => this.allUserAlbums().length > 0);
+  hasFilteredAlbums = computed(() => this.filteredAlbums().length > 0);
 
   ngOnInit(): void {
     this.loadUserData();
-    this.subscribeToQueryParams();
-  }
-
-  /**
-   * Suscribirse a cambios en query params para cambiar el tab
-   */
-  private subscribeToQueryParams(): void {
-    this.route.queryParams.pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(params => {
-      const tab = params['tab'] as TabType;
-      if (tab && ['reviews', 'albums'].includes(tab)) {
-        this.activeTab.set(tab);
-      }
-    });
+    this.calculateGenresFromAlbums();
   }
 
   /**
@@ -113,47 +177,32 @@ export default class ProfileComponent implements OnInit {
     if (user) {
       this.userProfile.set({
         name: user.username,
-        avatarUrl: user.avatarUrl || 'assets/profile-placeholder.svg',
-        memberSince: '', // TODO: obtener fecha de registro desde backend
-        totalReviews: this.reviewState.userReviewsCount(),
-        totalAlbums: 0 // Se actualizará cuando tengamos endpoint de álbumes escuchados
+        avatarUrl: user.avatarUrl || 'https://picsum.photos/seed/user/200',
+        memberSince: '2023-01-15' // TODO: obtener fecha de registro desde backend
       });
-
-      // Cargar reseñas del usuario
-      this.reviewState.loadUserReviews(user.id);
     }
 
-    // Finalizar carga
-    setTimeout(() => this.isLoading.set(false), 500);
-  }
-
-  // ==========================================================================
-  // TRACKBY FUNCTIONS - OPTIMIZACIÓN DE RENDIMIENTO
-  // ==========================================================================
-
-  /**
-   * TrackBy para reseñas
-   */
-  trackByReviewId(index: number, review: Review): number | string {
-    return review.id;
+    // Simular carga
+    setTimeout(() => this.isLoading.set(false), 300);
   }
 
   /**
-   * TrackBy para álbumes
+   * Calcular estadísticas de géneros desde los álbumes del usuario
    */
-  trackByAlbumId(index: number, album: Album): number | string {
-    return album.id;
+  private calculateGenresFromAlbums(): void {
+    const stats = calculateGenreStats(this.allUserAlbums());
+    this.genreStats.set(stats);
   }
 
   // ==========================================================================
-  // MÉTODOS DE NAVEGACIÓN
+  // MÉTODOS - NAVEGACIÓN DE TABS
   // ==========================================================================
 
   /**
    * Cambiar tab activo
    */
-  setActiveTab(tab: TabType): void {
-    this.activeTab.set(tab);
+  onTabChange(tabId: string | number): void {
+    this.activeTab.set(tabId as TabType);
   }
 
   /**
@@ -164,78 +213,112 @@ export default class ProfileComponent implements OnInit {
   }
 
   // ==========================================================================
-  // INFINITE SCROLL
+  // MÉTODOS - PAGINACIÓN DE RESEÑAS (TAB 1)
   // ==========================================================================
 
   /**
-   * Cargar más reseñas
+   * Ir a página anterior de reseñas
    */
-  loadMoreReviews(): void {
-    if (this.isLoadingMore()) return;
-
-    this.isLoadingMore.set(true);
-
-    // Simular carga de más datos
-    setTimeout(() => {
-      // Aquí iría la llamada al servicio para cargar más
-      this.isLoadingMore.set(false);
-      // this.hasMoreReviews.set(false); // Cuando no hay más
-    }, 1000);
+  previousReviewPage(): void {
+    const current = this.currentReviewPage();
+    if (current > 1) {
+      this.currentReviewPage.set(current - 1);
+      this.scrollToReviews();
+    }
   }
 
   /**
-   * Cargar más álbumes
+   * Ir a página siguiente de reseñas
    */
-  loadMoreAlbums(): void {
-    if (this.isLoadingMore()) return;
-
-    this.isLoadingMore.set(true);
-
-    setTimeout(() => {
-      this.isLoadingMore.set(false);
-    }, 1000);
+  nextReviewPage(): void {
+    const current = this.currentReviewPage();
+    const total = this.totalReviewPages();
+    if (current < total) {
+      this.currentReviewPage.set(current + 1);
+      this.scrollToReviews();
+    }
   }
 
+  /**
+   * Scroll suave a la sección de reseñas
+   */
+  private scrollToReviews(): void {
+    setTimeout(() => {
+      const element = document.querySelector('.profile-reviews');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  }
+
+  /**
+   * Determinar si el botón anterior está deshabilitado
+   */
+  canPreviousReview = computed(() => this.currentReviewPage() > 1);
+
+  /**
+   * Determinar si el botón siguiente está deshabilitado
+   */
+  canNextReview = computed(() => this.currentReviewPage() < this.totalReviewPages());
+
   // ==========================================================================
-  // ACCIONES
+  // MÉTODOS - BÚSQUEDA DE ÁLBUMES (TAB 2)
   // ==========================================================================
 
   /**
-   * Ver detalle de reseña
+   * Actualizar término de búsqueda de álbumes
+   * Emitido por el componente search-bar
    */
-  viewReview(reviewId: number | string): void {
+  onSearchAlbums(searchTerm: string): void {
+    this.albumSearchTerm.set(searchTerm);
+  }
+
+  /**
+   * Formatear fecha de reseña
+   */
+  formatDate(date: string | Date): string {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  /**
+   * Ver detalle de reseña (click en card)
+   */
+  viewReview(reviewId: string | number): void {
     console.log('Ver reseña:', reviewId);
-    // TODO: Navegar a detalle o abrir modal
   }
 
   /**
    * Ver detalle de álbum
    */
-  viewAlbum(albumId: number | string): void {
+  viewAlbum(albumId: string | number): void {
     this.router.navigate(['/album', albumId]);
   }
 
   /**
-   * Editar perfil - navegar a settings
+   * Editar perfil
    */
   editProfile = (): void => {
-    this.router.navigate(['/settings']);
+    this.router.navigate(['/settings/profile']);
+  };
+
+  // ==========================================================================
+  // TRACKBY FUNCTIONS - OPTIMIZACIÓN DE RENDIMIENTO
+  // ==========================================================================
+
+  trackByReviewId(index: number, review: Review): string | number {
+    return review.id;
   }
 
-  /**
-   * Compartir perfil
-   */
-  shareProfile = (): void => {
-    if (navigator.share) {
-      navigator.share({
-        title: `Perfil de ${this.userProfile.name}`,
-        text: `Mira el perfil de ${this.userProfile.name} en Discs & Records`,
-        url: window.location.href
-      });
-    } else {
-      // Fallback: copiar URL
-      navigator.clipboard.writeText(window.location.href);
-      console.log('URL copiada al portapapeles');
-    }
+  trackByAlbumId(index: number, album: Album): string | number {
+    return album.id;
+  }
+
+  trackByGenreIndex(index: number): number {
+    return index;
   }
 }

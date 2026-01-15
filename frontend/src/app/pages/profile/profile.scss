@@ -1,8 +1,11 @@
 @use '../../../styles/00-settings/variables' as vars;
 @use '../../../styles/01-tools/mixins' as mixins;
 
+/* ========================================
+   PERFIL DE USUARIO
+   Estructura idéntica a detail.scss
+   ======================================== */
 .profile {
-  width: 100%;
   min-height: 100vh;
   padding: vars.$espaciado-m;
   background-color: var(--bg-primary);
@@ -11,16 +14,28 @@
     padding: vars.$espaciado-s;
   }
 
-  // Móvil pequeño: padding mínimo
   @media (max-width: vars.$breakpoint-mobile-sm) {
     padding: vars.$espaciado-xs;
   }
 
   /* ========================================
-     CONTENEDOR PRINCIPAL
+     LOADING STATE
+     ======================================== */
+  &__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    font-size: vars.$tamanio-fuente-h4;
+    color: var(--text-secondary);
+  }
+
+  /* ========================================
+     CONTENEDOR PRINCIPAL - LAYOUT 1/3 + 2/3
+     Copiado exactamente de detail.scss
      ======================================== */
   &__container {
-    max-width: 87.5rem;
+    max-width: vars.$ancho-maximo-contenedor;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -28,267 +43,400 @@
 
     @include mixins.respond-to('desktop') {
       grid-template-columns: 1fr;
+      gap: vars.$espaciado-m;
     }
   }
 
-  /* ========================================
-     SIDEBAR: Card de Perfil (1/3)
-     ======================================== */
   &__sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: vars.$espaciado-m;
+    position: sticky;
+    top: vars.$espaciado-s;
+    height: fit-content;
+
+    @include mixins.respond-to('desktop') {
+      position: static;
+    }
   }
 
-  &__stats {
-    display: flex;
-    gap: vars.$espaciado-s;
-    padding: vars.$espaciado-m;
-    background-color: var(--bg-secondary);
-    border: vars.$borde-brutal-thick;
-    box-shadow: vars.$sombra-brutal-s;
-  }
-
-  &__stat {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: vars.$espaciado-xs;
-    padding: vars.$espaciado-s;
-    background-color: var(--bg-primary);
-    border: vars.$borde-brutal-thin;
-    text-align: center;
-  }
-
-  &__stat-value {
-    @include mixins.font-size-line('h2');
-    font-weight: 700;
-    color: var(--color-primary);
-    line-height: 1;
-  }
-
-  &__stat-label {
-    @include mixins.font-size-line('texto-pequeno-m');
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-
-  /* ========================================
-     CONTENIDO PRINCIPAL: Tabs + Contenido (2/3)
-     ======================================== */
   &__content {
     display: flex;
     flex-direction: column;
-    gap: 0;
-  }
-
-  /* ========================================
-     TABS DE NAVEGACIÓN
-     ======================================== */
-  &__tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: vars.$borde-brutal-thick;
-    background-color: var(--bg-secondary);
-    padding: 0;
-  }
-
-  &__tab {
-    flex: 1;
-
-    @include mixins.respond-to('tablet') {
-      @include mixins.font-size-line('texto-pequeno-m');
-    }
-  }
-
-  /* ========================================
-     CONTENIDO DE TABS
-     ======================================== */
-  &__tab-content {
-    min-height: 25rem;
-    padding: vars.$espaciado-m;
-    background-color: var(--bg-primary);
-    border: vars.$borde-brutal-thick;
-    border-top: none;
-
-    @include mixins.respond-to('tablet') {
-      padding: vars.$espaciado-s;
-    }
-
-    @media (max-width: vars.$breakpoint-mobile-sm) {
-      padding: vars.$espaciado-xs;
-      min-height: 15rem;
-      border-left: none;
-      border-right: none;
-    }
-  }
-
-  /* ========================================
-     VISTA: RESEÑAS
-     ======================================== */
-  &__reviews {
-    display: flex;
-    flex-direction: column;
     gap: vars.$espaciado-m;
+    min-width: 0; // Evita que el grid se expanda más allá del viewport
   }
 
-  &__review-card {
-    display: grid;
-    grid-template-columns: 9.375rem 1fr;
-    gap: vars.$espaciado-m;
-    padding: vars.$espaciado-m;
-    background-color: var(--bg-secondary);
-    border: vars.$borde-brutal-thick;
-    box-shadow: vars.$sombra-brutal-s;
-    transition: all vars.$transicion-base;
-    @include mixins.brutal-interaction(vars.$sombra-brutal-s, vars.$sombra-brutal-active);
+  /* ========================================
+     BÚSQUEDA Y PAGINACIÓN
+     ======================================== */
+  &__search {
+    margin-bottom: vars.$espaciado-m;
 
     @include mixins.respond-to('tablet') {
-      grid-template-columns: 6.25rem 1fr;
+      margin-bottom: vars.$espaciado-s;
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: vars.$espaciado-m;
+    padding-top: vars.$espaciado-m;
+    border-top: vars.$borde-brutal-thin;
+    flex-wrap: wrap;
+
+    @include mixins.respond-to('tablet') {
       gap: vars.$espaciado-s;
-      padding: vars.$espaciado-s;
-    }
-
-    @media (max-width: vars.$breakpoint-mobile-sm) {
-      grid-template-columns: 4.5rem 1fr;
-      gap: vars.$espaciado-xs;
-      padding: vars.$espaciado-xs;
+      padding-top: vars.$espaciado-s;
     }
   }
 
-  &__review-image {
-    width: 9.375rem;
-    height: 9.375rem;
-    border: vars.$borde-brutal-thick;
-    overflow: hidden;
-    background-color: var(--bg-primary);
-    flex-shrink: 0;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+  /* ========================================
+     ESTADO VACÍO
+     ======================================== */
+  &__empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: vars.$espaciado-m;
+    padding: vars.$espaciado-xl;
+    text-align: center;
+    min-height: 20rem;
 
     @include mixins.respond-to('tablet') {
-      width: 6.25rem;
-      height: 6.25rem;
-    }
-
-    @media (max-width: vars.$breakpoint-mobile-sm) {
-      width: 4.5rem;
-      height: 4.5rem;
+      padding: vars.$espaciado-m;
+      min-height: 15rem;
     }
   }
 
-  &__review-content {
-    display: flex;
-    flex-direction: column;
-    gap: vars.$espaciado-s;
-  }
-
-  &__review-header {
-    display: flex;
-    flex-direction: column;
-    gap: vars.$espaciado-xs;
-  }
-
-  &__review-title {
+  &__empty-title {
     @include mixins.font-size-line('h4');
     font-weight: 700;
     color: var(--text-primary);
     margin: 0;
   }
 
-  &__review-artist {
+  &__empty-subtitle {
     @include mixins.font-size-line('parrafo');
     color: var(--text-secondary);
     margin: 0;
   }
+}
 
-  &__review-rating {
+/* ========================================
+   CARD DE PERFIL (SIDEBAR)
+   Estructura idéntica a detail-card
+   ======================================== */
+.profile-card {
+  background-color: var(--bg-secondary);
+  border: vars.$borde-brutal-thick;
+  box-shadow: vars.$sombra-brutal-m;
+  border-radius: vars.$radio-l;
+  overflow: hidden;
+
+  &__cover {
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-bottom: vars.$borde-brutal-thick;
     display: flex;
-    gap: vars.$espaciado-xs;
-    margin-top: vars.$espaciado-xs;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-primary);
+  }
 
-    .star {
-      color: var(--text-placeholder);
-      font-size: 1rem;
+  &__image {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+    display: block;
+    border-radius: vars.$radio-m;
+    border: vars.$borde-brutal-thick;
+    transition: transform vars.$transicion-base;
 
-      &--filled {
-        color: var(--color-primary);
-      }
+    &:hover {
+      transform: scale(1.05);
     }
   }
 
-  &__review-text {
-    @include mixins.font-size-line('parrafo');
-    color: var(--text-primary);
-    margin: 0;
-    line-height: 1.6;
+  &__info {
+    padding: vars.$espaciado-m;
+
+    @include mixins.respond-to('tablet') {
+      padding: vars.$espaciado-s;
+    }
   }
 
-  &__review-date {
-    @include mixins.font-size-line('texto-pequeno-s');
-    color: var(--text-placeholder);
+  &__title {
+    @include mixins.font-size-line('h4');
+    font-weight: 900;
+    color: var(--text-primary);
+    margin: 0 0 vars.$espaciado-xs 0;
+    line-height: 1.2;
+    text-align: center;
+
+    @include mixins.respond-to('tablet') {
+      @include mixins.font-size-line('h5');
+    }
+  }
+
+  &__subtitle {
+    @include mixins.font-size-line('texto-pequeno-m');
+    color: var(--text-secondary);
+    margin: 0 0 vars.$espaciado-s 0;
+    text-align: center;
     font-style: italic;
   }
 
-  /* ========================================
-     VISTA: ÁLBUMES
-     ======================================== */
-  &__albums {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
-    gap: vars.$espaciado-m;
-
-    @include mixins.respond-to('desktop') {
-      grid-template-columns: repeat(auto-fill, minmax(9.375rem, 1fr));
-      gap: vars.$espaciado-s;
-    }
-
-    @include mixins.respond-to('tablet') {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  &__section {
+    padding: vars.$espaciado-s;
+    background-color: var(--bg-primary);
+    border: vars.$borde-brutal-thin;
+    margin-bottom: vars.$espaciado-s;
   }
 
-  &__album-card {
-    cursor: pointer;
-    position: relative;
+  &__section-title {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin: 0 0 vars.$espaciado-xs 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
-  &__album-rating {
-    position: absolute;
-    bottom: vars.$espaciado-s;
-    right: vars.$espaciado-s;
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: vars.$espaciado-xs;
+    justify-content: center;
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: vars.$espaciado-tiny vars.$espaciado-xs;
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+    font-weight: 600;
+    text-transform: uppercase;
     background-color: var(--color-primary);
     color: var(--text-dark);
-    padding: vars.$espaciado-xs vars.$espaciado-s;
-    border-radius: vars.$radio-xxl;
+    border: vars.$borde-brutal-thin;
+    border-radius: vars.$radio-xs;
+    box-shadow: vars.$sombra-brutal-xs;
+  }
+
+  &__empty-text {
     @include mixins.font-size-line('texto-pequeno-s');
-    font-weight: 600;
-    box-shadow: 0 0.125rem 0.5rem color-mix(in srgb, var(--shadow-color) 20%, transparent);
-    z-index: 10;
+    color: var(--text-placeholder);
+    text-align: center;
+    margin: 0;
+    font-style: italic;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$espaciado-xs;
   }
 }
 
 /* ========================================
-   ANIMACIONES
+   PROFILE TABS SECTION
+   Estructura idéntica a detail-tabs-section
    ======================================== */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(1.25rem);
+.profile-tabs-section {
+  background-color: var(--bg-secondary);
+  border: vars.$borde-brutal-thick;
+  box-shadow: vars.$sombra-brutal-m;
+  border-radius: vars.$radio-l;
+  overflow: hidden;
+}
+
+/* ========================================
+   TAB CONTENT
+   Copiado exactamente de detail.scss
+   ======================================== */
+.tab-content {
+  padding: vars.$espaciado-m;
+  overflow: hidden;
+
+  @include mixins.respond-to('tablet') {
+    padding: vars.$espaciado-s;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  &__title {
+    font-size: vars.$tamanio-fuente-h5;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 vars.$espaciado-s 0;
   }
 }
 
-.profile__tab-content {
-  animation: slideIn 0.4s ease-out;
+/* ========================================
+   REVIEWS LIST
+   Copiado de detail.scss .reviews-list
+   ======================================== */
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-m;
+
+  @include mixins.respond-to('tablet') {
+    gap: vars.$espaciado-s;
+  }
+}
+
+/* ========================================
+   REVIEW CARD
+   Copiado exactamente de detail.scss
+   ======================================== */
+.review-card {
+  background-color: var(--bg-primary);
+  border: vars.$borde-brutal-thin;
+  border-radius: vars.$radio-m;
+  padding: vars.$espaciado-m;
+  cursor: pointer;
+  transition: all vars.$transicion-rapida;
+
+  &:hover {
+    box-shadow: vars.$sombra-brutal-s;
+    transform: translateY(-0.125rem);
+  }
+
+  @include mixins.respond-to('tablet') {
+    padding: vars.$espaciado-s;
+  }
+
+  &__header {
+    display: flex;
+    gap: vars.$espaciado-s;
+    margin-bottom: vars.$espaciado-s;
+
+    @include mixins.respond-to('tablet') {
+      gap: vars.$espaciado-xs;
+      margin-bottom: vars.$espaciado-xs;
+    }
+  }
+
+  &__avatar {
+    width: 5rem;
+    height: 5rem;
+    border-radius: vars.$radio-m;
+    object-fit: cover;
+    border: vars.$borde-brutal-thin;
+    flex-shrink: 0;
+
+    @include mixins.respond-to('tablet') {
+      width: 4rem;
+      height: 4rem;
+    }
+
+    @media (max-width: vars.$breakpoint-mobile-sm) {
+      width: 3rem;
+      height: 3rem;
+    }
+  }
+
+  &__user-info {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$espaciado-tiny;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__user-name {
+    @include mixins.font-size-line('h5');
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  &__artist {
+    @include mixins.font-size-line('texto-pequeno-m');
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: vars.$espaciado-s;
+    flex-wrap: wrap;
+
+    @include mixins.respond-to('tablet') {
+      gap: vars.$espaciado-xs;
+    }
+  }
+
+  &__date {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    color: var(--text-secondary);
+  }
+
+  &__content {
+    @include mixins.font-size-line('texto-pequeno-m');
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+}
+
+/* ========================================
+   INFORMACIÓN DE PAGINACIÓN
+   ======================================== */
+.pagination__info {
+  @include mixins.font-size-line('texto-pequeno-m');
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ========================================
+   FIX CARRUSEL EN TAB ALBUMS
+   ======================================== */
+.tab-content--albums {
+  padding: vars.$espaciado-m;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  @include mixins.respond-to('tablet') {
+    padding: vars.$espaciado-s;
+  }
+
+  @media (max-width: vars.$breakpoint-mobile-sm) {
+    padding: vars.$espaciado-xs;
+  }
+
+  // Limitar ancho del carrusel sin cortar contenido
+  app-carousel {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .profile__search {
+    margin-bottom: vars.$espaciado-m;
+
+    @include mixins.respond-to('tablet') {
+      margin-bottom: vars.$espaciado-s;
+    }
+  }
+
+  .profile__empty-state {
+    padding: vars.$espaciado-m 0;
+  }
+}
+
+/* Fix adicional para profile-tabs-section */
+.profile-tabs-section {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }

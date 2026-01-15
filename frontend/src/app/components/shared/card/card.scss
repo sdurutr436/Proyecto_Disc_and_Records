@@ -6,7 +6,7 @@
   flex-direction: column;
   background-color: var(--bg-secondary);
   border: vars.$borde-brutal-thick;
-  border-radius: vars.$radio-s;
+  border-radius: vars.$radio-l;
   box-shadow: vars.$sombra-brutal-s;
   transition: all vars.$transicion-rapida;
   overflow: hidden;
@@ -220,6 +220,97 @@
   /* Modificadores por layout (legacy, ahora se maneja con responsive) */
   &--vertical {
     flex-direction: column;
+  }
+
+  /* ========================================
+     VARIANTE MINI - Cards compactas para listados
+     Solo muestra: imagen pequeña, título y subtítulo
+     Sin badges, sin rating, sin botones de acción
+     ======================================== */
+  &--mini {
+    max-width: 12.5rem; // 200px
+    box-shadow: vars.$sombra-brutal-xs;
+    border-width: 0.125rem;
+    border-radius: vars.$radio-l;
+    cursor: pointer;
+
+    // Hover sutil con elevación
+    &:hover {
+      transform: translateY(-0.25rem);
+      box-shadow: vars.$sombra-brutal-m;
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: vars.$sombra-brutal-xs;
+    }
+
+    // Imagen más pequeña y redondeada
+    .card__image {
+      width: 100%;
+      aspect-ratio: 1;
+      height: auto;
+      border-bottom: vars.$borde-brutal-thin;
+      border-radius: vars.$radio-m vars.$radio-m 0 0;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: vars.$radio-m vars.$radio-m 0 0;
+        transition: transform vars.$transicion-base;
+      }
+
+      &:hover img {
+        transform: scale(1.05);
+      }
+    }
+
+    // Contenido compacto
+    .card__content {
+      padding: vars.$espaciado-s;
+    }
+
+    .card__text {
+      padding: vars.$espaciado-s;
+    }
+
+    .card__title {
+      font-size: vars.$tamanio-fuente-texto-pequeno-m;
+      font-weight: 700;
+      margin: 0 0 vars.$espaciado-tiny 0;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card__subtitle {
+      font-size: vars.$tamanio-fuente-texto-pequeno-s;
+      color: var(--text-secondary);
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    // Ocultar elementos no necesarios en mini
+    .card__badges,
+    .card__actions,
+    .card__left,
+    .card__right {
+      display: none !important;
+    }
+
+    // Responsive
+    @media (max-width: vars.$breakpoint-tablet) {
+      max-width: 10rem; // 160px en tablet
+    }
+
+    @media (max-width: vars.$breakpoint-mobile-sm) {
+      max-width: 100%; // Full width en móvil muy pequeño
+    }
   }
 }
 

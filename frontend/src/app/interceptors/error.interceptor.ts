@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { NotificationStreamService } from '../services/notification-stream';
 import { EventBusService, EventType } from '../services/event-bus';
 import { AppStateService } from '../services/app-state';
+import { environment } from '../../environments/environment';
 
 /**
  * ErrorInterceptor - Interceptor de Manejo de Errores HTTP
@@ -53,8 +54,15 @@ export const errorInterceptor: HttpInterceptorFn = (
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
 
-      // Log del error (solo en desarrollo)
-      if (!isProduction()) {
+      // En modo mock, ignorar errores de conexión (status 0) y 404
+      // ya que el backend no está disponible y es esperado
+      if (environment.useMockData && (error.status === 0 || error.status === 404)) {
+        // No mostrar notificación, solo re-lanzar el error silenciosamente
+        return throwError(() => error);
+      }
+
+      // Log del error (solo en desarrollo y no en modo mock)
+      if (!isProduction() && !environment.useMockData) {
         console.error('❌ HTTP Error intercepted:', {
           status: error.status,
           statusText: error.statusText,

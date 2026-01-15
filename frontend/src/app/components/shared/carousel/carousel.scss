@@ -138,6 +138,60 @@
     transition: all 0.3s ease;
   }
 
+  // ========================================
+  // VARIANTE CON 2 FILAS - CARRUSEL HORIZONTAL
+  // ========================================
+  &__track--rows-2 {
+    display: grid;
+    // 2 filas fijas, columnas se generan automáticamente hacia la derecha
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+    grid-auto-columns: 12.5rem;
+    gap: vars.$espaciado-s;
+    min-height: auto;
+    align-items: start;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-behavior: smooth;
+    @include mix.hide-scrollbar;
+    // Padding para que las cards no queden pegadas a los bordes
+    padding: vars.$espaciado-s vars.$espaciado-xs vars.$espaciado-l vars.$espaciado-xs;
+
+    @include mix.tablet-only {
+      grid-auto-columns: 10.625rem;
+      gap: vars.$espaciado-xs;
+      padding: vars.$espaciado-xs vars.$espaciado-xs vars.$espaciado-m vars.$espaciado-xs;
+    }
+
+    @include mix.mobile-down {
+      grid-auto-columns: 9.375rem;
+      gap: vars.$espaciado-xs;
+      padding: vars.$espaciado-xs vars.$espaciado-xs vars.$espaciado-s vars.$espaciado-xs;
+    }
+
+    @include mix.mobile-sm-down {
+      grid-auto-columns: 8rem;
+    }
+
+    // Override tamaño de items para grid - permitir que el grid controle el ancho
+    > * {
+      flex: none;
+      width: 100%;
+      min-width: 0;
+      max-width: none;
+    }
+  }
+
+  // Variante multi-row general
+  &--multi-row {
+    .carousel__nav {
+      top: 40%;
+    }
+  }
+
   &__nav {
     position: absolute;
     top: 50%;

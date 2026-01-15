@@ -3,7 +3,9 @@ import { Observable, of, map, catchError } from 'rxjs';
 import { Song, Review } from '../models/data.models';
 import { BaseHttpService } from './base-http.service';
 import { DeezerService, DeezerTrack } from './deezer.service';
+import { MockDeezerService } from './mock-deezer.service';
 import { API_ENDPOINTS } from '../config/api.config';
+import { environment } from '../../environments/environment';
 
 /**
  * SongService - Servicio híbrido de gestión de canciones
@@ -20,59 +22,68 @@ import { API_ENDPOINTS } from '../config/api.config';
 })
 export class SongService extends BaseHttpService {
   private readonly deezer = inject(DeezerService);
+  private readonly mockDeezer = inject(MockDeezerService);
+
+  private get useMock(): boolean {
+    return environment.useMockData;
+  }
 
   // ==============================================
-  // MÉTODOS PÚBLICOS - DEEZER + BACKEND
+  // MÉTODOS PÚBLICOS - DEEZER + BACKEND (o MOCK)
   // ==============================================
 
   /**
    * Obtiene tracks populares del chart
    */
   getPopularTracks(limit: number = 50): Observable<Song[]> {
-    return this.deezer.getChartTracks(limit).pipe(
+    const source = this.useMock ? this.mockDeezer : this.deezer;
+    return source.getChartTracks(limit).pipe(
       map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
       catchError(() => of([]))
     );
   }
 
   /**
-   * Obtiene canciones de un álbum desde Deezer
+   * Obtiene canciones de un álbum
    */
   getAlbumTracks(albumId: string): Observable<Song[]> {
-    return this.deezer.getAlbumTracks(albumId).pipe(
+    const source = this.useMock ? this.mockDeezer : this.deezer;
+    return source.getAlbumTracks(albumId).pipe(
       map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
       catchError(error => {
-        console.error('Error obteniendo tracks de Deezer:', error);
+        console.error('Error obteniendo tracks:', error);
         return of([]);
       })
     );
   }
 
   /**
-   * Busca canciones por término usando Deezer
+   * Busca canciones por término
    */
   searchSongs(query: string): Observable<Song[]> {
     if (!query.trim()) {
       return of([]);
     }
 
-    return this.deezer.searchTracks(query, 25).pipe(
+    const source = this.useMock ? this.mockDeezer : this.deezer;
+    return source.searchTracks(query, 25).pipe(
       map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
       catchError(error => {
-        console.error('Error buscando tracks en Deezer:', error);
+        console.error('Error buscando tracks:', error);
         return of([]);
       })
     );
   }
 
   /**
-   * Obtiene una canción por su ID de Deezer
+   * Obtiene una canción por su ID
    */
   getSongById(id: string): Observable<Song | null> {
-    return this.deezer.getTrackById(id).pipe(
+    const source = this.useMock ? this.mockDeezer : this.deezer;
+    return source.getTrackById(id).pipe(
       map(track => track ? this.mapDeezerTrackToSong(track, 1) : null),
       catchError(error => {
-        console.error('Error obteniendo track de Deezer:', error);
+        console.error('Error obteniendo track:', error);
         return of(null);
       })
     );
@@ -82,7 +93,8 @@ export class SongService extends BaseHttpService {
    * Obtiene las top tracks de un artista
    */
   getArtistTopTracks(artistId: string): Observable<Song[]> {
-    return this.deezer.getArtistTopTracks(artistId, 10).pipe(
+    const source = this.useMock ? this.mockDeezer : this.deezer;
+    return source.getArtistTopTracks(artistId, 10).pipe(
       map(tracks => tracks.map((t, i) => this.mapDeezerTrackToSong(t, i + 1))),
       catchError(error => {
         console.error('Error obteniendo top tracks del artista:', error);

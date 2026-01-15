@@ -45,6 +45,9 @@ export class Card {
   // Tipo de card
   @Input() cardType: 'polaroid' | 'profile' = 'polaroid';
 
+  // Tamaño de card: normal (default) o mini (versión compacta para listados)
+  @Input() size: 'normal' | 'mini' = 'normal';
+
   // Acciones y badges
   @Input() actions: CardAction[] = [];
   @Input() badges: string[] = [];
@@ -62,6 +65,10 @@ export class Card {
 
     if (this.hoverEffect === 'lift') {
       classes.push('card--hover-lift');
+    }
+
+    if (this.size === 'mini') {
+      classes.push('card--mini');
     }
 
     classes.push(`card--${this.cardType}`);

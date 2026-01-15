@@ -1,4 +1,4 @@
-<div class="carousel">
+<div class="carousel" [class.carousel--multi-row]="rows > 1">
   <!-- Título del carrusel -->
   @if (title) {
     <h2 class="carousel__title">{{ title }}</h2>
@@ -19,7 +19,11 @@
     }
 
     <!-- Track de items -->
-    <div class="carousel__track" #carouselTrack>
+    <div
+      class="carousel__track"
+      [class.carousel__track--rows-2]="rows === 2"
+      #carouselTrack
+    >
       <ng-content></ng-content>
     </div>
 

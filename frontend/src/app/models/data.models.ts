@@ -314,12 +314,14 @@ export interface Track {
  */
 export interface Review {
   id: string;
+  albumId?: string;
   userId: string;
-  userName: string;
+  userName?: string;
+  username?: string;
   userAvatar: string;
   rating: number;
   content: string;
-  date: Date;
+  date: Date | string;
   likes: number;
 }
 
