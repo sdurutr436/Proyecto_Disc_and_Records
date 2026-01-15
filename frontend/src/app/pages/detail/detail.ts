@@ -653,13 +653,27 @@ export class DetailComponent implements OnInit, OnDestroy {
       // Cast a Album porque solo se puede agregar álbumes a la lista
       const album = item as Album;
 
+      // DEBUG: Ver todos los datos del álbum
+      console.log('🔍 DEBUG - Album completo:', {
+        id: album.id,
+        title: album.title,
+        artist: album.artist,
+        artistId: album.artistId,
+        artistIdType: typeof album.artistId,
+        coverUrl: album.coverUrl,
+        releaseYear: album.releaseYear
+      });
+
       // Parsear artistaId correctamente - puede venir como string de Deezer
       // El artistId de Deezer viene del campo album.artistId (string)
       const artistaIdParsed = this.parseNumericId(album.artistId);
 
+      // DEBUG: Ver resultado del parsing
+      console.log('🔍 DEBUG - artistaId parsed:', artistaIdParsed, 'from:', album.artistId);
+
       // Validar que tengamos un artistaId válido
       if (!artistaIdParsed || artistaIdParsed <= 0) {
-        console.warn('artistaId inválido, usando fallback:', album.artistId);
+        console.warn('⚠️ artistaId inválido:', album.artistId, '-> parsed:', artistaIdParsed);
       }
 
       // Construir datos del álbum con validaciones robustas

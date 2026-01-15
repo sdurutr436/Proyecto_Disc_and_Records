@@ -198,15 +198,20 @@ export class ListaAlbumService {
       return of(null);
     }
 
-    const dto = {
+    // Construir DTO base
+    const dto: Record<string, unknown> = {
       usuarioId: user.id,
       albumId: albumData.albumId,
       tituloAlbum: albumData.tituloAlbum.trim(),
-      portadaUrl: albumData.portadaUrl?.trim() || null, // null si vacío, no string vacío
       anioSalida: albumData.anioSalida || new Date().getFullYear(),
       artistaId: albumData.artistaId,
       nombreArtista: albumData.nombreArtista.trim()
     };
+
+    // Solo incluir portadaUrl si tiene valor (el backend acepta null/omitido)
+    if (albumData.portadaUrl?.trim()) {
+      dto['portadaUrl'] = albumData.portadaUrl.trim();
+    }
 
     // Log para debugging del payload
     console.debug('DTO enviado a /lista/deezer:', dto);
