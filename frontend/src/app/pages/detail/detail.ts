@@ -154,6 +154,18 @@ export class DetailComponent implements OnInit, OnDestroy {
     { id: '8', userId: 'user8', userName: 'AcousticSoul', userAvatar: 'assets/profile-placeholder.svg', rating: 2, content: 'No es para mí. Demasiado producido y artificial. Echo de menos el sonido más orgánico de sus primeros trabajos.', date: new Date('2024-05-20'), likes: 8 }
   ];
 
+  // ========================================
+  // HELPER - Validación de IDs numéricos
+  // ========================================
+  
+  /**
+   * Parsea un ID string a número, devuelve null si no es válido
+   */
+  private parseNumericId(id: string): number | null {
+    const parsed = parseInt(id, 10);
+    return isNaN(parsed) ? null : parsed;
+  }
+
   // Computed properties para acceso seguro a propiedades de diferentes tipos
   itemTitle = computed(() => {
     const item = this.item();
@@ -304,10 +316,18 @@ export class DetailComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const albumIdNum = parseInt(albumId, 10);
+    if (isNaN(albumIdNum)) {
+      // ID no numérico (ej: álbumes de Deezer sin sincronizar)
+      this.isInUserList.set(false);
+      this.userRating.set(0);
+      return;
+    }
+
     this.isLoadingEstado.set(true);
 
     // Cargar estado del álbum para el usuario
-    this.listaAlbumService.getEstadoAlbum(user.id, parseInt(albumId)).subscribe({
+    this.listaAlbumService.getEstadoAlbum(user.id, albumIdNum).subscribe({
       next: (estado) => {
         if (estado) {
           this.isInUserList.set(estado.enLista);
@@ -401,7 +421,15 @@ export class DetailComponent implements OnInit, OnDestroy {
     }
 
     // Cargar reseñas reales del backend
-    this.listaAlbumService.getResenasAlbum(parseInt(item.id)).subscribe({
+    const albumIdNum = this.parseNumericId(item.id);
+    if (!albumIdNum) {
+      this.displayedReviews.set([]);
+      this.hasMoreReviews.set(false);
+      this.isLoadingMoreReviews.set(false);
+      return;
+    }
+
+    this.listaAlbumService.getResenasAlbum(albumIdNum).subscribe({
       next: (resenas: ResenaAlbumResponse[]) => {
         const reviews = resenas.map(r => mapResenaToLegacy(r));
         this.displayedReviews.set(reviews);
@@ -555,8 +583,14 @@ export class DetailComponent implements OnInit, OnDestroy {
     }
 
     // Guardar en el backend
+    const albumIdNum = this.parseNumericId(item.id);
+    if (!albumIdNum) {
+      this.needsListFirst.set(true);
+      return;
+    }
+
     this.isSubmittingRating.set(true);
-    this.listaAlbumService.puntuarAlbum(parseInt(item.id), rating).subscribe({
+    this.listaAlbumService.puntuarAlbum(albumIdNum, rating).subscribe({
       next: (result) => {
         if (result) {
           this.userRating.set(rating);
@@ -591,9 +625,12 @@ export class DetailComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const albumIdNum = this.parseNumericId(item.id);
+    if (!albumIdNum) return;
+
     if (this.isInUserList()) {
       // Quitar de la lista
-      this.listaAlbumService.quitarDeLista(parseInt(item.id)).subscribe({
+      this.listaAlbumService.quitarDeLista(albumIdNum).subscribe({
         next: (success) => {
           if (success) {
             this.isInUserList.set(false);
@@ -603,7 +640,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       });
     } else {
       // Añadir a la lista
-      this.listaAlbumService.agregarALista(parseInt(item.id)).subscribe({
+      this.listaAlbumService.agregarALista(albumIdNum).subscribe({
         next: (result) => {
           if (result !== null) {
             this.isInUserList.set(true);
@@ -668,7 +705,10 @@ export class DetailComponent implements OnInit, OnDestroy {
     }
 
     // Guardar en backend
-    this.listaAlbumService.escribirResena(parseInt(item.id), this.reviewText(), this.userRating()).subscribe({
+    const albumIdNum = this.parseNumericId(item.id);
+    if (!albumIdNum) return;
+
+    this.listaAlbumService.escribirResena(albumIdNum, this.reviewText(), this.userRating()).subscribe({
       next: (result) => {
         if (result) {
           const newUserReview: UserReview = {

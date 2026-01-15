@@ -43,7 +43,7 @@ public interface UsuarioAlbumRepository extends JpaRepository<UsuarioAlbum, Usua
     /**
      * Obtener registro incluso si está oculto (para restaurar)
      */
-    @Query("SELECT ua FROM UsuarioAlbum ua WHERE ua.usuario.id = :usuarioId AND ua.album.id = :albumId")
+    @Query("SELECT ua FROM UsuarioAlbum ua JOIN FETCH ua.usuario JOIN FETCH ua.album WHERE ua.usuario.id = :usuarioId AND ua.album.id = :albumId")
     Optional<UsuarioAlbum> findByUsuarioAndAlbum(@Param("usuarioId") Long usuarioId, @Param("albumId") Long albumId);
     
     // ==========================================
