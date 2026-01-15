@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +21,7 @@ import com.discsandrecords.api.dto.AgregarAlbumDeezerDTO;
 import com.discsandrecords.api.dto.AgregarAlbumListaDTO;
 import com.discsandrecords.api.dto.AlbumEnListaDTO;
 import com.discsandrecords.api.dto.PuntuarAlbumDTO;
+import com.discsandrecords.api.exceptions.ResourceNotFoundException;
 import com.discsandrecords.api.services.ListaAlbumService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,6 +48,8 @@ import jakarta.validation.Valid;
 @Tag(name = "Lista de Álbumes", description = "API para gestión de la lista de álbumes del usuario")
 public class ListaAlbumController {
 
+    private static final Logger log = LoggerFactory.getLogger(ListaAlbumController.class);
+
     private final ListaAlbumService listaAlbumService;
 
     public ListaAlbumController(ListaAlbumService listaAlbumService) {
@@ -59,12 +64,18 @@ public class ListaAlbumController {
             @PathVariable Long usuarioId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        
-        List<AlbumEnListaDTO> lista = size > 0 
-            ? listaAlbumService.obtenerListaUsuario(usuarioId, page, size)
-            : listaAlbumService.obtenerListaUsuario(usuarioId);
-        
-        return ResponseEntity.ok(lista);
+        try {
+            List<AlbumEnListaDTO> lista = size > 0 
+                ? listaAlbumService.obtenerListaUsuario(usuarioId, page, size)
+                : listaAlbumService.obtenerListaUsuario(usuarioId);
+            
+            return ResponseEntity.ok(lista);
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            log.warn("Error obteniendo lista del usuario {}: {}", usuarioId, e.getMessage());
+            return ResponseEntity.ok(List.of());
+        }
     }
 
     @GetMapping("/{albumId}")
@@ -72,10 +83,15 @@ public class ListaAlbumController {
     public ResponseEntity<AlbumEnListaDTO> obtenerEstadoAlbum(
             @PathVariable Long usuarioId,
             @PathVariable Long albumId) {
-        
-        return listaAlbumService.obtenerEstadoAlbum(usuarioId, albumId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            return listaAlbumService.obtenerEstadoAlbum(usuarioId, albumId)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            // Si el álbum no existe en la BD (es de Deezer), simplemente no está en la lista
+            log.debug("Álbum {} no encontrado en lista del usuario {}: {}", albumId, usuarioId, e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{albumId}/existe")
@@ -124,21 +140,31 @@ public class ListaAlbumController {
             @PathVariable Long usuarioId,
             @RequestBody @Valid AgregarAlbumDeezerDTO dto) {
         
-        // Asegurar que el usuarioId del path coincide con el del body
-        AgregarAlbumDeezerDTO dtoFinal = new AgregarAlbumDeezerDTO(
-            usuarioId, 
-            dto.albumId(), 
-            dto.tituloAlbum(), 
-            dto.portadaUrl(), 
-            dto.anioSalida(), 
-            dto.artistaId(), 
-            dto.nombreArtista()
-        );
-        AlbumEnListaDTO resultado = listaAlbumService.agregarAlbumDeezer(dtoFinal);
+        log.info("POST /deezer - Usuario: {}, Album: {}, Artista: {} ({})", 
+                usuarioId, dto.albumId(), dto.artistaId(), dto.nombreArtista());
         
-        return ResponseEntity
-                .created(URI.create("/api/usuarios/" + usuarioId + "/lista/" + dto.albumId()))
-                .body(resultado);
+        try {
+            // Asegurar que el usuarioId del path coincide con el del body
+            AgregarAlbumDeezerDTO dtoFinal = new AgregarAlbumDeezerDTO(
+                usuarioId, 
+                dto.albumId(), 
+                dto.tituloAlbum(), 
+                dto.portadaUrl(), 
+                dto.anioSalida(), 
+                dto.artistaId(), 
+                dto.nombreArtista()
+            );
+            AlbumEnListaDTO resultado = listaAlbumService.agregarAlbumDeezer(dtoFinal);
+            
+            log.info("Álbum {} añadido correctamente a lista de usuario {}", dto.albumId(), usuarioId);
+            return ResponseEntity
+                    .created(URI.create("/api/usuarios/" + usuarioId + "/lista/" + dto.albumId()))
+                    .body(resultado);
+        } catch (Exception e) {
+            log.error("Error añadiendo álbum Deezer {} para usuario {}: {}", 
+                    dto.albumId(), usuarioId, e.getMessage(), e);
+            throw e;
+        }
     }
 
     @DeleteMapping("/{albumId}")
