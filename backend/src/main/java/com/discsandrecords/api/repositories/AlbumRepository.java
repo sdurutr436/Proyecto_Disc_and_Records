@@ -1,6 +1,7 @@
 package com.discsandrecords.api.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import com.discsandrecords.api.entities.Album;
  * - Búsquedas por artista, título y año
  * - Estadísticas (conteo, rankings)
  * - Consultas avanzadas con joins
+ * - Búsqueda por Deezer ID para importación
  */
 @Repository
 public interface AlbumRepository extends JpaRepository<Album, Long> {
@@ -31,6 +33,27 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     Page<Album> findByArtistaId(Long artistaId, Pageable pageable);
     List<Album> findByTituloAlbumContainingIgnoreCase(String titulo);
     long countByArtistaId(Long artistaId);
+    
+    // ==========================================
+    // BÚSQUEDA POR DEEZER ID (Importación)
+    // ==========================================
+    
+    /**
+     * Busca un álbum por su ID de Deezer.
+     * Usado para verificar si un álbum ya fue importado antes de crear uno nuevo.
+     * 
+     * @param deezerId ID del álbum en Deezer (como String)
+     * @return Optional con el álbum si existe
+     */
+    Optional<Album> findByDeezerId(String deezerId);
+    
+    /**
+     * Verifica si existe un álbum con el ID de Deezer dado.
+     * 
+     * @param deezerId ID del álbum en Deezer
+     * @return true si ya existe en la BD
+     */
+    boolean existsByDeezerId(String deezerId);
     
     // ==========================================
     // QUERIES PERSONALIZADAS - BÚSQUEDA

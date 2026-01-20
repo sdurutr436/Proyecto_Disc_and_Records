@@ -802,9 +802,126 @@ ADD CONSTRAINT chk_anio_album CHECK (Anio_salida BETWEEN 1900 AND YEAR(CURDATE()
 
 ---
 
+## Patrón Eager Hydration (Hidratación Anticipada)
+
+### Descripción General
+
+El sistema implementa un patrón de **Eager Hydration** para la transición de datos desde Deezer API hacia la base de datos local. Este patrón elimina la dependencia en tiempo de ejecución con Deezer para la visualización de detalles de álbumes y gestión de listas.
+
+### Diagrama de Secuencia
+
+```
+┌─────────┐     ┌─────────────────┐     ┌─────────────────────┐     ┌───────────┐     ┌────────────┐
+│ Usuario │     │ SearchResults   │     │ AlbumNavigationSvc  │     │ Backend   │     │ Deezer API │
+└────┬────┘     └───────┬─────────┘     └──────────┬──────────┘     └─────┬─────┘     └──────┬─────┘
+     │                  │                          │                      │                  │
+     │ Click en Card    │                          │                      │                  │
+     │ ─────────────────>                          │                      │                  │
+     │                  │                          │                      │                  │
+     │                  │ navigateToAlbum(deezerId)│                      │                  │
+     │                  │ ─────────────────────────>                      │                  │
+     │                  │                          │                      │                  │
+     │                  │                          │ GET /albumes/deezer/{id}                │
+     │                  │                          │ ─────────────────────>                  │
+     │                  │                          │                      │                  │
+     │                  │                          │                      │ ┌────────────────┴─────┐
+     │                  │                          │                      │ │ ¿Existe en BD local? │
+     │                  │                          │                      │ └────────────────┬─────┘
+     │                  │                          │                      │                  │
+     │                  │                          │                      │──── SI: Return ──┤
+     │                  │                          │                      │                  │
+     │                  │                          │                      │──── NO: Fetch ───>
+     │                  │                          │                      │                  │
+     │                  │                          │                      │<── Album Data ───│
+     │                  │                          │                      │                  │
+     │                  │                          │                      │ ┌────────────────┤
+     │                  │                          │                      │ │ Persist + Map  │
+     │                  │                          │                      │ └────────────────┤
+     │                  │                          │                      │                  │
+     │                  │                          │<── AlbumImportDTO ───│                  │
+     │                  │                          │    (ID local)        │                  │
+     │                  │                          │                      │                  │
+     │                  │<── Navigate /album/{id} ─│                      │                  │
+     │                  │    (ID local, NO Deezer) │                      │                  │
+     │                  │                          │                      │                  │
+     │ <── Vista Detalle con datos locales ────────│                      │                  │
+     │                  │                          │                      │                  │
+```
+
+### Componentes Implementados
+
+#### Backend
+
+| Componente | Archivo | Responsabilidad |
+|------------|---------|-----------------|
+| `DeezerImportService` | `services/DeezerImportService.java` | Lógica de importación thread-safe |
+| `AlbumImportResponseDTO` | `dto/AlbumImportResponseDTO.java` | DTO enriquecido con metadatos de importación |
+| Endpoint importación | `AlbumController.java` | `GET /api/albumes/deezer/{deezerId}` |
+
+#### Frontend
+
+| Componente | Archivo | Responsabilidad |
+|------------|---------|-----------------|
+| `AlbumNavigationService` | `services/album-navigation.service.ts` | Orquesta importación + navegación |
+| `AlbumService` | `services/album.service.ts` | Nuevos métodos `importFromDeezer()` |
+| `albumResolver` | `resolvers/album.resolver.ts` | Validación de IDs y carga local-first |
+
+### Flujo de Datos
+
+1. **Usuario hace click en una card de álbum** (resultado de búsqueda Deezer)
+2. **Frontend** detecta que es un ID de Deezer y llama a `AlbumNavigationService.navigateToAlbum(deezerId, 'deezer')`
+3. **AlbumNavigationService** invoca `AlbumService.importFromDeezer(deezerId)`
+4. **Backend** recibe `GET /api/albumes/deezer/{deezerId}`:
+   - Consulta BD local por `deezer_id`
+   - Si existe: devuelve el registro existente
+   - Si no existe: 
+     - Llama a Deezer API
+     - Persiste álbum + artista (cascada)
+     - Devuelve el nuevo registro
+5. **Frontend** recibe `AlbumImportResponse` con el **ID local** de BD
+6. **Router** navega a `/album/{id_local}` (nunca con ID de Deezer)
+7. **AlbumResolver** carga desde BD local (sin llamadas a Deezer)
+
+### Concurrencia
+
+El servicio `DeezerImportService` implementa manejo de concurrencia para evitar duplicados cuando múltiples usuarios intentan importar el mismo álbum simultáneamente:
+
+```java
+// Patrón de locks por ID
+private final ConcurrentHashMap<String, ReentrantLock> importLocks = new ConcurrentHashMap<>();
+
+// Doble verificación + fallback por DataIntegrityViolation
+```
+
+### Migración de Base de Datos
+
+Script: `V2__eager_hydration_support.sql`
+
+```sql
+-- Columnas añadidas
+ALTER TABLE album ADD COLUMN deezer_id VARCHAR(50) UNIQUE;
+ALTER TABLE album ADD COLUMN fecha_importacion TIMESTAMP;
+ALTER TABLE artista ADD COLUMN deezer_id VARCHAR(50) UNIQUE;
+ALTER TABLE artista ADD COLUMN fecha_importacion TIMESTAMP;
+
+-- Índices para búsqueda rápida
+CREATE INDEX idx_album_deezer_id ON album(deezer_id);
+CREATE INDEX idx_artista_deezer_id ON artista(deezer_id);
+```
+
+### Tests
+
+| Test | Archivo | Descripción |
+|------|---------|-------------|
+| Concurrencia Backend | `DeezerImportServiceConcurrencyTest.java` | 5 hilos importando mismo álbum |
+| Navegación Frontend | `album-navigation.service.spec.ts` | Verifica uso de ID local, no Deezer |
+
+---
+
 ## Historial de Cambios
 
 | Fecha | Cambio |
 |-------|--------|
+| 2026-01-15 | Implementación de patrón Eager Hydration para migración Deezer → BD local |
 | 2026-01-12 | Documentación completa de controladores, DTOs, seguridad y arquitectura |
 | 2025-12-15 | Versión inicial del modelo E-R |

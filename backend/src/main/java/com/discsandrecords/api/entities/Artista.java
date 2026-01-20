@@ -3,9 +3,12 @@ package com.discsandrecords.api.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Entity
-@Table(name = "artistas")
+@Table(name = "artistas", indexes = {
+    @Index(name = "idx_artista_deezer_id", columnList = "deezer_id", unique = true)
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,17 +17,44 @@ import java.math.BigDecimal;
 public class Artista {
 
     /**
-     * ID del artista.
-     * Puede ser:
-     * - Un ID generado automáticamente por la BD (para artistas creados localmente)
-     * - Un ID de Deezer (cuando se importa desde la API de Deezer)
+     * ID interno del artista (generado por secuencia).
+     * Este es el ID que se usa en todas las relaciones y URLs locales.
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "artista_seq")
+    @SequenceGenerator(name = "artista_seq", sequenceName = "artista_id_seq", allocationSize = 1)
     private Long id;
+
+    /**
+     * ID externo de Deezer.
+     * - NULL si el artista fue creado manualmente.
+     * - Valor único si fue importado desde Deezer.
+     */
+    @Column(name = "deezer_id", unique = true, length = 50)
+    private String deezerId;
 
     @Column(nullable = false, length = 100)
     private String nombreArtista;
 
     @Column(precision = 3, scale = 2)
     private BigDecimal puntuacionMedia;
+
+    /**
+     * URL de la imagen del artista (de Deezer).
+     */
+    @Column(name = "imagen_url", length = 255)
+    private String imagenUrl;
+
+    /**
+     * Fecha en que el artista fue importado desde Deezer.
+     */
+    @Column(name = "fecha_importacion")
+    private Instant fechaImportacion;
+
+    /**
+     * Indica si el artista fue importado desde Deezer.
+     */
+    public boolean isImportadoDeDeezer() {
+        return this.deezerId != null;
+    }
 }

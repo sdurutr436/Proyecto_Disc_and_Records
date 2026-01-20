@@ -22,6 +22,7 @@ import { Button } from '../../components/shared/button/button';
 import { DeezerService, DeezerAlbum, DeezerArtist } from '../../services/deezer.service';
 import { MockDeezerService } from '../../services/mock-deezer.service';
 import { DeezerRateLimitService } from '../../services/deezer-rate-limit.service';
+import { AlbumNavigationService } from '../../services/album-navigation.service';
 import { LucideAngularModule } from 'lucide-angular';
 
 // Tipos de filtro disponibles
@@ -81,6 +82,9 @@ export default class SearchResultsComponent implements OnInit {
 
   /** Servicio de rate limiting de Deezer */
   rateLimitService = inject(DeezerRateLimitService);
+
+  /** Servicio de navegación de álbumes (Hidratación Anticipada) */
+  private albumNavigationService = inject(AlbumNavigationService);
 
   // ==========================================================================
   // ESTADO DE LA PÁGINA
@@ -514,18 +518,49 @@ export default class SearchResultsComponent implements OnInit {
   // ==========================================================================
 
   /**
-   * Ver detalle de un resultado
+   * Ver detalle de un resultado.
+   * 
+   * PATRÓN: HIDRATACIÓN ANTICIPADA
+   * 
+   * Para álbumes de Deezer:
+   * 1. Llama al AlbumNavigationService
+   * 2. El servicio importa el álbum a BD local (si no existe)
+   * 3. Navega usando el ID interno (local)
+   * 
+   * Para artistas: navegación directa (TODO: implementar importación de artistas)
    */
   viewResult(result: SearchResultItem): void {
-    const extras: NavigationExtras = {
-      state: {
-        fromSearch: true,
-        searchTerm: this.searchTerm()
-      }
-    };
+    if (result.type === 'album') {
+      // Usar el servicio de navegación para manejar la importación
+      // Los resultados de búsqueda siempre vienen de Deezer
+      this.albumNavigationService.navigateToAlbum(String(result.id), 'deezer')
+        .subscribe({
+          error: (err) => console.error('Error navegando a álbum:', err)
+        });
+    } else {
+      // Artistas: navegación directa por ahora
+      const extras: NavigationExtras = {
+        state: {
+          fromSearch: true,
+          searchTerm: this.searchTerm()
+        }
+      };
+      this.router.navigate(['/artist', result.id], extras);
+    }
+  }
 
-    const route = result.type === 'album' ? '/album' : '/artist';
-    this.router.navigate([route, result.id], extras);
+  /**
+   * Getter para exponer el estado de importación en la UI
+   */
+  get isImporting(): boolean {
+    return this.albumNavigationService.isImporting();
+  }
+
+  /**
+   * Getter para el ID del álbum que se está importando
+   */
+  get importingAlbumId(): string | null {
+    return this.albumNavigationService.importingAlbumId();
   }
 
   /**

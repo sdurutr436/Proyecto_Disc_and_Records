@@ -120,6 +120,36 @@ export interface PageResponse<T> {
   last: boolean;
 }
 
+// =============================================================================
+// MODELOS DE IMPORTACIÓN DEEZER (Hidratación Anticipada)
+// =============================================================================
+
+/**
+ * Respuesta de importación de álbum desde Deezer
+ * Mapea: AlbumImportResponseDTO.java
+ * 
+ * Usado por: GET /api/albumes/deezer/{deezerId}
+ */
+export interface AlbumImportResponse {
+  /** ID interno del álbum (para usar en rutas locales) */
+  id: number;
+  tituloAlbum: string;
+  anioSalida: number;
+  portadaUrl: string | null;
+  puntuacionMedia: number | null;
+  artista: ArtistaResponse;
+  /** ID original de Deezer */
+  deezerId: string;
+  /** true si el álbum fue importado en esta llamada, false si ya existía */
+  wasImported: boolean;
+  /** Número de tracks (metadata de Deezer) */
+  numTracks: number | null;
+  /** Duración total en segundos (metadata de Deezer) */
+  duracionTotal: number | null;
+  /** Sello discográfico (metadata de Deezer) */
+  sello: string | null;
+}
+
 /**
  * Respuesta de género
  * Mapea: GeneroResponseDTO.java
