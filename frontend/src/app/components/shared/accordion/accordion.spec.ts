@@ -231,13 +231,13 @@ describe('Accordion', () => {
       it('debería poder abrir múltiples items en modo multiple', fakeAsync(() => {
         hostComponent.mode.set('multiple');
         hostFixture.detectChanges();
-        
+
         const accordion = hostComponent.accordion()!;
-        
+
         accordion.toggle(1);
         hostFixture.detectChanges();
         tick();
-        
+
         accordion.toggle(3);
         hostFixture.detectChanges();
         tick();
