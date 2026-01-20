@@ -2947,6 +2947,20 @@ El componente `app-card` utiliza Container Queries para adaptarse automáticamen
 // Valores: 'small' (200px), 'medium' (350px), 'large' (500px), 'extra-large' (700px)
 ```
 
+### Justificación: ¿Por qué solo CardComponent?
+
+Se ha implementado Container Queries **únicamente en el componente Card** por las siguientes razones técnicas:
+
+1. **Card es el candidato ideal:** Es el único componente que aparece en múltiples contextos con tamaños muy diferentes (carruseles estrechos, grids de 2-4 columnas, sidebars, modales). Otros componentes tienen contextos más predecibles.
+
+2. **Carousel, Alert, Badge:** Estos componentes tienen anchos relativamente consistentes en sus contextos de uso. Las Media Queries tradicionales son suficientes porque su comportamiento depende del viewport, no del contenedor.
+
+3. **Evitar sobre-ingeniería:** Añadir Container Queries a componentes que no los necesitan aumenta la complejidad del CSS sin beneficio real. El principio YAGNI (You Aren't Gonna Need It) aplica aquí.
+
+4. **Soporte de navegadores:** Aunque Container Queries tienen buen soporte moderno (Chrome 105+, Safari 16+, Firefox 110+), limitar su uso al componente que realmente se beneficia reduce el riesgo de problemas en navegadores legacy.
+
+5. **Preparación para escalar:** Los mixins `container-context`, `container-from` y `container-size` están listos para aplicarse a otros componentes cuando surja la necesidad real en futuras fases del proyecto.
+
 ---
 
 ## 4.4 Adaptaciones principales
