@@ -519,14 +519,14 @@ export default class SearchResultsComponent implements OnInit {
 
   /**
    * Ver detalle de un resultado.
-   * 
+   *
    * PATRÓN: HIDRATACIÓN ANTICIPADA
-   * 
+   *
    * Para álbumes de Deezer:
    * 1. Llama al AlbumNavigationService
    * 2. El servicio importa el álbum a BD local (si no existe)
    * 3. Navega usando el ID interno (local)
-   * 
+   *
    * Para artistas: navegación directa (TODO: implementar importación de artistas)
    */
   viewResult(result: SearchResultItem): void {

@@ -12,7 +12,7 @@ import { environment } from '../../environments/environment';
  * AlbumService - Servicio de gestión de álbumes
  *
  * ARQUITECTURA: HIDRATACIÓN ANTICIPADA (Eager Hydration)
- * 
+ *
  * CAMBIO DE PARADIGMA:
  * - ANTES: Deezer proxy para todo, datos efímeros
  * - AHORA: Deezer solo para búsqueda, BD local para persistencia
@@ -45,12 +45,12 @@ export class AlbumService extends BaseHttpService {
 
   /**
    * Importa un álbum de Deezer a la BD local o recupera el existente.
-   * 
+   *
    * ESTE ES EL MÉTODO CLAVE DEL PATRÓN DE HIDRATACIÓN ANTICIPADA.
-   * 
+   *
    * Se llama cuando el usuario hace clic en una card de búsqueda.
    * El backend verifica si el álbum existe y lo importa si es necesario.
-   * 
+   *
    * @param deezerId ID del álbum en Deezer (ej: "302127")
    * @returns Album con ID interno para navegación a /album/{id_local}
    */
@@ -69,7 +69,7 @@ export class AlbumService extends BaseHttpService {
     }
 
     const url = `${API_CONFIG.baseUrl}${API_ENDPOINTS.albumes.importFromDeezer(deezerId)}`;
-    
+
     return this.get<AlbumResponse>(url).pipe(
       tap(response => {
         console.log(`✅ Álbum importado/recuperado: ID local ${response.id} (Deezer: ${deezerId})`);
@@ -77,7 +77,7 @@ export class AlbumService extends BaseHttpService {
       map(response => mapAlbumResponseToLegacy(response)),
       catchError(error => {
         console.error('❌ Error importando álbum de Deezer:', error);
-        
+
         // Manejar errores específicos
         if (error.status === 503) {
           // Deezer rate limit o no disponible
@@ -86,7 +86,7 @@ export class AlbumService extends BaseHttpService {
         if (error.status === 400) {
           throw new Error('ID de álbum inválido');
         }
-        
+
         throw error;
       })
     );
@@ -94,10 +94,10 @@ export class AlbumService extends BaseHttpService {
 
   /**
    * Obtiene un álbum de la BD LOCAL por su ID interno.
-   * 
+   *
    * IMPORTANTE: Este método SOLO consulta la BD local.
    * Para álbumes de Deezer, usar importFromDeezer() primero.
-   * 
+   *
    * @param id ID interno del álbum (número)
    * @returns Album local o null si no existe
    */

@@ -8,20 +8,20 @@ import { NotificationStreamService } from './notification-stream';
 
 /**
  * AlbumNavigationService - Servicio de Navegación de Álbumes
- * 
+ *
  * PATRÓN: Hidratación Anticipada (Eager Hydration)
- * 
+ *
  * Este servicio maneja la navegación a vistas de detalle de álbumes,
  * distinguiendo entre álbumes locales (ya en BD) y álbumes de Deezer
  * (que necesitan ser importados primero).
- * 
+ *
  * FLUJO:
  * 1. Usuario hace clic en card de álbum
  * 2. Card llama a navigateToAlbum(id, source)
  * 3. Si source='deezer': Importar primero, luego navegar con ID local
  * 4. Si source='local': Navegar directamente con el ID dado
  * 5. Vista de detalle SIEMPRE carga desde /api/albumes/{id_local}
- * 
+ *
  * ESTADOS:
  * - isImporting: Signal que indica si hay una importación en curso
  * - Usado para mostrar spinner en la UI durante la importación
@@ -42,15 +42,15 @@ export class AlbumNavigationService {
 
   /**
    * Navega a la vista de detalle de un álbum.
-   * 
+   *
    * Para álbumes de Deezer:
    * 1. Muestra spinner de importación
    * 2. Llama al backend para importar/recuperar
    * 3. Navega usando el ID interno devuelto
-   * 
+   *
    * Para álbumes locales:
    * 1. Navega directamente con el ID dado
-   * 
+   *
    * @param albumId ID del álbum (string para compatibilidad)
    * @param source Origen del álbum: 'deezer' | 'local'
    * @returns Observable que completa cuando la navegación termina
@@ -70,7 +70,7 @@ export class AlbumNavigationService {
         this.notifications.error('Error', 'ID de álbum inválido');
         return of(null);
       }
-      
+
       this.router.navigate(['/album', albumId]);
       return of(null);
     }
@@ -81,7 +81,7 @@ export class AlbumNavigationService {
 
   /**
    * Importa un álbum de Deezer y navega a su detalle.
-   * 
+   *
    * @param deezerId ID del álbum en Deezer
    * @returns Observable del álbum importado
    */
@@ -100,11 +100,11 @@ export class AlbumNavigationService {
       }),
       catchError(error => {
         console.error('❌ Error al importar álbum:', error);
-        
+
         // Mostrar notificación de error
         const message = error.message || 'No se pudo importar el álbum. Intenta más tarde.';
         this.notifications.error('Error de importación', message);
-        
+
         return of(null);
       }),
       finalize(() => {
@@ -117,21 +117,21 @@ export class AlbumNavigationService {
 
   /**
    * Determina si un ID parece ser de Deezer o local.
-   * 
+   *
    * Heurística:
    * - Los IDs de Deezer son números grandes (> 1000000 típicamente)
    * - Los IDs locales empiezan desde 1 y son secuenciales
    * - Si no podemos determinar, asumimos Deezer (más seguro)
-   * 
+   *
    * NOTA: Esta es una heurística, no es 100% confiable.
    * Preferir usar el parámetro `source` explícito cuando sea posible.
-   * 
+   *
    * @param id ID a analizar
    * @returns 'deezer' | 'local' | 'unknown'
    */
   detectSource(id: string): 'deezer' | 'local' | 'unknown' {
     const numericId = parseInt(id, 10);
-    
+
     if (isNaN(numericId)) {
       return 'unknown';
     }
@@ -142,21 +142,21 @@ export class AlbumNavigationService {
     if (numericId < 10000) {
       return 'local';
     }
-    
+
     return 'deezer';
   }
 
   /**
    * Navega inteligentemente detectando el origen del ID.
-   * 
+   *
    * PRECAUCIÓN: Usa heurística para detectar el origen.
    * Preferir navigateToAlbum() con source explícito.
-   * 
+   *
    * @param albumId ID del álbum
    */
   navigateToAlbumSmart(albumId: string): Observable<Album | null> {
     const source = this.detectSource(albumId);
-    
+
     if (source === 'unknown') {
       this.notifications.error('Error', 'ID de álbum inválido');
       return of(null);

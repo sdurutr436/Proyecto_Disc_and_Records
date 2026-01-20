@@ -127,7 +127,7 @@ export interface PageResponse<T> {
 /**
  * Respuesta de importación de álbum desde Deezer
  * Mapea: AlbumImportResponseDTO.java
- * 
+ *
  * Usado por: GET /api/albumes/deezer/{deezerId}
  */
 export interface AlbumImportResponse {

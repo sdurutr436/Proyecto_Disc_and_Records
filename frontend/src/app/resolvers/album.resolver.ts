@@ -11,12 +11,12 @@ import { BreadcrumbService } from '../services/breadcrumb.service';
  * Resolver funcional para precargar datos de álbum antes de activar la ruta
  *
  * PATRÓN: HIDRATACIÓN ANTICIPADA (Eager Hydration)
- * 
+ *
  * FLUJO ACTUALIZADO:
  * 1. Si el ID es numérico → Buscar primero en BD local
  * 2. Si no existe en BD local → Intentar importar desde Deezer
  * 3. Si la importación falla → Error 404
- * 
+ *
  * IMPORTANTE:
  * - Los IDs en las rutas /album/:id DEBEN ser IDs internos (locales)
  * - La importación desde Deezer ocurre ANTES de navegar (en AlbumNavigationService)
@@ -81,15 +81,15 @@ export const albumResolver: ResolveFn<Album | null> = (route, state): Observable
         loadingService.stop();
         return of(album);
       }
-      
+
       // No encontrado en BD local
       // Esto puede pasar si alguien accede directamente a /album/{id} sin importar
       console.warn(`Álbum ${numericId} no encontrado en BD local`);
-      
+
       // Intentar interpretar como ID de Deezer (fallback para compatibilidad)
       console.log(`Intentando importar ${albumId} como álbum de Deezer...`);
       loadingService.start('Importando álbum...');
-      
+
       return albumService.importFromDeezer(albumId).pipe(
         tap((importedAlbum) => {
           if (importedAlbum) {

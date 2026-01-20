@@ -6,9 +6,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
-@Table(name = "artistas", indexes = {
-    @Index(name = "idx_artista_deezer_id", columnList = "deezer_id", unique = true)
-})
+@Table(name = "artistas")
 @Getter
 @Setter
 @NoArgsConstructor
