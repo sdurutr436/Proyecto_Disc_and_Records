@@ -496,28 +496,28 @@ describe('SearchResultsComponent', () => {
     it('should react to query params changes', fakeAsync(() => {
       queryParamsSubject.next({ q: 'rock' });
       tick(500);
-      
+
       expect(component.searchTerm()).toBe('rock');
     }));
 
     it('should handle filter param', fakeAsync(() => {
       queryParamsSubject.next({ q: 'rock', filter: 'albums' });
       tick(500);
-      
+
       expect(component.activeFilter()).toBe('albums');
     }));
 
     it('should handle empty query param', fakeAsync(() => {
       queryParamsSubject.next({ q: '' });
       tick(500);
-      
+
       expect(component.searchTerm()).toBe('');
     }));
 
     it('should handle * as wildcard query', fakeAsync(() => {
       queryParamsSubject.next({ q: '*' });
       tick(500);
-      
+
       expect(component.searchTerm()).toBe('');
     }));
   });

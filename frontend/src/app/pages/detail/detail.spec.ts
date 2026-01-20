@@ -444,11 +444,11 @@ describe('DetailComponent', () => {
     it('should not load more reviews when already loading', () => {
       component['isLoadingMoreReviews'].set(true);
       component['hasMoreReviews'].set(true);
-      
+
       // Capture initial state
       const wasLoading = component['isLoadingMoreReviews']();
       component.loadMoreReviews();
-      
+
       // State should not have changed (still loading from before)
       expect(component['isLoadingMoreReviews']()).toBe(wasLoading);
     });
@@ -457,7 +457,7 @@ describe('DetailComponent', () => {
       component['isLoadingMoreReviews'].set(false);
       component['hasMoreReviews'].set(false);
       component.loadMoreReviews();
-      
+
       // Should remain not loading
       expect(component['isLoadingMoreReviews']()).toBeFalse();
     });
@@ -467,7 +467,7 @@ describe('DetailComponent', () => {
       component['isLoadingMoreReviews'].set(false);
       component['hasMoreReviews'].set(true);
       component.loadMoreReviews();
-      
+
       // Should not throw and should not start loading
       expect(true).toBeTrue();
     });
