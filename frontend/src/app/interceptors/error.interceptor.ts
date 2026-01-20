@@ -74,6 +74,16 @@ export const errorInterceptor: HttpInterceptorFn = (
         return throwError(() => error);
       }
 
+      // 404 en GET /api/albumes/{id} es esperado durante auto-importación desde Deezer
+      // El componente maneja este 404 para iniciar la importación, no es un error real
+      const isAlbumLookupEndpoint = error.url &&
+        req.method === 'GET' &&
+        /\/api\/albumes\/\d+$/.test(error.url);
+      if (error.status === 404 && isAlbumLookupEndpoint) {
+        // Silenciar: el componente de detalle iniciará la importación desde Deezer
+        return throwError(() => error);
+      }
+
       // Log del error (solo en desarrollo y no en modo mock)
       if (!isProduction() && !environment.useMockData) {
         console.error('❌ HTTP Error intercepted:', {
