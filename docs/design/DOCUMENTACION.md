@@ -2951,13 +2951,137 @@ El componente `app-card` utiliza Container Queries para adaptarse automáticamen
 
 ## 4.4 Adaptaciones principales
 
-*(Pendiente de implementación en siguientes pasos)*
+### Sidebar → Bottom Navigation (móvil)
+
+En viewport < 768px, el sidebar lateral se transforma en una **barra de navegación inferior fija** (bottom-nav), patrón estándar en aplicaciones móviles:
+
+**Archivo:** `src/app/components/layout/sidebar/sidebar.scss`
+
+```scss
+.sidebar {
+  // BASE MÓVIL: Bottom navigation bar
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: vars.$z-sticky;
+  background-color: var(--bg-secondary);
+  border-top: vars.$borde-brutal-thick;
+
+  // TABLET: Sidebar lateral (no sticky)
+  @include mix.respond-from('tablet') {
+    position: relative;
+    border: vars.$borde-brutal-thick;
+    border-radius: vars.$radio-s;
+  }
+
+  // DESKTOP: Sidebar sticky lateral
+  @include mix.respond-from('desktop') {
+    width: 18.75rem;
+    position: sticky;
+    top: calc(4.375rem + vars.$espaciado-m);
+  }
+}
+```
+
+### Transformación de navegación
+
+| Viewport | Comportamiento |
+|----------|----------------|
+| < 768px | Bottom-nav fijo: iconos + texto reducido, horizontal |
+| 768px - 1023px | Sidebar vertical, sin sticky |
+| ≥ 1024px | Sidebar sticky lateral 300px |
+
+### Secciones ocultas en móvil
+
+En bottom-nav solo se muestra la navegación principal. Las secciones de "Mi perfil" y "Tendencias" se ocultan:
+
+```scss
+.sidebar__section {
+  // Ocultar en móvil
+  display: none;
+
+  // Mostrar en tablet+
+  @include mix.respond-from('tablet') {
+    display: flex;
+    flex-direction: column;
+  }
+}
+```
+
+### Grid Layout mejorado
+
+**Archivo:** `src/styles/04-layout/_grid.scss`
+
+```scss
+.grid {
+  display: grid;
+  
+  // BASE MÓVIL: 1 columna
+  grid-template-columns: 1fr;
+  gap: vars.$espaciado-s;
+
+  // MOBILE-L: 2 columnas
+  @include mix.respond-from('mobile-l') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  // TABLET: Auto-fill responsive
+  @include mix.respond-from('tablet') {
+    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
+    gap: vars.$espaciado-m;
+  }
+
+  // DESKTOP: Cards más grandes
+  @include mix.respond-from('desktop') {
+    grid-template-columns: repeat(auto-fill, minmax(15.625rem, 1fr));
+  }
+}
+```
+
+### Compensación de bottom-nav
+
+Las páginas principales añaden `padding-bottom` para compensar el espacio ocupado por el bottom-nav:
+
+```scss
+.home {
+  padding-bottom: 4rem; // Compensar bottom-nav
+
+  @include mix.respond-from('tablet') {
+    padding-bottom: 0;
+  }
+}
+```
 
 ---
 
 ## 4.5 Páginas implementadas
 
-*(Pendiente de implementación en siguientes pasos)*
+### Home (`src/app/pages/home/home.scss`)
+
+| Sección | Móvil | Tablet | Desktop |
+|---------|-------|--------|---------|
+| Hero | min-height 35vh, tipografía h3 | 40vh, h2 | 50vh, h1 |
+| Búsqueda | padding 1rem | 1.5rem 2rem | 2rem 3rem |
+| Carruseles | padding 1.5rem 0.5rem | 2rem 1rem | 3rem 2rem |
+| Cards álbum | 8.5-10rem | 10-12.5rem | 12.5-15.625rem |
+
+### Profile (`src/app/pages/profile/profile.scss`)
+
+| Aspecto | Móvil | Tablet | Desktop |
+|---------|-------|--------|---------|
+| Layout | 1 columna | 1 columna | Grid 1/3 + 2/3 |
+| Sidebar | Estático | Estático | Sticky |
+| Padding | xs + 5rem bottom | s | m |
+
+### Detail (`src/app/pages/detail/detail.scss`)
+
+| Aspecto | Móvil | Tablet | Desktop |
+|---------|-------|--------|---------|
+| Layout | 1 columna | 1 columna | Grid 1/3 + 2/3 |
+| Sidebar (card) | Estático | Estático | Sticky |
+| Padding | xs + 5rem bottom | s | m |
 
 ---
 

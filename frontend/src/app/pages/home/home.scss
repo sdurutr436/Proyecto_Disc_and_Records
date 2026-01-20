@@ -1,62 +1,87 @@
 @use '../../../styles/00-settings/variables' as *;
 @use '../../../styles/01-tools/mixins' as mix;
 
+/* ========================================
+   HOME PAGE - Mobile-First Responsive
+   ======================================== */
+
 .home {
   width: 100%;
   padding: 0;
+  // Compensar el bottom-nav en móvil
+  padding-bottom: 4rem;
+
+  @include mix.respond-from('tablet') {
+    padding-bottom: 0;
+  }
 
   /* ========================================
-     SECCIÓN HERO
+     SECCIÓN HERO - Mobile-First
      ======================================== */
   &__hero {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 50vh;
-    padding: 2rem 1rem; // Reducido para menos concentración
-    background-color: var(--bg-primary);
     text-align: center;
     border-bottom: 0.125rem solid var(--border-color);
+    background-color: var(--bg-primary);
 
-    @media (max-width: $breakpoint-tablet) {
-      padding: 1.5rem 0.75rem;
+    // BASE MÓVIL
+    min-height: 35vh;
+    padding: 1rem 0.5rem;
+
+    // MOBILE-L
+    @include mix.respond-from('mobile-l') {
       min-height: 40vh;
+      padding: 1.5rem 0.75rem;
     }
 
-    @media (max-width: $breakpoint-mobile-sm) {
-      padding: 1rem 0.5rem;
-      min-height: 35vh;
+    // TABLET+
+    @include mix.respond-from('tablet') {
+      min-height: 50vh;
+      padding: 2rem 1rem;
     }
   }
 
   &__hero-content {
-    max-width: 100%; // Sin límite - ocupa todo el ancho disponible
     width: 100%;
-    padding: 0 2rem; // Padding lateral para separar del borde
+    max-width: 100%;
 
-    @media (max-width: $breakpoint-tablet) {
+    // BASE MÓVIL
+    padding: 0 0.5rem;
+
+    // TABLET+
+    @include mix.respond-from('tablet') {
       padding: 0 1rem;
+    }
+
+    @include mix.respond-from('desktop') {
+      padding: 0 2rem;
     }
   }
 
   &__slogan {
     font-family: $fuente-principal;
-    font-size: $tamanio-fuente-h1;
-    line-height: $altura-linea-h1;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 2rem;
 
-    @media (max-width: $breakpoint-tablet) {
+    // BASE MÓVIL
+    font-size: $tamanio-fuente-h3;
+    line-height: $altura-linea-h3;
+    margin-bottom: 1rem;
+
+    // MOBILE-L
+    @include mix.respond-from('mobile-l') {
       font-size: $tamanio-fuente-h2;
       line-height: $altura-linea-h2;
       margin-bottom: 1.5rem;
     }
 
-    @media (max-width: $breakpoint-mobile-sm) {
-      font-size: $tamanio-fuente-h3;
-      line-height: $altura-linea-h3;
-      margin-bottom: 1rem;
+    // TABLET+
+    @include mix.respond-from('tablet') {
+      font-size: $tamanio-fuente-h1;
+      line-height: $altura-linea-h1;
+      margin-bottom: 2rem;
     }
   }
 
@@ -64,68 +89,80 @@
     display: block;
     color: var(--color-primary);
     font-family: $fuente-secundaria;
-    font-size: 4rem;
-    margin-top: 0.5rem;
     text-shadow: 0.125rem 0.125rem 0 var(--shadow-color);
 
-    @media (max-width: $breakpoint-tablet) {
+    // BASE MÓVIL
+    font-size: 1.75rem;
+    margin-top: 0.25rem;
+
+    // MOBILE-L
+    @include mix.respond-from('mobile-l') {
       font-size: 2.5rem;
     }
 
-    @media (max-width: $breakpoint-mobile-sm) {
-      font-size: 1.75rem;
-      margin-top: 0.25rem;
+    // TABLET+
+    @include mix.respond-from('tablet') {
+      font-size: 4rem;
+      margin-top: 0.5rem;
     }
   }
 
   &__cta-button {
-    margin-top: 1.5rem;
+    // BASE MÓVIL
+    margin-top: 1rem;
 
-    @media (max-width: $breakpoint-mobile-sm) {
-      margin-top: 1rem;
+    // TABLET+
+    @include mix.respond-from('tablet') {
+      margin-top: 1.5rem;
     }
   }
 
   /* ========================================
-     SECCIÓN DE BÚSQUEDA
+     SECCIÓN DE BÚSQUEDA - Mobile-First
      ======================================== */
   &__search {
-    padding: 2rem 3rem;
+    width: 100%;
     background-color: var(--bg-primary);
     border-bottom: 0.125rem solid var(--border-color);
-    width: 100%;
 
     app-search-bar {
       width: 100%;
     }
 
-    @media (max-width: $breakpoint-tablet) {
+    // BASE MÓVIL
+    padding: 1rem;
+
+    // TABLET
+    @include mix.respond-from('tablet') {
       padding: 1.5rem 2rem;
     }
 
-    @media (max-width: $breakpoint-mobile-sm) {
-      padding: 1rem 1rem;
+    // DESKTOP
+    @include mix.respond-from('desktop') {
+      padding: 2rem 3rem;
     }
   }
 
   /* ========================================
-     SECCIONES DE CARRUSELES
+     SECCIONES DE CARRUSELES - Mobile-First
      ======================================== */
   &__section {
-    padding: 3rem 2rem;
     background-color: transparent;
 
-    /* Sin fondo alternante - todos transparentes */
+    // BASE MÓVIL
+    padding: 1.5rem 0.5rem;
 
-    @media (max-width: $breakpoint-tablet) {
+    // TABLET
+    @include mix.respond-from('tablet') {
       padding: 2rem 1rem;
     }
 
-    @media (max-width: $breakpoint-mobile-sm) {
-      padding: 1.5rem 0.5rem;
+    // DESKTOP
+    @include mix.respond-from('desktop') {
+      padding: 3rem 2rem;
     }
 
-    // Sección personal (mis reseñas) con un estilo distintivo
+    // Sección personal
     &--personal {
       border-top: 0.125rem dashed var(--color-primary);
       margin-top: 1rem;
@@ -133,22 +170,26 @@
   }
 
   /* ========================================
-     CARDS DE ÁLBUMES
+     CARDS DE ÁLBUMES - Mobile-First
      ======================================== */
   &__album-card {
     cursor: pointer;
     transition: transform 0.3s ease;
-    min-width: 12.5rem;
-    max-width: 15.625rem;
 
-    @media (max-width: $breakpoint-tablet) {
+    // BASE MÓVIL
+    min-width: 8.5rem;
+    max-width: 10rem;
+
+    // TABLET
+    @include mix.respond-from('tablet') {
       min-width: 10rem;
       max-width: 12.5rem;
     }
 
-    @media (max-width: $breakpoint-mobile-sm) {
-      min-width: 8.5rem;
-      max-width: 10rem;
+    // DESKTOP
+    @include mix.respond-from('desktop') {
+      min-width: 12.5rem;
+      max-width: 15.625rem;
     }
   }
 

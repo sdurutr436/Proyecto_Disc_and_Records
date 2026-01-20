@@ -1,25 +1,76 @@
 @use '../00-settings/_variables' as vars;
+@use '../01-tools/_mixins' as mix;
 
-/* Sistema de Grid básico: mezcla de CSS Grid y Flexbox */
+/* ========================================
+   SISTEMA DE GRID - Mobile-First
+   Mezcla de CSS Grid y Flexbox responsivo
+   ======================================== */
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15.625rem, 1fr));
-  gap: vars.$espaciado-m;
   width: 100%;
   min-height: 6.25rem;
   max-width: vars.$ancho-maximo-contenedor;
   margin: 0 auto;
+
+  // BASE MÓVIL: 1 columna
+  grid-template-columns: 1fr;
+  gap: vars.$espaciado-s;
+
+  // MOBILE-L: 2 columnas
+  @include mix.respond-from('mobile-l') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  // TABLET: Auto-fill con mínimo 12.5rem
+  @include mix.respond-from('tablet') {
+    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
+    gap: vars.$espaciado-m;
+  }
+
+  // DESKTOP: Mínimo 15.625rem para cards más grandes
+  @include mix.respond-from('desktop') {
+    grid-template-columns: repeat(auto-fill, minmax(15.625rem, 1fr));
+  }
+}
+
+/* Grid con cards más pequeñas */
+.grid--compact {
+  @include mix.respond-from('tablet') {
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  }
+
+  @include mix.respond-from('desktop') {
+    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
+  }
+}
+
+/* Grid con cards más grandes */
+.grid--large {
+  // MÓVIL: 1 columna
+  grid-template-columns: 1fr;
+
+  @include mix.respond-from('tablet') {
+    grid-template-columns: repeat(auto-fill, minmax(18.75rem, 1fr));
+  }
 }
 
 .grid--wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: vars.$espaciado-m;
+  gap: vars.$espaciado-s;
+
+  @include mix.respond-from('tablet') {
+    gap: vars.$espaciado-m;
+  }
 }
 
 .grid__item {
-  min-width: 12.5rem;
+  min-width: 0; // Prevenir overflow en grid
   min-height: 6.25rem;
   max-height: 25rem;
+
+  @include mix.respond-from('tablet') {
+    min-width: 12.5rem;
+  }
 }
