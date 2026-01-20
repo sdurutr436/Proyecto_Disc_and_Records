@@ -17,12 +17,11 @@ import java.time.Instant;
 public class Album {
 
     /**
-     * ID interno del álbum (generado por secuencia).
+     * ID interno del álbum (auto-generado).
      * Este es el ID que se usa en todas las relaciones y URLs locales.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "album_seq")
-    @SequenceGenerator(name = "album_seq", sequenceName = "album_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

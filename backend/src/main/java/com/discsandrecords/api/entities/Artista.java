@@ -17,12 +17,11 @@ import java.time.Instant;
 public class Artista {
 
     /**
-     * ID interno del artista (generado por secuencia).
+     * ID interno del artista (auto-generado).
      * Este es el ID que se usa en todas las relaciones y URLs locales.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "artista_seq")
-    @SequenceGenerator(name = "artista_seq", sequenceName = "artista_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
