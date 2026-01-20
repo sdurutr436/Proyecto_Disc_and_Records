@@ -463,7 +463,7 @@ describe('AlbumService', () => {
 
     it('should handle backend error gracefully', fakeAsync(() => {
       // Este test verifica que el servicio tiene manejo de errores
-      // El servicio usa retry, así que simplemente verificamos que 
+      // El servicio usa retry, así que simplemente verificamos que
       // cuando usamos mock y hay error, devuelve array vacío
       spyOnProperty(service as any, 'useMock', 'get').and.returnValue(true);
       mockDeezerServiceSpy.getAlbumReviews.and.returnValue(throwError(() => new Error('Error')));
