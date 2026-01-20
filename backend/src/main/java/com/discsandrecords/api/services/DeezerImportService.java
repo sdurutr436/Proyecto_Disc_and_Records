@@ -448,19 +448,22 @@ public class DeezerImportService {
     }
 
     // ==========================================================================
-    // CONVERSIÓN A DTOs
+    // CONVERSIÓN A DTOs (DEFENSIVA - null-safe)
     // ==========================================================================
 
     private AlbumResponseDTO toAlbumResponseDTO(Album album) {
-        ArtistaResponseDTO artistaDTO = new ArtistaResponseDTO(
-                album.getArtista().getId(),
-                album.getArtista().getNombreArtista(),
-                album.getArtista().getPuntuacionMedia()
-        );
+        ArtistaResponseDTO artistaDTO = null;
+        if (album.getArtista() != null) {
+            artistaDTO = new ArtistaResponseDTO(
+                    album.getArtista().getId(),
+                    album.getArtista().getNombreArtista(),
+                    album.getArtista().getPuntuacionMedia()
+            );
+        }
 
         return new AlbumResponseDTO(
                 album.getId(),
-                album.getTituloAlbum(),
+                album.getTituloAlbum() != null ? album.getTituloAlbum() : "Sin título",
                 album.getAnioSalida(),
                 album.getPortadaUrl(),
                 album.getPuntuacionMedia(),
@@ -471,7 +474,7 @@ public class DeezerImportService {
     private ArtistaResponseDTO toArtistaResponseDTO(Artista artista) {
         return new ArtistaResponseDTO(
                 artista.getId(),
-                artista.getNombreArtista(),
+                artista.getNombreArtista() != null ? artista.getNombreArtista() : "Artista desconocido",
                 artista.getPuntuacionMedia()
         );
     }

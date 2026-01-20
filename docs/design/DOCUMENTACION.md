@@ -2706,3 +2706,15 @@ La ruta está configurada en `frontend/src/app/app.routes.ts`:
 ```
 
 ---
+
+# Sección 4: Responsive design
+
+## 4.1 Breakpoints definidos:
+
+## 4.2 Estrategia responsive:
+
+## 4.3 Containers Queries:
+
+## 4.4 Adaptaciones principales:
+
+## 4.5 Paginas implementadas:

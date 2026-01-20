@@ -194,16 +194,24 @@ public class AlbumService {
         albumRepository.save(album);
     }
 
+    /**
+     * Mapeo DEFENSIVO: Tolerante a nulos para datos legacy o importaciones incompletas.
+     * Maneja casos donde artista, campos de Deezer u otros campos pueden ser null.
+     */
     private AlbumResponseDTO toResponseDTO(Album album) {
-        ArtistaResponseDTO artistaDTO = new ArtistaResponseDTO(
-                album.getArtista().getId(),
-                album.getArtista().getNombreArtista(),
-                album.getArtista().getPuntuacionMedia()
-        );
+        // Mapeo null-safe del artista
+        ArtistaResponseDTO artistaDTO = null;
+        if (album.getArtista() != null) {
+            artistaDTO = new ArtistaResponseDTO(
+                    album.getArtista().getId(),
+                    album.getArtista().getNombreArtista(),
+                    album.getArtista().getPuntuacionMedia()
+            );
+        }
 
         return new AlbumResponseDTO(
                 album.getId(),
-                album.getTituloAlbum(),
+                album.getTituloAlbum() != null ? album.getTituloAlbum() : "Sin título",
                 album.getAnioSalida(),
                 album.getPortadaUrl(),
                 album.getPuntuacionMedia(),
