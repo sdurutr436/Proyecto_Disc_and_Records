@@ -2707,14 +2707,274 @@ La ruta está configurada en `frontend/src/app/app.routes.ts`:
 
 ---
 
-# Sección 4: Responsive design
+# Sección 4: Responsive Design
 
-## 4.1 Breakpoints definidos:
+> **Fase:** 4 - Responsive Design  
+> **Enfoque:** Mobile-First  
+> **Tecnologías:** CSS Media Queries + Container Queries
 
-## 4.2 Estrategia responsive:
+Esta sección documenta la implementación del diseño responsive en "Discs & Records". Se ha adoptado una estrategia **Mobile-First** que prioriza la experiencia en dispositivos móviles como base, añadiendo complejidad progresiva para pantallas más grandes. Además, se incorporan **Container Queries** para componentes que adaptan su layout según el espacio disponible del contenedor, no del viewport.
 
-## 4.3 Containers Queries:
+---
 
-## 4.4 Adaptaciones principales:
+## 4.1 Breakpoints definidos
 
-## 4.5 Paginas implementadas:
+### Sistema de breakpoints centralizado
+
+Se ha implementado un mapa SCSS centralizado que unifica todos los breakpoints del proyecto, facilitando su mantenimiento y uso consistente:
+
+**Archivo:** `src/styles/00-settings/_variables.scss`
+
+```scss
+// Variables individuales (retrocompatibilidad)
+$breakpoint-mobile: 320px;
+$breakpoint-mobile-sm: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+$breakpoint-large-desktop: 1200px;
+$breakpoint-ultra-wide: 1600px;
+
+// Mapa centralizado de breakpoints (Mobile-First)
+$breakpoints: (
+  'mobile-s': 320px,    // Móviles pequeños (iPhone SE)
+  'mobile': 375px,      // Móviles estándar (iPhone X/12/13)
+  'mobile-l': 480px,    // Móviles grandes / landscape
+  'tablet': 768px,      // Tablets portrait (iPad)
+  'desktop': 1024px,    // Tablets landscape / laptops pequeños
+  'wide': 1280px,       // Escritorio estándar
+  'ultra-wide': 1600px  // Monitores grandes
+);
+```
+
+### Tabla de referencia de breakpoints
+
+| Nombre | Valor | Dispositivos objetivo |
+|--------|-------|----------------------|
+| `mobile-s` | 320px | iPhone SE, móviles compactos |
+| `mobile` | 375px | iPhone X/12/13/14, Galaxy S |
+| `mobile-l` | 480px | Móviles grandes, landscape |
+| `tablet` | 768px | iPad portrait, tablets |
+| `desktop` | 1024px | iPad landscape, laptops |
+| `wide` | 1280px | Escritorio estándar |
+| `ultra-wide` | 1600px | Monitores 2K+ |
+
+---
+
+## 4.2 Estrategia responsive
+
+### Enfoque Mobile-First
+
+Se ha elegido la estrategia **Mobile-First** por las siguientes razones técnicas:
+
+1. **Rendimiento:** Los estilos base son más ligeros, dispositivos móviles cargan menos CSS.
+2. **Progresividad:** Se añade complejidad (grids multi-columna, sidebars) solo cuando hay espacio.
+3. **Mantenibilidad:** Las reglas base son simples; las media queries añaden en lugar de sobrescribir.
+4. **Audiencia objetivo:** Aplicación de música orientada a usuarios que consultan desde el móvil.
+
+### Mixins implementados
+
+**Archivo:** `src/styles/01-tools/_mixins.scss`
+
+#### Mixin `respond-from` (Mobile-First - RECOMENDADO)
+
+```scss
+// Uso: @include respond-from('tablet') { ... }
+@mixin respond-from($breakpoint) {
+  @if $breakpoint == 'mobile-s' {
+    @media (min-width: 320px) { @content; }
+  } @else if $breakpoint == 'mobile' {
+    @media (min-width: 375px) { @content; }
+  } @else if $breakpoint == 'mobile-l' {
+    @media (min-width: 480px) { @content; }
+  } @else if $breakpoint == 'tablet' {
+    @media (min-width: 768px) { @content; }
+  } @else if $breakpoint == 'desktop' {
+    @media (min-width: 1024px) { @content; }
+  } @else if $breakpoint == 'wide' {
+    @media (min-width: 1280px) { @content; }
+  } @else if $breakpoint == 'ultra-wide' {
+    @media (min-width: 1600px) { @content; }
+  }
+}
+```
+
+#### Mixin `respond-between` (rangos específicos)
+
+```scss
+// Uso: @include respond-between('tablet', 'desktop') { ... }
+@mixin respond-between($min-bp, $max-bp) {
+  // Aplica estilos solo entre los dos breakpoints especificados
+  @media (min-width: #{$min-value}) and (max-width: #{$max-value}) {
+    @content;
+  }
+}
+```
+
+#### Mixin `respond-to` (Desktop-First - LEGADO)
+
+Se mantiene para retrocompatibilidad con código existente:
+
+```scss
+// Uso: @include respond-to('tablet') { ... }
+@mixin respond-to($breakpoint) {
+  @media (max-width: vars.$breakpoint-tablet) { @content; }
+}
+```
+
+### Ejemplo de uso Mobile-First
+
+```scss
+.album-grid {
+  // Base: 1 columna en móvil
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: vars.$espaciado-s;
+
+  // Tablet: 2 columnas
+  @include mix.respond-from('tablet') {
+    grid-template-columns: repeat(2, 1fr);
+    gap: vars.$espaciado-m;
+  }
+
+  // Desktop: 3-4 columnas con auto-fill
+  @include mix.respond-from('desktop') {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+```
+
+---
+
+## 4.3 Container Queries
+
+### Concepto
+
+Las Container Queries permiten que un componente adapte su layout basándose en el **tamaño de su contenedor padre**, no del viewport. Esto es ideal para componentes reutilizables como tarjetas de álbum que pueden aparecer en diferentes contextos (sidebar estrecho, grid principal, modal).
+
+### Implementación en CardComponent
+
+**Archivo:** `src/app/components/shared/card/card.scss`
+
+El componente `app-card` utiliza Container Queries para adaptarse automáticamente al espacio disponible. El `:host` del componente define el contexto de container:
+
+```scss
+:host {
+  @include mix.container-context('card');
+  display: block;
+  width: 100%;
+}
+```
+
+### Breakpoints de container aplicados
+
+| Rango de ancho | Comportamiento |
+|----------------|----------------|
+| `< 200px` | Ultra-compacto: solo imagen y título, sin subtítulo ni rating |
+| `200px - 279px` | Compacto vertical: imagen cuadrada + texto reducido |
+| `280px - 399px` | Vertical estándar: layout polaroid clásico |
+| `400px - 599px` | Horizontal: imagen a la izquierda, contenido a la derecha |
+| `≥ 600px` | Horizontal expandido: más espacio, tipografía mayor |
+
+### Código de Container Queries
+
+```scss
+/* Contenedor pequeño (<200px): Modo ultra-compacto */
+@container card (max-width: 199px) {
+  .card--polaroid {
+    .card__subtitle,
+    .card__rating,
+    .card__actions {
+      display: none;
+    }
+  }
+}
+
+/* Contenedor mediano (280px - 400px): Vertical con detalle */
+@container card (min-width: 280px) and (max-width: 399px) {
+  .card--polaroid {
+    flex-direction: column;
+    
+    .card__title {
+      font-size: vars.$tamanio-fuente-h4;
+    }
+  }
+}
+
+/* Contenedor grande (400px+): Modo horizontal */
+@container card (min-width: 400px) {
+  .card--polaroid {
+    flex-direction: row;
+    align-items: stretch;
+
+    .card__image {
+      width: 40%;
+      max-width: 12.5rem;
+      border-right: vars.$borde-brutal-thin;
+    }
+
+    .card__content {
+      flex: 1;
+      border-top: none;
+    }
+
+    .card__text {
+      text-align: left;
+    }
+  }
+}
+```
+
+### Ventajas de Container Queries vs Media Queries
+
+| Aspecto | Media Queries | Container Queries |
+|---------|---------------|-------------------|
+| Referencia | Viewport del navegador | Contenedor padre |
+| Reutilización | Comportamiento fijo | Adaptación contextual |
+| Uso ideal | Layouts de página | Componentes modulares |
+| Ejemplo | Sidebar siempre vertical en móvil | Card horizontal en grid amplio, vertical en sidebar |
+
+### Mixins de Container Queries disponibles
+
+```scss
+// Definir un contenedor
+@include mix.container-context('card');
+
+// Aplicar estilos según tamaño (valor numérico)
+@include mix.container-from(400px) { ... }
+
+// Aplicar estilos según tamaño (semántico)
+@include mix.container-size('medium') { ... }
+// Valores: 'small' (200px), 'medium' (350px), 'large' (500px), 'extra-large' (700px)
+```
+
+---
+
+## 4.4 Adaptaciones principales
+
+*(Pendiente de implementación en siguientes pasos)*
+
+---
+
+## 4.5 Páginas implementadas
+
+*(Pendiente de implementación en siguientes pasos)*
+
+---
+
+## 4.6 Screenshots comparativos
+
+*(Pendiente: insertar capturas tras implementar adaptaciones)*
+
+[INSERTA AQUÍ: Captura de Home en Mobile (375px)]
+
+[INSERTA AQUÍ: Captura de Home en Tablet (768px)]
+
+[INSERTA AQUÍ: Captura de Home en Desktop (1280px)]
+
+[INSERTA AQUÍ: Captura de Profile en Mobile (375px)]
+
+[INSERTA AQUÍ: Captura de Profile en Desktop (1280px)]
+
+[INSERTA AQUÍ: Captura de Detail en Mobile (375px)]
+
+[INSERTA AQUÍ: Captura de Detail en Desktop (1280px)]

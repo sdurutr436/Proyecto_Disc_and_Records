@@ -1,4 +1,16 @@
 @use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
+
+/* ========================================
+   HOST CONTAINER - Container Queries
+   El componente host define el contexto de container
+   para que la card se adapte al espacio disponible
+   ======================================== */
+:host {
+  @include mix.container-context('card');
+  display: block;
+  width: 100%;
+}
 
 /* --- Article Card Principal --- */
 .card {
@@ -637,5 +649,151 @@
     padding: vars.$espaciado-xs;
     font-size: 0.875rem;
     min-height: 2.25rem;
+  }
+}
+
+/* ========================================
+   CONTAINER QUERIES - Adaptación por espacio disponible
+   La card se adapta según el ancho del contenedor padre,
+   no del viewport. Ideal para grids responsivos.
+   ======================================== */
+
+/* Contenedor pequeño (<200px): Modo ultra-compacto */
+@container card (max-width: 199px) {
+  .card--polaroid {
+    .card__image {
+      aspect-ratio: 1;
+    }
+
+    .card__content {
+      padding: vars.$espaciado-xs;
+      gap: vars.$espaciado-tiny;
+    }
+
+    .card__title {
+      font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+    }
+
+    .card__subtitle {
+      font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+      display: none; // Ocultar subtítulo en espacio muy reducido
+    }
+
+    .card__rating,
+    .card__actions {
+      display: none;
+    }
+  }
+}
+
+/* Contenedor pequeño (200px - 280px): Modo compacto vertical */
+@container card (min-width: 200px) and (max-width: 279px) {
+  .card--polaroid {
+    flex-direction: column;
+
+    .card__image {
+      aspect-ratio: 1;
+      max-height: none;
+    }
+
+    .card__content {
+      padding: vars.$espaciado-s;
+    }
+
+    .card__title {
+      font-size: vars.$tamanio-fuente-texto-pequeno-s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card__subtitle {
+      font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+    }
+  }
+}
+
+/* Contenedor mediano (280px - 400px): Vertical con más detalle */
+@container card (min-width: 280px) and (max-width: 399px) {
+  .card--polaroid {
+    flex-direction: column;
+
+    .card__image {
+      aspect-ratio: 1;
+    }
+
+    .card__content {
+      padding: vars.$espaciado-m;
+    }
+
+    .card__title {
+      font-size: vars.$tamanio-fuente-h4;
+    }
+
+    .card__rating {
+      justify-content: center;
+    }
+  }
+}
+
+/* Contenedor grande (400px+): Modo horizontal imagen+contenido */
+@container card (min-width: 400px) {
+  .card--polaroid {
+    flex-direction: row;
+    align-items: stretch;
+
+    .card__image {
+      width: 40%;
+      max-width: 12.5rem; // 200px
+      aspect-ratio: 1;
+      flex-shrink: 0;
+      border-bottom: none;
+      border-right: vars.$borde-brutal-thin;
+    }
+
+    .card__content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: vars.$espaciado-m;
+      border-top: none;
+    }
+
+    .card__text {
+      text-align: left;
+    }
+
+    .card__title {
+      font-size: vars.$tamanio-fuente-h3;
+      white-space: normal;
+      overflow: visible;
+    }
+
+    .card__subtitle {
+      font-size: vars.$tamanio-fuente-parrafo;
+    }
+
+    .card__rating {
+      justify-content: flex-start;
+    }
+  }
+}
+
+/* Contenedor extra grande (600px+): Horizontal expandido */
+@container card (min-width: 600px) {
+  .card--polaroid {
+    .card__image {
+      width: 35%;
+      max-width: 15rem; // 240px
+    }
+
+    .card__content {
+      padding: vars.$espaciado-l vars.$espaciado-m;
+    }
+
+    .card__title {
+      font-size: vars.$tamanio-fuente-h2;
+    }
   }
 }
