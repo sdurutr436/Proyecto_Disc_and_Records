@@ -19,6 +19,7 @@ import com.discsandrecords.api.entities.Artista;
  * - Búsquedas por nombre
  * - Estadísticas (conteo de álbumes, canciones)
  * - Rankings y consultas avanzadas
+ * - Búsqueda por Deezer ID para importación
  */
 @Repository
 public interface ArtistaRepository extends JpaRepository<Artista, Long> {
@@ -31,6 +32,27 @@ public interface ArtistaRepository extends JpaRepository<Artista, Long> {
     Optional<Artista> findByNombreArtistaIgnoreCase(String nombreArtista);
     List<Artista> findByNombreArtistaContainingIgnoreCase(String nombre);
     boolean existsByNombreArtistaIgnoreCase(String nombreArtista);
+    
+    // ==========================================
+    // BÚSQUEDA POR DEEZER ID (Importación)
+    // ==========================================
+    
+    /**
+     * Busca un artista por su ID de Deezer.
+     * Usado para verificar si un artista ya fue importado antes de crear uno nuevo.
+     * 
+     * @param deezerId ID del artista en Deezer (como String)
+     * @return Optional con el artista si existe
+     */
+    Optional<Artista> findByDeezerId(String deezerId);
+    
+    /**
+     * Verifica si existe un artista con el ID de Deezer dado.
+     * 
+     * @param deezerId ID del artista en Deezer
+     * @return true si ya existe en la BD
+     */
+    boolean existsByDeezerId(String deezerId);
     
     // ==========================================
     // QUERIES PERSONALIZADAS - BÚSQUEDA

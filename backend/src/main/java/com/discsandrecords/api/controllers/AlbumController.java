@@ -23,6 +23,7 @@ import com.discsandrecords.api.dto.AlbumStatsDTO;
 import com.discsandrecords.api.dto.CreateAlbumDTO;
 import com.discsandrecords.api.dto.PageResponseDTO;
 import com.discsandrecords.api.services.AlbumService;
+import com.discsandrecords.api.services.DeezerImportService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,11 +39,13 @@ import jakarta.validation.Valid;
  *
  * POLÍTICAS DE ACCESO:
  * - GET (lectura): Público - cualquiera puede ver álbumes
+ * - GET /deezer/{deezerId}: Público - importación/recuperación desde Deezer
  * - POST (crear): Solo ADMIN o MODERATOR
  * - PUT (actualizar): Solo ADMIN o MODERATOR
  * - DELETE: Solo ADMIN
  *
  * @see AlbumService
+ * @see DeezerImportService
  */
 @RestController
 @RequestMapping("/api/albumes")
@@ -50,9 +53,57 @@ import jakarta.validation.Valid;
 public class AlbumController {
 
     private final AlbumService albumService;
+    private final DeezerImportService deezerImportService;
 
-    public AlbumController(AlbumService albumService) {
+    public AlbumController(AlbumService albumService, DeezerImportService deezerImportService) {
         this.albumService = albumService;
+        this.deezerImportService = deezerImportService;
+    }
+
+    // ==========================================
+    // ENDPOINT DE IMPORTACIÓN DEEZER (HIDRATACIÓN ANTICIPADA)
+    // ==========================================
+
+    /**
+     * Obtiene un álbum por su ID de Deezer, importándolo si no existe.
+     * 
+     * PATRÓN: Hidratación Anticipada (Eager Hydration)
+     * 
+     * Este endpoint es el "puente" entre los resultados de búsqueda de Deezer
+     * (datos efímeros) y los datos persistentes en la BD local.
+     * 
+     * FLUJO:
+     * 1. Frontend muestra resultados de búsqueda de Deezer (IDs de Deezer)
+     * 2. Usuario hace clic en una card
+     * 3. Frontend llama a este endpoint con el deezerId
+     * 4. Backend verifica si el álbum ya existe en BD
+     *    - SI existe: devuelve el álbum existente
+     *    - NO existe: llama a Deezer API, importa el álbum y artista, devuelve
+     * 5. Frontend recibe el álbum con ID interno y navega a /album/{id_local}
+     * 6. La vista de detalle SIEMPRE carga desde BD local (/api/albumes/{id})
+     * 
+     * @param deezerId ID del álbum en Deezer (ej: "302127")
+     * @return DTO del álbum local (con ID interno para navegación)
+     */
+    @GetMapping("/deezer/{deezerId}")
+    @Operation(
+        summary = "Importar/Obtener álbum de Deezer",
+        description = "Recupera un álbum de la BD local si ya fue importado, " +
+                      "o lo importa desde Deezer si es la primera vez. " +
+                      "Devuelve siempre el álbum con su ID interno para navegación local."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Álbum recuperado/importado correctamente"),
+            @ApiResponse(responseCode = "400", description = "ID de Deezer inválido", 
+                    content = @Content(schema = @Schema(example = "{\"error\":\"DEEZER_ID_INVALIDO\",\"message\":\"El ID de Deezer no puede estar vacío\"}"))),
+            @ApiResponse(responseCode = "503", description = "Deezer no disponible temporalmente", 
+                    content = @Content(schema = @Schema(example = "{\"error\":\"DEEZER_RATE_LIMIT\",\"message\":\"Deezer no responde temporalmente. Por favor, intenta más tarde.\"}")))
+    })
+    public ResponseEntity<AlbumResponseDTO> importarDesdeDeezer(
+            @Parameter(description = "ID del álbum en Deezer", example = "302127")
+            @PathVariable String deezerId) {
+        AlbumResponseDTO album = deezerImportService.importarORecuperarAlbum(deezerId);
+        return ResponseEntity.ok(album);
     }
 
     // ==========================================

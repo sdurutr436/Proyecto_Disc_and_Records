@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { Album, Track, Review, AlbumResponse, AlbumStats, mapAlbumResponseToLegacy } from '../models/data.models';
+import { catchError, map, tap } from 'rxjs/operators';
+import { Album, Track, Review, AlbumResponse, AlbumStats, AlbumImportResponse, mapAlbumResponseToLegacy } from '../models/data.models';
 import { BaseHttpService } from './base-http.service';
 import { API_CONFIG, API_ENDPOINTS } from '../config/api.config';
 import { DeezerService, DeezerAlbum } from './deezer.service';
@@ -11,14 +11,22 @@ import { environment } from '../../environments/environment';
 /**
  * AlbumService - Servicio de gestión de álbumes
  *
- * ARQUITECTURA HÍBRIDA:
- * - Datos de Deezer para contenido real (álbumes, artistas, canciones)
- * - Backend propio para datos de usuario (reseñas, ratings, etc.)
+ * ARQUITECTURA: HIDRATACIÓN ANTICIPADA (Eager Hydration)
  *
- * FLUJO DE DATOS:
- * 1. Deezer API → Datos de álbumes reales (imágenes, artistas, tracks)
- * 2. Backend API → Reseñas, puntuaciones de usuarios, favoritos
- * 3. Frontend → Combina ambas fuentes para la UI
+ * CAMBIO DE PARADIGMA:
+ * - ANTES: Deezer proxy para todo, datos efímeros
+ * - AHORA: Deezer solo para búsqueda, BD local para persistencia
+ *
+ * FLUJO NUEVO:
+ * 1. Búsqueda → Deezer API (datos efímeros, IDs de Deezer)
+ * 2. Clic en Card → importFromDeezer() → BD local (ID interno)
+ * 3. Vista Detalle → getAlbumByIdLocal() → BD local (NUNCA Deezer)
+ * 4. Añadir a Lista → Ya existe en BD, solo crear relación
+ *
+ * El "puente" es el método importFromDeezer() que:
+ * - Verifica si el álbum existe en BD local
+ * - Si no existe, lo importa de Deezer
+ * - Devuelve siempre un álbum con ID interno
  */
 @Injectable({
   providedIn: 'root'
@@ -29,6 +37,86 @@ export class AlbumService extends BaseHttpService {
 
   private get useMock(): boolean {
     return environment.useMockData;
+  }
+
+  // ==========================================================================
+  // IMPORTACIÓN DESDE DEEZER (HIDRATACIÓN ANTICIPADA)
+  // ==========================================================================
+
+  /**
+   * Importa un álbum de Deezer a la BD local o recupera el existente.
+   *
+   * ESTE ES EL MÉTODO CLAVE DEL PATRÓN DE HIDRATACIÓN ANTICIPADA.
+   *
+   * Se llama cuando el usuario hace clic en una card de búsqueda.
+   * El backend verifica si el álbum existe y lo importa si es necesario.
+   *
+   * @param deezerId ID del álbum en Deezer (ej: "302127")
+   * @returns Album con ID interno para navegación a /album/{id_local}
+   */
+  importFromDeezer(deezerId: string): Observable<Album> {
+    if (this.useMock) {
+      // En modo mock, simular importación con datos locales
+      return this.mockDeezer.getAlbumById(deezerId).pipe(
+        map(album => album ? this.mapDeezerAlbumToAlbum(album) : null),
+        map(album => {
+          if (!album) {
+            throw new Error('Álbum no encontrado en mock');
+          }
+          return album;
+        })
+      );
+    }
+
+    const url = `${API_CONFIG.baseUrl}${API_ENDPOINTS.albumes.importFromDeezer(deezerId)}`;
+
+    return this.get<AlbumResponse>(url).pipe(
+      tap(response => {
+        console.log(`✅ Álbum importado/recuperado: ID local ${response.id} (Deezer: ${deezerId})`);
+      }),
+      map(response => mapAlbumResponseToLegacy(response)),
+      catchError(error => {
+        console.error('❌ Error importando álbum de Deezer:', error);
+
+        // Manejar errores específicos
+        if (error.status === 503) {
+          // Deezer rate limit o no disponible
+          throw new Error('Deezer no responde temporalmente. Por favor, intenta más tarde.');
+        }
+        if (error.status === 400) {
+          throw new Error('ID de álbum inválido');
+        }
+
+        throw error;
+      })
+    );
+  }
+
+  /**
+   * Obtiene un álbum de la BD LOCAL por su ID interno.
+   *
+   * IMPORTANTE: Este método SOLO consulta la BD local.
+   * Para álbumes de Deezer, usar importFromDeezer() primero.
+   *
+   * @param id ID interno del álbum (número)
+   * @returns Album local o null si no existe
+   */
+  getAlbumByIdLocal(id: number): Observable<Album | null> {
+    if (this.useMock) {
+      return this.mockDeezer.getAlbumById(String(id)).pipe(
+        map(album => album ? this.mapDeezerAlbumToAlbum(album) : null)
+      );
+    }
+
+    return this.get<AlbumResponse>(`${API_CONFIG.baseUrl}${API_ENDPOINTS.albumes.getById(id)}`).pipe(
+      map(response => mapAlbumResponseToLegacy(response)),
+      catchError(error => {
+        if (error.status === 404) {
+          return of(null);
+        }
+        return throwError(() => error);
+      })
+    );
   }
 
   // ==========================================================================
@@ -58,7 +146,8 @@ export class AlbumService extends BaseHttpService {
   }
 
   /**
-   * Obtiene un álbum por su ID
+   * Obtiene un álbum por su ID (compatibilidad legacy)
+   * @deprecated Usar getAlbumByIdLocal() o importFromDeezer() según contexto
    */
   getAlbumById(id: string): Observable<Album | null> {
     if (this.useMock) {

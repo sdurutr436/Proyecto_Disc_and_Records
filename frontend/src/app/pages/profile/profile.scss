@@ -2,20 +2,26 @@
 @use '../../../styles/01-tools/mixins' as mixins;
 
 /* ========================================
-   PERFIL DE USUARIO
+   PERFIL DE USUARIO - Mobile-First
    Estructura idéntica a detail.scss
    ======================================== */
 .profile {
   min-height: 100vh;
-  padding: vars.$espaciado-m;
   background-color: var(--bg-primary);
 
-  @include mixins.respond-to('tablet') {
+  // BASE MÓVIL
+  padding: vars.$espaciado-xs;
+  padding-bottom: 5rem; // Compensar bottom-nav
+
+  // TABLET
+  @include mixins.respond-from('tablet') {
     padding: vars.$espaciado-s;
+    padding-bottom: vars.$espaciado-s;
   }
 
-  @media (max-width: vars.$breakpoint-mobile-sm) {
-    padding: vars.$espaciado-xs;
+  // DESKTOP
+  @include mixins.respond-from('desktop') {
+    padding: vars.$espaciado-m;
   }
 
   /* ========================================
@@ -31,29 +37,32 @@
   }
 
   /* ========================================
-     CONTENEDOR PRINCIPAL - LAYOUT 1/3 + 2/3
-     Copiado exactamente de detail.scss
+     CONTENEDOR PRINCIPAL - Mobile-First
+     Mobile: 1 columna
+     Desktop: 1/3 + 2/3
      ======================================== */
   &__container {
     max-width: vars.$ancho-maximo-contenedor;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 2fr;
     gap: vars.$espaciado-m;
 
-    @include mixins.respond-to('desktop') {
-      grid-template-columns: 1fr;
-      gap: vars.$espaciado-m;
+    // BASE MÓVIL: 1 columna
+    grid-template-columns: 1fr;
+
+    // DESKTOP: Layout 1/3 + 2/3
+    @include mixins.respond-from('desktop') {
+      grid-template-columns: 1fr 2fr;
     }
   }
 
   &__sidebar {
-    position: sticky;
-    top: vars.$espaciado-s;
     height: fit-content;
 
-    @include mixins.respond-to('desktop') {
-      position: static;
+    // DESKTOP: Sticky
+    @include mixins.respond-from('desktop') {
+      position: sticky;
+      top: vars.$espaciado-s;
     }
   }
 
@@ -61,17 +70,19 @@
     display: flex;
     flex-direction: column;
     gap: vars.$espaciado-m;
-    min-width: 0; // Evita que el grid se expanda más allá del viewport
+    min-width: 0;
   }
 
   /* ========================================
      BÚSQUEDA Y PAGINACIÓN
      ======================================== */
   &__search {
-    margin-bottom: vars.$espaciado-m;
+    // BASE MÓVIL
+    margin-bottom: vars.$espaciado-s;
 
-    @include mixins.respond-to('tablet') {
-      margin-bottom: vars.$espaciado-s;
+    // TABLET+
+    @include mixins.respond-from('tablet') {
+      margin-bottom: vars.$espaciado-m;
     }
   }
 
@@ -79,14 +90,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: vars.$espaciado-m;
-    padding-top: vars.$espaciado-m;
-    border-top: vars.$borde-brutal-thin;
     flex-wrap: wrap;
+    border-top: vars.$borde-brutal-thin;
 
-    @include mixins.respond-to('tablet') {
-      gap: vars.$espaciado-s;
-      padding-top: vars.$espaciado-s;
+    // BASE MÓVIL
+    gap: vars.$espaciado-s;
+    padding-top: vars.$espaciado-s;
+
+    // TABLET+
+    @include mixins.respond-from('tablet') {
+      gap: vars.$espaciado-m;
+      padding-top: vars.$espaciado-m;
     }
   }
 
@@ -98,14 +112,18 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: vars.$espaciado-m;
-    padding: vars.$espaciado-xl;
     text-align: center;
-    min-height: 20rem;
 
-    @include mixins.respond-to('tablet') {
-      padding: vars.$espaciado-m;
-      min-height: 15rem;
+    // BASE MÓVIL
+    gap: vars.$espaciado-s;
+    padding: vars.$espaciado-m;
+    min-height: 15rem;
+
+    // TABLET+
+    @include mixins.respond-from('tablet') {
+      gap: vars.$espaciado-m;
+      padding: vars.$espaciado-xl;
+      min-height: 20rem;
     }
   }
 

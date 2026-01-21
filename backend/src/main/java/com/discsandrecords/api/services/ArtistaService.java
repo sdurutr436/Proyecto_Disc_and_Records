@@ -152,37 +152,53 @@ public class ArtistaService {
     private ArtistaResponseDTO toResponseDTO(Artista artista) {
         return new ArtistaResponseDTO(
                 artista.getId(),
-                artista.getNombreArtista(),
+                artista.getNombreArtista() != null ? artista.getNombreArtista() : "Artista desconocido",
                 artista.getPuntuacionMedia()
         );
     }
 
+    /**
+     * Mapeo DEFENSIVO: Tolerante a nulos para datos legacy o importaciones incompletas.
+     */
     private AlbumResponseDTO albumToResponseDTO(Album album) {
+        ArtistaResponseDTO artistaDTO = null;
+        if (album.getArtista() != null) {
+            artistaDTO = new ArtistaResponseDTO(
+                    album.getArtista().getId(),
+                    album.getArtista().getNombreArtista(),
+                    album.getArtista().getPuntuacionMedia()
+            );
+        }
+        
         return new AlbumResponseDTO(
                 album.getId(),
-                album.getTituloAlbum(),
+                album.getTituloAlbum() != null ? album.getTituloAlbum() : "Sin título",
                 album.getAnioSalida(),
                 album.getPortadaUrl(),
                 album.getPuntuacionMedia(),
-                new ArtistaResponseDTO(
-                        album.getArtista().getId(),
-                        album.getArtista().getNombreArtista(),
-                        album.getArtista().getPuntuacionMedia()
-                )
+                artistaDTO
         );
     }
 
+    /**
+     * Mapeo DEFENSIVO: Tolerante a nulos para datos legacy.
+     */
     private CancionResponseDTO cancionToResponseDTO(Cancion cancion) {
+        ArtistaResponseDTO artistaDTO = null;
+        if (cancion.getArtista() != null) {
+            artistaDTO = new ArtistaResponseDTO(
+                    cancion.getArtista().getId(),
+                    cancion.getArtista().getNombreArtista(),
+                    cancion.getArtista().getPuntuacionMedia()
+            );
+        }
+        
         return new CancionResponseDTO(
                 cancion.getId(),
-                cancion.getTituloCancion(),
+                cancion.getTituloCancion() != null ? cancion.getTituloCancion() : "Sin título",
                 cancion.getAnioSalida(),
                 cancion.getPuntuacionMedia(),
-                new ArtistaResponseDTO(
-                        cancion.getArtista().getId(),
-                        cancion.getArtista().getNombreArtista(),
-                        cancion.getArtista().getPuntuacionMedia()
-                )
+                artistaDTO
         );
     }
 }

@@ -134,6 +134,13 @@ export const API_ENDPOINTS = {
     delete: (id: number) => `/albumes/${id}`,
     buscar: '/albumes/buscar', // ?titulo=xxx
     getByArtista: (artistaId: number) => `/albumes/artista/${artistaId}`,
+    /**
+     * Importar/recuperar álbum desde Deezer (Hidratación Anticipada).
+     * Si el álbum ya existe en BD, lo devuelve. Si no, lo importa de Deezer.
+     * @param deezerId ID del álbum en Deezer (ej: "302127")
+     * @returns Álbum con ID interno para navegación local
+     */
+    importFromDeezer: (deezerId: string) => `/albumes/deezer/${deezerId}`,
   },
 
   /**

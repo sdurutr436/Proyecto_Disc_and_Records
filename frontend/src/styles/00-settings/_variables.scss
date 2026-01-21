@@ -126,12 +126,25 @@ $espaciado-xl: 4rem;          // 64px
 $espaciado-xxl: 5rem;         // 80px
 
 /* --- Variables de breakpoints --- */
+// Variables individuales (retrocompatibilidad)
 $breakpoint-mobile: 320px;
 $breakpoint-mobile-sm: 480px;
 $breakpoint-tablet: 768px;
 $breakpoint-desktop: 1024px;
 $breakpoint-large-desktop: 1200px;
 $breakpoint-ultra-wide: 1600px;
+
+// Mapa centralizado de breakpoints (Mobile-First)
+// Uso: map.get($breakpoints, 'tablet') o con mixin respond-from('tablet')
+$breakpoints: (
+  'mobile-s': 320px,
+  'mobile': 375px,
+  'mobile-l': 480px,
+  'tablet': 768px,
+  'desktop': 1024px,
+  'wide': 1280px,
+  'ultra-wide': 1600px
+);
 
 /* --- Variables de sombras --- */
 
