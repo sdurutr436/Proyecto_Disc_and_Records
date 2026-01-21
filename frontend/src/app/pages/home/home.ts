@@ -52,7 +52,7 @@ interface AlbumView {
     Spinner
   ],
   templateUrl: './home.html',
-  styleUrl: './home.scss',
+  styleUrls: ['./home.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Home implements OnInit {
@@ -97,7 +97,15 @@ export class Home implements OnInit {
    */
   get isDarkMode(): boolean {
     const theme = this.themeService.currentTheme();
-    return theme === 'dark' || theme === 'dark-gray';
+    return theme === 'dark';
+  }
+
+  /**
+   * Determina si está en modo escala de grises
+   */
+  get isGrayscale(): boolean {
+    const theme = this.themeService.currentTheme();
+    return theme === 'dark-gray';
   }
 
   ngOnInit(): void {
@@ -152,7 +160,9 @@ export class Home implements OnInit {
 
     // TODO: Cuando esté disponible el endpoint, cargar reseñas reales del usuario
     // Por ahora usamos datos de ejemplo o los del ReviewStateService
-    const userReviews = this.reviewState.userReviewsCount();
+
+    /* QUITAR ESTA PARTE COMENTADA UNA VEZ SE IMPLEMENTEN LAS RESEÑAS DE USUARIOS */
+    // const userReviews = this.reviewState.userReviewsCount();
 
     // Si hay reseñas del usuario, mostrar placeholder
     // En producción esto vendría del backend

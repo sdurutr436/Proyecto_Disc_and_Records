@@ -30,3 +30,7 @@ export { AuthService } from './auth';
 export { EventBusService, EventType } from './event-bus';
 export { LoadingService } from './loading';
 export { ThemeService } from './theme';
+
+// Hero backdrop service
+export { HeroService } from './hero.service';
+export type { HeroAsset } from './hero.service';

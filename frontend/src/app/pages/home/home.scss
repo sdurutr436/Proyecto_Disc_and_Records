@@ -51,25 +51,65 @@
       min-height: 70vh;
     }
 
-    // Modo oscuro: invertir estrategia de blend
+    // =========================================
+    // MODO CLARO (default): Silueta naranja suave
+    // =========================================
+    // Fondo naranja cálido, silueta muy atenuada
+
+    // =========================================
+    // MODO OSCURO: Silueta clara sobre fondo oscuro
+    // =========================================
     &--dark {
+      .home__hero-backdrop {
+        background-color: var(--bg-primary);
+      }
+
       .home__hero-silhouette {
-        // En modo oscuro, usar screen para que lo negro se mezcle con el color
-        mix-blend-mode: screen;
-        filter: invert(1);
+        opacity: 0.15;
+        filter: brightness(2) contrast(0.8);
+      }
+
+      .home__hero-overlay {
+        background: radial-gradient(
+          ellipse at center,
+          transparent 30%,
+          rgba(0, 0, 0, 0.3) 70%,
+          var(--bg-primary) 100%
+        );
+      }
+    }
+
+    // =========================================
+    // MODO ESCALA GRISES: Silueta blanca sutil
+    // =========================================
+    &--grayscale {
+      .home__hero-backdrop {
+        background-color: var(--bg-primary);
+      }
+
+      .home__hero-silhouette {
+        opacity: 0.12;
+        filter: brightness(3) contrast(0.6) grayscale(1);
+      }
+
+      .home__hero-overlay {
+        background: radial-gradient(
+          ellipse at center,
+          transparent 30%,
+          rgba(128, 128, 128, 0.2) 70%,
+          var(--bg-primary) 100%
+        );
       }
     }
   }
 
-  /* Contenedor del backdrop con color del artista */
+  /* Contenedor del backdrop - MODO CLARO por defecto */
   &__hero-backdrop {
     position: absolute;
     inset: 0;
-    background-color: var(--hero-color);
+    // Naranja muy atenuado (40%) mezclado con el fondo para efecto sutil
+    background-color: color-mix(in srgb, var(--color-primary) 40%, var(--bg-primary));
     z-index: 1;
-
-    // Transición suave al cambiar de artista
-    transition: background-color 0.5s ease;
   }
 
   /* Picture element para responsive images */
@@ -82,47 +122,43 @@
     overflow: hidden;
   }
 
-  /* Imagen de silueta */
+  /* Imagen de silueta - MODO CLARO por defecto */
   &__hero-silhouette {
-    width: 100%;
-    height: 100%;
+    width: auto;
+    height: auto;
+    max-width: 40%;
+    max-height: 70%;
     object-fit: contain;
-    object-position: center bottom;
+    object-position: center center;
 
-    // Mix-blend-mode: multiply tiñe las partes blancas
-    // La silueta es negra sobre fondo transparente
+    // Silueta muy atenuada para efecto sutil Letterboxd
     mix-blend-mode: multiply;
-    opacity: 0.8;
-
-    // BASE MÓVIL - más pequeña
-    max-width: 80%;
-    max-height: 90%;
+    opacity: 0.18;
 
     // TABLET+
     @include mix.respond-from('tablet') {
-      max-width: 60%;
-      max-height: 95%;
+      max-width: 35%;
+      max-height: 70%;
     }
 
-    // DESKTOP - silueta más grande
+    // DESKTOP
     @include mix.respond-from('desktop') {
-      max-width: 50%;
-      object-position: center center;
+      max-width: 30%;
     }
   }
 
-  /* Overlay gradiente para legibilidad del texto */
+  /* Overlay gradiente para legibilidad del texto - MODO CLARO */
   &__hero-overlay {
     position: absolute;
     inset: 0;
     z-index: 2;
 
-    // Gradiente radial desde el centro hacia afuera
+    // Gradiente radial muy suave hacia los bordes
     background: radial-gradient(
       ellipse at center,
-      transparent 20%,
-      color-mix(in srgb, var(--hero-color) 40%, transparent) 60%,
-      color-mix(in srgb, var(--hero-color) 70%, var(--bg-primary)) 100%
+      transparent 40%,
+      color-mix(in srgb, var(--color-primary) 20%, transparent) 80%,
+      var(--bg-primary) 100%
     );
 
     // Gradiente adicional de abajo hacia arriba para el texto
@@ -132,9 +168,9 @@
       inset: 0;
       background: linear-gradient(
         to top,
-        color-mix(in srgb, var(--bg-primary) 80%, transparent) 0%,
-        color-mix(in srgb, var(--bg-primary) 40%, transparent) 30%,
-        transparent 60%
+        var(--bg-primary) 0%,
+        rgba(var(--bg-primary-rgb), 0.6) 20%,
+        transparent 50%
       );
     }
   }
