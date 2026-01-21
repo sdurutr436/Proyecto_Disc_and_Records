@@ -2,6 +2,7 @@ package com.discsandrecords.api.services;
 
 import java.util.List;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,6 +50,7 @@ import com.discsandrecords.api.repositories.UsuarioRepository;
  */
 @Service
 @Transactional
+@Primary
 public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
@@ -200,6 +202,23 @@ public class UsuarioService implements UserDetailsService {
 
         // TODO: Considerar qué hacer con las reseñas del usuario (soft delete, anonimizar, etc.)
         usuarioRepository.delete(usuario);
+    }
+
+    /**
+     * Actualiza el avatar de un usuario
+     *
+     * @param usuarioId ID del usuario
+     * @param avatarBase64 Avatar en formato Base64 (data:image/...;base64,...)
+     * @return DTO del usuario actualizado
+     * @throws ResourceNotFoundException si el usuario no existe
+     */
+    public UsuarioResponseDTO actualizarAvatar(Long usuarioId, String avatarBase64) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "id", usuarioId));
+
+        usuario.setAvatar(avatarBase64);
+        Usuario actualizado = usuarioRepository.save(usuario);
+        return toResponseDTO(actualizado);
     }
 
     // ==========================================

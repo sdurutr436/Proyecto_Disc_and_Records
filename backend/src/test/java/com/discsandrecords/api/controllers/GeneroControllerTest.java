@@ -15,6 +15,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,6 +28,7 @@ import com.discsandrecords.api.dto.CreateGeneroDTO;
 import com.discsandrecords.api.dto.GeneroResponseDTO;
 import com.discsandrecords.api.dto.PageResponseDTO;
 import com.discsandrecords.api.exceptions.ResourceNotFoundException;
+import com.discsandrecords.api.security.JwtAuthenticationFilter;
 import com.discsandrecords.api.security.JwtService;
 import com.discsandrecords.api.services.GeneroService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,8 +38,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * Prueba endpoints públicos y protegidos con diferentes roles.
  */
-@WebMvcTest(GeneroController.class)
+@WebMvcTest(
+        controllers = GeneroController.class,
+        excludeAutoConfiguration = {
+                SecurityAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class
+        }
+)
 @AutoConfigureMockMvc(addFilters = false)
+@SuppressWarnings("removal")
 @DisplayName("GeneroController - Tests de Integración")
 class GeneroControllerTest {
 
@@ -51,6 +61,9 @@ class GeneroControllerTest {
 
     @MockBean
     private JwtService jwtService;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private GeneroResponseDTO generoResponse;
     private CreateGeneroDTO createGeneroDTO;

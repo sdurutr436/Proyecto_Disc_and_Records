@@ -1,0 +1,32 @@
+// ========================================
+// 06-UTILITIES - Clases de Utilidad
+// ========================================
+//
+// Clases de utilidad de alta especificidad.
+// Usar con moderación - preferir componentes cuando sea posible.
+
+// Helpers de texto
+.u-text-center { text-align: center; }
+.u-text-left { text-align: left; }
+.u-text-right { text-align: right; }
+
+// Helpers de visibilidad
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.u-hidden { display: none !important; }
+
+// Helpers de espaciado (ejemplos)
+.u-mt-0 { margin-top: 0 !important; }
+.u-mb-0 { margin-bottom: 0 !important; }
+.u-pt-0 { padding-top: 0 !important; }
+.u-pb-0 { padding-bottom: 0 !important; }

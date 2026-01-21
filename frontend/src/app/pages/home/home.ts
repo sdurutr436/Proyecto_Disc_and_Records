@@ -11,6 +11,8 @@ import { AlbumStateService } from '../../services/album-state.service';
 import { AlbumService } from '../../services/album.service';
 import { ReviewStateService } from '../../services/review-state.service';
 import { AppStateService } from '../../services/app-state';
+import { HeroService, HeroAsset } from '../../services/hero.service';
+import { ThemeService } from '../../services/theme';
 
 // Interfaz para álbum en la vista
 interface AlbumView {
@@ -30,6 +32,13 @@ interface AlbumView {
  * - TrackBy en @for para evitar re-renders innecesarios
  * - Integración con Deezer API para álbumes reales
  * - Integración con servicio de búsqueda con debounce
+ * - Hero Backdrop adaptativo con siluetas de artistas legendarios
+ *
+ * ESTRATEGIA DE COLOREADO CSS (Hero):
+ * Las siluetas son WebP con fondo transparente y forma en negro.
+ * 1. Contenedor con background-color dinámico (color del artista)
+ * 2. Imagen con mix-blend-mode para tintado
+ * 3. Overlay gradiente para asegurar legibilidad del texto
  */
 @Component({
   selector: 'app-home',
@@ -54,6 +63,10 @@ export class Home implements OnInit {
   private appState = inject(AppStateService);
   private destroyRef = inject(DestroyRef);
 
+  // Servicios para Hero Backdrop
+  protected heroService = inject(HeroService);
+  protected themeService = inject(ThemeService);
+
   // Output para comunicación con el componente padre (si se necesita)
   registerRequest = output<void>();
 
@@ -70,6 +83,21 @@ export class Home implements OnInit {
   // Verificar si el usuario está autenticado
   get isAuthenticated(): boolean {
     return this.appState.isAuthenticated();
+  }
+
+  /**
+   * Obtiene el hero actual desde el servicio
+   */
+  get currentHero(): HeroAsset {
+    return this.heroService.currentHero();
+  }
+
+  /**
+   * Determina si está en modo oscuro para ajustar blend-mode
+   */
+  get isDarkMode(): boolean {
+    const theme = this.themeService.currentTheme();
+    return theme === 'dark' || theme === 'dark-gray';
   }
 
   ngOnInit(): void {

@@ -1,13 +1,16 @@
 package com.discsandrecords.api.controllers;
 
 import java.net.URI;
+import java.util.Base64;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +20,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.discsandrecords.api.dto.CreateUsuarioDTO;
 import com.discsandrecords.api.dto.PageResponseDTO;
 import com.discsandrecords.api.dto.UpdateUsuarioDTO;
 import com.discsandrecords.api.dto.UsuarioEstadisticasDTO;
 import com.discsandrecords.api.dto.UsuarioResponseDTO;
+import com.discsandrecords.api.entities.Usuario;
 import com.discsandrecords.api.services.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -178,4 +183,82 @@ public class UsuarioController {
         usuarioService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
+
+    // ==========================================
+    // ENDPOINT AVATAR UPLOAD
+    // ==========================================
+
+    /**
+     * Subir avatar del usuario autenticado
+     *
+     * ENDPOINT: POST /api/usuarios/me/avatar
+     *
+     * VALIDACIONES:
+     * - Tamaño máximo: 200KB
+     * - Tipos permitidos: image/jpeg, image/png, image/webp, image/gif
+     *
+     * RESPUESTA:
+     * - Retorna el DTO del usuario con el avatar en Base64
+     * - Esto evita un round-trip extra para imágenes pequeñas
+     *
+     * @param file Archivo de imagen
+     * @param usuarioActual Usuario autenticado (inyectado por Spring Security)
+     * @return DTO del usuario actualizado con avatar en Base64
+     */
+    @PostMapping(value = "/me/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Subir avatar del usuario autenticado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Avatar actualizado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Archivo inválido (tamaño o tipo)"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
+            @ApiResponse(responseCode = "415", description = "Tipo de archivo no soportado")
+    })
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> subirAvatar(
+            @Parameter(description = "Archivo de imagen (max 200KB)") @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal Usuario usuarioActual) {
+
+        // Validación 1: Tamaño máximo 200KB
+        final long MAX_SIZE = 200 * 1024; // 200KB en bytes
+        if (file.getSize() > MAX_SIZE) {
+            return ResponseEntity.badRequest()
+                    .body(new ErrorResponse("El archivo excede el tamaño máximo de 200KB"));
+        }
+
+        // Validación 2: Content-Type debe ser imagen
+        String contentType = file.getContentType();
+        if (contentType == null || !isValidImageType(contentType)) {
+            return ResponseEntity.status(415)
+                    .body(new ErrorResponse("Tipo de archivo no soportado. Use: JPEG, PNG, WebP o GIF"));
+        }
+
+        try {
+            // Convertir a Base64
+            byte[] bytes = file.getBytes();
+            String base64Avatar = "data:" + contentType + ";base64," + Base64.getEncoder().encodeToString(bytes);
+
+            // Actualizar avatar del usuario
+            UsuarioResponseDTO actualizado = usuarioService.actualizarAvatar(usuarioActual.getId(), base64Avatar);
+
+            return ResponseEntity.ok(actualizado);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ErrorResponse("Error al procesar el archivo: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Valida si el Content-Type es una imagen permitida
+     */
+    private boolean isValidImageType(String contentType) {
+        return contentType.equals("image/jpeg") ||
+                contentType.equals("image/png") ||
+                contentType.equals("image/webp") ||
+                contentType.equals("image/gif");
+    }
+
+    /**
+     * DTO simple para respuestas de error
+     */
+    private record ErrorResponse(String message) {}
 }

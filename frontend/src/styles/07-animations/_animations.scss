@@ -1,0 +1,236 @@
+// ========================================
+// ANIMATIONS.SCSS - Animaciones Reutilizables
+// ========================================
+// Clases utilitarias para animaciones.
+// Solo animan transform y opacity para mejor rendimiento.
+// Usar will-change: transform en hover para optimización GPU.
+
+// ========================================
+// KEYFRAMES
+// ========================================
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// ========================================
+// CLASES UTILITARIAS
+// ========================================
+
+/**
+ * .animate-fade-in-up
+ * Animación de entrada con desvanecimiento hacia arriba.
+ * Ideal para contenido que aparece en pantalla.
+ *
+ * @example
+ * <h1 class="animate-fade-in-up">Título</h1>
+ */
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+
+  // Variantes con delay para secuencias
+  &--delay-100 {
+    animation-delay: 0.1s;
+  }
+
+  &--delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  &--delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  &--delay-400 {
+    animation-delay: 0.4s;
+  }
+
+  &--delay-500 {
+    animation-delay: 0.5s;
+  }
+}
+
+/**
+ * .animate-hover-lift
+ * Efecto de elevación suave al hacer hover.
+ * Solo anima transform para máximo rendimiento.
+ *
+ * @example
+ * <div class="card animate-hover-lift">Contenido</div>
+ */
+.animate-hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    will-change: transform;
+    transform: translateY(-0.25rem);
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(-0.125rem);
+  }
+
+  // Variante más pronunciada
+  &--lg {
+    &:hover {
+      transform: translateY(-0.5rem);
+      box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+/**
+ * .animate-spin-slow
+ * Rotación lenta continua para indicadores de carga.
+ * Usa animation en lugar de transition para continuidad.
+ *
+ * @example
+ * <div class="loader animate-spin-slow">⟳</div>
+ */
+.animate-spin-slow {
+  animation: spinSlow 2s linear infinite;
+
+  // Variante más rápida
+  &--fast {
+    animation-duration: 1s;
+  }
+
+  // Variante más lenta
+  &--slower {
+    animation-duration: 3s;
+  }
+
+  // Pausar animación (útil cuando se completa la carga)
+  &--paused {
+    animation-play-state: paused;
+  }
+}
+
+/**
+ * .animate-pulse
+ * Efecto de pulso suave para elementos destacados.
+ * Útil para badges, notificaciones, etc.
+ *
+ * @example
+ * <span class="badge animate-pulse">Nuevo</span>
+ */
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+
+  // Variante más rápida
+  &--fast {
+    animation-duration: 1s;
+  }
+}
+
+/**
+ * .animate-shimmer
+ * Efecto de brillo que recorre el elemento.
+ * Útil para skeleton loaders.
+ *
+ * @example
+ * <div class="skeleton animate-shimmer"></div>
+ */
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+// ========================================
+// CLASES DE UTILIDAD PARA TRANSITIONS
+// ========================================
+
+/**
+ * Transiciones predefinidas para propiedades comunes
+ * Solo transform y opacity para máximo rendimiento
+ */
+.transition-fast {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.transition-normal {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.transition-slow {
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+// ========================================
+// RESPETO A PREFERENCIAS DEL USUARIO
+// ========================================
+
+/**
+ * Desactivar animaciones si el usuario prefiere movimiento reducido
+ * Esto es crítico para accesibilidad
+ */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-hover-lift,
+  .animate-spin-slow,
+  .animate-pulse,
+  .animate-shimmer {
+    animation: none;
+    transition: none;
+  }
+
+  .animate-fade-in-up {
+    opacity: 1;
+    transform: none;
+  }
+
+  .animate-shimmer::after {
+    animation: none;
+  }
+}

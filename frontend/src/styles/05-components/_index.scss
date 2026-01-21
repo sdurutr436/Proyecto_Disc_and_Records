@@ -1,0 +1,18 @@
+// ========================================
+// 05-COMPONENTS - Estilos Base de Componentes
+// ========================================
+//
+// Aquí van los estilos base/mixins para componentes reutilizables.
+// Los componentes Angular pueden importar estos parciales si necesitan
+// estilos compartidos.
+//
+// NOTA: Los estilos específicos de cada componente Angular permanecen
+// en su archivo .scss encapsulado (ej: card.scss, button.scss).
+// Este archivo contiene SOLO los estilos/mixins base compartidos.
+
+// Importar componentes base (descomentar cuando estén creados)
+// @forward 'buttons';
+// @forward 'cards';
+// @forward 'alerts';
+// @forward 'forms';
+// @forward 'modals';

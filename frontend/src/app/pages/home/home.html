@@ -1,11 +1,40 @@
 <div class="home">
   <!-- ============================================ -->
-  <!-- SECCIÓN HERO: Eslogan y CTA                  -->
+  <!-- SECCIÓN HERO: Backdrop Adaptativo con Siluetas -->
   <!-- ============================================ -->
-  <section class="home__hero">
+  <section
+    class="home__hero"
+    [class.home__hero--dark]="isDarkMode"
+    [style.--hero-color]="currentHero.baseColor"
+  >
+    <!-- Contenedor del backdrop con color del artista -->
+    <div class="home__hero-backdrop">
+      <!-- Imagen de silueta con blend mode para tintado -->
+      <picture class="home__hero-picture">
+        <!-- Versión mobile (más pequeña) -->
+        <source
+          media="(max-width: 767px)"
+          [srcset]="currentHero.src"
+          type="image/webp"
+        />
+        <!-- Versión desktop -->
+        <img
+          class="home__hero-silhouette"
+          [src]="currentHero.src"
+          [alt]="'Silueta de ' + currentHero.name"
+          loading="eager"
+          decoding="async"
+        />
+      </picture>
+    </div>
+
+    <!-- Overlay gradiente para legibilidad -->
+    <div class="home__hero-overlay"></div>
+
+    <!-- Contenido del hero -->
     <div class="home__hero-content">
       <!-- Eslogan principal -->
-      <h1 class="home__slogan">
+      <h1 class="home__slogan animate-fade-in-up">
         Puntúa todos tus álbumes favoritos
         <span class="home__slogan-highlight">en un solo lugar</span>
       </h1>
@@ -15,7 +44,7 @@
         variant="primary"
         size="lg"
         (clicked)="openRegisterModal()"
-        class="home__cta-button"
+        class="home__cta-button animate-fade-in-up"
       >
         COMIENZA AQUÍ
       </app-button>

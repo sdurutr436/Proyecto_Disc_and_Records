@@ -1,13 +1,5 @@
 package com.discsandrecords.api.controllers;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -15,7 +7,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,12 +22,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.discsandrecords.api.dto.AlbumResponseDTO;
 import com.discsandrecords.api.dto.ArtistaResponseDTO;
 import com.discsandrecords.api.dto.CreateAlbumDTO;
 import com.discsandrecords.api.dto.PageResponseDTO;
 import com.discsandrecords.api.exceptions.ResourceNotFoundException;
+import com.discsandrecords.api.security.JwtAuthenticationFilter;
 import com.discsandrecords.api.security.JwtService;
 import com.discsandrecords.api.services.AlbumService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,8 +45,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * Prueba endpoints públicos y protegidos con diferentes roles.
  */
-@WebMvcTest(AlbumController.class)
+@WebMvcTest(
+        controllers = AlbumController.class,
+        excludeAutoConfiguration = {
+                SecurityAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class
+        }
+)
 @AutoConfigureMockMvc(addFilters = false)
+@SuppressWarnings("removal")
 @DisplayName("AlbumController - Tests de Integración")
 class AlbumControllerTest {
 
@@ -54,6 +68,9 @@ class AlbumControllerTest {
 
     @MockBean
     private JwtService jwtService;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private AlbumResponseDTO albumResponse;
     private ArtistaResponseDTO artistaResponse;

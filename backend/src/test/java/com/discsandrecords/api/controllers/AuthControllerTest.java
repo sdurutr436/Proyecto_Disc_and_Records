@@ -1,28 +1,29 @@
 package com.discsandrecords.api.controllers;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.discsandrecords.api.dto.AuthResponseDTO;
 import com.discsandrecords.api.dto.LoginRequestDTO;
 import com.discsandrecords.api.dto.RegisterRequestDTO;
 import com.discsandrecords.api.exceptions.DuplicateResourceException;
+import com.discsandrecords.api.security.JwtAuthenticationFilter;
 import com.discsandrecords.api.security.JwtService;
 import com.discsandrecords.api.services.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,8 +34,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Usamos @WebMvcTest para cargar solo el contexto web
  * y probar los endpoints HTTP sin levantar toda la aplicación.
  */
-@WebMvcTest(AuthController.class)
-@AutoConfigureMockMvc(addFilters = false) // Desactivar filtros de seguridad para tests de controlador
+@WebMvcTest(
+        controllers = AuthController.class,
+        excludeAutoConfiguration = {
+                SecurityAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class
+        }
+)
+@AutoConfigureMockMvc(addFilters = false)
+@SuppressWarnings("removal")
 @DisplayName("AuthController - Tests de Integración")
 class AuthControllerTest {
 
@@ -49,6 +57,9 @@ class AuthControllerTest {
 
     @MockBean
     private JwtService jwtService;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private RegisterRequestDTO registroValido;
     private LoginRequestDTO loginValido;

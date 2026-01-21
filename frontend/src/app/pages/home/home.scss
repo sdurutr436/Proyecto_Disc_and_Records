@@ -16,34 +16,132 @@
   }
 
   /* ========================================
-     SECCIÓN HERO - Mobile-First
+     SECCIÓN HERO - Backdrop Adaptativo
      ======================================== */
   &__hero {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     border-bottom: 0.125rem solid var(--border-color);
-    background-color: var(--bg-primary);
+    overflow: hidden;
+
+    // Color dinámico del artista (se pasa desde el componente)
+    --hero-color: #ED9C05;
 
     // BASE MÓVIL
-    min-height: 35vh;
+    min-height: 50vh;
     padding: 1rem 0.5rem;
 
     // MOBILE-L
     @include mix.respond-from('mobile-l') {
-      min-height: 40vh;
+      min-height: 55vh;
       padding: 1.5rem 0.75rem;
     }
 
     // TABLET+
     @include mix.respond-from('tablet') {
-      min-height: 50vh;
+      min-height: 65vh;
       padding: 2rem 1rem;
+    }
+
+    // DESKTOP
+    @include mix.respond-from('desktop') {
+      min-height: 70vh;
+    }
+
+    // Modo oscuro: invertir estrategia de blend
+    &--dark {
+      .home__hero-silhouette {
+        // En modo oscuro, usar screen para que lo negro se mezcle con el color
+        mix-blend-mode: screen;
+        filter: invert(1);
+      }
+    }
+  }
+
+  /* Contenedor del backdrop con color del artista */
+  &__hero-backdrop {
+    position: absolute;
+    inset: 0;
+    background-color: var(--hero-color);
+    z-index: 1;
+
+    // Transición suave al cambiar de artista
+    transition: background-color 0.5s ease;
+  }
+
+  /* Picture element para responsive images */
+  &__hero-picture {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Imagen de silueta */
+  &__hero-silhouette {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+
+    // Mix-blend-mode: multiply tiñe las partes blancas
+    // La silueta es negra sobre fondo transparente
+    mix-blend-mode: multiply;
+    opacity: 0.8;
+
+    // BASE MÓVIL - más pequeña
+    max-width: 80%;
+    max-height: 90%;
+
+    // TABLET+
+    @include mix.respond-from('tablet') {
+      max-width: 60%;
+      max-height: 95%;
+    }
+
+    // DESKTOP - silueta más grande
+    @include mix.respond-from('desktop') {
+      max-width: 50%;
+      object-position: center center;
+    }
+  }
+
+  /* Overlay gradiente para legibilidad del texto */
+  &__hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+
+    // Gradiente radial desde el centro hacia afuera
+    background: radial-gradient(
+      ellipse at center,
+      transparent 20%,
+      color-mix(in srgb, var(--hero-color) 40%, transparent) 60%,
+      color-mix(in srgb, var(--hero-color) 70%, var(--bg-primary)) 100%
+    );
+
+    // Gradiente adicional de abajo hacia arriba para el texto
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        color-mix(in srgb, var(--bg-primary) 80%, transparent) 0%,
+        color-mix(in srgb, var(--bg-primary) 40%, transparent) 30%,
+        transparent 60%
+      );
     }
   }
 
   &__hero-content {
+    position: relative;
+    z-index: 3;
     width: 100%;
     max-width: 100%;
 

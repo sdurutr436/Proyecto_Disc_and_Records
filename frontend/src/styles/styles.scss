@@ -18,10 +18,13 @@
 // 5. LAYOUT - Estructuras de página, grid
 @use '04-layout/_grid';
 
-// 6. COMPONENTS - Componentes reutilizables (pendiente)
-// @use '05-components/_buttons';
-// @use '05-components/_cards';
-// @use '05-components/_alerts';
+// 6. COMPONENTS - Estilos base para componentes reutilizables
+// Los componentes Angular tienen sus estilos encapsulados,
+// pero aquí van mixins/variables compartidas
+// @use '05-components/_index' as components;
 
-// 7. UTILITIES - Clases de utilidad (pendiente)
-// @use '06-utilities/_utilities';
+// 7. UTILITIES - Clases de utilidad
+@use '06-utilities/_index';
+
+// 8. ANIMATIONS - Animaciones reutilizables
+@use '07-animations/_animations';
