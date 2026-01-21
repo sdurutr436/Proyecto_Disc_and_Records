@@ -1,8 +1,8 @@
 # Sección 1: Arquitectura CSS y Comunicación Visual
 
-> **Proyecto:** Discs & Records  
-> **Fase:** 1 - Fundamentos y Arquitectura CSS  
-> **Entrega:** 18 de diciembre de 2025  
+> **Proyecto:** Discs & Records
+> **Fase:** 1 - Fundamentos y Arquitectura CSS
+> **Entrega:** 18 de diciembre de 2025
 > **Showcase desplegado:** https://styles-disc-n-records-showcase.netlify.app/showcase.html
 
 ---
@@ -208,11 +208,11 @@ Sin embargo, en Angular la encapsulación de estilos por componente reduce la ne
 ```
 frontend/src/styles/
 ├── 00-settings/
-│   └── _variables.scss      # Design tokens: colores, tipografía, espaciado, 
+│   └── _variables.scss      # Design tokens: colores, tipografía, espaciado,
 │                            # breakpoints, sombras, bordes, transiciones
 │
 ├── 01-tools/
-│   └── _mixins.scss         # Mixins reutilizables: tipografía, temas, 
+│   └── _mixins.scss         # Mixins reutilizables: tipografía, temas,
 │                            # media queries, accesibilidad
 │
 ├── 02-generic/
@@ -395,7 +395,7 @@ $sombra-brutal-l: 8px 8px 0px $color-letra-oscura;        // Contenedores grande
 #### Sombras "Vinilo" (múltiples capas de colores)
 
 ```scss
-$sombra-vinilo-m: 
+$sombra-vinilo-m:
   2px 2px 0px $color-acentuado-light,
   4px 4px 0px $color-contraste-light,
   6px 6px 0px $color-secundario-light;
@@ -593,11 +593,11 @@ Media queries basadas en los breakpoints predefinidos.
 // Uso
 .hero-title {
   font-size: 4.25rem;
-  
+
   @include respond-to('tablet') {
     font-size: 2.5rem;  // Reduce en tablet
   }
-  
+
   @include respond-to('mobile') {
     font-size: 1.75rem; // Reduce más en móvil
   }
@@ -707,8 +707,8 @@ El showcase incluye ejemplos de:
 
 # Sección 2: HTML Semántico y Estructura
 
-> **Proyecto:** Discs & Records  
-> **Fase:** 2 - HTML Semántico y Accesibilidad  
+> **Proyecto:** Discs & Records
+> **Fase:** 2 - HTML Semántico y Accesibilidad
 
 ---
 
@@ -827,7 +827,7 @@ El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de
         <li><a href="#" class="sidebar__nav-link">Descubrir</a></li>
       </ul>
     </nav>
-    
+
     <!-- Sección de tendencias -->
     <div class="sidebar__section">
       <h3 class="sidebar__title">Tendencias</h3>
@@ -908,19 +908,19 @@ El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de
 <footer class="footer">
   <div class="footer__content">
     <div class="footer__stripes" aria-hidden="true"></div>
-    
+
     <!-- Columna izquierda: enlaces institucionales -->
     <div class="footer__buttons-left">
       <button class="footer__btn footer__btn--left-top">API de Desarrollo</button>
       <button class="footer__btn footer__btn--left-middle">Mi perfil</button>
       <button class="footer__btn footer__btn--left-bottom">Contacto</button>
     </div>
-    
+
     <!-- Centro: Logo -->
     <div class="footer__logo-wrapper">
       <img src="/assets/logo.png" alt="Discs & Records" class="footer__logo" />
     </div>
-    
+
     <!-- Columna derecha: enlaces adicionales -->
     <div class="footer__buttons-right">
       <button class="footer__btn footer__btn--right-top">Sobre nosotros</button>
@@ -1022,7 +1022,7 @@ Página: Inicio (Home)
           <li><a href="#">Pop</a></li>
         </ul>
       </nav>
-      
+
       <h3>Tendencias</h3>
       <div class="trending-list">
         <!-- Lista de tendencias -->
@@ -1076,11 +1076,11 @@ Página: Inicio (Home)
 
 ```html
 <form class="register-form" (submit)="onSubmit($event)" method="post" novalidate>
-  
+
   <!-- Fieldset 1: Información de cuenta -->
   <fieldset class="register-form__fieldset">
     <legend class="register-form__legend">Crea tu cuenta</legend>
-    
+
     <!-- Campo de nombre de usuario -->
     <div class="register-form__field">
       <label for="register-username" class="register-form__label">
@@ -1097,25 +1097,25 @@ Página: Inicio (Home)
         [attr.aria-invalid]="usernameError()"
         [attr.aria-describedby]="usernameError() ? 'username-error' : 'username-help'"
         autocomplete="username" />
-      
+
       <!-- Mensaje de error -->
-      <p 
-        *ngIf="usernameError()" 
+      <p
+        *ngIf="usernameError()"
         id="username-error"
         class="register-form__error"
         role="alert">
         {{ usernameErrorMessage() }}
       </p>
-      
+
       <!-- Texto de ayuda -->
-      <p 
-        *ngIf="!usernameError()" 
+      <p
+        *ngIf="!usernameError()"
         id="username-help"
         class="register-form__help">
         Este será tu nombre visible en Discs & Records
       </p>
     </div>
-    
+
     <!-- Campo de correo electrónico -->
     <div class="register-form__field">
       <label for="register-email" class="register-form__label">
@@ -1132,30 +1132,30 @@ Página: Inicio (Home)
         [attr.aria-invalid]="emailError()"
         [attr.aria-describedby]="emailError() ? 'email-error' : 'email-help'"
         autocomplete="email" />
-      
+
       <!-- Mensaje de error -->
-      <p 
-        *ngIf="emailError()" 
+      <p
+        *ngIf="emailError()"
         id="email-error"
         class="register-form__error"
         role="alert">
         {{ emailErrorMessage() }}
       </p>
-      
+
       <!-- Texto de ayuda -->
-      <p 
-        *ngIf="!emailError()" 
+      <p
+        *ngIf="!emailError()"
         id="email-help"
         class="register-form__help">
         Lo usaremos para enviarte actualizaciones de tus álbumes favoritos
       </p>
     </div>
   </fieldset>
-  
+
   <!-- Fieldset 2: Seguridad -->
   <fieldset class="register-form__fieldset">
     <legend class="register-form__legend">Seguridad</legend>
-    
+
     <!-- Campo de contraseña -->
     <div class="register-form__field">
       <label for="register-password" class="register-form__label">
@@ -1190,16 +1190,16 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
 <!-- form-input.html -->
 <div class="form-input-wrapper">
   <!-- Label con asociación al input mediante 'for' -->
-  <label 
-    [for]="inputId" 
+  <label
+    [for]="inputId"
     class="form-input__label"
     [class.form-input__label--required]="required">
     {{ label }}
     <span class="form-input__required-indicator" *ngIf="required" aria-label="Campo requerido">*</span>
   </label>
-  
+
   <!-- Input con todos los atributos necesarios -->
-  <input 
+  <input
     [id]="inputId"
     [type]="type"
     [name]="name"
@@ -1212,19 +1212,19 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
     [attr.aria-describedby]="(helpText || errorMessage) ? inputId + '-description' : null"
     [attr.aria-invalid]="hasError"
     [attr.aria-required]="required" />
-  
+
   <!-- Mensaje de error (solo se muestra si hay error) -->
-  <p 
-    *ngIf="hasError && errorMessage" 
+  <p
+    *ngIf="hasError && errorMessage"
     [id]="inputId + '-description'"
     class="form-input__error"
     role="alert">
     {{ errorMessage }}
   </p>
-  
+
   <!-- Texto de ayuda (solo se muestra si no hay error) -->
-  <p 
-    *ngIf="!hasError && helpText" 
+  <p
+    *ngIf="!hasError && helpText"
     [id]="inputId + '-description'"
     class="form-input__help">
     {{ helpText }}
@@ -1296,8 +1296,8 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
 
 ```html
 <!-- Mensaje de error (prioridad alta) -->
-<p 
-  *ngIf="usernameError()" 
+<p
+  *ngIf="usernameError()"
   id="username-error"
   class="register-form__error"
   role="alert">
@@ -1305,8 +1305,8 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
 </p>
 
 <!-- Texto de ayuda (solo si no hay error) -->
-<p 
-  *ngIf="!usernameError()" 
+<p
+  *ngIf="!usernameError()"
   id="username-help"
   class="register-form__help">
   Este será tu nombre visible en Discs & Records
@@ -1321,19 +1321,19 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
 
 ### Ventajas de esta estructura
 
-✅ **Accesibilidad mejorada**: Lectores de pantalla pueden navegar y entender el formulario  
-✅ **Validación clara**: Los errores están asociados visualmente y semánticamente con los campos  
-✅ **Experiencia de usuario**: Labels clicables, mensajes de ayuda contextuales  
-✅ **SEO y semántica**: HTML estructurado correctamente  
+✅ **Accesibilidad mejorada**: Lectores de pantalla pueden navegar y entender el formulario
+✅ **Validación clara**: Los errores están asociados visualmente y semánticamente con los campos
+✅ **Experiencia de usuario**: Labels clicables, mensajes de ayuda contextuales
+✅ **SEO y semántica**: HTML estructurado correctamente
 ✅ **Mantenibilidad**: Componente reutilizable `form-input` reduce duplicación
 
 ---
 
 # Sección 3: Sistema de Componentes UI
 
-> **Proyecto:** Discs & Records  
-> **Fase:** Sistema de componentes reutilizables  
-> **Framework:** Angular 17+ (standalone components)  
+> **Proyecto:** Discs & Records
+> **Fase:** Sistema de componentes reutilizables
+> **Framework:** Angular 17+ (standalone components)
 > **Metodología:** BEM + ITCSS
 
 ---
@@ -1552,17 +1552,17 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
 **Estructura de acciones:**
 ```typescript
 profileActions: CardAction[] = [
-  { 
-    label: 'Agregar a mi lista', 
-    icon: '+', 
-    variant: 'primary', 
-    callback: () => console.log('Agregado') 
+  {
+    label: 'Agregar a mi lista',
+    icon: '+',
+    variant: 'primary',
+    callback: () => console.log('Agregado')
   },
-  { 
-    label: 'Eliminar', 
-    icon: '−', 
-    variant: 'danger', 
-    callback: () => console.log('Eliminado') 
+  {
+    label: 'Eliminar',
+    icon: '−',
+    variant: 'danger',
+    callback: () => console.log('Eliminado')
   }
 ];
 ```
@@ -1804,7 +1804,7 @@ privacyOptions: RadioOption[] = [
 <app-breadcrumbs [items]="breadcrumbItems"></app-breadcrumbs>
 
 <!-- Breadcrumbs con iconos y separador custom -->
-<app-breadcrumbs 
+<app-breadcrumbs
   [items]="breadcrumbItemsWithIcons"
   separator="›">
 </app-breadcrumbs>
@@ -2182,12 +2182,12 @@ El **bloque** es el componente principal, una entidad independiente que tiene se
   background-color: vars.$color-primario-light;
   color: vars.$color-texto-light;
   box-shadow: vars.$sombra-brutal-m;
-  
+
   &:hover {
     box-shadow: vars.$sombra-brutal-l;
     transform: translate(-2px, -2px);
   }
-  
+
   &:active {
     box-shadow: none;
     transform: translate(4px, 4px);
@@ -2216,7 +2216,7 @@ Los **modificadores** son variaciones del bloque que cambian su apariencia o com
   color: vars.$color-contraste-light;
   border-color: vars.$color-contraste-light;
   box-shadow: none;
-  
+
   &:hover {
     background-color: vars.$color-fondo-light-secundario;
     box-shadow: vars.$sombra-brutal-s;
@@ -2276,7 +2276,7 @@ Las **clases de estado** son similares a modificadores pero representan estados 
   position: relative;
   color: transparent;
   pointer-events: none;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -2313,7 +2313,7 @@ Las **clases de estado** son similares a modificadores pero representan estados 
   padding: vars.$espaciado-m;
   box-shadow: vars.$sombra-brutal-s;
   transition: vars.$transicion-rapida;
-  
+
   &:hover {
     box-shadow: vars.$sombra-brutal-m;
     transform: translateY(-4px);
@@ -2342,11 +2342,11 @@ Las **clases de estado** son similares a modificadores pero representan estados 
   @include mixins.font-size-line('h3');
   margin-bottom: vars.$espaciado-xs;
   color: vars.$color-contraste-light;
-  
+
   a {
     color: inherit;
     text-decoration: none;
-    
+
     &:hover {
       text-decoration: underline;
     }
@@ -2358,11 +2358,11 @@ Las **clases de estado** son similares a modificadores pero representan estados 
   @include mixins.font-size-line('small');
   color: vars.$color-texto-light;
   margin-bottom: vars.$espaciado-s;
-  
+
   a {
     color: inherit;
     text-decoration: none;
-    
+
     &:hover {
       color: vars.$color-acentuado-light;
     }
@@ -2399,12 +2399,12 @@ Las **clases de estado** son similares a modificadores pero representan estados 
   padding: vars.$espaciado-s;
   background-color: white;
   box-shadow: vars.$sombra-brutal-xs;
-  
+
   .card__title {
     @include mixins.font-size-line('body');
     font-weight: 600;
   }
-  
+
   .card__subtitle {
     @include mixins.font-size-line('small');
   }
@@ -2413,7 +2413,7 @@ Las **clases de estado** son similares a modificadores pero representan estados 
 // MODIFICADOR: card tipo profile (para detalles)
 .card--profile {
   padding: vars.$espaciado-l;
-  
+
   .card__image-wrapper {
     margin-bottom: vars.$espaciado-m;
   }
@@ -2423,13 +2423,13 @@ Las **clases de estado** son similares a modificadores pero representan estados 
 .card--horizontal {
   flex-direction: row;
   align-items: center;
-  
+
   .card__image-wrapper {
     flex: 0 0 200px;
     margin-right: vars.$espaciado-m;
     margin-bottom: 0;
   }
-  
+
   .card__content {
     flex: 1;
   }
@@ -2504,12 +2504,12 @@ Las **clases de estado** son similares a modificadores pero representan estados 
   border-radius: vars.$radio-m;
   color: vars.$color-texto-light;
   transition: vars.$transicion-rapida;
-  
+
   &::placeholder {
     color: vars.$color-texto-light;
     opacity: 0.6;
   }
-  
+
   &:focus {
     outline: none;
     border-width: 4px;
@@ -2531,7 +2531,7 @@ Las **clases de estado** son similares a modificadores pero representan estados 
   display: flex;
   align-items: center;
   gap: vars.$espaciado-xs;
-  
+
   &::before {
     content: '⚠';
   }
@@ -2567,11 +2567,11 @@ Las **clases de estado** son similares a modificadores pero representan estados 
 
 ### Ventajas de BEM en Discs & Records
 
-✅ **Claridad:** Cualquier desarrollador puede entender la estructura al leer el código  
-✅ **Mantenibilidad:** Cambios en un componente no afectan a otros  
-✅ **Escalabilidad:** Fácil añadir nuevas variantes o elementos  
-✅ **Especificidad baja:** Evita guerras de `!important` al tener especificidad plana  
-✅ **Reutilización:** Componentes modulares que se pueden combinar  
+✅ **Claridad:** Cualquier desarrollador puede entender la estructura al leer el código
+✅ **Mantenibilidad:** Cambios en un componente no afectan a otros
+✅ **Escalabilidad:** Fácil añadir nuevas variantes o elementos
+✅ **Especificidad baja:** Evita guerras de `!important` al tener especificidad plana
+✅ **Reutilización:** Componentes modulares que se pueden combinar
 ✅ **Naming collision:** Imposible tener conflictos de nombres entre componentes
 
 ---
@@ -2709,8 +2709,8 @@ La ruta está configurada en `frontend/src/app/app.routes.ts`:
 
 # Sección 4: Responsive Design
 
-> **Fase:** 4 - Responsive Design  
-> **Enfoque:** Mobile-First  
+> **Fase:** 4 - Responsive Design
+> **Enfoque:** Mobile-First
 > **Tecnologías:** CSS Media Queries + Container Queries
 
 Esta sección documenta la implementación del diseño responsive en "Discs & Records". Se ha adoptado una estrategia **Mobile-First** que prioriza la experiencia en dispositivos móviles como base, añadiendo complejidad progresiva para pantallas más grandes. Además, se incorporan **Container Queries** para componentes que adaptan su layout según el espacio disponible del contenedor, no del viewport.
@@ -2893,7 +2893,7 @@ El componente `app-card` utiliza Container Queries para adaptarse automáticamen
 @container card (min-width: 280px) and (max-width: 399px) {
   .card--polaroid {
     flex-direction: column;
-    
+
     .card__title {
       font-size: vars.$tamanio-fuente-h4;
     }
@@ -3031,7 +3031,7 @@ En bottom-nav solo se muestra la navegación principal. Las secciones de "Mi per
 ```scss
 .grid {
   display: grid;
-  
+
   // BASE MÓVIL: 1 columna
   grid-template-columns: 1fr;
   gap: vars.$espaciado-s;
@@ -3116,3 +3116,356 @@ Las páginas principales añaden `padding-bottom` para compensar el espacio ocup
 [INSERTA AQUÍ: Captura de Detail en Mobile (375px)]
 
 [INSERTA AQUÍ: Captura de Detail en Desktop (1280px)]
+
+---
+
+# Sección 6: Sistema de Temas
+
+> **Objetivo:** Implementar un sistema de temas robusto con 3 modos (Light, Dark, Grayscale) que permita personalizar la experiencia visual del usuario manteniendo la coherencia estética neobrutalista.
+
+---
+
+## 6.1 Variables de Tema (CSS Custom Properties)
+
+El sistema de temas se basa en **CSS Custom Properties** (variables CSS) que permiten cambiar dinámicamente los colores de la aplicación sin necesidad de recargar la página.
+
+### Arquitectura de Variables
+
+Las variables se definen en el archivo `frontend/src/styles/00-settings/_css-variables.scss` y utilizan el atributo `data-theme` en el elemento `<html>` para activar cada modo.
+
+### Tema Claro (Light) - Por defecto
+
+```scss
+:root {
+  /* --- Colores de fondo --- */
+  --bg-primary: #FBFAF2;              // Fondo principal crema
+  --bg-secondary: #E7D8AB;            // Fondo secundario beige 70s
+
+  /* --- Colores de texto --- */
+  --text-primary: #01131B;            // Texto principal oscuro
+  --text-secondary: rgba(1, 19, 27, 0.5);
+
+  /* --- Colores principales (Paleta cálida 70s) --- */
+  --color-primary: #ED9C05;           // Naranja dorado
+  --color-secondary: #CA6703;         // Naranja quemado
+  --color-contrast: #BB3F03;          // Naranja rojizo
+  --color-accent: #9D2227;            // Rojo vino/burdeos
+
+  /* --- Colores de borde y sombra --- */
+  --border-color: #01131B;
+  --shadow-color: #01131B;
+
+  /* --- Header y navegación --- */
+  --header-bg: #ED9C05;
+  --nav-bg: #CA6703;
+
+  /* --- Filtro para imágenes hero --- */
+  --filter-hero: none;                // Sin filtro en modo claro
+}
+```
+
+### Tema Oscuro (Dark)
+
+```scss
+[data-theme="dark"] {
+  /* --- Colores de fondo - tonos azules profundos --- */
+  --bg-primary: #0B1F2A;              // Azul noche profundo
+  --bg-secondary: #154360;            // Azul océano
+
+  /* --- Colores de texto - alto contraste --- */
+  --text-primary: #F8F9FA;            // Casi blanco
+  --text-secondary: rgba(248, 249, 250, 0.7);
+
+  /* --- Colores principales (Paleta fría) --- */
+  --color-primary: #17A2B8;           // Teal vibrante
+  --color-secondary: #20C997;         // Verde aqua
+  --color-contrast: #93CFBB;          // Verde menta
+  --color-accent: #28A745;            // Verde brillante
+
+  /* --- Colores de borde y sombra --- */
+  --border-color: #E8E8E8;
+  --shadow-color: #E8E8E8;
+
+  /* --- Header y navegación --- */
+  --header-bg: #154360;
+  --nav-bg: #0B1F2A;
+
+  /* --- Filtro para imágenes hero --- */
+  --filter-hero: brightness(0.8) contrast(1.2);
+}
+```
+
+### Tema Escala de Grises (Grayscale) - Accesibilidad
+
+Este modo está diseñado para usuarios con daltonismo o que prefieren alto contraste. Elimina completamente el color, confiando en la jerarquía tipográfica y los bordes para la diferenciación visual.
+
+```scss
+[data-theme="grayscale"] {
+  /* --- Colores de fondo - blanco para máximo contraste --- */
+  --bg-primary: #ffffff;
+  --bg-secondary: #e5e5e5;
+
+  /* --- Colores de texto - negro puro --- */
+  --text-primary: #000000;
+  --text-secondary: #404040;
+
+  /* --- Colores principales - escala monocromática --- */
+  --color-primary: #505050;           // Gris oscuro
+  --color-secondary: #6B6B6B;         // Gris medio
+  --color-contrast: #333333;          // Gris muy oscuro
+  --color-accent: #000000;            // Negro puro
+
+  /* --- Colores de borde y sombra --- */
+  --border-color: #000000;
+  --shadow-color: #000000;
+
+  /* --- Header y navegación --- */
+  --header-bg: #d4d4d4;
+  --nav-bg: #c0c0c0;
+
+  /* --- Filtro para imágenes hero: fuerza B/N --- */
+  --filter-hero: grayscale(100%) contrast(1.1);
+}
+```
+
+---
+
+## 6.2 Implementación del Theme Switcher
+
+### ThemeService (`frontend/src/app/services/theme.ts`)
+
+El servicio de temas es un singleton Angular que gestiona el estado del tema actual utilizando **Signals** para reactividad.
+
+```typescript
+import { Injectable, signal } from '@angular/core';
+
+export type Theme = 'light' | 'dark' | 'grayscale';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ThemeService {
+  private readonly STORAGE_KEY = 'app-theme';
+
+  // Signal reactivo para el tema actual
+  currentTheme = signal<Theme>('light');
+
+  constructor() {
+    this.initTheme();
+  }
+
+  /**
+   * Inicializar el tema:
+   * 1. Recuperar de localStorage si existe
+   * 2. Si no existe, detectar preferencia del sistema (prefers-color-scheme)
+   * 3. Aplicar el tema seleccionado
+   */
+  initTheme(): void {
+    const savedTheme = this.getFromLocalStorage();
+
+    if (savedTheme) {
+      this.setTheme(savedTheme);
+    } else {
+      const systemTheme = this.detectSystemPreference();
+      this.setTheme(systemTheme);
+    }
+  }
+
+  /**
+   * Establecer un tema específico
+   */
+  setTheme(theme: Theme): void {
+    this.currentTheme.set(theme);
+    this.applyTheme(theme);
+  }
+
+  /**
+   * Rotar al siguiente tema en el ciclo:
+   * Light → Dark → Grayscale → Light
+   */
+  nextTheme(): void {
+    const current = this.currentTheme();
+    const nextTheme: Theme =
+      current === 'light' ? 'dark' :
+      current === 'dark' ? 'grayscale' : 'light';
+
+    this.setTheme(nextTheme);
+    this.saveToLocalStorage(nextTheme);
+  }
+
+  /**
+   * Aplicar tema al documento HTML
+   */
+  private applyTheme(theme: Theme): void {
+    const root = document.documentElement;
+
+    if (theme === 'light') {
+      root.removeAttribute('data-theme');
+    } else {
+      root.setAttribute('data-theme', theme);
+    }
+  }
+
+  // ... métodos privados para localStorage
+}
+```
+
+### Flujo de Inicialización
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    initTheme()                               │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+        ┌───────────────────────────────────────┐
+        │ ¿Existe tema guardado en localStorage? │
+        └───────────────────────────────────────┘
+                   │                    │
+                  YES                   NO
+                   │                    │
+                   ▼                    ▼
+        ┌──────────────┐    ┌─────────────────────────┐
+        │ Usar tema    │    │ Detectar prefers-color- │
+        │ guardado     │    │ scheme del sistema      │
+        └──────────────┘    └─────────────────────────┘
+                   │                    │
+                   └────────┬───────────┘
+                            │
+                            ▼
+                 ┌─────────────────────┐
+                 │ setTheme(theme)     │
+                 │ - Actualizar signal │
+                 │ - Aplicar a <html>  │
+                 └─────────────────────┘
+```
+
+### Theme Switcher en el Header/Nav
+
+El botón de cambio de tema se encuentra en la navegación principal y muestra un icono diferente según el tema activo:
+
+| Tema | Icono | Descripción |
+|------|-------|-------------|
+| Light | Sol | Modo claro con paleta cálida 70s |
+| Dark | Luna | Modo oscuro con paleta fría |
+| Grayscale | ◐ Contraste | Modo alto contraste B/N |
+
+```html
+<!-- Botón Theme Switcher -->
+<button
+  class="main-nav__theme-toggle"
+  (click)="toggleTheme()"
+  [attr.aria-label]="getThemeLabel()"
+  type="button">
+
+  <!-- Icono Sol (Light) -->
+  @if (themeService.currentTheme() === 'light') {
+    <svg class="main-nav__theme-icon"><!-- SVG Sol --></svg>
+  }
+
+  <!-- Icono Luna (Dark) -->
+  @if (themeService.currentTheme() === 'dark') {
+    <svg class="main-nav__theme-icon"><!-- SVG Luna --></svg>
+  }
+
+  <!-- Icono Contraste (Grayscale) -->
+  @if (themeService.currentTheme() === 'grayscale') {
+    <svg class="main-nav__theme-icon"><!-- SVG Contraste --></svg>
+  }
+</button>
+```
+
+---
+
+## 6.3 Clases Utilitarias de Tema
+
+Se proporcionan clases CSS utilitarias que reaccionan automáticamente a los cambios de tema:
+
+```scss
+/* Colores de texto */
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-brand     { color: var(--color-primary); }
+.text-accent    { color: var(--color-accent); }
+
+/* Colores de fondo */
+.bg-app     { background-color: var(--bg-primary); }
+.bg-surface { background-color: var(--bg-secondary); }
+.bg-card    { background-color: var(--bg-secondary); }
+.bg-brand   { background-color: var(--color-primary); }
+
+/* Bordes y sombras */
+.border-brand { border-color: var(--border-color); }
+.shadow-brutal { box-shadow: var(--sombra-brutal); }
+
+/* Imágenes hero con filtro dinámico */
+.hero-image {
+  filter: var(--filter-hero);
+  transition: filter 0.3s ease;
+}
+```
+
+---
+
+## 6.4 Capturas de Pantalla
+
+### Página Principal (Home)
+
+#### Modo Claro (Light)
+![Home - Modo Claro](./img-fase6/home-light.png)
+
+#### Modo Oscuro (Dark)
+![Home - Modo Oscuro](./img-fase6/home-dark.png)
+
+#### Modo Escala de Grises (Grayscale)
+![Home - Escala de Grises](./img-fase6/home-grayscale.png)
+
+---
+
+### Página de Perfil (Profile)
+
+#### Modo Claro (Light)
+![Profile - Modo Claro](./img-fase6/profile-light.png)
+
+#### Modo Oscuro (Dark)
+![Profile - Modo Oscuro](./img-fase6/profile-dark.png)
+
+#### Modo Escala de Grises (Grayscale)
+![Profile - Escala de Grises](./img-fase6/profile-grayscale.png)
+
+---
+
+### Página de Detalle (Album Detail)
+
+#### Modo Claro (Light)
+![Detail - Modo Claro](./img-fase6/details-light.png)
+
+#### Modo Oscuro (Dark)
+![Detail - Modo Oscuro](./img-fase6/details-dark.png)
+
+#### Modo Escala de Grises (Grayscale)
+![Detail - Escala de Grises](./img-fase6/details-grayscale.png)
+*[INSERTA AQUÍ: Captura del detalle en escala de grises]*
+
+---
+
+## 6.5 Consideraciones de Accesibilidad
+
+### Modo Grayscale
+
+El modo escala de grises está diseñado pensando en:
+
+1. **Usuarios con daltonismo:** Al eliminar el color, la diferenciación visual se basa únicamente en:
+   - Jerarquía tipográfica (tamaños, pesos)
+   - Bordes y sombras
+   - Iconografía
+
+2. **Alto contraste:** El uso de negro puro (#000000) sobre blanco (#FFFFFF) garantiza un ratio de contraste de 21:1, superando ampliamente el mínimo WCAG AAA de 7:1.
+
+3. **Reducción de fatiga visual:** Para usuarios sensibles a colores brillantes o con migrañas.
+
+### Persistencia y Preferencias del Sistema
+
+- El tema seleccionado se guarda en `localStorage` para persistir entre sesiones
+- Si no hay preferencia guardada, se respeta `prefers-color-scheme` del sistema operativo
+- Los cambios de preferencia del sistema se detectan en tiempo real (solo si el usuario no ha elegido manualmente)

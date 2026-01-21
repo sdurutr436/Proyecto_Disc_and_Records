@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 
-export type Theme = 'light' | 'dark' | 'dark-gray';
+export type Theme = 'light' | 'dark' | 'grayscale';
 
 @Injectable({
   providedIn: 'root',
@@ -14,25 +14,28 @@ export class ThemeService {
   currentTheme = signal<Theme>('light');
 
   constructor() {
-    // Cargar tema al iniciar el servicio
-    this.loadTheme();
+    // Inicializar tema al crear el servicio
+    this.initTheme();
   }
 
   /**
-   * Detectar preferencia de tema del sistema
+   * Detectar preferencia de tema del sistema operativo
+   * @returns 'dark' si el usuario prefiere modo oscuro, 'light' en caso contrario
    */
-  detectSystemPreference(): Theme {
+  private detectSystemPreference(): Theme {
     if (typeof window === 'undefined') return 'light';
 
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    // Si el usuario prefiere oscuro, usar el nuevo modo dark-gray por defecto
-    return prefersDark.matches ? 'dark-gray' : 'light';
+    return prefersDark.matches ? 'dark' : 'light';
   }
 
   /**
-   * Cargar tema desde localStorage o usar preferencia del sistema
+   * Inicializar el tema:
+   * 1. Recuperar de localStorage si existe
+   * 2. Si no existe, detectar preferencia del sistema
+   * 3. Aplicar el tema seleccionado
    */
-  loadTheme(): void {
+  initTheme(): void {
     const savedTheme = this.getFromLocalStorage();
 
     if (savedTheme) {
@@ -48,14 +51,15 @@ export class ThemeService {
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
         // Solo actualizar si no hay tema guardado (usuario no ha elegido manualmente)
         if (!this.getFromLocalStorage()) {
-          this.setTheme(e.matches ? 'dark-gray' : 'light');
+          this.setTheme(e.matches ? 'dark' : 'light');
         }
       });
     }
   }
 
   /**
-   * Cambiar el tema actual
+   * Establecer un tema específico
+   * @param theme - El tema a aplicar ('light', 'dark', o 'grayscale')
    */
   setTheme(theme: Theme): void {
     this.currentTheme.set(theme);
@@ -63,9 +67,10 @@ export class ThemeService {
   }
 
   /**
-   * Rotación entre los 3 modos: light -> dark -> dark-gray -> light...
+   * Rotar al siguiente tema en el ciclo: Light -> Dark -> Grayscale -> Light
+   * Este método es llamado por el botón del header/nav para cambiar de tema
    */
-  toggleTheme(): void {
+  nextTheme(): void {
     const currentTheme = this.currentTheme();
     let newTheme: Theme;
 
@@ -74,9 +79,9 @@ export class ThemeService {
         newTheme = 'dark';
         break;
       case 'dark':
-        newTheme = 'dark-gray';
+        newTheme = 'grayscale';
         break;
-      case 'dark-gray':
+      case 'grayscale':
         newTheme = 'light';
         break;
       default:
@@ -88,19 +93,29 @@ export class ThemeService {
   }
 
   /**
-   * Aplicar tema al documento
+   * Alias de nextTheme() para mantener retrocompatibilidad
+   * @deprecated Usar nextTheme() en su lugar
+   */
+  toggleTheme(): void {
+    this.nextTheme();
+  }
+
+  /**
+   * Aplicar tema al documento HTML mediante el atributo data-theme
+   * @param theme - El tema a aplicar
    */
   private applyTheme(theme: Theme): void {
     if (typeof document === 'undefined') return;
 
     const root = document.documentElement;
 
-    if (theme === 'dark') {
-      root.setAttribute('data-theme', 'dark');
-    } else if (theme === 'dark-gray') {
-      root.setAttribute('data-theme', 'dark-gray');
-    } else {
+    // Aplicar el atributo data-theme según el tema seleccionado
+    if (theme === 'light') {
+      // Light mode: sin atributo (usa :root por defecto)
       root.removeAttribute('data-theme');
+    } else {
+      // Dark o Grayscale: aplicar atributo correspondiente
+      root.setAttribute('data-theme', theme);
     }
   }
 
@@ -114,12 +129,13 @@ export class ThemeService {
 
   /**
    * Obtener tema desde localStorage
+   * Valida que el valor guardado sea un tema válido
    */
   private getFromLocalStorage(): Theme | null {
     if (typeof localStorage === 'undefined') return null;
 
     const saved = localStorage.getItem(this.STORAGE_KEY);
-    if (saved === 'light' || saved === 'dark' || saved === 'dark-gray') {
+    if (saved === 'light' || saved === 'dark' || saved === 'grayscale') {
       return saved;
     }
     return null;

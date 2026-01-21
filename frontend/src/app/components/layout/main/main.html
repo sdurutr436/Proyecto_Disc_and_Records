@@ -52,18 +52,19 @@
             </svg>
           }
 
-          <!-- Icono Luna (modo oscuro azul) -->
+          <!-- Icono Luna (modo oscuro) -->
           @if (themeService.currentTheme() === 'dark') {
             <svg class="main-nav__theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
           }
 
-          <!-- Icono Medialuna/Contraste (modo oscuro escala de grises) -->
-          @if (themeService.currentTheme() === 'dark-gray') {
+          <!-- Icono Ojo/Contraste (modo escala de grises - accesibilidad) -->
+          @if (themeService.currentTheme() === 'grayscale') {
             <svg class="main-nav__theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
-              <path d="M12 2 A10 10 0 0 1 12 22 A10 10 0 0 0 12 2" fill="currentColor"></path>
+              <path d="M12 2v20" stroke="currentColor" stroke-width="2"></path>
+              <path d="M12 2a10 10 0 0 1 0 20" fill="currentColor"></path>
             </svg>
           }
         </button>
@@ -130,10 +131,11 @@
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
           }
-          @if (themeService.currentTheme() === 'dark-gray') {
+          @if (themeService.currentTheme() === 'grayscale') {
             <svg class="main-nav__theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
-              <path d="M12 2 A10 10 0 0 1 12 22 A10 10 0 0 0 12 2" fill="currentColor"></path>
+              <path d="M12 2v20" stroke="currentColor" stroke-width="2"></path>
+              <path d="M12 2a10 10 0 0 1 0 20" fill="currentColor"></path>
             </svg>
           }
         </button>

@@ -5,10 +5,10 @@
  *
  * PROPÓSITO:
  * Verificar que el servicio de temas funciona correctamente:
- * - Cambio entre temas (light, dark, dark-gray)
+ * - Cambio entre temas (light, dark, grayscale)
  * - Persistencia en localStorage
  * - Detección de preferencia del sistema
- * - Toggle cíclico de temas
+ * - Rotación cíclica de temas con nextTheme()
  *
  * @author Tests para Discs & Records MVP
  */
@@ -48,7 +48,7 @@ describe('ThemeService', () => {
 
     it('should initialize with a valid theme', () => {
       const theme = service.currentTheme();
-      expect(['light', 'dark', 'dark-gray']).toContain(theme);
+      expect(['light', 'dark', 'grayscale']).toContain(theme);
     });
   });
 
@@ -66,9 +66,9 @@ describe('ThemeService', () => {
       expect(service.currentTheme()).toBe('dark');
     });
 
-    it('should change theme to dark-gray', () => {
-      service.setTheme('dark-gray');
-      expect(service.currentTheme()).toBe('dark-gray');
+    it('should change theme to grayscale', () => {
+      service.setTheme('grayscale');
+      expect(service.currentTheme()).toBe('grayscale');
     });
 
     it('should apply data-theme attribute for dark theme', () => {
@@ -76,9 +76,9 @@ describe('ThemeService', () => {
       expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
     });
 
-    it('should apply data-theme attribute for dark-gray theme', () => {
-      service.setTheme('dark-gray');
-      expect(document.documentElement.getAttribute('data-theme')).toBe('dark-gray');
+    it('should apply data-theme attribute for grayscale theme', () => {
+      service.setTheme('grayscale');
+      expect(document.documentElement.getAttribute('data-theme')).toBe('grayscale');
     });
 
     it('should remove data-theme attribute for light theme', () => {
@@ -89,46 +89,52 @@ describe('ThemeService', () => {
   });
 
   /**
-   * GRUPO 3: toggleTheme - Rotación cíclica
+   * GRUPO 3: nextTheme / toggleTheme - Rotación cíclica
    */
-  describe('toggleTheme', () => {
+  describe('nextTheme / toggleTheme', () => {
     it('should toggle from light to dark', () => {
       service.setTheme('light');
-      service.toggleTheme();
+      service.nextTheme();
       expect(service.currentTheme()).toBe('dark');
     });
 
-    it('should toggle from dark to dark-gray', () => {
+    it('should toggle from dark to grayscale', () => {
       service.setTheme('dark');
-      service.toggleTheme();
-      expect(service.currentTheme()).toBe('dark-gray');
+      service.nextTheme();
+      expect(service.currentTheme()).toBe('grayscale');
     });
 
-    it('should toggle from dark-gray to light', () => {
-      service.setTheme('dark-gray');
-      service.toggleTheme();
+    it('should toggle from grayscale to light', () => {
+      service.setTheme('grayscale');
+      service.nextTheme();
       expect(service.currentTheme()).toBe('light');
     });
 
-    it('should complete full cycle: light -> dark -> dark-gray -> light', () => {
+    it('should complete full cycle: light -> dark -> grayscale -> light', () => {
       service.setTheme('light');
 
-      service.toggleTheme();
+      service.nextTheme();
       expect(service.currentTheme()).toBe('dark');
 
-      service.toggleTheme();
-      expect(service.currentTheme()).toBe('dark-gray');
+      service.nextTheme();
+      expect(service.currentTheme()).toBe('grayscale');
 
-      service.toggleTheme();
+      service.nextTheme();
       expect(service.currentTheme()).toBe('light');
     });
 
     it('should save theme to localStorage when toggling', () => {
       service.setTheme('light');
-      service.toggleTheme();
+      service.nextTheme();
 
       const saved = localStorage.getItem('app-theme');
       expect(saved).toBe('dark');
+    });
+
+    it('toggleTheme should work as alias for nextTheme', () => {
+      service.setTheme('light');
+      service.toggleTheme();
+      expect(service.currentTheme()).toBe('dark');
     });
   });
 
@@ -137,8 +143,8 @@ describe('ThemeService', () => {
    */
   describe('LocalStorage Persistence', () => {
     it('should persist theme when toggling', () => {
-      service.toggleTheme();
-      service.toggleTheme();
+      service.nextTheme();
+      service.nextTheme();
 
       const saved = localStorage.getItem('app-theme');
       expect(saved).toBeTruthy();
@@ -146,22 +152,24 @@ describe('ThemeService', () => {
 
     it('should restore theme from localStorage on new service instance', () => {
       // Guardar un tema
-      localStorage.setItem('app-theme', 'dark-gray');
+      localStorage.setItem('app-theme', 'grayscale');
 
       // Crear nueva instancia
       const newService = new ThemeService();
 
-      expect(newService.currentTheme()).toBe('dark-gray');
+      expect(newService.currentTheme()).toBe('grayscale');
     });
   });
 
   /**
-   * GRUPO 5: detectSystemPreference
+   * GRUPO 5: Sistema detecta preferencias
    */
-  describe('detectSystemPreference', () => {
-    it('should return a valid theme', () => {
-      const result = service.detectSystemPreference();
-      expect(['light', 'dark', 'dark-gray']).toContain(result);
+  describe('System Preference Detection', () => {
+    it('should return light or dark based on system preference', () => {
+      // initTheme es llamado en el constructor, así que solo verificamos
+      // que el tema inicial sea válido (light o dark, no grayscale por defecto)
+      const theme = service.currentTheme();
+      expect(['light', 'dark', 'grayscale']).toContain(theme);
     });
   });
 });

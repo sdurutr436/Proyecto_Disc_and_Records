@@ -105,7 +105,7 @@ export class Home implements OnInit {
    */
   get isGrayscale(): boolean {
     const theme = this.themeService.currentTheme();
-    return theme === 'dark-gray';
+    return theme === 'grayscale';
   }
 
   ngOnInit(): void {

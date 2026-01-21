@@ -85,10 +85,10 @@ export class Main {
     const current = this.themeService.currentTheme();
     switch (current) {
       case 'light':
-        return 'Cambiar a modo oscuro azul';
+        return 'Cambiar a modo oscuro';
       case 'dark':
-        return 'Cambiar a modo oscuro escala de grises';
-      case 'dark-gray':
+        return 'Cambiar a modo escala de grises';
+      case 'grayscale':
         return 'Cambiar a modo claro';
       default:
         return 'Cambiar tema';
@@ -104,9 +104,9 @@ export class Main {
       case 'light':
         return 'MODO CLARO';
       case 'dark':
-        return 'MODO OSCURO AZUL';
-      case 'dark-gray':
-        return 'MODO OSCURO GRIS';
+        return 'MODO OSCURO';
+      case 'grayscale':
+        return 'ESCALA DE GRISES';
       default:
         return 'MODO CLARO';
     }

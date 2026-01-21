@@ -51,6 +51,9 @@
   --vinyl-shadow-layer-2: #{$color-contraste-light}; // #BB3F03 (naranja rojizo)
   --vinyl-shadow-layer-3: #{$color-secundario-light}; // #CA6703 (naranja quemado)
   --vinyl-shadow-layer-4: #{$color-primario-light};  // #ED9C05 (naranja dorado)
+
+  /* --- Filtro para imágenes hero --- */
+  --filter-hero: none;                               // Sin filtro en modo claro
 }
 
 /* ========================================
@@ -103,15 +106,19 @@
   --vinyl-shadow-layer-2: #{$color-secundario-dark}; // #0A9295 (teal vibrante)
   --vinyl-shadow-layer-3: #{$color-contraste-dark};  // #015F72 (teal profundo)
   --vinyl-shadow-layer-4: #{$color-acentuado-dark};  // #01131B (azul noche)
+
+  /* --- Filtro para imágenes hero --- */
+  --filter-hero: brightness(0.8) contrast(1.2);      // Oscurece imágenes para mejor contraste
 }
 
 /* ========================================
-   TEMA OSCURO ESCALA DE GRISES (NUEVO)
-   Se activa con [data-theme="dark-gray"] en <html>
+   TEMA ESCALA DE GRISES (Modo oscuro monocromático)
+   Se activa con [data-theme="grayscale"] en <html>
+   Ideal para usuarios con daltonismo o preferencias minimalistas
    ======================================== */
 
-[data-theme="dark-gray"] {
-  /* --- Colores de fondo - escala de grises pura --- */
+[data-theme="grayscale"] {
+  /* --- Colores de fondo - escala de grises oscura --- */
   --bg-primary: #1A1A1A;                             // Gris muy oscuro (casi negro)
   --bg-secondary: #2D2D2D;                           // Gris oscuro
 
@@ -155,5 +162,8 @@
   --vinyl-shadow-layer-2: #9E9E9E;                   // Gris medio-claro
   --vinyl-shadow-layer-3: #7A7A7A;                   // Gris medio
   --vinyl-shadow-layer-4: #646464;                   // Gris medio-oscuro
+
+  /* --- Filtro para imágenes hero: fuerza B/N --- */
+  --filter-hero: grayscale(100%) brightness(0.8) contrast(1.1);
 }
 
