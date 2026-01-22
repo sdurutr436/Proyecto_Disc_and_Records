@@ -15,7 +15,8 @@ describe('SettingsProfileComponent', () => {
         id: 1,
         username: 'testuser',
         avatarUrl: 'https://example.com/avatar.jpg'
-      })
+      }),
+      updateUser: jasmine.createSpy('updateUser')
     };
 
     await TestBed.configureTestingModule({

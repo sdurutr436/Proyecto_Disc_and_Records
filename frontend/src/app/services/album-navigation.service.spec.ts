@@ -4,7 +4,7 @@ import { of, throwError } from 'rxjs';
 
 import { AlbumNavigationService } from './album-navigation.service';
 import { AlbumService } from './album.service';
-import { AlbumImportResponse } from '../models/data.models';
+import { Album } from '../models/data.models';
 
 /**
  * Tests para AlbumNavigationService.
@@ -50,7 +50,7 @@ describe('AlbumNavigationService', () => {
 
   describe('navigateToAlbum - álbumes locales', () => {
     it('debe navegar directamente sin importar cuando source es "local"', fakeAsync(() => {
-      const localId = 42;
+      const localId = '42';
 
       service.navigateToAlbum(localId, 'local');
       tick();
@@ -59,11 +59,11 @@ describe('AlbumNavigationService', () => {
       expect(albumServiceSpy.importFromDeezer).not.toHaveBeenCalled();
 
       // Debe navegar directamente con el ID local
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', localId]);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', 42]);
     }));
 
     it('isImporting debe ser false para álbumes locales', fakeAsync(() => {
-      service.navigateToAlbum(42, 'local');
+      service.navigateToAlbum('42', 'local');
       tick();
 
       expect(service.isImporting()).toBeFalse();
@@ -72,18 +72,24 @@ describe('AlbumNavigationService', () => {
 
   describe('navigateToAlbum - álbumes de Deezer', () => {
     const deezerAlbumId = '302127';
-    const mockImportResponse: AlbumImportResponse = {
-      id: 123,
-      tituloAlbum: 'The Dark Side of the Moon',
-      artista: 'Pink Floyd',
-      deezerId: deezerAlbumId,
-      wasImported: true,
-      numTracks: 10,
-      duracionTotal: 2580
+    const mockAlbum: Album = {
+      id: '123',
+      title: 'The Dark Side of the Moon',
+      artist: 'Pink Floyd',
+      artistId: '1',
+      coverUrl: 'https://example.com/cover.jpg',
+      releaseYear: 1973,
+      genre: 'Rock',
+      tracks: 10,
+      duration: '43:00',
+      label: 'Harvest',
+      description: 'Classic album',
+      averageRating: 4.8,
+      totalReviews: 100
     };
 
     it('debe importar y luego navegar con el ID local del backend', fakeAsync(() => {
-      albumServiceSpy.importFromDeezer.and.returnValue(of(mockImportResponse));
+      albumServiceSpy.importFromDeezer.and.returnValue(of(mockAlbum));
 
       service.navigateToAlbum(deezerAlbumId, 'deezer');
       tick();
@@ -95,13 +101,12 @@ describe('AlbumNavigationService', () => {
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', 123]);
     }));
 
-    it('debe usar el ID del backend incluso si wasImported es false (ya existía)', fakeAsync(() => {
-      const existingAlbumResponse: AlbumImportResponse = {
-        ...mockImportResponse,
-        id: 456,
-        wasImported: false // Ya existía en BD
+    it('debe usar el ID del backend incluso si ya existía', fakeAsync(() => {
+      const existingAlbum: Album = {
+        ...mockAlbum,
+        id: '456'
       };
-      albumServiceSpy.importFromDeezer.and.returnValue(of(existingAlbumResponse));
+      albumServiceSpy.importFromDeezer.and.returnValue(of(existingAlbum));
 
       service.navigateToAlbum(deezerAlbumId, 'deezer');
       tick();
@@ -111,7 +116,7 @@ describe('AlbumNavigationService', () => {
     }));
 
     it('isImporting debe ser true durante la importación', fakeAsync(() => {
-      albumServiceSpy.importFromDeezer.and.returnValue(of(mockImportResponse));
+      albumServiceSpy.importFromDeezer.and.returnValue(of(mockAlbum));
 
       // Antes de iniciar
       expect(service.isImporting()).toBeFalse();
@@ -129,7 +134,7 @@ describe('AlbumNavigationService', () => {
     }));
 
     it('importingAlbumId debe reflejar el álbum en proceso', fakeAsync(() => {
-      albumServiceSpy.importFromDeezer.and.returnValue(of(mockImportResponse));
+      albumServiceSpy.importFromDeezer.and.returnValue(of(mockAlbum));
 
       service.navigateToAlbum(deezerAlbumId, 'deezer');
       tick();
@@ -180,14 +185,22 @@ describe('AlbumNavigationService', () => {
 
     it('debe tratar IDs no numéricos como Deezer IDs si source es deezer', fakeAsync(() => {
       const alphanumericDeezerId = 'abc123';
-      const mockResponse: AlbumImportResponse = {
-        id: 789,
-        tituloAlbum: 'Test Album',
-        artista: 'Test Artist',
-        deezerId: alphanumericDeezerId,
-        wasImported: true
+      const mockAlbum: Album = {
+        id: '789',
+        title: 'Test Album',
+        artist: 'Test Artist',
+        artistId: '2',
+        coverUrl: 'https://example.com/cover.jpg',
+        releaseYear: 2020,
+        genre: 'Pop',
+        tracks: 8,
+        duration: '30:00',
+        label: 'Test Label',
+        description: 'Test description',
+        averageRating: 4.0,
+        totalReviews: 50
       };
-      albumServiceSpy.importFromDeezer.and.returnValue(of(mockResponse));
+      albumServiceSpy.importFromDeezer.and.returnValue(of(mockAlbum));
 
       service.navigateToAlbum(alphanumericDeezerId, 'deezer');
       tick();

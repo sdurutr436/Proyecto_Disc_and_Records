@@ -227,7 +227,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   hasUserRated = computed(() => this.userRating() > 0);
   hasUserReview = computed(() => this.userReview() !== null);
   canSubmitReview = computed(() =>
-    this.reviewText().trim().length >= 50 && this.userRating() > 0
+    this.reviewText().trim().length >= 3 && this.userRating() > 0
   );
 
   // Verificar si el usuario está logueado

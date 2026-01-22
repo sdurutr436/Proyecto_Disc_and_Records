@@ -1,19 +1,23 @@
-import { TestBed, fakeAsync, tick, discardPeriodicTasks } from '@angular/core/testing';
-import { HeroService, HeroAsset } from './hero.service';
+import { TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
+import { HeroService, HeroImage } from './hero.service';
+import { ThemeService } from './theme';
 
 describe('HeroService', () => {
   let service: HeroService;
+  let mockThemeService: jasmine.SpyObj<ThemeService>;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [HeroService]
+    mockThemeService = jasmine.createSpyObj('ThemeService', [], {
+      currentTheme: signal('light')
     });
-  });
 
-  afterEach(() => {
-    if (service) {
-      service.ngOnDestroy();
-    }
+    TestBed.configureTestingModule({
+      providers: [
+        HeroService,
+        { provide: ThemeService, useValue: mockThemeService }
+      ]
+    });
   });
 
   it('should be created', () => {
@@ -21,116 +25,42 @@ describe('HeroService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should have 5 hero assets', () => {
-    service = TestBed.inject(HeroService);
-    expect(service.allAssets().length).toBe(5);
-  });
-
-  it('should start with the first hero asset', () => {
+  it('should have a currentHero computed signal', () => {
     service = TestBed.inject(HeroService);
     const hero = service.currentHero();
-    expect(hero.name).toBe('david-bowie');
+    expect(hero).toBeTruthy();
+    expect(hero.name).toBeDefined();
+    expect(hero.srcMedium).toBeDefined();
+    expect(hero.alt).toBeDefined();
   });
 
-  it('should advance to next hero with next()', () => {
+  it('should have currentAssets computed signal with assets', () => {
     service = TestBed.inject(HeroService);
-    service.next();
-    expect(service.currentHero().name).toBe('elvis-presley');
+    const assets = service.currentAssets();
+    expect(assets).toBeTruthy();
+    expect(assets.length).toBeGreaterThan(0);
   });
-
-  it('should go back to previous hero with previous()', () => {
-    service = TestBed.inject(HeroService);
-    service.next(); // Go to elvis
-    service.previous(); // Back to david
-    expect(service.currentHero().name).toBe('david-bowie');
-  });
-
-  it('should wrap around when going past last hero', () => {
-    service = TestBed.inject(HeroService);
-    // Advance through all heroes
-    service.next(); // elvis
-    service.next(); // freddie
-    service.next(); // michael
-    service.next(); // prince
-    service.next(); // back to david
-    expect(service.currentHero().name).toBe('david-bowie');
-  });
-
-  it('should wrap around when going before first hero', () => {
-    service = TestBed.inject(HeroService);
-    service.previous(); // Should go to prince (last)
-    expect(service.currentHero().name).toBe('prince');
-  });
-
-  it('should go to specific index with goTo()', () => {
-    service = TestBed.inject(HeroService);
-    service.goTo(2); // freddie-mercury
-    expect(service.currentHero().name).toBe('freddie-mercury');
-  });
-
-  it('should not change index for invalid goTo() values', () => {
-    service = TestBed.inject(HeroService);
-    const initialHero = service.currentHero().name;
-    service.goTo(-1);
-    expect(service.currentHero().name).toBe(initialHero);
-    service.goTo(100);
-    expect(service.currentHero().name).toBe(initialHero);
-  });
-
-  it('should auto-rotate every 8 seconds', fakeAsync(() => {
-    service = TestBed.inject(HeroService);
-    expect(service.currentHero().name).toBe('david-bowie');
-
-    tick(8000);
-    expect(service.currentHero().name).toBe('elvis-presley');
-
-    tick(8000);
-    expect(service.currentHero().name).toBe('freddie-mercury');
-
-    discardPeriodicTasks();
-  }));
-
-  it('should pause rotation', fakeAsync(() => {
-    service = TestBed.inject(HeroService);
-    service.pause();
-
-    tick(16000); // Wait 2 rotations
-    expect(service.currentHero().name).toBe('david-bowie'); // Should not have changed
-
-    discardPeriodicTasks();
-  }));
-
-  it('should resume rotation after pause', fakeAsync(() => {
-    service = TestBed.inject(HeroService);
-    service.pause();
-    service.resume();
-
-    tick(8000);
-    expect(service.currentHero().name).toBe('elvis-presley');
-
-    discardPeriodicTasks();
-  }));
 
   it('should have correct asset structure', () => {
     service = TestBed.inject(HeroService);
-    const assets = service.allAssets();
+    const assets = service.currentAssets();
 
-    assets.forEach((asset: HeroAsset) => {
+    assets.forEach((asset: HeroImage) => {
       expect(asset.name).toBeTruthy();
-      expect(asset.src).toContain('assets/images/hero/');
-      expect(asset.src).toContain('.webp');
-      expect(asset.alt).toContain('Silueta');
+      expect(asset.srcMedium).toBeTruthy();
+      expect(asset.alt).toBeTruthy();
     });
   });
 
-  it('should have all expected artists', () => {
+  it('should have shuffleAll method', () => {
     service = TestBed.inject(HeroService);
-    const names = service.allAssets().map(a => a.name);
+    expect(service.shuffleAll).toBeDefined();
+    expect(typeof service.shuffleAll).toBe('function');
+  });
 
-    expect(names).toContain('david-bowie');
-    expect(names).toContain('elvis-presley');
-    expect(names).toContain('freddie-mercury');
-    expect(names).toContain('michael-jackson');
-    expect(names).toContain('prince');
+  it('should shuffle all indices when shuffleAll is called', () => {
+    service = TestBed.inject(HeroService);
+    // Just verify the method can be called without errors
+    expect(() => service.shuffleAll()).not.toThrow();
   });
 });

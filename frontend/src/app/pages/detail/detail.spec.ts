@@ -291,19 +291,19 @@ describe('DetailComponent', () => {
     });
 
     it('should compute canSubmitReview as false when text too short', () => {
-      component['reviewText'].set('Short');
+      component['reviewText'].set('AB');
       component['userRating'].set(4);
       expect(component.canSubmitReview()).toBeFalse();
     });
 
     it('should compute canSubmitReview as false when rating is 0', () => {
-      component['reviewText'].set('A'.repeat(50));
+      component['reviewText'].set('A'.repeat(3));
       component['userRating'].set(0);
       expect(component.canSubmitReview()).toBeFalse();
     });
 
     it('should compute canSubmitReview as true when valid', () => {
-      component['reviewText'].set('A'.repeat(50));
+      component['reviewText'].set('A'.repeat(3));
       component['userRating'].set(4);
       expect(component.canSubmitReview()).toBeTrue();
     });

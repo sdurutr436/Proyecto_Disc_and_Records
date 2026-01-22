@@ -72,8 +72,10 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
 
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
-          this.currentAvatar.set(e.target.result as string);
-          this.successMessage.set('Foto de perfil actualizada (temporal)');
+          const avatarBase64 = e.target.result as string;
+          this.currentAvatar.set(avatarBase64);
+          this.appState.updateUser({ avatarUrl: avatarBase64 });
+          this.successMessage.set('Foto de perfil actualizada correctamente');
           setTimeout(() => this.successMessage.set(null), 3000);
         }
       };
