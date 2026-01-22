@@ -1,18 +1,18 @@
 /**
  * Tests de Verificación Cross-Browser
  * =====================================
- * 
+ *
  * Este archivo contiene tests específicos para verificar la compatibilidad
  * del navegador con las funcionalidades críticas de la aplicación.
- * 
+ *
  * Navegadores objetivo (según .browserslistrc):
  * - Chrome (últimas 2 versiones)
- * - Firefox (últimas 2 versiones)  
+ * - Firefox (últimas 2 versiones)
  * - Safari (últimas 2 versiones)
  * - Edge (últimas 2 versiones)
  * - iOS Safari (últimas 2 versiones)
  * - Chrome Android (últimas 2 versiones)
- * 
+ *
  * Ejecución:
  * - Chrome:  ng test --browsers=Chrome
  * - Firefox: ng test --browsers=Firefox
@@ -52,17 +52,17 @@ interface BrowserInfo {
 function detectBrowser(): BrowserInfo {
   const ua = navigator.userAgent;
   const vendor = navigator.vendor || '';
-  
+
   const isChromium = /Chrome/.test(ua) && /Google Inc/.test(vendor);
   const isFirefox = /Firefox/.test(ua);
   const isSafari = /Safari/.test(ua) && !/Chrome/.test(ua);
   const isEdge = /Edg/.test(ua);
   const isMobile = /Mobile|Android|iPhone|iPad/.test(ua);
-  
+
   let name = 'Unknown';
   let version = 'Unknown';
   let engine = 'Unknown';
-  
+
   if (isEdge) {
     name = 'Edge';
     version = ua.match(/Edg\/(\d+)/)?.[1] || 'Unknown';
@@ -80,7 +80,7 @@ function detectBrowser(): BrowserInfo {
     version = ua.match(/Version\/(\d+)/)?.[1] || 'Unknown';
     engine = 'WebKit';
   }
-  
+
   return {
     name,
     version,
@@ -102,24 +102,24 @@ function checkES2022Support(): boolean {
     // 1. Array.at()
     const arr = [1, 2, 3];
     if (arr.at?.(-1) !== 3) return false;
-    
+
     // 2. Object.hasOwn()
     if (!Object.hasOwn({ a: 1 }, 'a')) return false;
-    
+
     // 3. String.replaceAll()
     if ('aaa'.replaceAll('a', 'b') !== 'bbb') return false;
-    
+
     // 4. Promise.any (ES2021)
     if (typeof Promise.any !== 'function') return false;
-    
+
     // 5. WeakRef (ES2021)
     if (typeof WeakRef !== 'function') return false;
-    
+
     // 6. Logical assignment operators
     let x = null;
     x ??= 5;
     if (x !== 5) return false;
-    
+
     return true;
   } catch {
     return false;
@@ -136,13 +136,13 @@ function checkWebComponentsSupport(): boolean {
 
 function checkCSSSupport(): BrowserInfo['supportsCSS'] {
   const testEl = document.createElement('div');
-  
+
   return {
-    grid: CSS.supports?.('display', 'grid') ?? 
+    grid: CSS.supports?.('display', 'grid') ??
           (testEl.style.display = 'grid', testEl.style.display === 'grid'),
-    flexbox: CSS.supports?.('display', 'flex') ?? 
+    flexbox: CSS.supports?.('display', 'flex') ??
              (testEl.style.display = 'flex', testEl.style.display === 'flex'),
-    customProperties: CSS.supports?.('--test', '1') ?? 
+    customProperties: CSS.supports?.('--test', '1') ??
                       window.CSS !== undefined,
     containerQueries: CSS.supports?.('container-type', 'inline-size') ?? false
   };
@@ -166,14 +166,14 @@ function checkCSSSupport(): BrowserInfo['supportsCSS'] {
 class TestSignalsComponent {
   count = signal(0);
   doubled = computed(() => this.count() * 2);
-  
+
   constructor() {
     // Effect para tracking
     effect(() => {
       console.log(`[Signal Effect] Count changed: ${this.count()}`);
     });
   }
-  
+
   increment(): void {
     this.count.update(c => c + 1);
   }
@@ -196,7 +196,7 @@ class TestSignalsComponent {
 })
 class TestReactiveFormComponent {
   private fb = inject(FormBuilder);
-  
+
   form: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]]
@@ -206,11 +206,11 @@ class TestReactiveFormComponent {
 @Injectable({ providedIn: 'root' })
 class TestAsyncService {
   private data$ = new BehaviorSubject<string[]>([]);
-  
+
   getData(): Observable<string[]> {
     return this.data$.asObservable();
   }
-  
+
   fetchData(): Observable<string[]> {
     return of(['item1', 'item2', 'item3']).pipe(
       delay(100),
@@ -228,7 +228,7 @@ class TestAsyncService {
 
 describe('Cross-Browser Compatibility Tests', () => {
   let browserInfo: BrowserInfo;
-  
+
   beforeAll(() => {
     browserInfo = detectBrowser();
     console.log('='.repeat(60));
@@ -269,11 +269,11 @@ describe('Cross-Browser Compatibility Tests', () => {
       let a: number | null = null;
       a ??= 10;
       expect(a).toBe(10);
-      
+
       let b = 0;
       b ||= 20;
       expect(b).toBe(20);
-      
+
       let c = 5;
       c &&= 30;
       expect(c).toBe(30);
@@ -282,7 +282,7 @@ describe('Cross-Browser Compatibility Tests', () => {
     it('debería soportar Optional Chaining (?.) y Nullish Coalescing (??)', () => {
       const obj: { nested?: { value?: number } } = {};
       expect(obj?.nested?.value ?? 'default').toBe('default');
-      
+
       const obj2 = { nested: { value: 42 } };
       expect(obj2?.nested?.value ?? 'default').toBe(42);
     });
@@ -292,7 +292,7 @@ describe('Cross-Browser Compatibility Tests', () => {
         Promise.resolve('success'),
         Promise.reject('error')
       ]);
-      
+
       expect(results.length).toBe(2);
       expect(results[0].status).toBe('fulfilled');
       expect(results[1].status).toBe('rejected');
@@ -304,14 +304,14 @@ describe('Cross-Browser Compatibility Tests', () => {
         Promise.resolve('success'),
         Promise.reject('error2')
       ]);
-      
+
       expect(result).toBe('success');
     });
 
     it('debería soportar WeakRef y FinalizationRegistry', () => {
       expect(typeof WeakRef).toBe('function');
       expect(typeof FinalizationRegistry).toBe('function');
-      
+
       const obj = { data: 'test' };
       const weakRef = new WeakRef(obj);
       expect(weakRef.deref()?.data).toBe('test');
@@ -328,10 +328,10 @@ describe('Cross-Browser Compatibility Tests', () => {
     it('debería crear signals reactivos', () => {
       const count = signal(0);
       expect(count()).toBe(0);
-      
+
       count.set(5);
       expect(count()).toBe(5);
-      
+
       count.update(c => c + 1);
       expect(count()).toBe(6);
     });
@@ -340,10 +340,10 @@ describe('Cross-Browser Compatibility Tests', () => {
       const base = signal(10);
       const doubled = computed(() => base() * 2);
       const tripled = computed(() => base() * 3);
-      
+
       expect(doubled()).toBe(20);
       expect(tripled()).toBe(30);
-      
+
       base.set(5);
       expect(doubled()).toBe(10);
       expect(tripled()).toBe(15);
@@ -352,16 +352,16 @@ describe('Cross-Browser Compatibility Tests', () => {
     it('debería renderizar componente con signals', () => {
       const fixture = TestBed.createComponent(TestSignalsComponent);
       fixture.detectChanges();
-      
+
       const countSpan = fixture.nativeElement.querySelector('.count');
       const doubledSpan = fixture.nativeElement.querySelector('.doubled');
-      
+
       expect(countSpan.textContent).toBe('0');
       expect(doubledSpan.textContent).toBe('0');
-      
+
       fixture.componentInstance.increment();
       fixture.detectChanges();
-      
+
       expect(countSpan.textContent).toBe('1');
       expect(doubledSpan.textContent).toBe('2');
     });
@@ -377,7 +377,7 @@ describe('Cross-Browser Compatibility Tests', () => {
     it('debería crear formulario reactivo', () => {
       const fixture = TestBed.createComponent(TestReactiveFormComponent);
       fixture.detectChanges();
-      
+
       const form = fixture.componentInstance.form;
       expect(form).toBeTruthy();
       expect(form.get('email')).toBeTruthy();
@@ -387,7 +387,7 @@ describe('Cross-Browser Compatibility Tests', () => {
     it('debería validar campos requeridos', () => {
       const fixture = TestBed.createComponent(TestReactiveFormComponent);
       fixture.detectChanges();
-      
+
       const form = fixture.componentInstance.form;
       expect(form.valid).toBeFalse();
       expect(form.get('email')?.errors?.['required']).toBeTrue();
@@ -396,12 +396,12 @@ describe('Cross-Browser Compatibility Tests', () => {
     it('debería validar formato de email', () => {
       const fixture = TestBed.createComponent(TestReactiveFormComponent);
       fixture.detectChanges();
-      
+
       const form = fixture.componentInstance.form;
       form.get('email')?.setValue('invalid');
-      
+
       expect(form.get('email')?.errors?.['email']).toBeTrue();
-      
+
       form.get('email')?.setValue('valid@example.com');
       expect(form.get('email')?.errors).toBeNull();
     });
@@ -409,13 +409,13 @@ describe('Cross-Browser Compatibility Tests', () => {
     it('debería actualizar vista al cambiar valores', () => {
       const fixture = TestBed.createComponent(TestReactiveFormComponent);
       fixture.detectChanges();
-      
+
       const emailInput: HTMLInputElement = fixture.nativeElement.querySelector('input[formControlName="email"]');
-      
+
       emailInput.value = 'test@example.com';
       emailInput.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-      
+
       expect(fixture.componentInstance.form.get('email')?.value).toBe('test@example.com');
     });
   });
@@ -437,15 +437,15 @@ describe('Cross-Browser Compatibility Tests', () => {
 
     it('debería emitir datos con delay', fakeAsync(() => {
       let result: string[] = [];
-      
+
       service.fetchData().subscribe(data => {
         result = data;
       });
-      
+
       expect(result.length).toBe(0);
-      
+
       tick(100);
-      
+
       expect(result.length).toBe(3);
       expect(result).toEqual(['item1', 'item2', 'item3']);
     }));
@@ -453,22 +453,22 @@ describe('Cross-Browser Compatibility Tests', () => {
     it('debería soportar firstValueFrom', async () => {
       const data$ = of(['a', 'b', 'c']);
       const result = await firstValueFrom(data$);
-      
+
       expect(result).toEqual(['a', 'b', 'c']);
     });
 
     it('debería soportar operadores de transformación', fakeAsync(() => {
       let result: number[] = [];
-      
+
       of([1, 2, 3]).pipe(
         delay(50),
         map(arr => arr.map(n => n * 2))
       ).subscribe(data => {
         result = data;
       });
-      
+
       tick(50);
-      
+
       expect(result).toEqual([2, 4, 6]);
     }));
   });
@@ -514,7 +514,7 @@ describe('Cross-Browser Compatibility Tests', () => {
 
     it('debería soportar LocalStorage', () => {
       expect(typeof localStorage).toBe('object');
-      
+
       localStorage.setItem('test-key', 'test-value');
       expect(localStorage.getItem('test-key')).toBe('test-value');
       localStorage.removeItem('test-key');
@@ -522,7 +522,7 @@ describe('Cross-Browser Compatibility Tests', () => {
 
     it('debería soportar SessionStorage', () => {
       expect(typeof sessionStorage).toBe('object');
-      
+
       sessionStorage.setItem('test-key', 'test-value');
       expect(sessionStorage.getItem('test-key')).toBe('test-value');
       sessionStorage.removeItem('test-key');
@@ -565,30 +565,30 @@ describe('Cross-Browser Compatibility Tests', () => {
       const child = document.createElement('span');
       container.appendChild(child);
       document.body.appendChild(container);
-      
+
       expect(child.closest('.parent')).toBe(container);
-      
+
       document.body.removeChild(container);
     });
 
     it('debería soportar element.matches()', () => {
       const div = document.createElement('div');
       div.className = 'test-class';
-      
+
       expect(div.matches('.test-class')).toBeTrue();
       expect(div.matches('.other-class')).toBeFalse();
     });
 
     it('debería soportar element.classList', () => {
       const div = document.createElement('div');
-      
+
       div.classList.add('class1', 'class2');
       expect(div.classList.contains('class1')).toBeTrue();
       expect(div.classList.contains('class2')).toBeTrue();
-      
+
       div.classList.remove('class1');
       expect(div.classList.contains('class1')).toBeFalse();
-      
+
       div.classList.toggle('class3');
       expect(div.classList.contains('class3')).toBeTrue();
     });
@@ -596,7 +596,7 @@ describe('Cross-Browser Compatibility Tests', () => {
     it('debería soportar element.dataset', () => {
       const div = document.createElement('div');
       div.dataset['testValue'] = 'hello';
-      
+
       expect(div.dataset['testValue']).toBe('hello');
       expect(div.getAttribute('data-test-value')).toBe('hello');
     });
@@ -605,10 +605,10 @@ describe('Cross-Browser Compatibility Tests', () => {
       const parent = document.createElement('div');
       const child1 = document.createElement('span');
       const child2 = document.createElement('span');
-      
+
       parent.append(child1);
       parent.prepend(child2);
-      
+
       expect(parent.firstChild).toBe(child2);
       expect(parent.lastChild).toBe(child1);
     });
@@ -617,9 +617,9 @@ describe('Cross-Browser Compatibility Tests', () => {
       const parent = document.createElement('div');
       const child = document.createElement('span');
       parent.appendChild(child);
-      
+
       child.remove();
-      
+
       expect(parent.children.length).toBe(0);
     });
   });
@@ -628,7 +628,7 @@ describe('Cross-Browser Compatibility Tests', () => {
     it('debería soportar CustomEvent', () => {
       const detail = { message: 'test', value: 42 };
       const event = new CustomEvent('custom-event', { detail });
-      
+
       expect(event.detail).toEqual(detail);
       expect(event.type).toBe('custom-event');
     });
@@ -636,31 +636,31 @@ describe('Cross-Browser Compatibility Tests', () => {
     it('debería soportar dispatchEvent', () => {
       const div = document.createElement('div');
       let received = false;
-      
+
       div.addEventListener('test-event', () => {
         received = true;
       });
-      
+
       div.dispatchEvent(new Event('test-event'));
-      
+
       expect(received).toBeTrue();
     });
 
     it('debería soportar addEventListener con options', () => {
       const div = document.createElement('div');
       let count = 0;
-      
+
       div.addEventListener('click', () => count++, { once: true });
-      
+
       div.click();
       div.click();
-      
+
       expect(count).toBe(1);
     });
 
     it('debería soportar passive event listeners', () => {
       let passiveSupported = false;
-      
+
       try {
         const options = {
           get passive() {
@@ -668,13 +668,13 @@ describe('Cross-Browser Compatibility Tests', () => {
             return false;
           }
         };
-        
+
         window.addEventListener('test', () => {}, options as AddEventListenerOptions);
         window.removeEventListener('test', () => {});
       } catch {
         passiveSupported = false;
       }
-      
+
       expect(passiveSupported).toBeTrue();
     });
   });
@@ -684,7 +684,7 @@ describe('Cross-Browser Compatibility Tests', () => {
       const obj = { name: 'test', values: [1, 2, 3] };
       const json = JSON.stringify(obj);
       const parsed = JSON.parse(json);
-      
+
       expect(parsed).toEqual(obj);
     });
 
@@ -693,7 +693,7 @@ describe('Cross-Browser Compatibility Tests', () => {
       if (typeof structuredClone === 'function') {
         const obj = { a: 1, b: { c: 2 } };
         const clone = structuredClone(obj);
-        
+
         expect(clone).toEqual(obj);
         expect(clone).not.toBe(obj);
         expect(clone.b).not.toBe(obj.b);
@@ -709,7 +709,7 @@ describe('Cross-Browser Compatibility Tests', () => {
       const asyncFn = async () => {
         return await Promise.resolve('async result');
       };
-      
+
       const result = await asyncFn();
       expect(result).toBe('async result');
     });
@@ -720,7 +720,7 @@ describe('Cross-Browser Compatibility Tests', () => {
         yield 2;
         yield 3;
       }
-      
+
       const gen = numberGenerator();
       expect(gen.next().value).toBe(1);
       expect(gen.next().value).toBe(2);
@@ -733,12 +733,12 @@ describe('Cross-Browser Compatibility Tests', () => {
         yield await Promise.resolve(1);
         yield await Promise.resolve(2);
       }
-      
+
       const results: number[] = [];
       for await (const value of asyncGenerator()) {
         results.push(value);
       }
-      
+
       expect(results).toEqual([1, 2]);
     });
   });
@@ -765,7 +765,7 @@ describe('Cross-Browser Compatibility Tests', () => {
 ║ Container Queries: ${String(browserInfo.supportsCSS.containerQueries).padEnd(40)}║
 ╚══════════════════════════════════════════════════════════════╝
       `);
-      
+
       expect(browserInfo.name).toBeTruthy();
     });
 
@@ -778,7 +778,7 @@ describe('Cross-Browser Compatibility Tests', () => {
         'CSS Custom Properties': browserInfo.supportsCSS.customProperties,
         'Web Components': browserInfo.supportsWebComponents
       };
-      
+
       let allSupported = true;
       for (const [feature, supported] of Object.entries(criticalFeatures)) {
         if (!supported) {
@@ -788,7 +788,7 @@ describe('Cross-Browser Compatibility Tests', () => {
           console.log(`✅ ${feature}: supported`);
         }
       }
-      
+
       expect(allSupported).toBeTrue();
     });
   });
