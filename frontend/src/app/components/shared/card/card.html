@@ -5,13 +5,15 @@
     <section class="card__left">
       <div [class]="imageClasses">
         @if (imageUrl) {
+          <!-- Optimización: ngSrc para lazy loading automático y prioridad configurable -->
           <img
-            [src]="imageUrl"
+            [ngSrc]="imageUrl"
             [alt]="imageAlt"
             width="200"
             height="200"
-            loading="lazy"
-            decoding="async"
+            [priority]="priority"
+            placeholder
+            [loaderParams]="{quality: 80}"
           />
         } @else if (placeholderIcon) {
           <span class="card__placeholder card__placeholder--svg" [innerHTML]="safePlaceholderIcon"></span>
@@ -62,13 +64,15 @@
     <!-- Variante Polaroid: estructura original -->
     <section [class]="imageClasses">
       @if (imageUrl) {
+        <!-- Optimización: ngSrc para lazy loading automático y prioridad configurable -->
         <img
-          [src]="imageUrl"
+          [ngSrc]="imageUrl"
           [alt]="imageAlt"
           width="200"
           height="200"
-          loading="lazy"
-          decoding="async"
+          [priority]="priority"
+          placeholder
+          [loaderParams]="{quality: 80}"
         />
       } @else if (placeholderIcon) {
         <span class="card__placeholder card__placeholder--svg" [innerHTML]="safePlaceholderIcon"></span>

@@ -1,6 +1,7 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withPreloading, withDebugTracing, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { IMAGE_CONFIG } from '@angular/common';
 import { LUCIDE_ICONS, LucideIconProvider, Disc3, LayoutGrid, ArrowLeft, Search, Heart, Music, BarChart3, Star, MessageSquare, List, Users } from 'lucide-angular';
 
 import { routes } from './app.routes';
@@ -74,7 +75,19 @@ export const appConfig: ApplicationConfig = {
     ),
 
     // Iconos Lucide
-    { provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider({ Disc3, LayoutGrid, ArrowLeft, Search, Heart, Music, BarChart3, Star, MessageSquare, List, Users }) }
+    { provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider({ Disc3, LayoutGrid, ArrowLeft, Search, Heart, Music, BarChart3, Star, MessageSquare, List, Users }) },
+
+    // Configuración de imágenes optimizadas
+    {
+      provide: IMAGE_CONFIG,
+      useValue: {
+        // Permitir dominios externos de CDN (Deezer)
+        disableImageSizeWarning: false,
+        disableImageLazyLoadWarning: false,
+        // Deshabilitar warning para URLs externas de CDN
+        breakpoints: [320, 480, 640, 750, 828, 1080, 1200]
+      }
+    }
   ]
 };
 

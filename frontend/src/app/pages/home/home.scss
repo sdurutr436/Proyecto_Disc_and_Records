@@ -197,17 +197,24 @@
   &__section {
     background-color: transparent;
 
+    // OPTIMIZACIÓN: content-visibility para carruseles fuera del viewport
+    // Reduce trabajo de rendering al no calcular layout de elementos no visibles
+    content-visibility: auto;
+    contain-intrinsic-size: 0 350px; // Altura estimada para evitar saltos de layout
+
     // BASE MÓVIL
     padding: 1.5rem 0.5rem;
 
     // TABLET
     @include mix.respond-from('tablet') {
       padding: 2rem 1rem;
+      contain-intrinsic-size: 0 400px;
     }
 
     // DESKTOP
     @include mix.respond-from('desktop') {
       padding: 3rem 2rem;
+      contain-intrinsic-size: 0 450px;
     }
 
     // Sección personal
@@ -222,6 +229,8 @@
      ======================================== */
   &__album-card {
     cursor: pointer;
+    // OPTIMIZACIÓN: will-change para preparar GPU antes de hover
+    will-change: transform;
     transition: transform 0.3s ease;
 
     // BASE MÓVIL
@@ -265,7 +274,7 @@
 }
 
 /* ========================================
-   ANIMACIONES
+   ANIMACIONES - OPTIMIZADAS PARA RENDIMIENTO
    ======================================== */
 @keyframes fadeIn {
   from {
@@ -278,14 +287,27 @@
   }
 }
 
-.home__hero-content,
-.home__search,
-.home__section {
-  animation: fadeIn 0.6s ease-out;
+// OPTIMIZACIÓN: Usar @media (prefers-reduced-motion) para accesibilidad
+// y reducir trabajo de animación en dispositivos con bajo rendimiento
+@media (prefers-reduced-motion: no-preference) {
+  .home__hero-content,
+  .home__search,
+  .home__section {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  .home__section {
+    animation-delay: 0.2s;
+  }
 }
 
-.home__section {
-  animation-delay: 0.2s;
+// Fallback sin animaciones para usuarios que prefieren movimiento reducido
+@media (prefers-reduced-motion: reduce) {
+  .home__hero-content,
+  .home__search,
+  .home__section {
+    animation: none;
+  }
 }
 
 // ========================================

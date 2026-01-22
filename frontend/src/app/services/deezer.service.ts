@@ -428,24 +428,46 @@ export class DeezerService {
   // ==========================================================================
 
   /**
-   * Obtiene la mejor imagen disponible de un álbum
-   * Prioriza cover_big (500x500), luego cover_medium (250x250)
+   * Obtiene la mejor imagen disponible de un álbum según contexto
+   * OPTIMIZACIÓN MÓVIL: En dispositivos móviles, cover_medium (250x250) es suficiente
+   * para cards de ~200px, evitando descargar imágenes grandes innecesarias.
+   *
+   * @param album El álbum de Deezer
+   * @param preferBig true para preferir imágenes grandes (desktop), false para móvil
    */
   getBestAlbumCover(album: DeezerAlbum, preferBig: boolean = true): string {
-    if (preferBig && album.cover_big) return album.cover_big;
-    if (album.cover_xl) return album.cover_xl;
+    // Detectar móvil para optimizar tamaño de imagen
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+    // En móvil, usar cover_medium (250x250) que es suficiente para cards de 200px
+    if (isMobile || !preferBig) {
+      if (album.cover_medium) return album.cover_medium;
+      if (album.cover_big) return album.cover_big;
+      return album.cover || 'assets/album-placeholder.svg';
+    }
+
+    // En desktop, usar imágenes grandes
     if (album.cover_big) return album.cover_big;
+    if (album.cover_xl) return album.cover_xl;
     if (album.cover_medium) return album.cover_medium;
     return album.cover || 'assets/album-placeholder.svg';
   }
 
   /**
    * Obtiene la mejor imagen de un artista
+   * OPTIMIZACIÓN: Aplica la misma lógica móvil que getBestAlbumCover
    */
   getBestArtistPicture(artist: DeezerArtist, preferBig: boolean = true): string {
-    if (preferBig && artist.picture_big) return artist.picture_big;
-    if (artist.picture_xl) return artist.picture_xl;
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+    if (isMobile || !preferBig) {
+      if (artist.picture_medium) return artist.picture_medium;
+      if (artist.picture_big) return artist.picture_big;
+      return artist.picture || 'assets/artist-placeholder.svg';
+    }
+
     if (artist.picture_big) return artist.picture_big;
+    if (artist.picture_xl) return artist.picture_xl;
     if (artist.picture_medium) return artist.picture_medium;
     return artist.picture || 'assets/artist-placeholder.svg';
   }

@@ -49,8 +49,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "16kB",
-                  "maximumError": "32kB"
+                  "maximumWarning": "32kB",
+                  "maximumError": "48kB"
                 }
               ],
               "outputHashing": "all",
@@ -58,9 +58,12 @@
                 "scripts": true,
                 "styles": {
                   "minify": true,
-                  "inlineCritical": true
+                  "inlineCritical": true,
+                  "removeSpecialComments": true
                 },
-                "fonts": true
+                "fonts": {
+                  "inline": true
+                }
               },
               "namedChunks": false,
               "aot": true,

@@ -15,18 +15,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- DNS-prefetch para recursos secundarios (no bloquean) -->
+  <!-- DNS-prefetch y preconnect para CDN de Deezer (imágenes de álbumes) -->
+  <link rel="preconnect" href="https://e-cdns-images.dzcdn.net" crossorigin>
   <link rel="dns-prefetch" href="https://e-cdns-images.dzcdn.net">
   <link rel="dns-prefetch" href="https://api.deezer.com">
 
-  <!-- Preload de fuentes críticas para FCP -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Monoton&family=Space+Grotesk:wght@300;400;500;600;700&display=swap">
-  <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Preload de fuentes críticas para FCP - con media print hack para no bloquear render -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Monoton&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Monoton&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
   <!-- Open Graph para redes sociales -->
   <meta property="og:title" content="Discs & Records">
   <meta property="og:description" content="Puntúa y descubre tus álbumes favoritos">
   <meta property="og:type" content="website">
+
+  <!-- Optimización: reducir tiempo de respuesta del servidor -->
+  <meta http-equiv="x-dns-prefetch-control" content="on">
 </head>
 <body>
   <app-root></app-root>
