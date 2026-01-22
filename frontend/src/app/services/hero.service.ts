@@ -1,86 +1,89 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
+import { ThemeService } from './theme';
+import {
+  HeroTheme,
+  HeroImage,
+  HERO_ASSETS_BY_THEME,
+  buildHeroImage
+} from '../config/hero-assets.config';
+
+// Re-exportar tipos para uso externo
+export type { HeroTheme, HeroImage } from '../config/hero-assets.config';
 
 /**
- * Representa un asset de héroe (silueta de artista)
- */
-export interface HeroAsset {
-  /** Nombre identificador del artista */
-  name: string;
-  /** Ruta al archivo de imagen */
-  src: string;
-  /** Texto alternativo para accesibilidad */
-  alt: string;
-}
-
-/**
- * HeroService - Gestiona la silueta estática del hero backdrop
+ * HeroService - Gestiona el carrusel de imágenes del hero backdrop
  *
- * Inspirado en Letterboxd: silueta permanente y sutil.
- * Sin rotación automática - se selecciona aleatoriamente al cargar.
+ * Las imágenes están organizadas por tema (Expedition 33):
+ * - clair: imágenes para modo claro
+ * - obscur: imágenes para modo oscuro
+ * - renoir: imágenes para modo contraste/grayscale
  *
- * La silueta se muestra muy atenuada:
- * - Modo claro: silueta naranja suave
- * - Modo oscuro: silueta más clara que el fondo
- * - Escala de grises: silueta blanca sutil
+ * La configuración de assets está externalizada en:
+ * @see config/hero-assets.config.ts
  */
 @Injectable({
   providedIn: 'root'
 })
 export class HeroService {
-  /** Lista de assets de siluetas de artistas disponibles */
-  private readonly assets: HeroAsset[] = [
-    {
-      name: 'david-bowie',
-      src: 'assets/images/hero/david_bowie_1.webp',
-      alt: 'Silueta de David Bowie'
-    },
-    {
-      name: 'david-bowie-2',
-      src: 'assets/images/hero/david_bowie_2.webp',
-      alt: 'Silueta de David Bowie'
-    },
-    {
-      name: 'freddie-mercury',
-      src: 'assets/images/hero/freddie_mercury.webp',
-      alt: 'Silueta de Freddie Mercury'
-    },
-    {
-      name: 'jimi-hendrix',
-      src: 'assets/images/hero/jimmy_hendrix.webp',
-      alt: 'Silueta de Jimi Hendrix'
-    },
-    {
-      name: 'prince',
-      src: 'assets/images/hero/prince.webp',
-      alt: 'Silueta de Prince'
-    }
-  ];
+  private readonly themeService = inject(ThemeService);
 
-  /** Índice seleccionado aleatoriamente al iniciar */
-  private readonly selectedIndex = signal(this.getRandomIndex());
+  /** Índice seleccionado para cada tema (se genera al inicializar) */
+  private readonly selectedIndices: Record<HeroTheme, number> = {
+    light: this.getRandomIndex('light'),
+    dark: this.getRandomIndex('dark'),
+    grayscale: this.getRandomIndex('grayscale')
+  };
 
-  /** Asset actual (estático, no cambia después de carga) */
-  readonly currentHero = computed(() => this.assets[this.selectedIndex()]);
+  /** Tema actual derivado del ThemeService */
+  private readonly currentTheme = computed((): HeroTheme => {
+    const theme = this.themeService.currentTheme();
+    if (theme === 'dark') return 'dark';
+    if (theme === 'grayscale') return 'grayscale';
+    return 'light';
+  });
 
-  /** Lista completa de assets (solo lectura) */
-  readonly allAssets = computed(() => [...this.assets]);
+  /** Asset actual según el tema */
+  readonly currentHero = computed((): HeroImage => {
+    const theme = this.currentTheme();
+    const assets = HERO_ASSETS_BY_THEME[theme];
+    const index = this.selectedIndices[theme];
+    const asset = assets[index];
+    return buildHeroImage(asset, theme);
+  });
+
+  /** Lista de assets del tema actual */
+  readonly currentAssets = computed(() => {
+    const theme = this.currentTheme();
+    return HERO_ASSETS_BY_THEME[theme].map(asset => buildHeroImage(asset, theme));
+  });
 
   constructor() {
     this.preloadCurrentImage();
   }
 
   /**
-   * Obtiene un índice aleatorio para seleccionar la silueta inicial
+   * Obtiene un índice aleatorio para el tema especificado
    */
-  private getRandomIndex(): number {
-    return Math.floor(Math.random() * this.assets.length);
+  private getRandomIndex(theme: HeroTheme): number {
+    const assets = HERO_ASSETS_BY_THEME[theme];
+    return Math.floor(Math.random() * assets.length);
   }
 
   /**
-   * Precarga solo la imagen seleccionada
+   * Precarga la imagen actual para el tema activo
    */
   private preloadCurrentImage(): void {
+    const hero = this.currentHero();
     const img = new Image();
-    img.src = this.assets[this.selectedIndex()].src;
+    img.src = hero.srcMedium;
+  }
+
+  /**
+   * Fuerza una nueva selección aleatoria para todos los temas
+   */
+  shuffleAll(): void {
+    this.selectedIndices.light = this.getRandomIndex('light');
+    this.selectedIndices.dark = this.getRandomIndex('dark');
+    this.selectedIndices.grayscale = this.getRandomIndex('grayscale');
   }
 }

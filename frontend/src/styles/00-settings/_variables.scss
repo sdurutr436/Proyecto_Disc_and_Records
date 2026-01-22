@@ -111,6 +111,13 @@ $tamanio-fuente-display-hero: 5rem;    // 80px - títulos hero
 $tamanio-fuente-display-mega: 8rem;    // 128px - responsive 404
 $tamanio-fuente-display-ultra: 12rem;  // 192px - 404 desktop
 
+/* --- Variables del Hero Section --- */
+$hero-imagen-opacidad: 0.2;            // 20% opacidad para las imágenes
+$hero-min-altura-mobile: 50vh;         // Altura mínima en móvil
+$hero-min-altura-mobile-l: 55vh;       // Altura mínima en móvil grande
+$hero-min-altura-tablet: 65vh;         // Altura mínima en tablet
+$hero-min-altura-desktop: 80vh;        // Altura mínima en desktop (aumentado para imagen más grande)
+
 /* --- Variables de espaciado --- */
 // Micro-espaciados para transforms y efectos sutiles
 $espaciado-micro: 0.125rem;   // 2px

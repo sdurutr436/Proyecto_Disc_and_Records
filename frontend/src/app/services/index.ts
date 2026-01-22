@@ -33,4 +33,4 @@ export { ThemeService } from './theme';
 
 // Hero backdrop service
 export { HeroService } from './hero.service';
-export type { HeroAsset } from './hero.service';
+export type { HeroTheme, HeroImage } from './hero.service';

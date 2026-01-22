@@ -11,7 +11,7 @@ import { AlbumStateService } from '../../services/album-state.service';
 import { AlbumService } from '../../services/album.service';
 import { ReviewStateService } from '../../services/review-state.service';
 import { AppStateService } from '../../services/app-state';
-import { HeroService, HeroAsset } from '../../services/hero.service';
+import { HeroService, HeroImage } from '../../services/hero.service';
 import { ThemeService } from '../../services/theme';
 
 // Interfaz para álbum en la vista
@@ -88,7 +88,7 @@ export class Home implements OnInit {
   /**
    * Obtiene el hero actual desde el servicio
    */
-  get currentHero(): HeroAsset {
+  get currentHero(): HeroImage {
     return this.heroService.currentHero();
   }
 

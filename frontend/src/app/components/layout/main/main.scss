@@ -2,6 +2,14 @@
 @use '../../../../styles/01-tools/mixins' as mix;
 
 /* ========================================
+   HOST - Estilos del componente
+   ======================================== */
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ========================================
    MAIN-NAV - Navegación STICKY
    ======================================== */
 .main-nav {

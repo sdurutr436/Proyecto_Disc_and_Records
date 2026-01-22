@@ -9,6 +9,13 @@
   font-family: vars.$fuente-principal;
 }
 
+/* El main ocupa el espacio restante en el flex container */
+app-main {
+  flex: 1;
+  display: block;
+}
+
+/* El componente renderizado por el router también ocupa su espacio */
 router-outlet + * {
   flex: 1;
 }

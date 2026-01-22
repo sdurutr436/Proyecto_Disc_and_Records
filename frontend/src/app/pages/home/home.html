@@ -1,35 +1,40 @@
 <div class="home">
   <!-- ============================================ -->
-  <!-- SECCIÓN HERO: Backdrop Adaptativo con Siluetas -->
+  <!-- SECCIÓN HERO: Backdrop con Imágenes por Tema -->
   <!-- ============================================ -->
   <section
     class="home__hero"
     [class.home__hero--dark]="isDarkMode"
     [class.home__hero--grayscale]="isGrayscale"
   >
-    <!-- Contenedor del backdrop con color del artista -->
-    <div class="home__hero-backdrop">
-      <!-- Imagen de silueta con blend mode para tintado -->
+    <!-- Contenedor de la imagen hero -->
+    <div class="home__hero-image-container">
+      <!-- Imagen responsive con srcset -->
       <picture class="home__hero-picture">
-        <!-- Versión mobile (más pequeña) -->
         <source
-          media="(max-width: 767px)"
-          [srcset]="currentHero.src"
+          media="(max-width: 479px)"
+          [srcset]="currentHero.srcSmall"
           type="image/webp"
         />
-        <!-- Versión desktop -->
+        <source
+          media="(max-width: 767px)"
+          [srcset]="currentHero.srcMedium"
+          type="image/webp"
+        />
+        <source
+          media="(max-width: 1199px)"
+          [srcset]="currentHero.srcLarge"
+          type="image/webp"
+        />
         <img
-          class="home__hero-silhouette"
-          [src]="currentHero.src"
-          [alt]="'Silueta de ' + currentHero.name"
+          class="home__hero-image"
+          [src]="currentHero.srcExtraLarge"
+          [alt]="currentHero.alt"
           loading="eager"
           decoding="async"
         />
       </picture>
     </div>
-
-    <!-- Overlay gradiente para legibilidad -->
-    <div class="home__hero-overlay"></div>
 
     <!-- Contenido del hero -->
     <div class="home__hero-content">

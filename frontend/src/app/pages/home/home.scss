@@ -16,7 +16,7 @@
   }
 
   /* ========================================
-     SECCIÓN HERO - Backdrop Adaptativo
+     SECCIÓN HERO - Carrusel de Imágenes por Tema
      ======================================== */
   &__hero {
     position: relative;
@@ -26,89 +26,37 @@
     text-align: center;
     border-bottom: 0.125rem solid var(--border-color);
     overflow: hidden;
+    background-color: var(--bg-primary);
 
-    // Color dinámico del artista (se pasa desde el componente)
-    --hero-color: #ED9C05;
-
-    // BASE MÓVIL
-    min-height: 50vh;
-    padding: 1rem 0.5rem;
+    // BASE MÓVIL - sin padding bottom para pegar al search
+    min-height: $hero-min-altura-mobile;
+    padding: 1rem 0.5rem 0;
 
     // MOBILE-L
     @include mix.respond-from('mobile-l') {
-      min-height: 55vh;
-      padding: 1.5rem 0.75rem;
+      min-height: $hero-min-altura-mobile-l;
+      padding: 1.5rem 0.75rem 0;
     }
 
     // TABLET+
     @include mix.respond-from('tablet') {
-      min-height: 65vh;
-      padding: 2rem 1rem;
+      min-height: $hero-min-altura-tablet;
+      padding: 2rem 1rem 0;
     }
 
     // DESKTOP
     @include mix.respond-from('desktop') {
-      min-height: 70vh;
-    }
-
-    // =========================================
-    // MODO CLARO (default): Silueta naranja suave
-    // =========================================
-    // Fondo naranja cálido, silueta muy atenuada
-
-    // =========================================
-    // MODO OSCURO: Silueta clara sobre fondo oscuro
-    // =========================================
-    &--dark {
-      .home__hero-backdrop {
-        background-color: var(--bg-primary);
-      }
-
-      .home__hero-silhouette {
-        opacity: 0.15;
-        filter: brightness(2) contrast(0.8);
-      }
-
-      .home__hero-overlay {
-        background: radial-gradient(
-          ellipse at center,
-          transparent 30%,
-          rgba(0, 0, 0, 0.3) 70%,
-          var(--bg-primary) 100%
-        );
-      }
-    }
-
-    // =========================================
-    // MODO ESCALA GRISES: Silueta blanca sutil
-    // =========================================
-    &--grayscale {
-      .home__hero-backdrop {
-        background-color: var(--bg-primary);
-      }
-
-      .home__hero-silhouette {
-        opacity: 0.12;
-        filter: brightness(3) contrast(0.6) grayscale(1);
-      }
-
-      .home__hero-overlay {
-        background: radial-gradient(
-          ellipse at center,
-          transparent 30%,
-          rgba(128, 128, 128, 0.2) 70%,
-          var(--bg-primary) 100%
-        );
-      }
+      min-height: $hero-min-altura-desktop;
     }
   }
 
-  /* Contenedor del backdrop - MODO CLARO por defecto */
-  &__hero-backdrop {
+  /* Contenedor de la imagen hero */
+  &__hero-image-container {
     position: absolute;
     inset: 0;
-    // Naranja muy atenuado (40%) mezclado con el fondo para efecto sutil
-    background-color: color-mix(in srgb, var(--color-primary) 40%, var(--bg-primary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 1;
   }
 
@@ -119,59 +67,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
   }
 
-  /* Imagen de silueta - MODO CLARO por defecto */
-  &__hero-silhouette {
+  /* Imagen del hero - opacidad controlada por variable */
+  &__hero-image {
     width: auto;
-    height: auto;
-    max-width: 40%;
-    max-height: 70%;
+    height: 100%;
+    max-width: 100%;
     object-fit: contain;
-    object-position: center center;
-
-    // Silueta muy atenuada para efecto sutil Letterboxd
-    mix-blend-mode: multiply;
-    opacity: 0.18;
+    object-position: center bottom;
+    opacity: $hero-imagen-opacidad;
 
     // TABLET+
     @include mix.respond-from('tablet') {
-      max-width: 35%;
-      max-height: 70%;
+      height: 95%;
     }
 
-    // DESKTOP
+    // DESKTOP: imagen más grande ocupando casi toda la altura
     @include mix.respond-from('desktop') {
-      max-width: 30%;
-    }
-  }
-
-  /* Overlay gradiente para legibilidad del texto - MODO CLARO */
-  &__hero-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-
-    // Gradiente radial muy suave hacia los bordes
-    background: radial-gradient(
-      ellipse at center,
-      transparent 40%,
-      color-mix(in srgb, var(--color-primary) 20%, transparent) 80%,
-      var(--bg-primary) 100%
-    );
-
-    // Gradiente adicional de abajo hacia arriba para el texto
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to top,
-        var(--bg-primary) 0%,
-        rgba(var(--bg-primary-rgb), 0.6) 20%,
-        transparent 50%
-      );
+      height: 100%;
     }
   }
 
