@@ -43,6 +43,27 @@
    MIXINS DE TEMA Y COLORES
    ======================================== */
 
+// Mixin para transiciones suaves de tema
+// Uso: @include theme-transition; o @include theme-transition(background-color, color, border-color);
+// NOTA: Usar en elementos que cambien de color con el tema
+@mixin theme-transition($properties...) {
+  $transition-list: ();
+  $default-props: (background-color, color, border-color, fill, stroke);
+
+  // Si no se pasan propiedades, usar las por defecto
+  @if length($properties) == 0 {
+    @each $prop in $default-props {
+      $transition-list: append($transition-list, #{$prop} vars.$transicion-base, comma);
+    }
+  } @else {
+    @each $prop in $properties {
+      $transition-list: append($transition-list, #{$prop} vars.$transicion-base, comma);
+    }
+  }
+
+  transition: $transition-list;
+}
+
 // Mixin para modo oscuro/claro usando variables
 @mixin theme-colors($modo: 'light') {
   @if $modo == 'light' {

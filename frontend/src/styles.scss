@@ -1,5 +1,6 @@
 @use 'styles/00-settings/variables' as *;
 @use 'styles/00-settings/css-variables' as *;
+@use 'styles/01-tools/mixins' as mix;
 
 /* ========================================
    RESET Y ESTILOS BASE
@@ -16,7 +17,7 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
-  overflow-x: hidden; // Previene scroll horizontal
+  /* NOTA: NO usar overflow-x:hidden aquí - ROMPE position:sticky */
 }
 
 body {
@@ -26,10 +27,31 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
-  overflow-x: hidden; // Previene scroll horizontal
+  overflow-x: hidden; // Seguro en body
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  @include mix.theme-transition;
+}
+
+/* ========================================
+   TRANSICIONES DE TEMA GLOBALES
+   Aplicamos transiciones suaves a elementos
+   que cambian de color con el tema
+   ======================================== */
+
+/* Elementos que heredan transiciones de tema */
+h1, h2, h3, h4, h5, h6,
+p, span, label,
+nav, header, footer, main, section, article, aside,
+div, ul, li,
+button, input, textarea, select,
+a, svg {
+  transition:
+    background-color $transicion-base,
+    color $transicion-base,
+    border-color $transicion-base,
+    fill $transicion-base,
+    stroke $transicion-base;
 }
 
 /* ========================================
@@ -99,50 +121,61 @@ a {
 /* ========================================
    UTILIDADES DE TEMA
    Clases que reaccionan a los 3 modos
+   Con transiciones suaves incluidas
    ======================================== */
 
 /* Colores de texto */
 .text-primary {
   color: var(--text-primary);
+  @include mix.theme-transition(color);
 }
 
 .text-secondary {
   color: var(--text-secondary);
+  @include mix.theme-transition(color);
 }
 
 .text-brand {
   color: var(--color-primary);
+  @include mix.theme-transition(color);
 }
 
 .text-accent {
   color: var(--color-accent);
+  @include mix.theme-transition(color);
 }
 
 /* Colores de fondo */
 .bg-app {
   background-color: var(--bg-primary);
+  @include mix.theme-transition(background-color);
 }
 
 .bg-surface {
   background-color: var(--bg-secondary);
+  @include mix.theme-transition(background-color);
 }
 
 .bg-card {
   background-color: var(--bg-secondary);
+  @include mix.theme-transition(background-color);
 }
 
 .bg-brand {
   background-color: var(--color-primary);
+  @include mix.theme-transition(background-color);
 }
 
 /* Bordes */
 .border-brand {
   border-color: var(--border-color);
+  @include mix.theme-transition(border-color);
 }
 
 /* Sombras */
 .shadow-brutal {
   box-shadow: var(--sombra-brutal);
+  transition: box-shadow $transicion-base;
 }
 
 /* ========================================

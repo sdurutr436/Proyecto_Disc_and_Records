@@ -9,7 +9,7 @@
 html {
   font-size: 16px; // Base para rem
   scroll-behavior: smooth;
-  overflow-x: hidden; // Previene scroll horizontal global
+  /* NOTA: NO usar overflow-x:hidden aquí porque ROMPE position:sticky */
 }
 
 body {
@@ -18,7 +18,7 @@ body {
   line-height: vars.$altura-linea-parrafo;
   color: var(--text-primary);
   background-color: var(--bg-primary);
-  overflow-x: hidden; // Previene scroll horizontal global
+  overflow-x: hidden; // Previene scroll horizontal global (seguro aquí)
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -34,9 +34,15 @@ img, video, iframe, embed, object {
 }
 
 /* --- Contenedores principales no excedan viewport --- */
-main, section, article, aside, nav, header, footer {
+/* NOTA: NO usar overflow-x: hidden en nav ni main porque ROMPE position: sticky */
+section, article, aside, header, footer {
   max-width: 100%;
   overflow-x: hidden;
+}
+
+/* main y nav NO deben tener overflow para permitir sticky */
+main, nav {
+  max-width: 100%;
 }
 
 /* --- Encabezados --- */

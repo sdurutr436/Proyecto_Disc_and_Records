@@ -1,18 +1,17 @@
 @use '../styles/00-settings/variables' as vars;
 
 :host {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: vars.$fuente-principal;
+  /* display: contents hace que el host "desaparezca" del layout
+     y sus hijos se comportan como si fueran hijos directos del body */
+  display: contents;
 }
 
-/* El main ocupa el espacio restante en el flex container */
+/* Alternativa: usar block para layout normal sin flex */
+/* Si se necesita flex, el body debe ser el flex container */
+
+/* El main ocupa el espacio restante */
 app-main {
-  flex: 1;
-  display: block;
+  display: contents; /* También aplanamos app-main */
 }
 
 /* El componente renderizado por el router también ocupa su espacio */
