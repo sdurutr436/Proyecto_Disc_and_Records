@@ -3,7 +3,6 @@
 > **Proyecto:** Discs & Records
 > **Fase:** 1 - Fundamentos y Arquitectura CSS
 > **Entrega:** 18 de diciembre de 2025
-> **Showcase desplegado:** https://styles-disc-n-records-showcase.netlify.app/showcase.html
 
 ---
 
@@ -225,6 +224,15 @@ frontend/src/styles/
 ├── 04-layout/
 │   └── _grid.scss           # Sistema de grid (CSS Grid + Flexbox)
 │
+├── 05-components/
+│   └── _buttons.scss        # Componentes UI reutilizables
+│
+├── 06-utilities/
+│   └── _utils.scss          # Clases utilitarias con !important
+│
+├── 07-animations/
+│   └── _keyframes.scss      # Definiciones de animaciones
+│
 └── styles.scss              # Archivo principal - importa todo en orden ITCSS
 ```
 
@@ -318,6 +326,7 @@ Los design tokens son variables SCSS que centralizan todos los valores de diseñ
 | `$tamanio-fuente-texto-pequeno-s` | 0.875rem (14px) | 1.5rem | Labels, captions |
 | `$tamanio-fuente-texto-pequeno-xs` | 0.75rem (12px) | 1rem | Texto muy pequeño |
 | `$tamanio-fuente-micro` | 0.625rem (10px) | 0.875rem | Badges pequeños |
+| `$tamanio-fuente-leyenda` | 0.75rem italic | 1rem | Leyendas de formularios o imágenes |
 
 #### Escala display (títulos decorativos grandes)
 
@@ -357,13 +366,14 @@ Los design tokens son variables SCSS que centralizan todos los valores de diseñ
 | `$espaciado-l` | 3rem (48px) | Separación entre secciones |
 | `$espaciado-xl` | 4rem (64px) | Espaciado hero, grandes bloques |
 | `$espaciado-xxl` | 5rem (80px) | Espaciado extra grande |
+(mobile-s) |
+| `$breakpoint-mobile-sm` | 480px | Móvil grande (mobile-l) |
+| `$breakpoint-tablet` | 768px | Tablet |
+| `$breakpoint-desktop` | 1024px | Desktop |
+| `$breakpoint-large-desktop` | 1200px | Desktop grande |
+| `$breakpoint-ultra-wide` | 1600px | Ultra wide |
 
-**¿Por qué esta escala?** Basada en múltiplos de 8px (0.5rem) que es un estándar de diseño que facilita la alineación y mantiene consistencia. Los valores más usados son `$espaciado-s` (botones, inputs) y `$espaciado-m` (grid gaps). Los micro-espaciados se usan para transforms y efectos visuales sutiles donde px es más apropiado.
-
----
-
-### Breakpoints
-
+> **Nota:** Existe un mapa `$breakpoints` para un enfoque "Mobile-First" que incluye: `mobile` (375px) y `wide` (1280px)
 | Token | Valor | Dispositivo |
 |-------|-------|-------------|
 | `$breakpoint-mobile` | 320px | Móvil pequeño |
@@ -395,30 +405,60 @@ $sombra-brutal-l: 8px 8px 0px $color-letra-oscura;        // Contenedores grande
 #### Sombras "Vinilo" (múltiples capas de colores)
 
 ```scss
+$sombra-vinilo-s:
+  0.125rem 0.125rem 0 $color-acentuado-light,
+  0.25rem 0.25rem 0 $color-contraste-light;
+
 $sombra-vinilo-m:
-  2px 2px 0px $color-acentuado-light,
-  4px 4px 0px $color-contraste-light,
-  6px 6px 0px $color-secundario-light;
+  0.125rem 0.125rem 0 $color-acentuado-light,
+  0.25rem 0.25rem 0 $color-contraste-light,
+  0.375rem 0.375rem 0 $color-secundario-light;
+
+$sombra-vinilo-l:
+  0.125rem 0.125rem 0 $color-acentuado-light,
+  0.25rem 0.25rem 0 $color-contraste-light,
+  0.375rem 0.375rem 0 $color-secundario-light,
+  0.5rem 0.5rem 0 $color-primario-light;
 ```
 
 Estas sombras con múltiples capas de colores de la paleta 70s crean un efecto de "disco de vinilo" con profundidad tridimensional.
 
+#### Sombras Temáticas (Sunset/Ocean)
+
+```scss
+/* Sunset (Light) */
+$sombra-sunset-s: 0.1875rem 0.1875rem 0 $color-secundario-light;
+$sombra-sunset-m: 0.25rem 0.25rem 0 $color-contraste-light;
+$sombra-sunset-l: 0.3125rem 0.3125rem 0 $color-acentuado-light;
+
+/* Ocean (Dark) */
+$sombra-ocean-s: 0.1875rem 0.1875rem 0 $color-secundario-dark;
+$sombra-ocean-m: 0.25rem 0.25rem 0 $color-contraste-dark;
+$sombra-ocean-l: 0.3125rem 0.3125rem 0 $color-acentuado-dark;
+```
+
 #### Sombras de interacción
 
 ```scss
-$sombra-brutal-hover: 2px 2px 0px $color-letra-oscura;  // Al hacer hover (se reduce)
-$sombra-brutal-active: 0px 0px 0px $color-letra-oscura; // Al pulsar (desaparece)
+$sombra-brutal-hover: 0.125rem 0.125rem 0 $color-letra-oscura;
+$sombra-brutal-active: 0 0 0 $color-letra-oscura;
 ```
 
-El patrón de interacción es: la sombra se reduce al hacer hover y desaparece al pulsar, simulando que el elemento "se hunde" en la página.
+El patrón de interacción es: la sombra se reduce al hacer hover y desaparece al pulsar, simulando que el elemento "se hunde".
 
 #### Sombras Neon (estados)
 
 Para alertas y estados, uso sombras con blur que crean un efecto de luz de neón:
 
 ```scss
-$sombra-neon-error: 0px 0px 10px $color-error, 0px 0px 20px $color-error;
-$sombra-neon-exito: 0px 0px 10px $color-exito, 0px 0px 20px $color-exito;
+$sombra-neon-error: 0 0 0.625rem $color-error, 0 0 1.25rem $color-error;
+$sombra-neon-error-suave: 0 0 0.5rem rgba(224, 74, 74, 0.5);
+
+$sombra-neon-exito: 0 0 0.625rem $color-exito, 0 0 1.25rem $color-exito;
+$sombra-neon-exito-suave: 0 0 0.5rem rgba(170, 214, 97, 0.5);
+
+$sombra-neon-advertencia-light: 0 0 0.625rem $color-advertencia-light, 0 0 1.25rem $color-advertencia-light;
+$sombra-neon-informacion: 0 0 0.625rem $color-informacion, 0 0 1.25rem $color-informacion;
 ```
 
 ![Design Tokens: Sombras neobrutalistas](img-fase1/showcase-botones-neobrutalistas-light.png)
@@ -441,13 +481,13 @@ $sombra-neon-exito: 0px 0px 10px $color-exito, 0px 0px 20px $color-exito;
 
 | Token | Valor | Uso |
 |-------|-------|-----|
-| `$radio-ninguno` | 0px | Estilo brutalist puro |
-| `$radio-micro` | 2px | Radio muy sutil (focus rings, etc.) |
-| `$radio-xs` | 3px | Radio mínimo |
-| `$radio-s` | 5px | Radio principal (botones, cards) |
-| `$radio-m` | 8px | Radio medio (secciones admin) |
-| `$radio-l` | 12px | Radio grande |
-| `$radio-xl` | 16px | Radio extra grande |
+| `$radio-ninguno` 0.1875rem (3px) | Radio muy sutil (focus rings) |
+| `$radio-xs` | 0.375rem (6px) | Radio mínimo |
+| `$radio-s` | 0.5rem (8px) | Radio base (badges) |
+| `$radio-m` | 0.625rem (10px) | Botones e inputs |
+| `$radio-l` | 0.5rem (8px) | Cards y modales (suavizado) |
+| `$radio-xl` | 1.25rem (20px) | Imágenes destacadas |
+| `$radio-xxl` | 1.5rem (24px) | Cards borde muy redondeado
 | `$radio-xxl` | 20px | Radio para cards muy redondeados |
 | `$radio-redondo` | 50% | Elementos circulares (avatares) |
 | `$radio-pildora` | 9999px | Botones tipo píldora |
@@ -471,6 +511,24 @@ $sombra-neon-exito: 0px 0px 10px $color-exito, 0px 0px 20px $color-exito;
 $curva-brutal: cubic-bezier(0.25, 0.46, 0.45, 0.94);   // Transición "snappy"
 $curva-rebote: cubic-bezier(0.68, -0.55, 0.265, 1.55); // Efecto rebote retro
 ```
+
+---
+
+### Escala Z-Index
+
+| Token | Valor | Uso |
+|-------|-------|-----|
+| `$z-base` | 0 | Contenido normal |
+| `$z-dropdown` | 1 | Menús desplegables simples |
+| `$z-sticky` | 2 | Elementos sticky |
+| `$z-fixed` | 3 | Elementos fijos (botones flotantes) |
+| `$z-nav` | 4 | Navegación principal |
+| `$z-overlay` | 5 | Fondos oscuros |
+| `$z-modal` | 6 | Ventanas modales |
+| `$z-popover` | 7 | Menús contextuales |
+| `$z-tooltip` | 8 | Tooltips informativos |
+| `$z-notification` | 9 | Toasts / Notificaciones |
+| `$z-spinner` | 10 | Carga global |
 
 ---
 
@@ -625,6 +683,49 @@ Mejora la accesibilidad de alertas en modo oscuro usando el color menta como fon
 
 ---
 
+### `@mixin theme-transition($properties...)`
+
+Genera transiciones suaves para el cambio de tema (light/dark).
+
+```scss
+// Uso
+.card {
+  // Transición por defecto (bg, color, border)
+  @include theme-transition; 
+  
+  // Transición específica
+  @include theme-transition(box-shadow, transform);
+}
+```
+
+---
+
+### `@mixin brutal-interaction`
+
+Aplica el efecto de "hundimiento" neobrutalista (hover + active) en elementos interactivos.
+
+```scss
+// Uso
+.button {
+  @include brutal-interaction;
+}
+```
+
+---
+
+### `@mixin form-field-base`
+
+Aplica los estilos base neobrutalistas para inputs, selects y textareas.
+
+```scss
+// Uso
+input[type="text"] {
+  @include form-field-base;
+}
+```
+
+---
+
 ## 1.6 ViewEncapsulation en Angular
 
 Angular ofrece tres modos de encapsulación de estilos para componentes:
@@ -718,95 +819,94 @@ El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de
 
 ### `<header>` - Encabezado de la aplicación
 
-**Uso:** Contiene el logotipo, navegación principal y botones de autenticación.
+**Uso:** Contiene la identidad de marca (logo) y las acciones de autenticación/perfil.
 
 **Ejemplo del proyecto:**
 
 ```html
 <header class="header">
-  <!-- Sección superior con logo y botones -->
   <div class="header__top">
     <div class="header__top-container">
-      <!-- Logo central con barras de colores -->
-      <div class="header__logo-wrapper">
-        <div class="header__stripes" aria-hidden="true"></div>
-        <img src="/assets/logo.png" alt="Discs & Records" class="header__logo" />
-      </div>
+      <!-- Franjas decorativas -->
+      <div class="header__stripes" aria-hidden="true"></div>
+
+      <!-- Logo central -->
+      <button class="header__logo-wrapper" (click)="navigateToHome()" aria-label="Ir a inicio">
+        <img src="/assets/logo.webp" alt="Discs & Records" class="header__logo" />
+      </button>
 
       <!-- Botones de autenticación -->
       <div class="header__buttons">
-        <button class="header__btn header__btn--left">REGISTRARSE</button>
-        <button class="header__btn header__btn--right">INICIAR SESIÓN</button>
+        @if (appState.isAuthenticated()) {
+          <button class="header__btn header__btn--left">MI PERFIL</button>
+          <button class="header__btn header__btn--right">CERRAR SESIÓN</button>
+        } @else {
+          <button class="header__btn header__btn--left">REGISTRARSE</button>
+          <button class="header__btn header__btn--right">INICIAR SESIÓN</button>
+        }
       </div>
     </div>
   </div>
-
-  <!-- Navegación principal -->
-  <nav class="header__nav header__nav--desktop" aria-label="Navegación principal">
-    <ul class="header__nav-list">
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link">MI LISTA</a>
-      </li>
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link">ARTISTAS</a>
-      </li>
-      <li class="header__nav-item">
-        <a href="#" class="header__nav-link">PRÓXIMAMENTE</a>
-      </li>
-    </ul>
-  </nav>
 </header>
 ```
 
 ---
 
-### `<nav>` - Navegación
+### `<nav>` - Navegación Principal
 
-**Uso:** Agrupa enlaces de navegación principal. Siempre incluimos `aria-label` para contexto adicional.
+**Uso:** Barra de navegación sticky/fixed separada del header. Incluye enlaces principales y selector de tema.
 
 **Ejemplo del proyecto:**
 
 ```html
-<nav class="header__nav header__nav--desktop" aria-label="Navegación principal">
-  <ul class="header__nav-list">
-    <li class="header__nav-item">
-      <a href="#" class="header__nav-link">MI LISTA</a>
-    </li>
-    <li class="header__nav-item">
-      <a href="#" class="header__nav-link">ARTISTAS</a>
-    </li>
-  </ul>
+<nav class="main-nav" aria-label="Navegación principal">
+  <div class="main-nav__desktop">
+    <ul class="main-nav__list">
+      <li class="main-nav__item">
+        <a class="main-nav__link">MI LISTA</a>
+      </li>
+      <li class="main-nav__item">
+        <a class="main-nav__link">ÁLBUMES</a>
+      </li>
+      <li class="main-nav__item">
+        <a class="main-nav__link">PRÓXIMAMENTE</a>
+      </li>
+      <!-- Theme Switcher -->
+      <li class="main-nav__item main-nav__item--theme">
+        <button class="main-nav__theme-toggle" aria-label="Cambiar tema">
+          <!-- Icono SVG dinámico -->
+        </button>
+      </li>
+    </ul>
+  </div>
 </nav>
 ```
 
-**Nota:** En móvil, tenemos una navegación secundaria con dropdown, también usando `<nav>` con diferente `aria-label`.
+
 
 ---
 
 ### `<main>` - Contenido principal
 
-**Uso:** Envuelve el contenido principal único de cada página. Solo debe haber un `<main>` por página.
+**Uso:** Envuelve el contenido principal de la página, excluyendo header, footer y navs globales.
 
 **Ejemplo del proyecto:**
 
 ```html
-<!-- app.html -->
-<app-header></app-header>
+<!-- Estructura en MainLayout -->
+<div class="main-content-wrapper">
+  <main class="main">
+    <div class="main__container">
+      <!-- Breadcrumbs condicionales -->
+      @if (breadcrumbs.length > 1) {
+        <app-breadcrumbs [items]="breadcrumbs"></app-breadcrumbs>
+      }
 
-<app-main>
-  <router-outlet></router-outlet>
-</app-main>
-
-<app-footer></app-footer>
-```
-
-```html
-<!-- main.html -->
-<main class="main">
-  <div class="main__container">
-    <ng-content></ng-content>
-  </div>
-</main>
+      <!-- Contenido de la página inyectado -->
+      <ng-content></ng-content>
+    </div>
+  </main>
+</div>
 ```
 
 ---
@@ -819,25 +919,27 @@ El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de
 
 ```html
 <aside class="sidebar">
-  <div class="sidebar__content">
-    <!-- Navegación rápida -->
-    <nav class="sidebar__nav" aria-label="Navegación rápida">
-      <ul class="sidebar__nav-list">
-        <li><a href="#" class="sidebar__nav-link">Inicio</a></li>
-        <li><a href="#" class="sidebar__nav-link">Descubrir</a></li>
-      </ul>
-    </nav>
-
-    <!-- Sección de tendencias -->
+  <div class="sidebar__container">
+    <!-- Sección de usuario -->
     <div class="sidebar__section">
-      <h3 class="sidebar__title">Tendencias</h3>
-      <div class="sidebar__trending">
-        <div class="sidebar__trending-item">
-          <span class="sidebar__trending-number">#1</span>
-          <span class="sidebar__trending-text">Abbey Road</span>
-        </div>
+      <h3 class="sidebar__title">Mi perfil</h3>
+      <div class="sidebar__user">
+        <!-- Avatar y stats -->
       </div>
     </div>
+
+    <!-- Navegación secundaria -->
+    <nav class="sidebar__nav" aria-label="Navegación secundaria">
+      <h3 class="sidebar__title">Actividad</h3>
+      <ul class="sidebar__list">
+        <li class="sidebar__list-item">
+          <a class="sidebar__link">
+            <span class="sidebar__link-icon"><lucide-icon name="bar-chart-3"></lucide-icon></span>
+            <span class="sidebar__link-text">Estadísticas</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </aside>
 ```
@@ -846,23 +948,31 @@ El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de
 
 ### `<section>` - Secciones temáticas
 
-**Uso:** Agrupa contenido relacionado temáticamente. Cada sección debe tener un heading.
+**Uso:** Agrupa contenido temático distinto.
 
-**Ejemplo esperado en el proyecto:**
+**Ejemplo en Home:**
 
 ```html
-<section class="albums-section">
-  <h2 class="albums-section__title">Álbumes en Tendencia</h2>
-  <div class="albums-section__grid">
-    <!-- Cards de álbumes -->
+<!-- Hero Section -->
+<section class="home__hero">
+  <div class="home__hero-image-container">
+    <picture>...</picture>
+  </div>
+  <div class="home__hero-content">
+    <h1 class="home__slogan">Puntúa todos tus álbumes favoritos</h1>
   </div>
 </section>
 
-<section class="reviews-section">
-  <h2 class="reviews-section__title">Reseñas Recientes</h2>
-  <div class="reviews-section__list">
-    <!-- Lista de reseñas -->
-  </div>
+<!-- Search Section -->
+<section class="home__search">
+  <app-search-bar></app-search-bar>
+</section>
+
+<!-- Trending Carousel Section -->
+<section class="home__section">
+  <app-carousel title="ÚLTIMOS ÁLBUMES EN TENDENCIA">
+    <!-- Cards -->
+  </app-carousel>
 </section>
 ```
 
@@ -870,29 +980,20 @@ El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de
 
 ### `<article>` - Contenido autónomo
 
-**Uso:** Contenido que podría distribuirse o reutilizarse independientemente (reseñas, posts, cards de álbumes).
+**Uso:** Contenido independiente como cards de álbumes o reseñas.
 
-**Ejemplo esperado en el proyecto:**
+**Ejemplo en el proyecto (via componentes):**
 
 ```html
-<article class="album-card">
-  <img src="album-cover.jpg" alt="Portada de Abbey Road" class="album-card__image" />
-  <h3 class="album-card__title">Abbey Road</h3>
-  <p class="album-card__artist">The Beatles</p>
-  <div class="album-card__rating">
-    <span class="album-card__stars">★★★★★</span>
-    <span class="album-card__score">4.8</span>
+<!-- app-card.html (representación simplificada) -->
+<article class="card {{ variantClass }}">
+  <div class="card__image-container">
+    <img [src]="imageUrl" [alt]="imageAlt" class="card__image" />
+    <div class="card__overlay">
+      <h3 class="card__title">{{ title }}</h3>
+      <p class="card__subtitle">{{ subtitle }}</p>
+    </div>
   </div>
-</article>
-
-<article class="review">
-  <header class="review__header">
-    <h3 class="review__title">Una obra maestra atemporal</h3>
-    <p class="review__meta">Por @usuario • Hace 2 días</p>
-  </header>
-  <p class="review__content">
-    Abbey Road representa la culminación artística de The Beatles...
-  </p>
 </article>
 ```
 
@@ -900,7 +1001,7 @@ El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de
 
 ### `<footer>` - Pie de página
 
-**Uso:** Información institucional, enlaces secundarios, información de contacto.
+**Uso:** Enlaces secundarios y legales.
 
 **Ejemplo del proyecto:**
 
@@ -909,24 +1010,23 @@ El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de
   <div class="footer__content">
     <div class="footer__stripes" aria-hidden="true"></div>
 
-    <!-- Columna izquierda: enlaces institucionales -->
+    <!-- Columna izquierda -->
     <div class="footer__buttons-left">
-      <button class="footer__btn footer__btn--left-top">API de Desarrollo</button>
-      <button class="footer__btn footer__btn--left-middle">Mi perfil</button>
-      <button class="footer__btn footer__btn--left-bottom">Contacto</button>
+      <a routerLink="/info" [queryParams]="{tab: 'api'}" class="footer__btn">API de Desarrollo</a>
+      <a routerLink="/roadmap" class="footer__btn">Próximamente</a>
+      <a routerLink="/info" [queryParams]="{tab: 'contact'}" class="footer__btn">Contacto</a>
     </div>
 
-    <!-- Centro: Logo -->
-    <div class="footer__logo-wrapper">
-      <img src="/assets/logo.png" alt="Discs & Records" class="footer__logo" />
-    </div>
+    <!-- Centro: Logo clicable -->
+    <button class="footer__logo-wrapper" (click)="navigateToHome()">
+      <img src="/assets/logo.webp" alt="Discs & Records" class="footer__logo" />
+    </button>
 
-    <!-- Columna derecha: enlaces adicionales -->
+    <!-- Columna derecha -->
     <div class="footer__buttons-right">
-      <button class="footer__btn footer__btn--right-top">Sobre nosotros</button>
-      <button class="footer__btn footer__btn--right-middle">Mi perfil</button>
-      <button class="footer__btn footer__btn--right-bottom">Privacidad</button>
-    </div>
+      <a routerLink="/info" [queryParams]="{tab: 'about'}" class="footer__btn">Sobre nosotros</a>
+      <a routerLink="/info" class="footer__btn">Información</a>
+      <a routerLink="/info" [queryParams]="{tab: 'privacy'}" class="footer__btn">Privacidad</a
   </div>
 </footer>
 ```
@@ -949,92 +1049,14 @@ El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de
 ```
 Página: Inicio (Home)
 │
-├─ <h1> "Discs & Records" ─────────────────────── Título principal de la aplicación
+├─ <h1> "Discs & Records" ─────────────────────── Slogan hero (título visible o sr-only)
 │
-├─ <section> Álbumes en Tendencia
-│  └─ <h2> "Álbumes en Tendencia" ──────────────── Título de sección
-│     ├─ <article> Card de álbum
-│     │  └─ <h3> "Abbey Road" ───────────────────── Título del álbum
-│     ├─ <article> Card de álbum
-│     │  └─ <h3> "Dark Side of the Moon" ────────── Título del álbum
-│     └─ <article> Card de álbum
-│        └─ <h3> "Thriller" ──────────────────────── Título del álbum
+├─ <section> Búsqueda (sin heading visible)
 │
-├─ <section> Reseñas Recientes
-│  └─ <h2> "Reseñas Recientes" ─────────────────── Título de sección
-│     ├─ <article> Reseña
-│     │  └─ <h3> "Una obra maestra atemporal" ───── Título de reseña
-│     └─ <article> Reseña
-│        └─ <h3> "Revolucionario para su época" ─── Título de reseña
-│
-└─ <aside> Sidebar
-   ├─ <h2> "Navegación Rápida" ─────────────────── Título del sidebar
-   └─ <h3> "Tendencias" ────────────────────────── Subsección del sidebar
-```
-
----
-
-### Ejemplo de implementación correcta
-
-```html
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <title>Discs & Records - Inicio</title>
-</head>
-<body>
-  <header>
-    <!-- Navegación sin headings -->
-  </header>
-
-  <main>
-    <h1>Descubre y valora tu música favorita</h1>
-
-    <section class="albums-section">
-      <h2>Álbumes en Tendencia</h2>
-      <div class="albums-grid">
-        <article class="album-card">
-          <h3>Abbey Road</h3>
-          <p>The Beatles • 1969</p>
-        </article>
-        <article class="album-card">
-          <h3>Dark Side of the Moon</h3>
-          <p>Pink Floyd • 1973</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="reviews-section">
-      <h2>Reseñas Recientes</h2>
-      <article class="review">
-        <h3>Una obra maestra atemporal</h3>
-        <p class="review__meta">Reseña de Abbey Road por @usuario</p>
-        <p class="review__content">...</p>
-      </article>
-    </section>
-
-    <aside class="sidebar">
-      <h2>Explorar</h2>
-      <nav>
-        <h3>Géneros</h3>
-        <ul>
-          <li><a href="#">Rock</a></li>
-          <li><a href="#">Pop</a></li>
-        </ul>
-      </nav>
-
-      <h3>Tendencias</h3>
-      <div class="trending-list">
-        <!-- Lista de tendencias -->
-      </div>
-    </aside>
-  </main>
-
-  <footer>
-    <!-- Enlaces y copyright sin headings -->
-  </footer>
-</body>
-</html>
+└─ <section> Álbumes en Tendencia
+   └─ <h2> "ÚLTIMOS ÁLBUMES EN TENDENCIA" ─────── Título de carrusel
+      ├─ <article> Card de álbum (Polaroid)
+      │  └─ <h3> "Album Title" ────────────────── Título del álbum
 ```
 
 ---
@@ -1074,108 +1096,57 @@ Página: Inicio (Home)
 
 ### Ejemplo del componente `register-form`
 
-```html
-<form class="register-form" (submit)="onSubmit($event)" method="post" novalidate>
+Implementación real usando Reactive Forms y componentes reutilizables:
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form" novalidate>
 
-  <!-- Fieldset 1: Información de cuenta -->
+  <!-- Group 1: Información de cuenta -->
   <fieldset class="register-form__fieldset">
     <legend class="register-form__legend">Crea tu cuenta</legend>
 
-    <!-- Campo de nombre de usuario -->
     <div class="register-form__field">
-      <label for="register-username" class="register-form__label">
-        Nombre de usuario
-        <span class="register-form__required" aria-label="Campo requerido">*</span>
-      </label>
-      <input
-        id="register-username"
+      <app-form-input
+        [control]="usernameControl"
+        label="Nombre de usuario"
         type="text"
-        name="username"
+        id="register-username"
         placeholder="tunombredeusuario"
-        required
-        class="register-form__input"
-        [attr.aria-invalid]="usernameError()"
-        [attr.aria-describedby]="usernameError() ? 'username-error' : 'username-help'"
-        autocomplete="username" />
-
-      <!-- Mensaje de error -->
-      <p
-        *ngIf="usernameError()"
-        id="username-error"
-        class="register-form__error"
-        role="alert">
-        {{ usernameErrorMessage() }}
-      </p>
-
-      <!-- Texto de ayuda -->
-      <p
-        *ngIf="!usernameError()"
-        id="username-help"
-        class="register-form__help">
-        Este será tu nombre visible en Discs & Records
-      </p>
+        [required]="true"
+        autocomplete="username">
+      </app-form-input>
     </div>
 
-    <!-- Campo de correo electrónico -->
     <div class="register-form__field">
-      <label for="register-email" class="register-form__label">
-        Correo electrónico
-        <span class="register-form__required" aria-label="Campo requerido">*</span>
-      </label>
-      <input
-        id="register-email"
+      <app-form-input
+        [control]="emailControl"
+        label="Correo electrónico"
         type="email"
-        name="email"
+        id="register-email"
         placeholder="tu@email.com"
-        required
-        class="register-form__input"
-        [attr.aria-invalid]="emailError()"
-        [attr.aria-describedby]="emailError() ? 'email-error' : 'email-help'"
-        autocomplete="email" />
-
-      <!-- Mensaje de error -->
-      <p
-        *ngIf="emailError()"
-        id="email-error"
-        class="register-form__error"
-        role="alert">
-        {{ emailErrorMessage() }}
-      </p>
-
-      <!-- Texto de ayuda -->
-      <p
-        *ngIf="!emailError()"
-        id="email-help"
-        class="register-form__help">
-        Lo usaremos para enviarte actualizaciones de tus álbumes favoritos
-      </p>
+        [required]="true"
+        autocomplete="email">
+      </app-form-input>
     </div>
   </fieldset>
 
-  <!-- Fieldset 2: Seguridad -->
+  <!-- Group 2: Seguridad -->
   <fieldset class="register-form__fieldset">
     <legend class="register-form__legend">Seguridad</legend>
 
-    <!-- Campo de contraseña -->
     <div class="register-form__field">
-      <label for="register-password" class="register-form__label">
-        Contraseña
-        <span class="register-form__required" aria-label="Campo requerido">*</span>
-      </label>
-      <input
-        id="register-password"
+      <app-form-input
+        [control]="passwordControl"
+        label="Contraseña"
         type="password"
-        name="password"
+        id="register-password"
         placeholder="••••••••"
-        required
-        class="register-form__input"
-        autocomplete="new-password" />
+        [required]="true"
+        autocomplete="new-password">
+      </app-form-input>
     </div>
   </fieldset>
 
-  <!-- Botón de envío -->
-  <button type="submit" class="register-form__submit">
-    Crear cuenta
+  <button type="submit" class="register-form__submit" [disabled]="registerForm.invalid">
+    CREAR CUENTA
   </button>
 </form>
 ```
@@ -1184,51 +1155,34 @@ Página: Inicio (Home)
 
 ### Componente reutilizable `form-input`
 
-Este componente encapsula la lógica de label + input + mensajes, facilitando la creación de formularios accesibles.
+Encapsula la lógica de label, input y mensajes de error/ayuda. Utiliza la nueva sintaxis de control flow de Angular 17+ (`@if`).
 
 ```html
-<!-- form-input.html -->
-<div class="form-input-wrapper">
-  <!-- Label con asociación al input mediante 'for' -->
-  <label
-    [for]="inputId"
-    class="form-input__label"
-    [class.form-input__label--required]="required">
+<div class="form-input">
+  <!-- Label -->
+  <label [for]="inputId" class="form-input__label">
     {{ label }}
-    <span class="form-input__required-indicator" *ngIf="required" aria-label="Campo requerido">*</span>
+    @if (required) {
+      <span class="form-input__required" aria-label="Campo requerido">*</span>
+    }
   </label>
 
-  <!-- Input con todos los atributos necesarios -->
+  <!-- Input -->
   <input
     [id]="inputId"
     [type]="type"
-    [name]="name"
-    [placeholder]="placeholder"
-    [required]="required"
-    [disabled]="disabled"
-    class="form-input__field"
-    [class.form-input__field--error]="hasError"
-    [class.form-input__field--success]="hasSuccess"
-    [attr.aria-describedby]="(helpText || errorMessage) ? inputId + '-description' : null"
+    [formControl]="activeControl"
+    class="form-input__input"
+    [class.form-input__input--error]="hasError"
     [attr.aria-invalid]="hasError"
-    [attr.aria-required]="required" />
+    [attr.aria-describedby]="hasError ? inputId + '-description' : null" />
 
-  <!-- Mensaje de error (solo se muestra si hay error) -->
-  <p
-    *ngIf="hasError && errorMessage"
-    [id]="inputId + '-description'"
-    class="form-input__error"
-    role="alert">
-    {{ errorMessage }}
-  </p>
-
-  <!-- Texto de ayuda (solo se muestra si no hay error) -->
-  <p
-    *ngIf="!hasError && helpText"
-    [id]="inputId + '-description'"
-    class="form-input__help">
-    {{ helpText }}
-  </p>
+  <!-- Mensaje de error -->
+  @if (hasError && errorMessage) {
+    <p [id]="inputId + '-description'" class="form-input__error" role="alert">
+      {{ errorMessage }}
+    </p>
+  }
 </div>
 ```
 
@@ -1435,7 +1389,7 @@ Este componente encapsula la lógica de label + input + mensajes, facilitando la
 - `lg` - Grande (padding: 16px 32px, font-size: 1.125rem)
 
 ![](./img-fase3/botones-variantes-tamanios.png)
-![](./img-fase3/botones-estados-completo.png.png)
+![](./img-fase3/botones-estados-completo.png)
 ![](./img-fase3/botones-combinaciones-completo.png)
 
 **Estados que maneja:**
@@ -3103,19 +3057,19 @@ Las páginas principales añaden `padding-bottom` para compensar el espacio ocup
 
 *(Pendiente: insertar capturas tras implementar adaptaciones)*
 
-[INSERTA AQUÍ: Captura de Home en Mobile (375px)]
+![Captura de Home en Mobile (375px)](./img-fase4/home-mobile-placeholder.png)
 
-[INSERTA AQUÍ: Captura de Home en Tablet (768px)]
+![Captura de Home en Tablet (768px)](./img-fase4/home-tablet-placeholder.png)
 
-[INSERTA AQUÍ: Captura de Home en Desktop (1280px)]
+![Captura de Home en Desktop (1280px)](./img-fase4/home-desktop-placeholder.png)
 
-[INSERTA AQUÍ: Captura de Profile en Mobile (375px)]
+![Captura de Profile en Mobile (375px)](./img-fase4/profile-mobile-placeholder.png)
 
-[INSERTA AQUÍ: Captura de Profile en Desktop (1280px)]
+![Captura de Profile en Desktop (1280px)](./img-fase4/profile-desktop-placeholder.png)
 
-[INSERTA AQUÍ: Captura de Detail en Mobile (375px)]
+![Captura de Detail en Mobile (375px)](./img-fase4/detail-mobile-placeholder.png)
 
-[INSERTA AQUÍ: Captura de Detail en Desktop (1280px)]
+![Captura de Detail en Desktop (1280px)](./img-fase4/detail-desktop-placeholder.png)
 
 ---
 
