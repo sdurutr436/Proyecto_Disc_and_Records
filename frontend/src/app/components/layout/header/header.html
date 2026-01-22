@@ -11,7 +11,14 @@
         (click)="navigateToHome()"
         type="button"
         aria-label="Ir a la página principal">
-        <img src="/assets/logo.webp" alt="Discs & Records" class="header__logo" />
+        <img
+          src="/assets/logo-128.webp"
+          srcset="/assets/logo-128.webp 1x, /assets/logo-256.webp 2x"
+          alt="Discs & Records"
+          class="header__logo"
+          width="128"
+          height="128"
+          fetchpriority="high" />
       </button>
 
       <!-- Botones debajo del logo -->

@@ -8,12 +8,15 @@
            =================================================== -->
       <aside class="detail__sidebar">
         <div class="detail-card">
-          <!-- Cover del álbum -->
+          <!-- Cover del álbum - LCP element -->
           <div class="detail-card__cover">
             <img
               [src]="itemCoverUrl()"
               [alt]="itemTitle()"
               class="detail-card__image"
+              width="500"
+              height="500"
+              fetchpriority="high"
             />
           </div>
 

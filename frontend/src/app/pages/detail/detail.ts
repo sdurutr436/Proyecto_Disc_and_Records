@@ -194,9 +194,16 @@ export class DetailComponent implements OnInit, OnDestroy {
   itemCoverUrl = computed(() => {
     const item = this.item();
     if (!item) return '';
-    if ('coverUrl' in item) return item.coverUrl;
-    if ('photoUrl' in item) return item.photoUrl;
-    return '';
+    let url = '';
+    if ('coverUrl' in item) url = item.coverUrl;
+    else if ('photoUrl' in item) url = item.photoUrl;
+
+    // Optimización: Para móvil, usar imagen de 500x500 en lugar de 1000x1000
+    // Las URLs de Deezer siguen el patrón: /images/cover/.../1000x1000-...
+    if (url && url.includes('1000x1000')) {
+      url = url.replace('1000x1000', '500x500');
+    }
+    return url;
   });
 
   itemType = computed((): 'album' | 'artist' | 'song' | null => {

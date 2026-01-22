@@ -16,7 +16,15 @@
       class="footer__logo-wrapper footer__logo-wrapper--clickable"
       (click)="navigateToHome()"
       aria-label="Ir a la página principal">
-      <img src="/assets/logo.webp" alt="Discs & Records" class="footer__logo" />
+      <img
+        src="/assets/logo-128.webp"
+        srcset="/assets/logo-128.webp 1x, /assets/logo-256.webp 2x"
+        alt="Discs & Records"
+        class="footer__logo"
+        width="128"
+        height="128"
+        loading="lazy"
+        decoding="async" />
     </button>
 
     <!-- Columna derecha: 3 botones apilados -->
