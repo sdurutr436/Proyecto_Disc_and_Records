@@ -61,32 +61,53 @@
      MODALES DE AUTENTICACIÓN
      ======================================== -->
 
-<!-- Modal de Login -->
+<!-- Modal de Login - Lazy loaded con @defer -->
 <app-modal
   [isOpen]="activeModal() === 'login'"
   (onClose)="closeAuthModal()">
-  <app-login-form
-    (onForgotPassword)="navigateToModal('forgot-password')"
-    (onRegister)="navigateToModal('register')"
-    (onLoginSuccess)="closeAuthModal()">
-  </app-login-form>
+  @defer (when activeModal() === 'login') {
+    <app-login-form
+      (onForgotPassword)="navigateToModal('forgot-password')"
+      (onRegister)="navigateToModal('register')"
+      (onLoginSuccess)="closeAuthModal()">
+    </app-login-form>
+  } @loading {
+    <div class="modal-loading">
+      <span class="modal-loading__spinner"></span>
+      <span>Cargando...</span>
+    </div>
+  }
 </app-modal>
 
-<!-- Modal de Registro -->
+<!-- Modal de Registro - Lazy loaded con @defer -->
 <app-modal
   [isOpen]="activeModal() === 'register'"
   (onClose)="closeAuthModal()">
-  <app-register-form
-    (onLogin)="navigateToModal('login')"
-    (onRegisterSuccess)="closeAuthModal()">
-  </app-register-form>
+  @defer (when activeModal() === 'register') {
+    <app-register-form
+      (onLogin)="navigateToModal('login')"
+      (onRegisterSuccess)="closeAuthModal()">
+    </app-register-form>
+  } @loading {
+    <div class="modal-loading">
+      <span class="modal-loading__spinner"></span>
+      <span>Cargando...</span>
+    </div>
+  }
 </app-modal>
 
-<!-- Modal de Recuperar Contraseña -->
+<!-- Modal de Recuperar Contraseña - Lazy loaded con @defer -->
 <app-modal
   [isOpen]="activeModal() === 'forgot-password'"
   (onClose)="closeAuthModal()">
-  <app-forgot-password-form
-    (onBackToLogin)="navigateToModal('login')">
-  </app-forgot-password-form>
+  @defer (when activeModal() === 'forgot-password') {
+    <app-forgot-password-form
+      (onBackToLogin)="navigateToModal('login')">
+    </app-forgot-password-form>
+  } @loading {
+    <div class="modal-loading">
+      <span class="modal-loading__spinner"></span>
+      <span>Cargando...</span>
+    </div>
+  }
 </app-modal>

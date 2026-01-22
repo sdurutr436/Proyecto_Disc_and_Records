@@ -261,3 +261,30 @@
     padding: vars.$espaciado-xs vars.$espaciado-s;
   }
 }
+
+/* ========================================
+   MODAL LOADING - Spinner para @defer
+   ======================================== */
+.modal-loading {
+  @include mix.flex-center;
+  flex-direction: column;
+  gap: vars.$espaciado-s;
+  padding: vars.$espaciado-xl;
+  color: var(--text-secondary);
+  font-size: 1rem;
+
+  &__spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

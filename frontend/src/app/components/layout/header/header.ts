@@ -14,6 +14,14 @@ import { ForgotPasswordForm } from '../../shared/forgot-password-form/forgot-pas
  */
 type AuthModalType = 'none' | 'login' | 'register' | 'forgot-password';
 
+/**
+ * Header Component
+ *
+ * OPTIMIZACIÓN DE RENDIMIENTO:
+ * Los formularios de autenticación (LoginForm, RegisterForm, ForgotPasswordForm)
+ * se cargan con @defer para lazy loading. Aunque están en imports, Angular
+ * los mueve a chunks separados gracias a @defer(when condition).
+ */
 @Component({
   selector: 'app-header',
   imports: [CommonModule, Modal, LoginForm, RegisterForm, ForgotPasswordForm],
