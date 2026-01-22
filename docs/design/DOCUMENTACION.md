@@ -245,6 +245,9 @@ frontend/src/styles/
 | **02-generic** | Muy baja (`*`, `html`, `body`) | Reset universal, base limpia |
 | **03-elements** | Baja (`h1`, `p`, `a`, `button`) | Estilos por defecto para HTML |
 | **04-layout** | Media (`.grid`, `.container`) | Estructuras de página |
+| **05-components** | Alta | Principales componentes |
+| **06-utilities** | Opcionales | Apoyo para especificidad |
+| **07-animations** | Final | Añade animaciones a los componentes sin romper |
 
 Este orden garantiza que los estilos más específicos siempre puedan sobrescribir a los más genéricos sin conflictos.
 
@@ -276,7 +279,11 @@ Los design tokens son variables SCSS que centralizan todos los valores de diseñ
 | `$color-contraste-dark` | #015F72 | 🔵 | Hover states |
 | `$color-acentuado-dark` | #01131B | ⚫ | Fondos, énfasis |
 
-**¿Por qué estos colores?** Para el modo oscuro, mantengo la estética 70s pero con tonos fríos (teales y verdes menta) que recuerdan a las luces de neón de las discotecas nocturnas y los equipos de audio vintage.
+**¿Por qué estos colores?** Para el modo oscuro que no de contraste, mantengo la estética 70s pero con tonos fríos (teales y verdes menta) que recuerdan a las luces de neón de las discotecas nocturnas y los equipos de audio vintage.
+
+#### Paleta principal - Modo contraste
+
+Los colores de la paleta del modo contraste son sólo colores de la escala de grises de menor a mayor comenzando en el color `$color-acentuado-dark` para comenzar en una de las variables de mi paleta.
 
 #### Fondos
 
@@ -664,7 +671,7 @@ Media queries basadas en los breakpoints predefinidos.
 
 ---
 
-### `@mixin alert-accesible-dark`
+### `@mixin alert-accesible-dark` 
 
 Mejora la accesibilidad de alertas en modo oscuro usando el color menta como fondo para garantizar contraste suficiente.
 
@@ -786,30 +793,10 @@ Esta estrategia me permite:
 
 ---
 
-## Showcase Interactivo
-
-Para visualizar todos los componentes del sistema de diseño en acción, he creado un showcase interactivo desplegado en Netlify:
-
-🔗 **[Ver Showcase](https://styles-disc-n-records-showcase.netlify.app/showcase.html)**
-
-El showcase incluye ejemplos de:
-- Botones (primarios, secundarios, con efecto vinilo)
-- Inputs y formularios
-- Cards de álbumes y canciones
-- Alertas con efecto neon
-- Badges y tags
-- Paleta de colores completa
-- Barras de progreso
-- Sistema de navegación
-
-**ESTE SHOWCASE NO ES LA GUÍA DE ESTILOS DE LA FASE 3**
-
----
-
-# Sección 2: HTML Semántico y Estructura
+# Sección 2: HTML Semántico y estructura
 
 > **Proyecto:** Discs & Records
-> **Fase:** 2 - HTML Semántico y Accesibilidad
+> **Fase:** 2 - HTML Semántico y componentes de layout
 
 ---
 
@@ -881,8 +868,6 @@ El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de
   </div>
 </nav>
 ```
-
-
 
 ---
 
@@ -1027,7 +1012,7 @@ El proyecto utiliza elementos HTML5 semánticos para estructurar el contenido de
       <a routerLink="/info" [queryParams]="{tab: 'about'}" class="footer__btn">Sobre nosotros</a>
       <a routerLink="/info" class="footer__btn">Información</a>
       <a routerLink="/info" [queryParams]="{tab: 'privacy'}" class="footer__btn">Privacidad</a
-  </div>
+    </div>
 </footer>
 ```
 
@@ -1283,798 +1268,10 @@ Encapsula la lógica de label, input y mensajes de error/ayuda. Utiliza la nueva
 
 ---
 
-## 2.4 Modificación de Etiquetas HTML con Clases CSS
-
-### Filosofía de Selectores en el Proyecto
-
-En Discs & Records utilizamos **clases CSS** en lugar de selectores de elementos directos para estilizar componentes. Esta decisión sigue los principios de la metodología **BEM (Block-Element-Modifier)** y garantiza:
-
-1. **Especificidad controlada**: Las clases tienen especificidad baja y predecible (0,1,0)
-2. **Reutilización**: Los estilos no dependen del tipo de elemento HTML
-3. **Encapsulación**: Cada componente tiene su propio namespace
-4. **Mantenibilidad**: Los cambios no afectan a elementos no relacionados
-
----
-
-### Selectores de Elementos vs Clases: Comparativa
-
-| Aspecto | Selector de Elemento | Selector de Clase |
-|---------|----------------------|-------------------|
-| **Sintaxis** | `button { }` | `.btn { }` |
-| **Especificidad** | 0,0,1 | 0,1,0 |
-| **Alcance** | Todos los `<button>` del proyecto | Solo elementos con `class="btn"` |
-| **Reutilización** | ❌ Limitada (solo ese elemento) | ✅ En cualquier elemento |
-| **Conflictos** | ❌ Alto riesgo de colisiones | ✅ Bajo riesgo (namespaced) |
-| **Uso en proyecto** | Solo en `03-elements/_base.scss` | En todos los componentes |
-
----
-
-### Cuándo Usamos Selectores de Elementos
-
-Solo utilizamos selectores de elementos en la capa **Elements** de ITCSS (`03-elements/_base.scss`) para establecer estilos base mínimos:
-
-```scss
-// 03-elements/_base.scss - Estilos base para elementos sin clases
-
-// Reset de tipografía base
-body {
-  font-family: vars.$fuente-principal;
-  font-size: vars.$tamanio-fuente-parrafo;
-  line-height: 1.5;
-  color: var(--text-primary);
-  background-color: var(--bg-primary);
-}
-
-// Enlaces base (sin clases)
-a {
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: color vars.$transicion-rapida;
-
-  &:hover {
-    color: var(--color-secondary);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-  }
-}
-
-// Botones base (reset)
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  background: transparent;
-}
-
-// Imágenes base
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-```
-
----
-
-### Cómo Modificamos Elementos con Clases
-
-Para componentes específicos, siempre usamos clases BEM que se aplican al elemento HTML:
-
-#### Ejemplo 1: Botones
-
-```html
-<!-- ❌ NO hacemos esto (selector de elemento) -->
-<button>Click</button>
-<!-- Esto aplicaría estilos globales a TODOS los botones -->
-
-<!-- ✅ SÍ hacemos esto (clases BEM) -->
-<button class="btn btn--primary">Click</button>
-<button class="btn btn--secondary btn--large">Acción</button>
-<a href="/ruta" class="btn btn--outline">Enlace como botón</a>
-```
-
-```scss
-// 05-components/_button.scss
-
-// Bloque base
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: vars.$espaciado-xs vars.$espaciado-s;
-  font-family: vars.$fuente-principal;
-  font-weight: 600;
-  text-transform: uppercase;
-  border: vars.$borde-brutal-medium;
-  border-radius: vars.$radio-m;
-  cursor: pointer;
-  transition: all vars.$transicion-base;
-
-  // Estados
-  &:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: vars.$sombra-brutal-s;
-  }
-
-  &:active {
-    transform: translate(0, 0);
-    box-shadow: none;
-  }
-
-  &:focus-visible {
-    outline: 3px solid var(--color-primary);
-    outline-offset: 2px;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-}
-
-// Modificadores de variante
-.btn--primary {
-  background-color: var(--color-primary);
-  color: var(--text-dark);
-}
-
-.btn--secondary {
-  background-color: var(--color-secondary);
-  color: var(--text-white);
-}
-
-.btn--outline {
-  background-color: transparent;
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-
-  &:hover {
-    background-color: var(--color-primary);
-    color: var(--text-dark);
-  }
-}
-
-// Modificadores de tamaño
-.btn--small {
-  padding: vars.$espaciado-micro vars.$espaciado-xs;
-  font-size: vars.$tamanio-fuente-texto-pequeno-s;
-}
-
-.btn--large {
-  padding: vars.$espaciado-s vars.$espaciado-m;
-  font-size: vars.$tamanio-fuente-h5;
-}
-```
-
----
-
-#### Ejemplo 2: Cards de Álbumes
-
-```html
-<!-- Estructura HTML con clases BEM -->
-<article class="album-card album-card--featured">
-  <div class="album-card__image-wrapper">
-    <img 
-      src="album.webp" 
-      alt="Nombre del álbum" 
-      class="album-card__image"
-      loading="lazy" />
-  </div>
-  <div class="album-card__content">
-    <h3 class="album-card__title">Nombre del Álbum</h3>
-    <p class="album-card__artist">Nombre del Artista</p>
-    <div class="album-card__rating">
-      <app-rating [value]="4.5" [readonly]="true"></app-rating>
-    </div>
-  </div>
-</article>
-```
-
-```scss
-// Componente Card
-.album-card {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--bg-secondary);
-  border: vars.$borde-brutal-medium;
-  border-radius: vars.$radio-l;
-  overflow: hidden;
-  transition: transform vars.$transicion-base, box-shadow vars.$transicion-base;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: vars.$sombra-brutal-m;
-  }
-
-  // Elementos
-  &__image-wrapper {
-    aspect-ratio: 1;
-    overflow: hidden;
-  }
-
-  &__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform vars.$transicion-lenta;
-  }
-
-  &__content {
-    padding: vars.$espaciado-s;
-  }
-
-  &__title {
-    font-size: vars.$tamanio-fuente-h4;
-    font-weight: 600;
-    margin-bottom: vars.$espaciado-micro;
-    color: var(--text-primary);
-  }
-
-  &__artist {
-    font-size: vars.$tamanio-fuente-texto-pequeno-s;
-    color: var(--text-secondary);
-  }
-
-  // Modificador: Card destacada
-  &--featured {
-    border-color: var(--color-primary);
-    box-shadow: vars.$sombra-vinilo-s;
-  }
-}
-```
-
----
-
-#### Ejemplo 3: Formularios (Form Input)
-
-```html
-<div class="form-input">
-  <label for="email" class="form-input__label">
-    Correo electrónico
-    <span class="form-input__required">*</span>
-  </label>
-  <input 
-    id="email" 
-    type="email" 
-    class="form-input__input form-input__input--error"
-    aria-invalid="true"
-    aria-describedby="email-error" />
-  <p id="email-error" class="form-input__error" role="alert">
-    Introduce un correo válido
-  </p>
-</div>
-```
-
-```scss
-.form-input {
-  display: flex;
-  flex-direction: column;
-  gap: vars.$espaciado-xs;
-
-  // Elemento: Label
-  &__label {
-    font-weight: 500;
-    color: var(--text-primary);
-  }
-
-  &__required {
-    color: var(--color-error);
-    margin-left: 2px;
-  }
-
-  // Elemento: Input
-  &__input {
-    padding: vars.$espaciado-xs vars.$espaciado-s;
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    border: vars.$borde-brutal-medium;
-    border-radius: vars.$radio-m;
-    font-size: vars.$tamanio-fuente-parrafo;
-    transition: border-color vars.$transicion-rapida, box-shadow vars.$transicion-rapida;
-
-    &::placeholder {
-      color: var(--text-placeholder);
-    }
-
-    &:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(237, 156, 5, 0.2);
-    }
-
-    // Modificador: Estado de error
-    &--error {
-      border-color: var(--color-error);
-      
-      &:focus {
-        box-shadow: 0 0 0 3px rgba(224, 74, 74, 0.2);
-      }
-    }
-
-    // Modificador: Estado de éxito
-    &--success {
-      border-color: var(--color-success);
-    }
-  }
-
-  // Elemento: Mensaje de error
-  &__error {
-    font-size: vars.$tamanio-fuente-texto-pequeno-s;
-    color: var(--color-error);
-  }
-}
-```
-
----
-
-### Tabla de Componentes y sus Clases
-
-| Componente | Bloque (Block) | Elementos | Modificadores |
-|------------|----------------|-----------|---------------|
-| Botón | `.btn` | - | `--primary`, `--secondary`, `--outline`, `--small`, `--large`, `--disabled` |
-| Card | `.album-card` | `__image-wrapper`, `__image`, `__content`, `__title`, `__artist`, `__rating` | `--featured`, `--compact` |
-| Input | `.form-input` | `__label`, `__required`, `__input`, `__error`, `__help` | `--error`, `--success`, `--disabled` |
-| Modal | `.modal` | `__overlay`, `__content`, `__header`, `__body`, `__footer`, `__close` | `--large`, `--fullscreen` |
-| Tabs | `.tabs` | `__nav`, `__list`, `__item`, `__button`, `__panel` | `--active`, `--disabled` |
-| Alert | `.alert` | `__icon`, `__content`, `__title`, `__message`, `__close` | `--error`, `--warning`, `--success`, `--info` |
-| Badge | `.badge` | - | `--primary`, `--secondary`, `--success`, `--error`, `--small`, `--large` |
-| Spinner | `.spinner` | `__circle` | `--small`, `--large`, `--light` |
-| Rating | `.rating` | `__star`, `__value` | `--interactive`, `--small`, `--medium`, `--large` |
-| Accordion | `.accordion` | `__item`, `__header`, `__icon`, `__panel` | `--expanded`, `--disabled` |
-
----
-
-### Beneficios de Este Enfoque
-
-1. **Flexibilidad de elementos**: `.btn` puede aplicarse a `<button>`, `<a>` o `<input type="submit">`
-2. **Composición**: Múltiples clases pueden combinarse (`btn btn--primary btn--large`)
-3. **Theming**: Las CSS Custom Properties permiten cambiar colores sin tocar selectores
-4. **Debugging**: Es fácil identificar qué estilos aplican a un elemento inspeccionando sus clases
-5. **Encapsulación Angular**: `ViewEncapsulation.Emulated` añade atributos únicos que conviven con BEM
-
----
-
-## 2.5 Propiedades CSS por Tipo de Elemento
-
-Esta sección documenta las propiedades CSS más importantes aplicadas a cada tipo de elemento en el proyecto, organizadas por categoría funcional.
-
----
-
-### 2.5.1 Propiedades de Texto y Tipografía
-
-| Propiedad | Uso | Valores en el proyecto |
-|-----------|-----|------------------------|
-| `font-family` | Familia tipográfica | `'Space Grotesk', sans-serif` (UI), `'Monoton'` (decorativo) |
-| `font-size` | Tamaño de texto | Escala desde `0.625rem` (10px) hasta `4.25rem` (68px) |
-| `font-weight` | Peso de fuente | `400` (normal), `500` (medium), `600` (semi-bold), `700` (bold) |
-| `line-height` | Altura de línea | `1.5` (párrafos), `1.2` (headings), `1` (botones) |
-| `letter-spacing` | Espaciado entre letras | `0.05em` (uppercase), `normal` (body) |
-| `text-transform` | Transformación de texto | `uppercase` (botones, nav), `none` (body) |
-| `text-align` | Alineación horizontal | `left`, `center`, `right` |
-| `color` | Color de texto | CSS Custom Properties: `var(--text-primary)`, `var(--text-secondary)` |
-
-**Ejemplo en código:**
-
-```scss
-// Heading principal
-h1, .h1 {
-  font-family: vars.$fuente-principal;
-  font-size: vars.$tamanio-fuente-h1;      // 4.25rem
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-}
-
-// Texto de párrafo
-p, .body-text {
-  font-family: vars.$fuente-principal;
-  font-size: vars.$tamanio-fuente-parrafo;  // 1rem
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--text-primary);
-}
-
-// Botones
-.btn {
-  font-family: vars.$fuente-principal;
-  font-size: vars.$tamanio-fuente-parrafo;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-```
-
----
-
-### 2.5.2 Propiedades de Caja (Box Model)
-
-| Propiedad | Uso | Valores típicos |
-|-----------|-----|-----------------|
-| `display` | Tipo de caja | `block`, `flex`, `grid`, `inline-flex`, `none` |
-| `width` / `height` | Dimensiones | `100%`, `auto`, valores fijos (`300px`) |
-| `min-width` / `max-width` | Límites de ancho | `min-width: 320px`, `max-width: 1200px` |
-| `padding` | Espaciado interno | Variables: `$espaciado-xs` a `$espaciado-xl` |
-| `margin` | Espaciado externo | `0`, `auto`, variables de espaciado |
-| `box-sizing` | Modelo de caja | `border-box` (global en reset) |
-| `overflow` | Desbordamiento | `hidden`, `auto`, `visible`, `scroll` |
-
-**Ejemplo en código:**
-
-```scss
-// Card con box model completo
-.album-card {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 300px;
-  min-height: 350px;
-  padding: 0;                              // Sin padding interno (imagen full-bleed)
-  margin: 0;
-  box-sizing: border-box;                  // Heredado del reset
-  overflow: hidden;                        // Recorta imagen en border-radius
-}
-
-// Contenedor con padding
-.album-card__content {
-  padding: vars.$espaciado-s;              // 1rem = 16px
-}
-
-// Container centrado
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 vars.$espaciado-m;            // 2rem = 32px
-}
-```
-
----
-
-### 2.5.3 Propiedades de Fondo y Bordes
-
-| Propiedad | Uso | Valores en el proyecto |
-|-----------|-----|------------------------|
-| `background-color` | Color de fondo | CSS Custom Properties: `var(--bg-primary)`, `var(--bg-secondary)` |
-| `background-image` | Imagen/gradiente | `linear-gradient()`, `url()` |
-| `border` | Borde completo | `3px solid var(--border-color)` (neobrutalista) |
-| `border-radius` | Esquinas redondeadas | `$radio-s` (8px) a `$radio-redondo` (50%) |
-| `box-shadow` | Sombra de caja | Sombras offset neobrutalistas, sombras neon |
-| `outline` | Contorno (focus) | `2px solid var(--color-primary)` |
-
-**Ejemplo en código:**
-
-```scss
-// Botón neobrutalista
-.btn {
-  background-color: var(--color-primary);
-  border: vars.$borde-brutal-medium;       // 3px solid var(--border-color)
-  border-radius: vars.$radio-m;            // 10px
-  box-shadow: vars.$sombra-brutal-s;       // 4px 4px 0 #01131B
-
-  &:hover {
-    box-shadow: vars.$sombra-brutal-hover; // 2px 2px 0 #01131B
-  }
-
-  &:active {
-    box-shadow: none;                      // "Hundido"
-  }
-
-  &:focus-visible {
-    outline: 3px solid var(--color-primary);
-    outline-offset: 2px;
-  }
-}
-
-// Sombra vinilo (múltiples capas)
-.card--featured {
-  box-shadow:
-    0.125rem 0.125rem 0 var(--vinyl-shadow-layer-1),
-    0.25rem 0.25rem 0 var(--vinyl-shadow-layer-2),
-    0.375rem 0.375rem 0 var(--vinyl-shadow-layer-3),
-    0.5rem 0.5rem 0 var(--vinyl-shadow-layer-4);
-}
-
-// Sombra neon (alertas)
-.alert--error {
-  box-shadow: 0 0 10px var(--color-error), 0 0 20px var(--color-error);
-}
-```
-
----
-
-### 2.5.4 Propiedades de Layout (Flexbox y Grid)
-
-| Propiedad | Uso | Valores típicos |
-|-----------|-----|-----------------|
-| `display: flex` | Contenedor flex | En navs, headers, cards horizontales |
-| `flex-direction` | Dirección de items | `row`, `column`, `row-reverse` |
-| `justify-content` | Alineación eje principal | `flex-start`, `center`, `space-between`, `space-around` |
-| `align-items` | Alineación eje cruzado | `flex-start`, `center`, `stretch`, `baseline` |
-| `gap` | Espacio entre items | Variables de espaciado (`$espaciado-s`, `$espaciado-m`) |
-| `flex-wrap` | Wrap de items | `wrap`, `nowrap` |
-| `flex` | Shorthand flex item | `1`, `0 0 auto`, `1 1 300px` |
-| `display: grid` | Contenedor grid | En grids de cards, layouts de página |
-| `grid-template-columns` | Columnas del grid | `repeat(auto-fit, minmax(250px, 1fr))` |
-| `grid-template-rows` | Filas del grid | `auto`, `1fr`, `minmax()` |
-
-**Ejemplo en código:**
-
-```scss
-// Navegación con Flexbox
-.main-nav__list {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: vars.$espaciado-m;                  // 2rem = 32px
-  flex-wrap: wrap;
-}
-
-// Grid de álbumes responsive
-.albums-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: vars.$espaciado-m;
-  padding: vars.$espaciado-l 0;
-}
-
-// Layout de dos columnas (perfil)
-.profile-layout {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: vars.$espaciado-l;
-
-  @media (max-width: vars.$breakpoint-tablet) {
-    grid-template-columns: 1fr;
-  }
-}
-
-// Card con flexbox interno
-.album-card {
-  display: flex;
-  flex-direction: column;
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    flex: 1;                               // Ocupa espacio restante
-    justify-content: space-between;
-  }
-}
-```
-
----
-
-### 2.5.5 Propiedades de Posicionamiento
-
-| Propiedad | Uso | Valores típicos |
-|-----------|-----|-----------------|
-| `position` | Esquema de posicionamiento | `static`, `relative`, `absolute`, `fixed`, `sticky` |
-| `top` / `right` / `bottom` / `left` | Offsets | Valores en `px`, `rem`, `%` |
-| `z-index` | Orden de apilamiento | Escala definida: `1` (base), `100` (nav), `1000` (modal), `9999` (tooltip) |
-| `inset` | Shorthand para offsets | `0` (llenar contenedor) |
-
-**Ejemplo en código:**
-
-```scss
-// Variables de z-index
-$z-index-base: 1;
-$z-index-sticky: 100;
-$z-index-fixed: 500;
-$z-index-modal-backdrop: 900;
-$z-index-modal: 1000;
-$z-index-tooltip: 9999;
-
-// Navegación sticky
-.main-nav {
-  position: sticky;
-  top: 0;
-  z-index: $z-index-sticky;
-}
-
-// Modal con overlay
-.modal {
-  &__overlay {
-    position: fixed;
-    inset: 0;                              // top: 0; right: 0; bottom: 0; left: 0;
-    z-index: $z-index-modal-backdrop;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-
-  &__content {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: $z-index-modal;
-  }
-}
-
-// Tooltip
-.tooltip {
-  position: absolute;
-  z-index: $z-index-tooltip;
-}
-
-// Badge en esquina de card
-.album-card {
-  position: relative;
-
-  &__badge {
-    position: absolute;
-    top: vars.$espaciado-xs;
-    right: vars.$espaciado-xs;
-  }
-}
-```
-
----
-
-### 2.5.6 Propiedades de Transición y Animación
-
-| Propiedad | Uso | Valores típicos |
-|-----------|-----|-----------------|
-| `transition` | Transición entre estados | `all 0.3s ease`, propiedades específicas |
-| `transition-property` | Qué animar | `transform`, `opacity`, `color`, `background-color` |
-| `transition-duration` | Duración | `0.15s` (rápida), `0.3s` (base), `0.5s` (lenta) |
-| `transition-timing-function` | Curva de animación | `ease`, `ease-in-out`, `cubic-bezier()` |
-| `animation` | Animación con keyframes | `fadeInUp 0.6s ease-out forwards` |
-| `transform` | Transformaciones | `translateY()`, `scale()`, `rotate()` |
-| `will-change` | Optimización GPU | `transform`, `opacity` |
-
-**Ejemplo en código:**
-
-```scss
-// Variables de transición
-$transicion-rapida: 0.15s ease;
-$transicion-base: 0.3s ease;
-$transicion-lenta: 0.5s ease;
-
-// Botón con transiciones optimizadas
-.btn {
-  transition: 
-    transform $transicion-base,
-    box-shadow $transicion-base,
-    background-color $transicion-rapida;
-
-  &:hover {
-    transform: translate(-2px, -2px);
-  }
-}
-
-// Card con hover lift
-.album-card {
-  transition: transform $transicion-base, box-shadow $transicion-base;
-
-  &:hover {
-    transform: translateY(-4px);
-    
-    .album-card__image {
-      transform: scale(1.05);
-    }
-  }
-
-  &__image {
-    transition: transform $transicion-lenta;
-  }
-}
-
-// Animación de entrada
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
-  opacity: 0;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-// Spinner con animación infinita
-.spinner {
-  animation: spinSlow 2s linear infinite;
-}
-
-@keyframes spinSlow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-```
-
----
-
-### 2.5.7 Propiedades de Accesibilidad Visual
-
-| Propiedad | Uso | Valores típicos |
-|-----------|-----|-----------------|
-| `outline` | Indicador de foco | `2px solid var(--color-primary)` |
-| `outline-offset` | Separación del outline | `2px`, `4px` |
-| `cursor` | Tipo de cursor | `pointer`, `not-allowed`, `grab`, `text` |
-| `opacity` | Transparencia | `1` (visible), `0.5` (disabled), `0` (oculto) |
-| `visibility` | Visibilidad | `visible`, `hidden` |
-| `pointer-events` | Eventos de puntero | `auto`, `none` |
-
-**Ejemplo en código:**
-
-```scss
-// Focus visible para teclado
-:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-// Estados de botón
-.btn {
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-}
-
-// Clase sr-only (solo para lectores de pantalla)
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-// Elementos decorativos ocultos de lectores
-[aria-hidden="true"] {
-  // No afecta estilos, pero semánticamente oculto
-}
-
-// Indicador de carga
-.loading {
-  pointer-events: none;
-  opacity: 0.7;
-}
-```
-
----
-
-### 2.5.8 Resumen de Propiedades por Componente
-
-| Componente | Propiedades Clave |
-|------------|-------------------|
-| **Botones** | `display: inline-flex`, `padding`, `border`, `border-radius`, `background-color`, `color`, `font-weight`, `text-transform`, `box-shadow`, `transition`, `cursor` |
-| **Cards** | `display: flex`, `flex-direction`, `border`, `border-radius`, `overflow: hidden`, `box-shadow`, `transition`, `background-color` |
-| **Inputs** | `padding`, `border`, `border-radius`, `background-color`, `color`, `font-size`, `transition`, `outline` |
-| **Modals** | `position: fixed`, `z-index`, `inset`, `background-color`, `transform`, `animation` |
-| **Nav** | `display: flex`, `position: sticky`, `z-index`, `gap`, `background-color` |
-| **Grid** | `display: grid`, `grid-template-columns`, `gap`, `padding` |
-| **Spinners** | `animation`, `transform`, `border-radius: 50%` |
-| **Tooltips** | `position: absolute`, `z-index`, `padding`, `background-color`, `border-radius`, `box-shadow` |
-
----
-
 # Sección 3: Sistema de Componentes UI
 
 > **Proyecto:** Discs & Records
-> **Fase:** Sistema de componentes reutilizables
-> **Framework:** Angular 17+ (standalone components)
-> **Metodología:** BEM + ITCSS
+> **Fase:** 3 - Componentes UI Básicos
 
 ---
 ## 3.1 Componentes Implementados
@@ -3449,11 +2646,8 @@ La ruta está configurada en `frontend/src/app/app.routes.ts`:
 
 # Sección 4: Responsive Design
 
-> **Fase:** 4 - Responsive Design
-> **Enfoque:** Mobile-First
-> **Tecnologías:** CSS Media Queries + Container Queries
-
-Esta sección documenta la implementación del diseño responsive en "Discs & Records". Se ha adoptado una estrategia **Mobile-First** que prioriza la experiencia en dispositivos móviles como base, añadiendo complejidad progresiva para pantallas más grandes. Además, se incorporan **Container Queries** para componentes que adaptan su layout según el espacio disponible del contenedor, no del viewport.
+> **Proyecto:** Discs & Records
+> **Fase:** 4 - Responsive Design y layouts completos
 
 ---
 
@@ -3859,7 +3053,8 @@ Las páginas principales añaden `padding-bottom` para compensar el espacio ocup
 
 # Sección 5: Optimización multimedia
 
-> **Objetivo:** Implementar una estrategia integral de optimización multimedia para reducir el tiempo de carga, mejorar el rendimiento y proporcionar una experiencia visual de calidad adaptada a cada dispositivo.
+> **Proyecto:** Discs & Records
+> **Fase:** 5 - Multimedia optimizada
 
 ---
 
@@ -4497,7 +3692,8 @@ nav, header, footer, main, section, article, aside {
 
 # Sección 6: Sistema de Temas
 
-> **Objetivo:** Implementar un sistema de temas robusto con 3 modos (Light, Dark, Grayscale) que permita personalizar la experiencia visual del usuario manteniendo la coherencia estética neobrutalista.
+> **Proyecto:** Discs & Records
+> **Fase:** 6 - Temas y modo oscuro
 
 ---
 
@@ -4847,6 +4043,11 @@ El modo escala de grises está diseñado pensando en:
 
 # Seccion 7: Informe de accesibilidad
 
+> **Proyecto:** Discs & Records
+> **Fase:** 7 - Aplicación completa y despliegue
+
+Creado en la carpeta accesibilidad
+
 # Seccion final:
 
 HTML Validado (W3C):
@@ -4859,7 +4060,198 @@ CSS Validado (W3C):
 
 URL Pública: https://discs-n-records-ksgvk.ondigitalocean.app
 
-Lighthouse Performance:
+Lighthouse Performance: Pendiente de seccion 7
 
-Lighthouse Accessibility:
+Lighthouse Accessibility: Pendiente de seccion 7
 
+---
+
+## Estado final de la aplicación:
+
+### Páginas Completadas e Implementadas
+
+La aplicación cuenta con **6 páginas funcionales completamente implementadas**:
+
+1. **Home (/)** - Página principal
+   - Hero section con imagen responsive y temática dinámica
+   - Barra de búsqueda integrada
+   - Carruseles de álbumes destacados, nuevos lanzamientos y tendencias
+   - Lazy loading de contenido below-the-fold
+
+2. **Profile (/profile)** - Perfil de usuario
+   - Vista de información del usuario autenticado
+   - Sección de álbumes favoritos
+   - Historial de calificaciones
+   - Layout responsive con sidebar sticky en desktop
+
+3. **Detail (/detail/:type/:id)** - Vista de detalle
+   - Página unificada para álbumes, artistas y canciones
+   - Información detallada con cover art optimizado
+   - Integración con API de Deezer
+   - Layout responsive con card lateral sticky
+
+4. **Info (/info)** - Información del proyecto
+   - Página estática con información sobre la aplicación
+   - Enlaces a documentación y recursos
+
+5. **Roadmap (/roadmap)** - Hoja de ruta del proyecto
+   - Timeline visual del desarrollo
+   - Fases del proyecto documentadas
+
+6. **404 (Not Found)** - Página de error
+   - Manejo de rutas no encontradas
+   - Navegación de retorno al home
+
+### Páginas en Desarrollo (WIP)
+
+Las siguientes páginas tienen routing configurado pero implementación incompleta:
+
+1. **Admin Panel (/admin)** - Panel de administración
+   - Estado: Routing configurado, lógica pendiente de implementación
+   - Propósito: Gestión de contenido y usuarios (fase futura)
+
+2. **Edit Profile (/profile/edit)** - Edición de perfil
+   - Estado: Routing configurado, formulario pendiente de implementación
+   - Propósito: Permitir al usuario modificar su información
+
+### Recursos Adicionales
+
+- **Showcase (showcase.html)** - Archivo HTML independiente
+  - No forma parte del routing de Angular
+  - Demostración de componentes y estilos para desarrollo
+
+### Funcionalidad Integrada
+
+- **Búsqueda**: Integrada en la página Home, no requiere ruta separada
+- **Autenticación**: Modal/componente integrado, visible desde cualquier página
+- **Theme Switcher**: Disponible en el header de todas las páginas
+
+## Problemas conocidos y mejoras futuras:
+
+### Problemas Conocidos
+
+#### 1. Documentación Incompleta
+- **Sección 7 (Accesibilidad)**: Pendiente de completar con resultados de pruebas
+  - Requiere capturas de Lighthouse Accessibility (3 páginas)
+  - Requiere capturas de WAVE (2 páginas)
+  - Requiere documentación de pruebas cross-browser (Chrome, Firefox, Edge)
+  - Requiere documentación de navegación por teclado
+  - Requiere pruebas opcionales con lector de pantalla NVDA
+
+#### 2. Screenshots Pendientes
+- **Responsive Design (7 capturas)**: Carpeta `img-fase4/` vacía
+  - home-mobile.png, home-tablet.png, home-desktop.png
+  - profile-mobile.png, profile-desktop.png
+  - detail-mobile.png, detail-desktop.png
+- **Accesibilidad (10 capturas)**: Referencias con sufijo "-placeholder" en documentación
+  - Lighthouse, WAVE, cross-browser, keyboard navigation
+
+#### 3. Páginas en Desarrollo
+- **Admin Panel**: Routing configurado, implementación pendiente
+  - Sin lógica de gestión de usuarios
+  - Sin sistema de moderación de contenido
+- **Edit Profile**: Routing configurado, formulario no implementado
+  - Sin validación de campos
+  - Sin integración con backend para actualización de datos
+
+#### 4. Performance Pendiente de Validación
+- Optimizaciones de logo y LCP implementadas pero no desplegadas
+- Falta re-ejecutar Lighthouse Performance en producción para validar mejoras
+  - Objetivo: LCP < 2.5s en móvil
+  - Esperado: Mejora de ~67 a ~85+ puntos
+
+#### 5. Limitaciones Funcionales Actuales
+- **Búsqueda**: Solo búsqueda básica por texto, sin filtros avanzados
+- **Integración Deezer**: Dependencia total de API externa sin caché local
+- **Historial**: No se persiste el historial de búsquedas del usuario
+- **Notificaciones**: Sin sistema de notificaciones en tiempo real
+
+### Mejoras Futuras
+
+#### Corto Plazo (Prioridad Alta)
+
+1. **Completar Accesibilidad**
+   - Ejecutar auditorías de accesibilidad en las 3 páginas principales
+   - Documentar resultados en Sección 7
+   - Resolver issues críticos identificados en auditorías
+
+2. **Implementar Páginas WIP**
+   - Admin Panel: Sistema básico de gestión de usuarios
+   - Edit Profile: Formulario completo con validación y persistencia
+
+3. **Capturar Screenshots**
+   - Completar las 17 capturas pendientes para documentación
+   - Validar ratios de contraste en modo grayscale
+
+4. **Validar Performance en Producción**
+   - Desplegar optimizaciones actuales
+   - Re-ejecutar Lighthouse y documentar resultados
+   - Ajustar si no se alcanzan objetivos (LCP < 2.5s, FID < 100ms, CLS < 0.1)
+
+#### Medio Plazo (Prioridad Media)
+
+5. **Búsqueda Avanzada**
+   - Filtros por género, año, artista
+   - Autocompletado con debounce optimizado
+   - Historial de búsquedas persistente en localStorage
+   - Sugerencias de búsqueda basadas en tendencias
+
+6. **Sistema de Caché**
+   - Implementar Service Worker para caché offline
+   - Almacenar resultados de API Deezer en IndexedDB
+   - Estrategia cache-first para imágenes de covers
+
+7. **Testing Automatizado**
+   - Unit tests para servicios críticos (auth, theme, hero)
+   - Integration tests para flujos principales (login, búsqueda, detalle)
+   - E2E tests con Playwright para user journeys críticos
+
+8. **Mejoras de UX**
+   - Skeleton loaders para estados de carga
+   - Animaciones de transición entre rutas
+   - Toast notifications para acciones del usuario
+   - Infinite scroll en carruseles
+
+#### Largo Plazo (Prioridad Baja)
+
+9. **Progressive Web App (PWA)**
+   - Manifest.json para instalación
+   - Service Worker para funcionamiento offline
+   - Push notifications para nuevos lanzamientos
+
+10. **Internacionalización (i18n)**
+    - Soporte para español e inglés
+    - Detección automática de idioma del navegador
+    - Persistencia de preferencia de idioma
+
+11. **Social Features**
+    - Sistema de seguimiento entre usuarios
+    - Feed personalizado de actividad de amigos
+    - Compartir álbumes/artistas en redes sociales
+    - Listas de reproducción colaborativas
+
+12. **Backend Propio**
+    - Migrar de dependencia total de Deezer a backend propio
+    - Base de datos de álbumes con datos enriquecidos
+    - Sistema de recomendaciones basado en ML
+    - API REST completa con autenticación JWT
+
+13. **Optimizaciones Adicionales**
+    - Migrar a señales de Angular 20 en componentes restantes
+    - Code splitting por rutas para reducir bundle inicial
+    - Implementar Virtual Scrolling en listas largas
+    - Pre-rendering de páginas estáticas (Info, Roadmap)
+
+14. **Accesibilidad Avanzada**
+    - Soporte completo para lectores de pantalla
+    - Modo de alto contraste personalizable
+    - Tamaños de fuente ajustables por usuario
+    - Skip links para navegación rápida
+
+### Deuda Técnica Identificada
+
+- **Refactorización de Card Component**: Actualmente existen 2 variantes (profile/polaroid), considerar unificar con props
+- **Optimización de Bundle**: Angular 20 standalone components bien implementado, pero falta lazy loading de rutas WIP
+- **Tipado TypeScript**: Algunos componentes usan `any`, mejorar tipado estricto
+- **SCSS Redundante**: Algunas utilidades CSS duplicadas entre layers, consolidar en capa utilities
+- **Gestión de Errores**: Mejorar manejo de errores de red con retry logic y fallbacks visuales
