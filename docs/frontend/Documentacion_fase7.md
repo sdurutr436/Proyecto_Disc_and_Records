@@ -1452,57 +1452,52 @@ ng test --include="**/home.spec.ts"
 
 ### B.1 Cobertura de Codigo
 
-![Reporte de cobertura de codigo](../design/img-fase7/cobertura-codigo.png)
-
-*Captura del reporte HTML de cobertura mostrando 71.36% en lineas.*
+![Reporte de cobertura de codigo](./capturas/porcentaje-de-cobertura.png)
 
 ### B.2 Tests Pasando
 
-![Tests unitarios pasando](../design/img-fase7/tests-passing.png)
-
-*Captura de terminal mostrando 2325 tests SUCCESS.*
+![Reporte de cobertura de codigo](./capturas/porcentaje-de-cobertura.png)
 
 ### B.3 Build de Produccion
 
-![Build de produccion sin errores](../design/img-fase7/build-production.png)
+![Build de produccion sin errores](./capturas/bundle-generado.png)
 
 *Captura del output de ng build mostrando bundle inicial de 490.43 kB.*
 
 ### B.4 Lazy Chunks Generados
 
-![Lazy chunks generados](../design/img-fase7/lazy-chunks.png)
-
 *Captura mostrando los 27+ lazy chunks generados por el build.*
 
 ### B.5 Compatibilidad Cross-Browser
 
-![Tests en Chrome](../design/img-fase7/cross-browser-chrome.png)
+![Tests en Chrome](./capturas/test-chrome-headless.png)
 
 *Captura de tests ejecutandose en Chrome Headless.*
 
-![Tests en Firefox](../design/img-fase7/cross-browser-firefox.png)
+![Tests en Firefox](./capturas/test-firefox-headless.png)
 
 *Captura de tests ejecutandose en Firefox Headless.*
 
 ### B.6 Lighthouse Performance
 
-![Lighthouse Performance Score](../design/img-fase7/lighthouse-performance.png)
+![Lighthouse Performance Score](./capturas/lighthouse-desktop.png)
+![Lighthouse Performance Score](./capturas/lighthouse-mobile.png)
 
 *Captura de auditoria Lighthouse mostrando score de Performance.*
 
 ### B.7 Source Map Explorer
 
-![Analisis de bundles](../design/img-fase7/source-map-explorer.png)
+![Analisis de bundles](./capturas/source-map-explorer.png)
 
 *Captura del treemap de source-map-explorer mostrando distribucion del bundle.*
 
 ### B.8 Despliegue en DigitalOcean
 
-![App desplegada en DigitalOcean](../design/img-fase7/digitalocean-deploy.png)
+![App desplegada en DigitalOcean](./capturas/digitalocean-deploy.png)
 
 *Captura del dashboard de DigitalOcean App Platform mostrando estado healthy.*
 
-![Aplicacion en produccion](../design/img-fase7/app-produccion.png)
+![Aplicacion en produccion](./capturas/app-produccion.png)
 
 *Captura de la aplicacion funcionando en la URL de produccion.*
 

@@ -10,6 +10,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --no-watch --browsers=ChromeHeadless --code-coverage",
+    "test:chrome": "ng test --no-watch --browsers=ChromeHeadless --code-coverage",
+    "test:firefox": "ng test --no-watch --browsers=Firefox --code-coverage",
+    "test:cross-browser": "npm run test:chrome && npm run test:firefox",
     "test:coverage": "ng test --no-watch --code-coverage",
     "lint": "ng lint"
   },

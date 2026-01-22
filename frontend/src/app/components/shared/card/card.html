@@ -12,8 +12,6 @@
             width="200"
             height="200"
             [priority]="priority"
-            placeholder
-            [loaderParams]="{quality: 80}"
           />
         } @else if (placeholderIcon) {
           <span class="card__placeholder card__placeholder--svg" [innerHTML]="safePlaceholderIcon"></span>
@@ -71,8 +69,6 @@
           width="200"
           height="200"
           [priority]="priority"
-          placeholder
-          [loaderParams]="{quality: 80}"
         />
       } @else if (placeholderIcon) {
         <span class="card__placeholder card__placeholder--svg" [innerHTML]="safePlaceholderIcon"></span>
