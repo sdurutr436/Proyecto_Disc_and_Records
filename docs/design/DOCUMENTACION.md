@@ -1283,6 +1283,792 @@ Encapsula la lógica de label, input y mensajes de error/ayuda. Utiliza la nueva
 
 ---
 
+## 2.4 Modificación de Etiquetas HTML con Clases CSS
+
+### Filosofía de Selectores en el Proyecto
+
+En Discs & Records utilizamos **clases CSS** en lugar de selectores de elementos directos para estilizar componentes. Esta decisión sigue los principios de la metodología **BEM (Block-Element-Modifier)** y garantiza:
+
+1. **Especificidad controlada**: Las clases tienen especificidad baja y predecible (0,1,0)
+2. **Reutilización**: Los estilos no dependen del tipo de elemento HTML
+3. **Encapsulación**: Cada componente tiene su propio namespace
+4. **Mantenibilidad**: Los cambios no afectan a elementos no relacionados
+
+---
+
+### Selectores de Elementos vs Clases: Comparativa
+
+| Aspecto | Selector de Elemento | Selector de Clase |
+|---------|----------------------|-------------------|
+| **Sintaxis** | `button { }` | `.btn { }` |
+| **Especificidad** | 0,0,1 | 0,1,0 |
+| **Alcance** | Todos los `<button>` del proyecto | Solo elementos con `class="btn"` |
+| **Reutilización** | ❌ Limitada (solo ese elemento) | ✅ En cualquier elemento |
+| **Conflictos** | ❌ Alto riesgo de colisiones | ✅ Bajo riesgo (namespaced) |
+| **Uso en proyecto** | Solo en `03-elements/_base.scss` | En todos los componentes |
+
+---
+
+### Cuándo Usamos Selectores de Elementos
+
+Solo utilizamos selectores de elementos en la capa **Elements** de ITCSS (`03-elements/_base.scss`) para establecer estilos base mínimos:
+
+```scss
+// 03-elements/_base.scss - Estilos base para elementos sin clases
+
+// Reset de tipografía base
+body {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-parrafo;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+// Enlaces base (sin clases)
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color vars.$transicion-rapida;
+
+  &:hover {
+    color: var(--color-secondary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+// Botones base (reset)
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+// Imágenes base
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+```
+
+---
+
+### Cómo Modificamos Elementos con Clases
+
+Para componentes específicos, siempre usamos clases BEM que se aplican al elemento HTML:
+
+#### Ejemplo 1: Botones
+
+```html
+<!-- ❌ NO hacemos esto (selector de elemento) -->
+<button>Click</button>
+<!-- Esto aplicaría estilos globales a TODOS los botones -->
+
+<!-- ✅ SÍ hacemos esto (clases BEM) -->
+<button class="btn btn--primary">Click</button>
+<button class="btn btn--secondary btn--large">Acción</button>
+<a href="/ruta" class="btn btn--outline">Enlace como botón</a>
+```
+
+```scss
+// 05-components/_button.scss
+
+// Bloque base
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: vars.$espaciado-xs vars.$espaciado-s;
+  font-family: vars.$fuente-principal;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-m;
+  cursor: pointer;
+  transition: all vars.$transicion-base;
+
+  // Estados
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: vars.$sombra-brutal-s;
+  }
+
+  &:active {
+    transform: translate(0, 0);
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+// Modificadores de variante
+.btn--primary {
+  background-color: var(--color-primary);
+  color: var(--text-dark);
+}
+
+.btn--secondary {
+  background-color: var(--color-secondary);
+  color: var(--text-white);
+}
+
+.btn--outline {
+  background-color: transparent;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+
+  &:hover {
+    background-color: var(--color-primary);
+    color: var(--text-dark);
+  }
+}
+
+// Modificadores de tamaño
+.btn--small {
+  padding: vars.$espaciado-micro vars.$espaciado-xs;
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+}
+
+.btn--large {
+  padding: vars.$espaciado-s vars.$espaciado-m;
+  font-size: vars.$tamanio-fuente-h5;
+}
+```
+
+---
+
+#### Ejemplo 2: Cards de Álbumes
+
+```html
+<!-- Estructura HTML con clases BEM -->
+<article class="album-card album-card--featured">
+  <div class="album-card__image-wrapper">
+    <img 
+      src="album.webp" 
+      alt="Nombre del álbum" 
+      class="album-card__image"
+      loading="lazy" />
+  </div>
+  <div class="album-card__content">
+    <h3 class="album-card__title">Nombre del Álbum</h3>
+    <p class="album-card__artist">Nombre del Artista</p>
+    <div class="album-card__rating">
+      <app-rating [value]="4.5" [readonly]="true"></app-rating>
+    </div>
+  </div>
+</article>
+```
+
+```scss
+// Componente Card
+.album-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-secondary);
+  border: vars.$borde-brutal-medium;
+  border-radius: vars.$radio-l;
+  overflow: hidden;
+  transition: transform vars.$transicion-base, box-shadow vars.$transicion-base;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: vars.$sombra-brutal-m;
+  }
+
+  // Elementos
+  &__image-wrapper {
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform vars.$transicion-lenta;
+  }
+
+  &__content {
+    padding: vars.$espaciado-s;
+  }
+
+  &__title {
+    font-size: vars.$tamanio-fuente-h4;
+    font-weight: 600;
+    margin-bottom: vars.$espaciado-micro;
+    color: var(--text-primary);
+  }
+
+  &__artist {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    color: var(--text-secondary);
+  }
+
+  // Modificador: Card destacada
+  &--featured {
+    border-color: var(--color-primary);
+    box-shadow: vars.$sombra-vinilo-s;
+  }
+}
+```
+
+---
+
+#### Ejemplo 3: Formularios (Form Input)
+
+```html
+<div class="form-input">
+  <label for="email" class="form-input__label">
+    Correo electrónico
+    <span class="form-input__required">*</span>
+  </label>
+  <input 
+    id="email" 
+    type="email" 
+    class="form-input__input form-input__input--error"
+    aria-invalid="true"
+    aria-describedby="email-error" />
+  <p id="email-error" class="form-input__error" role="alert">
+    Introduce un correo válido
+  </p>
+</div>
+```
+
+```scss
+.form-input {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$espaciado-xs;
+
+  // Elemento: Label
+  &__label {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  &__required {
+    color: var(--color-error);
+    margin-left: 2px;
+  }
+
+  // Elemento: Input
+  &__input {
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: vars.$borde-brutal-medium;
+    border-radius: vars.$radio-m;
+    font-size: vars.$tamanio-fuente-parrafo;
+    transition: border-color vars.$transicion-rapida, box-shadow vars.$transicion-rapida;
+
+    &::placeholder {
+      color: var(--text-placeholder);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(237, 156, 5, 0.2);
+    }
+
+    // Modificador: Estado de error
+    &--error {
+      border-color: var(--color-error);
+      
+      &:focus {
+        box-shadow: 0 0 0 3px rgba(224, 74, 74, 0.2);
+      }
+    }
+
+    // Modificador: Estado de éxito
+    &--success {
+      border-color: var(--color-success);
+    }
+  }
+
+  // Elemento: Mensaje de error
+  &__error {
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    color: var(--color-error);
+  }
+}
+```
+
+---
+
+### Tabla de Componentes y sus Clases
+
+| Componente | Bloque (Block) | Elementos | Modificadores |
+|------------|----------------|-----------|---------------|
+| Botón | `.btn` | - | `--primary`, `--secondary`, `--outline`, `--small`, `--large`, `--disabled` |
+| Card | `.album-card` | `__image-wrapper`, `__image`, `__content`, `__title`, `__artist`, `__rating` | `--featured`, `--compact` |
+| Input | `.form-input` | `__label`, `__required`, `__input`, `__error`, `__help` | `--error`, `--success`, `--disabled` |
+| Modal | `.modal` | `__overlay`, `__content`, `__header`, `__body`, `__footer`, `__close` | `--large`, `--fullscreen` |
+| Tabs | `.tabs` | `__nav`, `__list`, `__item`, `__button`, `__panel` | `--active`, `--disabled` |
+| Alert | `.alert` | `__icon`, `__content`, `__title`, `__message`, `__close` | `--error`, `--warning`, `--success`, `--info` |
+| Badge | `.badge` | - | `--primary`, `--secondary`, `--success`, `--error`, `--small`, `--large` |
+| Spinner | `.spinner` | `__circle` | `--small`, `--large`, `--light` |
+| Rating | `.rating` | `__star`, `__value` | `--interactive`, `--small`, `--medium`, `--large` |
+| Accordion | `.accordion` | `__item`, `__header`, `__icon`, `__panel` | `--expanded`, `--disabled` |
+
+---
+
+### Beneficios de Este Enfoque
+
+1. **Flexibilidad de elementos**: `.btn` puede aplicarse a `<button>`, `<a>` o `<input type="submit">`
+2. **Composición**: Múltiples clases pueden combinarse (`btn btn--primary btn--large`)
+3. **Theming**: Las CSS Custom Properties permiten cambiar colores sin tocar selectores
+4. **Debugging**: Es fácil identificar qué estilos aplican a un elemento inspeccionando sus clases
+5. **Encapsulación Angular**: `ViewEncapsulation.Emulated` añade atributos únicos que conviven con BEM
+
+---
+
+## 2.5 Propiedades CSS por Tipo de Elemento
+
+Esta sección documenta las propiedades CSS más importantes aplicadas a cada tipo de elemento en el proyecto, organizadas por categoría funcional.
+
+---
+
+### 2.5.1 Propiedades de Texto y Tipografía
+
+| Propiedad | Uso | Valores en el proyecto |
+|-----------|-----|------------------------|
+| `font-family` | Familia tipográfica | `'Space Grotesk', sans-serif` (UI), `'Monoton'` (decorativo) |
+| `font-size` | Tamaño de texto | Escala desde `0.625rem` (10px) hasta `4.25rem` (68px) |
+| `font-weight` | Peso de fuente | `400` (normal), `500` (medium), `600` (semi-bold), `700` (bold) |
+| `line-height` | Altura de línea | `1.5` (párrafos), `1.2` (headings), `1` (botones) |
+| `letter-spacing` | Espaciado entre letras | `0.05em` (uppercase), `normal` (body) |
+| `text-transform` | Transformación de texto | `uppercase` (botones, nav), `none` (body) |
+| `text-align` | Alineación horizontal | `left`, `center`, `right` |
+| `color` | Color de texto | CSS Custom Properties: `var(--text-primary)`, `var(--text-secondary)` |
+
+**Ejemplo en código:**
+
+```scss
+// Heading principal
+h1, .h1 {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-h1;      // 4.25rem
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+// Texto de párrafo
+p, .body-text {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-parrafo;  // 1rem
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+// Botones
+.btn {
+  font-family: vars.$fuente-principal;
+  font-size: vars.$tamanio-fuente-parrafo;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+```
+
+---
+
+### 2.5.2 Propiedades de Caja (Box Model)
+
+| Propiedad | Uso | Valores típicos |
+|-----------|-----|-----------------|
+| `display` | Tipo de caja | `block`, `flex`, `grid`, `inline-flex`, `none` |
+| `width` / `height` | Dimensiones | `100%`, `auto`, valores fijos (`300px`) |
+| `min-width` / `max-width` | Límites de ancho | `min-width: 320px`, `max-width: 1200px` |
+| `padding` | Espaciado interno | Variables: `$espaciado-xs` a `$espaciado-xl` |
+| `margin` | Espaciado externo | `0`, `auto`, variables de espaciado |
+| `box-sizing` | Modelo de caja | `border-box` (global en reset) |
+| `overflow` | Desbordamiento | `hidden`, `auto`, `visible`, `scroll` |
+
+**Ejemplo en código:**
+
+```scss
+// Card con box model completo
+.album-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 300px;
+  min-height: 350px;
+  padding: 0;                              // Sin padding interno (imagen full-bleed)
+  margin: 0;
+  box-sizing: border-box;                  // Heredado del reset
+  overflow: hidden;                        // Recorta imagen en border-radius
+}
+
+// Contenedor con padding
+.album-card__content {
+  padding: vars.$espaciado-s;              // 1rem = 16px
+}
+
+// Container centrado
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 vars.$espaciado-m;            // 2rem = 32px
+}
+```
+
+---
+
+### 2.5.3 Propiedades de Fondo y Bordes
+
+| Propiedad | Uso | Valores en el proyecto |
+|-----------|-----|------------------------|
+| `background-color` | Color de fondo | CSS Custom Properties: `var(--bg-primary)`, `var(--bg-secondary)` |
+| `background-image` | Imagen/gradiente | `linear-gradient()`, `url()` |
+| `border` | Borde completo | `3px solid var(--border-color)` (neobrutalista) |
+| `border-radius` | Esquinas redondeadas | `$radio-s` (8px) a `$radio-redondo` (50%) |
+| `box-shadow` | Sombra de caja | Sombras offset neobrutalistas, sombras neon |
+| `outline` | Contorno (focus) | `2px solid var(--color-primary)` |
+
+**Ejemplo en código:**
+
+```scss
+// Botón neobrutalista
+.btn {
+  background-color: var(--color-primary);
+  border: vars.$borde-brutal-medium;       // 3px solid var(--border-color)
+  border-radius: vars.$radio-m;            // 10px
+  box-shadow: vars.$sombra-brutal-s;       // 4px 4px 0 #01131B
+
+  &:hover {
+    box-shadow: vars.$sombra-brutal-hover; // 2px 2px 0 #01131B
+  }
+
+  &:active {
+    box-shadow: none;                      // "Hundido"
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+// Sombra vinilo (múltiples capas)
+.card--featured {
+  box-shadow:
+    0.125rem 0.125rem 0 var(--vinyl-shadow-layer-1),
+    0.25rem 0.25rem 0 var(--vinyl-shadow-layer-2),
+    0.375rem 0.375rem 0 var(--vinyl-shadow-layer-3),
+    0.5rem 0.5rem 0 var(--vinyl-shadow-layer-4);
+}
+
+// Sombra neon (alertas)
+.alert--error {
+  box-shadow: 0 0 10px var(--color-error), 0 0 20px var(--color-error);
+}
+```
+
+---
+
+### 2.5.4 Propiedades de Layout (Flexbox y Grid)
+
+| Propiedad | Uso | Valores típicos |
+|-----------|-----|-----------------|
+| `display: flex` | Contenedor flex | En navs, headers, cards horizontales |
+| `flex-direction` | Dirección de items | `row`, `column`, `row-reverse` |
+| `justify-content` | Alineación eje principal | `flex-start`, `center`, `space-between`, `space-around` |
+| `align-items` | Alineación eje cruzado | `flex-start`, `center`, `stretch`, `baseline` |
+| `gap` | Espacio entre items | Variables de espaciado (`$espaciado-s`, `$espaciado-m`) |
+| `flex-wrap` | Wrap de items | `wrap`, `nowrap` |
+| `flex` | Shorthand flex item | `1`, `0 0 auto`, `1 1 300px` |
+| `display: grid` | Contenedor grid | En grids de cards, layouts de página |
+| `grid-template-columns` | Columnas del grid | `repeat(auto-fit, minmax(250px, 1fr))` |
+| `grid-template-rows` | Filas del grid | `auto`, `1fr`, `minmax()` |
+
+**Ejemplo en código:**
+
+```scss
+// Navegación con Flexbox
+.main-nav__list {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: vars.$espaciado-m;                  // 2rem = 32px
+  flex-wrap: wrap;
+}
+
+// Grid de álbumes responsive
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: vars.$espaciado-m;
+  padding: vars.$espaciado-l 0;
+}
+
+// Layout de dos columnas (perfil)
+.profile-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: vars.$espaciado-l;
+
+  @media (max-width: vars.$breakpoint-tablet) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Card con flexbox interno
+.album-card {
+  display: flex;
+  flex-direction: column;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;                               // Ocupa espacio restante
+    justify-content: space-between;
+  }
+}
+```
+
+---
+
+### 2.5.5 Propiedades de Posicionamiento
+
+| Propiedad | Uso | Valores típicos |
+|-----------|-----|-----------------|
+| `position` | Esquema de posicionamiento | `static`, `relative`, `absolute`, `fixed`, `sticky` |
+| `top` / `right` / `bottom` / `left` | Offsets | Valores en `px`, `rem`, `%` |
+| `z-index` | Orden de apilamiento | Escala definida: `1` (base), `100` (nav), `1000` (modal), `9999` (tooltip) |
+| `inset` | Shorthand para offsets | `0` (llenar contenedor) |
+
+**Ejemplo en código:**
+
+```scss
+// Variables de z-index
+$z-index-base: 1;
+$z-index-sticky: 100;
+$z-index-fixed: 500;
+$z-index-modal-backdrop: 900;
+$z-index-modal: 1000;
+$z-index-tooltip: 9999;
+
+// Navegación sticky
+.main-nav {
+  position: sticky;
+  top: 0;
+  z-index: $z-index-sticky;
+}
+
+// Modal con overlay
+.modal {
+  &__overlay {
+    position: fixed;
+    inset: 0;                              // top: 0; right: 0; bottom: 0; left: 0;
+    z-index: $z-index-modal-backdrop;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  &__content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: $z-index-modal;
+  }
+}
+
+// Tooltip
+.tooltip {
+  position: absolute;
+  z-index: $z-index-tooltip;
+}
+
+// Badge en esquina de card
+.album-card {
+  position: relative;
+
+  &__badge {
+    position: absolute;
+    top: vars.$espaciado-xs;
+    right: vars.$espaciado-xs;
+  }
+}
+```
+
+---
+
+### 2.5.6 Propiedades de Transición y Animación
+
+| Propiedad | Uso | Valores típicos |
+|-----------|-----|-----------------|
+| `transition` | Transición entre estados | `all 0.3s ease`, propiedades específicas |
+| `transition-property` | Qué animar | `transform`, `opacity`, `color`, `background-color` |
+| `transition-duration` | Duración | `0.15s` (rápida), `0.3s` (base), `0.5s` (lenta) |
+| `transition-timing-function` | Curva de animación | `ease`, `ease-in-out`, `cubic-bezier()` |
+| `animation` | Animación con keyframes | `fadeInUp 0.6s ease-out forwards` |
+| `transform` | Transformaciones | `translateY()`, `scale()`, `rotate()` |
+| `will-change` | Optimización GPU | `transform`, `opacity` |
+
+**Ejemplo en código:**
+
+```scss
+// Variables de transición
+$transicion-rapida: 0.15s ease;
+$transicion-base: 0.3s ease;
+$transicion-lenta: 0.5s ease;
+
+// Botón con transiciones optimizadas
+.btn {
+  transition: 
+    transform $transicion-base,
+    box-shadow $transicion-base,
+    background-color $transicion-rapida;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+  }
+}
+
+// Card con hover lift
+.album-card {
+  transition: transform $transicion-base, box-shadow $transicion-base;
+
+  &:hover {
+    transform: translateY(-4px);
+    
+    .album-card__image {
+      transform: scale(1.05);
+    }
+  }
+
+  &__image {
+    transition: transform $transicion-lenta;
+  }
+}
+
+// Animación de entrada
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Spinner con animación infinita
+.spinner {
+  animation: spinSlow 2s linear infinite;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+```
+
+---
+
+### 2.5.7 Propiedades de Accesibilidad Visual
+
+| Propiedad | Uso | Valores típicos |
+|-----------|-----|-----------------|
+| `outline` | Indicador de foco | `2px solid var(--color-primary)` |
+| `outline-offset` | Separación del outline | `2px`, `4px` |
+| `cursor` | Tipo de cursor | `pointer`, `not-allowed`, `grab`, `text` |
+| `opacity` | Transparencia | `1` (visible), `0.5` (disabled), `0` (oculto) |
+| `visibility` | Visibilidad | `visible`, `hidden` |
+| `pointer-events` | Eventos de puntero | `auto`, `none` |
+
+**Ejemplo en código:**
+
+```scss
+// Focus visible para teclado
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+// Estados de botón
+.btn {
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// Clase sr-only (solo para lectores de pantalla)
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Elementos decorativos ocultos de lectores
+[aria-hidden="true"] {
+  // No afecta estilos, pero semánticamente oculto
+}
+
+// Indicador de carga
+.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+```
+
+---
+
+### 2.5.8 Resumen de Propiedades por Componente
+
+| Componente | Propiedades Clave |
+|------------|-------------------|
+| **Botones** | `display: inline-flex`, `padding`, `border`, `border-radius`, `background-color`, `color`, `font-weight`, `text-transform`, `box-shadow`, `transition`, `cursor` |
+| **Cards** | `display: flex`, `flex-direction`, `border`, `border-radius`, `overflow: hidden`, `box-shadow`, `transition`, `background-color` |
+| **Inputs** | `padding`, `border`, `border-radius`, `background-color`, `color`, `font-size`, `transition`, `outline` |
+| **Modals** | `position: fixed`, `z-index`, `inset`, `background-color`, `transform`, `animation` |
+| **Nav** | `display: flex`, `position: sticky`, `z-index`, `gap`, `background-color` |
+| **Grid** | `display: grid`, `grid-template-columns`, `gap`, `padding` |
+| **Spinners** | `animation`, `transform`, `border-radius: 50%` |
+| **Tooltips** | `position: absolute`, `z-index`, `padding`, `background-color`, `border-radius`, `box-shadow` |
+
+---
+
 # Sección 3: Sistema de Componentes UI
 
 > **Proyecto:** Discs & Records
@@ -3055,21 +3841,19 @@ Las páginas principales añaden `padding-bottom` para compensar el espacio ocup
 
 ## 4.6 Screenshots comparativos
 
-*(Pendiente: insertar capturas tras implementar adaptaciones)*
+![Captura de Home en Mobile (375px)](./img-fase4/home-mobile.png)
 
-![Captura de Home en Mobile (375px)](./img-fase4/home-mobile-placeholder.png)
+![Captura de Home en Tablet (768px)](./img-fase4/home-tablet.png)
 
-![Captura de Home en Tablet (768px)](./img-fase4/home-tablet-placeholder.png)
+![Captura de Home en Desktop (1280px)](./img-fase4/home-desktop.png)
 
-![Captura de Home en Desktop (1280px)](./img-fase4/home-desktop-placeholder.png)
+![Captura de Profile en Mobile (375px)](./img-fase4/profile-mobile.png)
 
-![Captura de Profile en Mobile (375px)](./img-fase4/profile-mobile-placeholder.png)
+![Captura de Profile en Desktop (1280px)](./img-fase4/profile-desktop.png)
 
-![Captura de Profile en Desktop (1280px)](./img-fase4/profile-desktop-placeholder.png)
+![Captura de Detail en Mobile (375px)](./img-fase4/detail-mobile.png)
 
-![Captura de Detail en Mobile (375px)](./img-fase4/detail-mobile-placeholder.png)
-
-![Captura de Detail en Desktop (1280px)](./img-fase4/detail-desktop-placeholder.png)
+![Captura de Detail en Desktop (1280px)](./img-fase4/detail-desktop.png)
 
 ---
 
@@ -3337,15 +4121,32 @@ export class HeroService {
 
 **Ejemplo en Cards de Álbumes:**
 
+**Archivo:** `frontend/src/app/components/shared/card/card.html`
+
 ```html
-<!-- Imágenes de álbumes (Deezer API) -->
-<img
-  [src]="album.cover_medium"
-  [alt]="album.title"
-  loading="lazy"
-  decoding="async"
-  class="card__image"
-/>
+<!-- Componente Card con lazy loading automático -->
+<article class="card">
+  <section class="card__image">
+    @if (imageUrl) {
+      <img 
+        [src]="imageUrl" 
+        [alt]="imageAlt" 
+        loading="lazy" 
+        decoding="async" 
+      />
+    }
+  </section>
+</article>
+```
+
+**Implementación en ambas variantes del componente Card:**
+
+```html
+<!-- Variante Profile -->
+<img [src]="imageUrl" [alt]="imageAlt" loading="lazy" decoding="async" />
+
+<!-- Variante Polaroid -->
+<img [src]="imageUrl" [alt]="imageAlt" loading="lazy" decoding="async" />
 ```
 
 **Ventajas:**
@@ -4043,3 +4844,22 @@ El modo escala de grises está diseñado pensando en:
 - El tema seleccionado se guarda en `localStorage` para persistir entre sesiones
 - Si no hay preferencia guardada, se respeta `prefers-color-scheme` del sistema operativo
 - Los cambios de preferencia del sistema se detectan en tiempo real (solo si el usuario no ha elegido manualmente)
+
+# Seccion 7: Informe de accesibilidad
+
+# Seccion final:
+
+HTML Validado (W3C):
+
+![Validacion HTML](validaciones-finales/html-w3c.png)
+
+CSS Validado (W3C):
+
+![Validacion CSS](validaciones-finales/css-w3c.png)
+
+URL Pública: https://discs-n-records-ksgvk.ondigitalocean.app
+
+Lighthouse Performance:
+
+Lighthouse Accessibility:
+

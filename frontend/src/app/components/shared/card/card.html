@@ -5,7 +5,7 @@
     <section class="card__left">
       <div [class]="imageClasses">
         @if (imageUrl) {
-          <img [src]="imageUrl" [alt]="imageAlt" />
+          <img [src]="imageUrl" [alt]="imageAlt" loading="lazy" decoding="async" />
         } @else if (placeholderIcon) {
           <span class="card__placeholder card__placeholder--svg" [innerHTML]="safePlaceholderIcon"></span>
         } @else {
@@ -55,7 +55,7 @@
     <!-- Variante Polaroid: estructura original -->
     <section [class]="imageClasses">
       @if (imageUrl) {
-        <img [src]="imageUrl" [alt]="imageAlt" />
+        <img [src]="imageUrl" [alt]="imageAlt" loading="lazy" decoding="async" />
       } @else if (placeholderIcon) {
         <span class="card__placeholder card__placeholder--svg" [innerHTML]="safePlaceholderIcon"></span>
       } @else {
