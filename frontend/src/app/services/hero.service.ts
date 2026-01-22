@@ -70,12 +70,27 @@ export class HeroService {
   }
 
   /**
-   * Precarga la imagen actual para el tema activo
+   * Precarga la imagen actual para el tema activo (LCP optimization)
+   * Usa link preload para máxima prioridad
    */
   private preloadCurrentImage(): void {
     const hero = this.currentHero();
+    
+    // Crear link preload para máxima prioridad de carga
+    if (typeof document !== 'undefined') {
+      const preloadLink = document.createElement('link');
+      preloadLink.rel = 'preload';
+      preloadLink.as = 'image';
+      preloadLink.href = hero.srcExtraLarge;
+      preloadLink.type = 'image/webp';
+      preloadLink.fetchPriority = 'high';
+      document.head.appendChild(preloadLink);
+    }
+    
+    // También precargar con Image para navegadores que no soportan link preload
     const img = new Image();
-    img.src = hero.srcMedium;
+    img.fetchPriority = 'high';
+    img.src = hero.srcExtraLarge;
   }
 
   /**

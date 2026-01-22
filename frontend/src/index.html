@@ -11,13 +11,16 @@
   <!-- Favicons -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-  <!-- Preconnect para recursos externos -->
+  <!-- Preconnect para recursos críticos (máximo 2 para evitar penalización) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://e-cdns-images.dzcdn.net" crossorigin>
+  
+  <!-- DNS-prefetch para recursos secundarios (no bloquean) -->
+  <link rel="dns-prefetch" href="https://e-cdns-images.dzcdn.net">
   <link rel="dns-prefetch" href="https://api.deezer.com">
 
-  <!-- Fuentes con display=swap para mejor FCP -->
+  <!-- Preload de fuentes críticas para FCP -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Monoton&family=Space+Grotesk:wght@300;400;500;600;700&display=swap">
   <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Open Graph para redes sociales -->
