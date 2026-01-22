@@ -25,12 +25,14 @@ import SearchResultsComponent from './search-results';
 import { DeezerService, DeezerAlbum, DeezerArtist } from '../../services/deezer.service';
 import { MockDeezerService } from '../../services/mock-deezer.service';
 import { DeezerRateLimitService } from '../../services/deezer-rate-limit.service';
+import { AlbumNavigationService } from '../../services/album-navigation.service';
 
 describe('SearchResultsComponent', () => {
   let component: SearchResultsComponent;
   let deezerServiceSpy: jasmine.SpyObj<DeezerService>;
   let mockDeezerServiceSpy: jasmine.SpyObj<MockDeezerService>;
   let rateLimitServiceSpy: jasmine.SpyObj<DeezerRateLimitService>;
+  let albumNavigationServiceSpy: jasmine.SpyObj<AlbumNavigationService>;
   let router: Router;
   let queryParamsSubject: BehaviorSubject<any>;
 
@@ -104,6 +106,12 @@ describe('SearchResultsComponent', () => {
       'handleRateLimitError'
     ]);
 
+    albumNavigationServiceSpy = jasmine.createSpyObj('AlbumNavigationService', ['navigateToAlbum'], {
+      isImporting: jasmine.createSpy().and.returnValue(false),
+      importingAlbumId: jasmine.createSpy().and.returnValue(null)
+    });
+    albumNavigationServiceSpy.navigateToAlbum.and.returnValue(of(null));
+
     // Configuración por defecto - retornar arrays vacíos para evitar renderizado de templates con iconos
     deezerServiceSpy.searchAlbums.and.returnValue(of([]));
     deezerServiceSpy.searchArtists.and.returnValue(of([]));
@@ -125,6 +133,7 @@ describe('SearchResultsComponent', () => {
         { provide: DeezerService, useValue: deezerServiceSpy },
         { provide: MockDeezerService, useValue: mockDeezerServiceSpy },
         { provide: DeezerRateLimitService, useValue: rateLimitServiceSpy },
+        { provide: AlbumNavigationService, useValue: albumNavigationServiceSpy },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -371,10 +380,8 @@ describe('SearchResultsComponent', () => {
     it('should navigate to album detail on viewResult', () => {
       const result = { id: 123, type: 'album' as const, title: 'Test', imageUrl: '' };
       component.viewResult(result);
-      expect(router.navigate).toHaveBeenCalledWith(
-        ['/album', 123],
-        jasmine.objectContaining({ state: jasmine.any(Object) })
-      );
+      // Debe llamar al servicio de navegación de álbumes, no al router directamente
+      expect(albumNavigationServiceSpy.navigateToAlbum).toHaveBeenCalledWith('123', 'deezer');
     });
 
     it('should navigate to artist detail on viewResult', () => {

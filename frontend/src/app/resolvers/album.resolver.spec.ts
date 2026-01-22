@@ -32,7 +32,7 @@ describe('albumResolver', () => {
   };
 
   beforeEach(() => {
-    albumServiceSpy = jasmine.createSpyObj('AlbumService', ['getAlbumById']);
+    albumServiceSpy = jasmine.createSpyObj('AlbumService', ['getAlbumByIdLocal', 'importFromDeezer']);
     loadingServiceSpy = jasmine.createSpyObj('LoadingService', ['start', 'stop']);
     notificationStreamSpy = jasmine.createSpyObj('NotificationStreamService', ['error']);
     breadcrumbServiceSpy = jasmine.createSpyObj('BreadcrumbService', ['updateCurrentBreadcrumb']);
@@ -60,7 +60,7 @@ describe('albumResolver', () => {
   const mockState = {} as RouterStateSnapshot;
 
   it('should return album when found', fakeAsync(() => {
-    albumServiceSpy.getAlbumById.and.returnValue(of(mockAlbum));
+    albumServiceSpy.getAlbumByIdLocal.and.returnValue(of(mockAlbum));
     const route = createMockRoute('123');
 
     let result: Album | null | undefined;
@@ -92,7 +92,7 @@ describe('albumResolver', () => {
   }));
 
   it('should handle error and navigate to 404', fakeAsync(() => {
-    albumServiceSpy.getAlbumById.and.returnValue(throwError(() => new Error('Not found')));
+    albumServiceSpy.getAlbumByIdLocal.and.returnValue(throwError(() => new Error('Not found')));
     const route = createMockRoute('999');
 
     let result: Album | null = null;
@@ -109,7 +109,7 @@ describe('albumResolver', () => {
   }));
 
   it('should start loading at the beginning', fakeAsync(() => {
-    albumServiceSpy.getAlbumById.and.returnValue(of(mockAlbum));
+    albumServiceSpy.getAlbumByIdLocal.and.returnValue(of(mockAlbum));
     const route = createMockRoute('123');
 
     TestBed.runInInjectionContext(() => {
@@ -122,7 +122,7 @@ describe('albumResolver', () => {
   }));
 
   it('should stop loading in finalize', fakeAsync(() => {
-    albumServiceSpy.getAlbumById.and.returnValue(of(mockAlbum));
+    albumServiceSpy.getAlbumByIdLocal.and.returnValue(of(mockAlbum));
     const route = createMockRoute('123');
 
     TestBed.runInInjectionContext(() => {

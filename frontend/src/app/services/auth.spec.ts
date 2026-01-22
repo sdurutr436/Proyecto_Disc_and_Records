@@ -16,7 +16,7 @@
  * @version 2.0.0
  */
 
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthService } from './auth';
@@ -131,7 +131,7 @@ describe('AuthService', () => {
    * ══════════════════════════════════════════════════════════════════════════
    */
   describe('Login con Mock Data', () => {
-    it('should login successfully with valid mock credentials', async () => {
+    it('should login successfully with valid mock credentials', fakeAsync(() => {
       // Arrange - credenciales REALES del mock (ver mock-data.ts)
       const credentials = {
         email: 'admin@mock.dev',
@@ -139,13 +139,15 @@ describe('AuthService', () => {
       };
 
       // Act
-      const result = await service.login(credentials);
+      let result: any;
+      service.login(credentials).then(r => result = r);
+      tick(600); // Simular paso del tiempo (500ms delay del mock + margen)
 
       // Assert
       expect(result.success).toBeTruthy();
-    });
+    }));
 
-    it('should fail login with invalid credentials', async () => {
+    it('should fail login with invalid credentials', fakeAsync(() => {
       // Arrange
       const credentials = {
         email: 'invalid@email.com',
@@ -153,13 +155,15 @@ describe('AuthService', () => {
       };
 
       // Act
-      const result = await service.login(credentials);
+      let result: any;
+      service.login(credentials).then(r => result = r);
+      tick(600);
 
       // Assert
       expect(result.success).toBeFalsy();
-    });
+    }));
 
-    it('should update authenticated state after successful login', async () => {
+    it('should update authenticated state after successful login', fakeAsync(() => {
       // Arrange - usar credenciales del mock real
       const credentials = {
         email: 'admin@mock.dev',
@@ -167,13 +171,14 @@ describe('AuthService', () => {
       };
 
       // Act
-      await service.login(credentials);
+      service.login(credentials);
+      tick(600);
 
       // Assert
       expect(service.isAuthenticated()).toBeTruthy();
-    });
+    }));
 
-    it('should set current user after successful login', async () => {
+    it('should set current user after successful login', fakeAsync(() => {
       // Arrange - credenciales del mock-data.ts
       const credentials = {
         email: 'admin@mock.dev',
@@ -181,15 +186,16 @@ describe('AuthService', () => {
       };
 
       // Act
-      await service.login(credentials);
+      service.login(credentials);
+      tick(600);
 
       // Assert - verificar que el email del user coincide
       const user = service.getCurrentUser();
       expect(user).not.toBeNull();
       expect(user?.email).toBe('admin@mock.dev');
-    });
+    }));
 
-    it('should return user data on successful login', async () => {
+    it('should return user data on successful login', fakeAsync(() => {
       // Arrange - credenciales mock reales
       const credentials = {
         email: 'admin@mock.dev',
@@ -197,14 +203,16 @@ describe('AuthService', () => {
       };
 
       // Act
-      const result = await service.login(credentials);
+      let result: any;
+      service.login(credentials).then(r => result = r);
+      tick(600);
 
       // Assert - verificar email del response
       expect(result.user).toBeDefined();
       expect(result.user?.email).toBe('admin@mock.dev');
-    });
+    }));
 
-    it('should handle empty email', async () => {
+    it('should handle empty email', fakeAsync(() => {
       // Arrange
       const credentials = {
         email: '',
@@ -212,13 +220,15 @@ describe('AuthService', () => {
       };
 
       // Act
-      const result = await service.login(credentials);
+      let result: any;
+      service.login(credentials).then(r => result = r);
+      tick(600);
 
       // Assert
       expect(result.success).toBeFalsy();
-    });
+    }));
 
-    it('should handle empty password', async () => {
+    it('should handle empty password', fakeAsync(() => {
       // Arrange
       const credentials = {
         email: 'test@test.com',
@@ -226,11 +236,13 @@ describe('AuthService', () => {
       };
 
       // Act
-      const result = await service.login(credentials);
+      let result: any;
+      service.login(credentials).then(r => result = r);
+      tick(600);
 
       // Assert
       expect(result.success).toBeFalsy();
-    });
+    }));
   });
 
   /**
@@ -250,7 +262,7 @@ describe('AuthService', () => {
    * ══════════════════════════════════════════════════════════════════════════
    */
   describe('Ciclo Login/Logout', () => {
-    it('should complete full login/logout cycle', async () => {
+    it('should complete full login/logout cycle', fakeAsync(() => {
       // Arrange - credenciales mock reales de mock-data.ts
       const credentials = {
         email: 'admin@mock.dev',
@@ -261,7 +273,8 @@ describe('AuthService', () => {
       expect(service.isAuthenticated()).toBeFalsy();
 
       // Act - login
-      await service.login(credentials);
+      service.login(credentials);
+      tick(600);
 
       // Assert - ahora autenticado
       expect(service.isAuthenticated()).toBeTruthy();
@@ -273,9 +286,9 @@ describe('AuthService', () => {
       // Assert - no autenticado de nuevo
       expect(service.isAuthenticated()).toBeFalsy();
       expect(service.getCurrentUser()).toBeNull();
-    });
+    }));
 
-    it('should handle multiple login/logout cycles', async () => {
+    it('should handle multiple login/logout cycles', fakeAsync(() => {
       // Credenciales mock reales
       const credentials = {
         email: 'admin@mock.dev',
@@ -283,16 +296,18 @@ describe('AuthService', () => {
       };
 
       // Primer ciclo
-      await service.login(credentials);
+      service.login(credentials);
+      tick(600);
       expect(service.isAuthenticated()).toBeTruthy();
       service.logout();
       expect(service.isAuthenticated()).toBeFalsy();
 
       // Segundo ciclo
-      await service.login(credentials);
+      service.login(credentials);
+      tick(600);
       expect(service.isAuthenticated()).toBeTruthy();
       service.logout();
       expect(service.isAuthenticated()).toBeFalsy();
-    });
+    }));
   });
 });

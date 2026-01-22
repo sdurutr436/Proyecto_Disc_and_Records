@@ -58,8 +58,8 @@ describe('AlbumNavigationService', () => {
       // NO debe llamar al servicio de importación
       expect(albumServiceSpy.importFromDeezer).not.toHaveBeenCalled();
 
-      // Debe navegar directamente con el ID local
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', 42]);
+      // Debe navegar directamente con el ID local como string
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', '42']);
     }));
 
     it('isImporting debe ser false para álbumes locales', fakeAsync(() => {
@@ -97,8 +97,8 @@ describe('AlbumNavigationService', () => {
       // Debe llamar al servicio de importación con el ID de Deezer
       expect(albumServiceSpy.importFromDeezer).toHaveBeenCalledWith(deezerAlbumId);
 
-      // CRÍTICO: Debe navegar con el ID devuelto por el backend (123), NO con el ID de Deezer
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', 123]);
+      // CRÍTICO: Debe navegar con el ID devuelto por el backend ('123'), NO con el ID de Deezer
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', '123']);
     }));
 
     it('debe usar el ID del backend incluso si ya existía', fakeAsync(() => {
@@ -111,8 +111,8 @@ describe('AlbumNavigationService', () => {
       service.navigateToAlbum(deezerAlbumId, 'deezer');
       tick();
 
-      // Debe navegar con el ID existente (456)
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', 456]);
+      // Debe navegar con el ID existente ('456')
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', '456']);
     }));
 
     it('isImporting debe ser true durante la importación', fakeAsync(() => {
@@ -179,8 +179,8 @@ describe('AlbumNavigationService', () => {
       service.navigateToAlbum(numericStringId, 'local');
       tick();
 
-      // Debe convertir y navegar como número
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', 42]);
+      // Debe navegar con el string
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', '42']);
     }));
 
     it('debe tratar IDs no numéricos como Deezer IDs si source es deezer', fakeAsync(() => {
@@ -206,7 +206,7 @@ describe('AlbumNavigationService', () => {
       tick();
 
       expect(albumServiceSpy.importFromDeezer).toHaveBeenCalledWith(alphanumericDeezerId);
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', 789]);
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/album', '789']);
     }));
   });
 });
