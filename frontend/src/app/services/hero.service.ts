@@ -75,7 +75,7 @@ export class HeroService {
    */
   private preloadCurrentImage(): void {
     const hero = this.currentHero();
-    
+
     // Crear link preload para máxima prioridad de carga
     if (typeof document !== 'undefined') {
       const preloadLink = document.createElement('link');
@@ -86,7 +86,7 @@ export class HeroService {
       preloadLink.fetchPriority = 'high';
       document.head.appendChild(preloadLink);
     }
-    
+
     // También precargar con Image para navegadores que no soportan link preload
     const img = new Image();
     img.fetchPriority = 'high';
