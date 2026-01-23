@@ -1,3 +1,4 @@
+@use 'sass:list';
 @use '../00-settings/_variables' as vars;
 
 /* ========================================
@@ -51,13 +52,13 @@
   $default-props: (background-color, color, border-color, fill, stroke);
 
   // Si no se pasan propiedades, usar las por defecto
-  @if length($properties) == 0 {
+  @if list.length($properties) == 0 {
     @each $prop in $default-props {
-      $transition-list: append($transition-list, #{$prop} vars.$transicion-base, comma);
+      $transition-list: list.append($transition-list, #{$prop} vars.$transicion-base, comma);
     }
   } @else {
     @each $prop in $properties {
-      $transition-list: append($transition-list, #{$prop} vars.$transicion-base, comma);
+      $transition-list: list.append($transition-list, #{$prop} vars.$transicion-base, comma);
     }
   }
 

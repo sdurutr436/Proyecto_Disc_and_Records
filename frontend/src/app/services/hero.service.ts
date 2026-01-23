@@ -70,12 +70,53 @@ export class HeroService {
   }
 
   /**
-   * Precarga la imagen actual para el tema activo
+   * Precarga la imagen actual para el tema activo (LCP optimization)
+   * Usa link preload para máxima prioridad - ADAPTATIVO según viewport
    */
   private preloadCurrentImage(): void {
     const hero = this.currentHero();
+
+    if (typeof document === 'undefined' || typeof window === 'undefined') {
+      return;
+    }
+
+    // Determinar qué imagen precargar según el viewport (móvil primero)
+    const viewportWidth = window.innerWidth;
+    let imageSrc: string;
+    let imageSrcset: string;
+
+    if (viewportWidth <= 479) {
+      imageSrc = hero.srcSmall;
+      imageSrcset = `${hero.srcSmall} 480w`;
+    } else if (viewportWidth <= 767) {
+      imageSrc = hero.srcMedium;
+      imageSrcset = `${hero.srcMedium} 768w`;
+    } else if (viewportWidth <= 1199) {
+      imageSrc = hero.srcLarge;
+      imageSrcset = `${hero.srcLarge} 1200w`;
+    } else {
+      imageSrc = hero.srcExtraLarge;
+      imageSrcset = `${hero.srcExtraLarge} 1920w`;
+    }
+
+    // Crear link preload con srcset para imágenes responsive
+    const preloadLink = document.createElement('link');
+    preloadLink.rel = 'preload';
+    preloadLink.as = 'image';
+    preloadLink.href = imageSrc;
+    preloadLink.type = 'image/webp';
+    preloadLink.fetchPriority = 'high';
+    // Añadir imagesrcset para mejor compatibilidad
+    preloadLink.setAttribute('imagesrcset',
+      `${hero.srcSmall} 480w, ${hero.srcMedium} 768w, ${hero.srcLarge} 1200w, ${hero.srcExtraLarge} 1920w`
+    );
+    preloadLink.setAttribute('imagesizes', '100vw');
+    document.head.appendChild(preloadLink);
+
+    // También precargar con Image para navegadores que no soportan link preload
     const img = new Image();
-    img.src = hero.srcMedium;
+    img.fetchPriority = 'high';
+    img.src = imageSrc;
   }
 
   /**

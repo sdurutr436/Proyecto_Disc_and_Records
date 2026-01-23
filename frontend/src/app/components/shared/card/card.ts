@@ -1,5 +1,5 @@
 import { Component, Input, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { LucideAngularModule } from 'lucide-angular';
 
@@ -14,7 +14,7 @@ export interface CardAction {
 
 @Component({
   selector: 'app-card',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, NgOptimizedImage],
   templateUrl: './card.html',
   styleUrl: './card.scss',
 })
@@ -27,6 +27,9 @@ export class Card {
   @Input() imageUrl: string = '';
   @Input() imageAlt: string = '';
   @Input() placeholderIcon: string = ''; // SVG string for custom placeholder
+
+  // Optimización de imágenes: prioridad alta para LCP
+  @Input() priority: boolean = false;
 
   // Getter para sanitizar el SVG
   get safePlaceholderIcon(): SafeHtml {

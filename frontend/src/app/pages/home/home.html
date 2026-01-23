@@ -7,9 +7,9 @@
     [class.home__hero--dark]="isDarkMode"
     [class.home__hero--grayscale]="isGrayscale"
   >
-    <!-- Contenedor de la imagen hero -->
+    <!-- Contenedor de la imagen hero - LCP element -->
     <div class="home__hero-image-container">
-      <!-- Imagen responsive con srcset -->
+      <!-- Imagen responsive con srcset optimizada para LCP -->
       <picture class="home__hero-picture">
         <source
           media="(max-width: 479px)"
@@ -30,8 +30,11 @@
           class="home__hero-image"
           [src]="currentHero.srcExtraLarge"
           [alt]="currentHero.alt"
+          width="1200"
+          height="800"
           loading="eager"
-          decoding="async"
+          decoding="sync"
+          fetchpriority="high"
         />
       </picture>
     </div>
