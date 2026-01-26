@@ -93,13 +93,13 @@ export class Home implements OnInit {
 
   // Frase motivacional aleatoria para usuarios autenticados
   private readonly motivationalPhrases: string[] = [
-    '¿Listo para descubrir nueva música?',
+    'Escucha, reseña, repite',
     'Tu próximo álbum favorito te espera',
-    '¡Es hora de explorar nuevos sonidos!',
+    'Hora de reseñar nuevos álbumes',
     'La música te está esperando',
-    '¿Qué vas a escuchar hoy?',
+    'Continua dandole a like a tus canciones favoritas',
     'Tu biblioteca musical sigue creciendo',
-    '¡A darle play a tus favoritos!'
+    'A darle play a tus favoritos'
   ];
 
   get motivationalPhrase(): string {
