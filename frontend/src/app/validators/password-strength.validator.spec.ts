@@ -10,7 +10,7 @@
  * - Al menos una mayúscula (A-Z)
  * - Al menos una minúscula (a-z)
  * - Al menos un número (0-9)
- * - Al menos un carácter especial (!@#$%^&*(),.?":{}|<>)
+ * - Al menos un carácter especial (!@#$%^&*()-_=+[]{}|;:,./<>?`~)
  *
  * COBERTURA:
  * - ✅ Casos válidos (contraseñas que cumplen todos los requisitos)
@@ -345,16 +345,16 @@ describe('PasswordStrengthValidator', () => {
       expect(result!['noSpecial']).toBeTruthy();
     });
 
-    it('should not consider underscore as special character from the defined set', () => {
-      // Arrange - underscore no está en la lista de especiales definidos
+    it('should consider underscore as special character from the defined set', () => {
+      // Arrange - underscore ahora está en la lista de especiales definidos
       const validator = passwordStrength();
       const control = new FormControl('My_Password_1');
 
       // Act
       const result = validator(control);
 
-      // Assert - underscore no está en [!@#$%^&*(),.?":{}|<>]
-      expect(result!['noSpecial']).toBeTruthy();
+      // Assert - underscore ahora está en [!@#$%^&*()-_=+[]{}|;:,./<>?`~]
+      expect(result).toBeNull();
     });
   });
 
@@ -616,7 +616,7 @@ describe('PasswordStrengthValidator', () => {
       const message = getPasswordErrorMessage('noSpecial');
 
       // Assert
-      expect(message).toBe('Debe contener al menos un carácter especial (!@#$%^&*)');
+      expect(message).toBe('Debe contener al menos un carácter especial (!@#$%^&*()-_=+[]{}|;:,./<>?`~)');
     });
 
     it('should return correct message for minLength error', () => {

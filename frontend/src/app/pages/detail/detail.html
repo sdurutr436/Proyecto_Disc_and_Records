@@ -185,15 +185,15 @@
 
               <app-form-textarea
                 [(ngModel)]="reviewText"
-                placeholder="Comparte tu opinión (mínimo 50 caracteres)..."
+                placeholder="Comparte tu opinión (mínimo 3 caracteres)..."
                 [rows]="5"
               ></app-form-textarea>
 
               <div class="review-form__footer">
                 <span class="review-form__counter">
                   {{ reviewText().length }} caracteres
-                  @if (reviewText().length < 50) {
-                    <span class="review-form__counter--warning">(mínimo 50)</span>
+                  @if (reviewText().length < 3) {
+                    <span class="review-form__counter--warning">(mínimo 3)</span>
                   }
                 </span>
 
