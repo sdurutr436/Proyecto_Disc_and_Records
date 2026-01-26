@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, adminGuard } from './guards/auth.guard';
+import { authGuard, adminGuard, authInitGuard } from './guards/auth.guard';
 import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
 import { albumResolver, artistResolver, songResolver } from './resolvers';
 
@@ -36,6 +36,7 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./pages/home/home').then(m => m.Home),
     title: 'Inicio - Discs & Records',
+    canActivate: [authInitGuard], // 🔒 Esperar a validación de sesión antes de montar componente
     data: { preload: true, critical: true } // ✅ Precarga inmediata - página principal
   },
   {

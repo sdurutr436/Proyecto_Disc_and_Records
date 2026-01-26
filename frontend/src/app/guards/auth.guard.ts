@@ -4,6 +4,61 @@ import { AuthService } from '../services/auth';
 import { NotificationStreamService } from '../services/notification-stream';
 
 /**
+ * Auth Init Guard - Bloquea activación de rutas hasta que restoreSession() termine
+ *
+ * PROPÓSITO:
+ * - Prevenir race condition: evitar que componentes disparen peticiones HTTP
+ *   antes de que se valide la sesión del usuario
+ * - Esperar a que AuthService.restoreSession() termine (éxito o fallo)
+ * - Si falla con 403, limpiar estado y permitir solo navegación pública
+ *
+ * USO EN RUTAS:
+ * ```typescript
+ * {
+ *   path: '',
+ *   component: Home,
+ *   canActivate: [authInitGuard]  // Aplicar en ruta raíz
+ * }
+ * ```
+ *
+ * FLUJO:
+ * 1. Usuario carga la aplicación
+ * 2. Guard intercepta activación de ruta
+ * 3. Espera (await) a que restoreSession() termine
+ * 4a. Si hay sesión válida: permite activación (return true)
+ * 4b. Si NO hay sesión (403/sin token): limpia estado, siempre permite navegación
+ *     (la ruta ya está configurada como pública, no hace falta redirigir)
+ * 5. Componente se monta solo DESPUÉS de que la validación haya terminado
+ *
+ * IMPORTANTE:
+ * - NO redirige (siempre return true) porque la ruta raíz es pública
+ * - Para rutas protegidas, usar authGuard (que sí redirige si no autenticado)
+ * - Solo asegura que la validación de sesión termine ANTES del montaje del componente
+ */
+let authInitPromise: Promise<boolean> | null = null;
+
+export const authInitGuard: CanActivateFn = async (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+): Promise<boolean> => {
+  const authService = inject(AuthService);
+
+  // Ejecutar restoreSession() solo una vez (primera navegación)
+  // Guardamos la promesa para reutilizarla en navegaciones subsiguientes
+  if (!authInitPromise) {
+    authInitPromise = authService.restoreSession();
+  }
+
+  // Esperar a que termine la restauración de sesión
+  const sessionRestored = await authInitPromise;
+
+  // Siempre permitir navegación (la validación ya terminó)
+  // Si falló, el token ya está limpio y AppState refleja "sin sesión"
+  // Si tuvo éxito, el usuario está autenticado y AppState tiene los datos
+  return true;
+};
+
+/**
  * Auth Guard - Protección de rutas que requieren autenticación
  *
  * PROPÓSITO:
