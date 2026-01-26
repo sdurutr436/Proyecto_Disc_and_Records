@@ -1,14 +1,17 @@
 <div class="search-bar">
   <div class="search-bar__container">
+    <!-- Label visible para accesibilidad -->
+    <label for="search-input" class="search-bar__label">Buscar en la colección</label>
+
     <!-- Input de búsqueda -->
     <input
+      id="search-input"
       type="text"
       class="search-bar__input"
       [value]="searchTerm()"
       (input)="updateSearchTerm($any($event.target).value)"
       (keypress)="handleKeyPress($event)"
       [placeholder]="placeholder"
-      aria-label="Buscar en la colección"
       [attr.aria-busy]="isSearching()"
     />
 
