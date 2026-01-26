@@ -53,7 +53,7 @@ La jerarquía visual se establece mediante una escala tipográfica bien definida
 
 - **Nivel 2 - Call-to-Action primario:** El botón "COMIENZA AQUÍ" destaca con fondo naranja dorado (#ED9C05), texto en mayúsculas y sombra brutal offset. Este botón justo en medio y debajo del lema, crea urgencia visual al usuario, invitándolo a crear cuenta para tener su propio registro.
 
-- **Nivel 3 - Títulos de sección:** "ÁLBUMES EN TENDENCIA" usa una tipografía decorativa (Monoton) con estilo retro 70s y tamaño intermedio (~2.625rem/42px), diferenciándose del contenido principal, creando contraste con el resto de la página. Esta tipografía es difícil de leer en textos largos, por lo que la decisión de diseño aquí ha sido usarla solo en palabras cortas o frases de 3-4 palabras.
+- **Nivel 3 - Títulos de sección:** "ÁLBUMES EN TENDENCIA" usa una tipografía decorativa (Bungee) con estilo retro y tamaño intermedio (~2.625rem/42px), diferenciándose del contenido principal, creando contraste con el resto de la página. Bungee ofrece mejor contraste y legibilidad que la anterior Monoton, cumpliendo estándares WCAG. Se usa solo en palabras cortas o frases de 3-4 palabras para máximo impacto.
 
 - **Nivel 4 - Navegación:** Los botones "REGISTRARSE" e "INICIAR SESIÓN" tienen menor jerarquía visual, integrados en la barra superior con fondo semi-transparente. Los botones son grandes con el fin de ser accesibles.
 
@@ -137,7 +137,7 @@ La coherencia visual se logra repitiendo patrones en toda la interfaz:
 
 - **Bordes neobrutalistas:** Los elementos interactivos (botones, cards, inputs) comparten el mismo estilo de borde negro sólido (3px) y sombras offset (4px 4px 0px), reforzando la estética retro-brutal.
 
-- **Tipografía consistente:** Space Grotesk se usa en todo el UI, con Monoton reservado solo para títulos decorativos de sección.
+- **Tipografía consistente:** Space Grotesk se usa en todo el UI, con Bungee reservado solo para títulos decorativos de sección (mejor contraste que Monoton).
 
 - **Forma de las cards:** Todos los álbumes/canciones usan el mismo formato cuadrado con bordes redondeados sutiles (5px) y sombras consistentes.
 
@@ -313,11 +313,11 @@ Los colores de la paleta del modo contraste son sólo colores de la escala de gr
 | Token | Valor | Uso |
 |-------|-------|-----|
 | `$fuente-principal` | 'Space Grotesk', sans-serif | Todo el UI, cuerpo de texto, botones |
-| `$fuente-secundaria` | 'Monoton' | Solo títulos decorativos de sección |
+| `$fuente-secundaria` | 'Bungee', cursive | Solo títulos decorativos de sección |
 
 **¿Por qué Space Grotesk?** Es una fuente geométrica sans-serif con personalidad retro-moderna que combina excelente legibilidad con un carácter distintivo. Sus formas redondeadas pero precisas encajan con la estética neobrutalista.
 
-**¿Por qué Monoton?** Es una fuente display inspirada en los carteles de las discotecas de los 70s. Solo la uso para títulos cortos ("ÁLBUMES EN TENDENCIA") porque su legibilidad es limitada en textos largos.
+**¿Por qué Bungee?** Es una fuente display con trazos gruesos y uniformes que ofrece mejor contraste y legibilidad que Monoton. Mantiene la estética retro pero cumple mejor con los estándares WCAG de accesibilidad. Se usa solo para títulos cortos ("ÁLBUMES EN TENDENCIA") para máximo impacto visual.
 
 #### Escala tipográfica
 
@@ -1922,7 +1922,7 @@ onNotificationDismissed() {
 - Auto-hide de botones en los extremos
 - Oculta scrollbar nativa
 - Responsive (ajusta tamaño de cards)
-- Título con tipografía Monoton y efecto 3D
+- Título con tipografía Bungee y efecto 3D
 
 **Tamaños de cards:**
 - Desktop: 220px de ancho fijo
