@@ -342,6 +342,11 @@ export class DetailComponent implements OnInit, OnDestroy {
         if (estado) {
           this.isInUserList.set(estado.enLista);
           this.userRating.set(estado.puntuacion ?? 0);
+
+          // Si tiene reseña según el estado, cargarla
+          if (estado.tieneResena) {
+            this.loadUserReviewFromBackend(albumIdNum, user.id);
+          }
         } else {
           this.isInUserList.set(false);
           this.userRating.set(0);
@@ -355,7 +360,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Cargar reseña del usuario si existe
+    // También buscar en el cache local del reviewStateService
     const existingReview = this.reviewStateService.getUserReviewForAlbum(albumId);
     if (existingReview) {
       this.userReview.set({
@@ -363,9 +368,28 @@ export class DetailComponent implements OnInit, OnDestroy {
         date: typeof existingReview.date === 'string' ? new Date(existingReview.date) : existingReview.date,
         rating: existingReview.rating
       });
-    } else {
-      this.userReview.set(null);
     }
+  }
+
+  /**
+   * Carga la reseña del usuario desde el backend
+   */
+  private loadUserReviewFromBackend(albumId: number, userId: number): void {
+    this.listaAlbumService.getResenasAlbum(albumId).subscribe({
+      next: (resenas) => {
+        const userResena = resenas.find(r => r.usuarioId === userId);
+        if (userResena) {
+          this.userReview.set({
+            text: userResena.textoResena,
+            date: new Date(userResena.fechaResena),
+            rating: userResena.puntuacion
+          });
+        }
+      },
+      error: () => {
+        // Silenciar error, no es crítico
+      }
+    });
   }
 
   /**
@@ -441,7 +465,15 @@ export class DetailComponent implements OnInit, OnDestroy {
 
     this.listaAlbumService.getResenasAlbum(albumIdNum).subscribe({
       next: (resenas: ResenaAlbumResponse[]) => {
-        const reviews = resenas.map(r => mapResenaToLegacy(r));
+        const currentUser = this.appState.currentUser();
+        const reviews = resenas.map(r => {
+          const review = mapResenaToLegacy(r);
+          // Si la reseña es del usuario actual, usar su avatar local
+          if (currentUser && r.usuarioId === currentUser.id && currentUser.avatarUrl) {
+            review.userAvatar = currentUser.avatarUrl;
+          }
+          return review;
+        });
         this.displayedReviews.set(reviews);
         this.reviews.set(reviews);
         this.hasMoreReviews.set(false); // El backend ya devuelve todas (sin paginación por ahora)

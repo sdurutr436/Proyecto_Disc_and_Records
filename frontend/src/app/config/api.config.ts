@@ -119,6 +119,7 @@ export const API_ENDPOINTS = {
     update: (id: number) => `/usuarios/${id}`,
     delete: (id: number) => `/usuarios/${id}`,
     getEstadisticas: (id: number) => `/usuarios/${id}/estadisticas`,
+    uploadAvatar: '/usuarios/me/avatar',
   },
 
   /**

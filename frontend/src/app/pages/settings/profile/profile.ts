@@ -1,11 +1,13 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { Alert } from '../../../components/shared/alert/alert';
 import { Button } from '../../../components/shared/button/button';
 import { FormInput } from '../../../components/shared/form-input/form-input';
 import { CanComponentDeactivate } from '../../../guards/unsaved-changes.guard';
 import { AppStateService } from '../../../services/app-state';
+import { API_CONFIG, API_ENDPOINTS } from '../../../config/api.config';
 
 @Component({
   selector: 'app-settings-profile',
@@ -16,6 +18,7 @@ import { AppStateService } from '../../../services/app-state';
 })
 export default class SettingsProfileComponent implements CanComponentDeactivate, OnInit {
   private readonly appState = inject(AppStateService);
+  private readonly http = inject(HttpClient);
 
   isLoading = signal(false);
   successMessage = signal<string | null>(null);
@@ -54,33 +57,56 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
     if (input.files && input.files[0]) {
       const file = input.files[0];
 
-      // Validar tamaño (max 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        this.errorMessage.set('La imagen no puede superar los 2MB');
+      // Validar tamaño (max 200KB para el backend)
+      if (file.size > 200 * 1024) {
+        this.errorMessage.set('La imagen no puede superar los 200KB');
         setTimeout(() => this.errorMessage.set(null), 3000);
         return;
       }
 
       // Validar tipo
-      if (!file.type.match(/image\/(jpeg|jpg|png|gif)/)) {
-        this.errorMessage.set('Solo se permiten imágenes JPG, PNG o GIF');
+      if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
+        this.errorMessage.set('Solo se permiten imágenes JPG, PNG, GIF o WebP');
         setTimeout(() => this.errorMessage.set(null), 3000);
         return;
       }
 
-      const reader = new FileReader();
+      // Subir al backend
+      const formData = new FormData();
+      formData.append('file', file);
 
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        if (e.target?.result) {
-          const avatarBase64 = e.target.result as string;
-          this.currentAvatar.set(avatarBase64);
-          this.appState.updateUser({ avatarUrl: avatarBase64 });
+      this.isLoading.set(true);
+
+      this.http.post<{ avatar: string }>(
+        `${API_CONFIG.baseUrl}${API_ENDPOINTS.usuarios.uploadAvatar}`,
+        formData
+      ).subscribe({
+        next: (response) => {
+          // El backend devuelve el avatar en base64
+          const avatarUrl = response.avatar || `data:${file.type};base64,${response.avatar}`;
+          this.currentAvatar.set(avatarUrl);
+          this.appState.updateUser({ avatarUrl });
           this.successMessage.set('Foto de perfil actualizada correctamente');
           setTimeout(() => this.successMessage.set(null), 3000);
+          this.isLoading.set(false);
+        },
+        error: (error) => {
+          console.error('Error subiendo avatar:', error);
+          // Fallback: guardar solo localmente si falla el backend
+          const reader = new FileReader();
+          reader.onload = (e: ProgressEvent<FileReader>) => {
+            if (e.target?.result) {
+              const avatarBase64 = e.target.result as string;
+              this.currentAvatar.set(avatarBase64);
+              this.appState.updateUser({ avatarUrl: avatarBase64 });
+              this.successMessage.set('Foto actualizada (solo localmente)');
+              setTimeout(() => this.successMessage.set(null), 3000);
+            }
+          };
+          reader.readAsDataURL(file);
+          this.isLoading.set(false);
         }
-      };
-
-      reader.readAsDataURL(file);
+      });
     }
   }
 

@@ -331,10 +331,12 @@
   }
 
   // Espacio entre el alert y el botón
-  app-alert {
+  > app-alert {
+    display: block;
     margin-bottom: vars.$espaciado-m;
   }
 
+  // Espacio antes del botón
   &__button {
     margin-top: vars.$espaciado-m;
   }
