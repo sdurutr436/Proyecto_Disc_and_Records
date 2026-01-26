@@ -183,6 +183,17 @@
             <div class="review-form">
               <h3 class="review-form__title">{{ hasUserReview() ? 'Edita tu reseña' : 'Escribe tu reseña' }}</h3>
 
+              <!-- Selector de puntuación integrado en el formulario -->
+              <div class="review-form__rating">
+                <label class="review-form__rating-label">Tu puntuación (opcional):</label>
+                <app-rating
+                  [rating]="userRating()"
+                  [interactive]="true"
+                  size="medium"
+                  (ratingChange)="setRating($event)"
+                />
+              </div>
+
               <app-form-textarea
                 [(ngModel)]="reviewText"
                 placeholder="Comparte tu opinión (mínimo 3 caracteres)..."

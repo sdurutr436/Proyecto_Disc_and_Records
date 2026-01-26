@@ -330,8 +330,13 @@
     padding: vars.$espaciado-s;
   }
 
+  // Espacio entre el alert y el botón
+  app-alert {
+    margin-bottom: vars.$espaciado-m;
+  }
+
   &__button {
-    margin-top: vars.$espaciado-s;
+    margin-top: vars.$espaciado-m;
   }
 
   // Botones para usuarios no autenticados
@@ -517,6 +522,23 @@
     font-weight: 700;
     color: var(--text-primary);
     margin: 0 0 vars.$espaciado-s 0;
+  }
+
+  &__rating {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$espaciado-xs;
+    margin-bottom: vars.$espaciado-m;
+    padding: vars.$espaciado-s;
+    background-color: var(--bg-primary);
+    border: vars.$borde-brutal-thin;
+    border-radius: vars.$radio-m;
+  }
+
+  &__rating-label {
+    font-size: vars.$tamanio-fuente-texto-pequeno-m;
+    font-weight: 600;
+    color: var(--text-primary);
   }
 
   &__textarea {

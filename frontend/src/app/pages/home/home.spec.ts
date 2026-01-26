@@ -52,11 +52,12 @@ describe('Home', () => {
     // Crear spies para los servicios
     albumServiceSpy = jasmine.createSpyObj('AlbumService', ['getNewReleases']);
     albumStateSpy = jasmine.createSpyObj('AlbumStateService', ['search']);
-    appStateSpy = jasmine.createSpyObj('AppStateService', ['isAuthenticated']);
+    appStateSpy = jasmine.createSpyObj('AppStateService', ['isAuthenticated', 'currentUser']);
 
     // Configurar comportamiento por defecto
     albumServiceSpy.getNewReleases.and.returnValue(of(mockAlbums as any));
     appStateSpy.isAuthenticated.and.returnValue(false);
+    appStateSpy.currentUser.and.returnValue(null);
 
     await TestBed.configureTestingModule({
       imports: [Home],
@@ -212,6 +213,12 @@ describe('Home', () => {
 
   it('should return true for isAuthenticated when user is logged in', () => {
     appStateSpy.isAuthenticated.and.returnValue(true);
+    appStateSpy.currentUser.and.returnValue({
+      id: 1,
+      username: 'TestUser',
+      email: 'test@test.com',
+      preferences: { language: 'es', notifications: true, autoplay: false, volume: 80 }
+    });
     fixture.detectChanges();
 
     expect(component.isAuthenticated).toBe(true);

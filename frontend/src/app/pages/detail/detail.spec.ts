@@ -292,17 +292,16 @@ describe('DetailComponent', () => {
 
     it('should compute canSubmitReview as false when text too short', () => {
       component['reviewText'].set('AB');
-      component['userRating'].set(4);
       expect(component.canSubmitReview()).toBeFalse();
     });
 
-    it('should compute canSubmitReview as false when rating is 0', () => {
+    it('should compute canSubmitReview as true when text is valid (rating optional)', () => {
       component['reviewText'].set('A'.repeat(3));
       component['userRating'].set(0);
-      expect(component.canSubmitReview()).toBeFalse();
+      expect(component.canSubmitReview()).toBeTrue();
     });
 
-    it('should compute canSubmitReview as true when valid', () => {
+    it('should compute canSubmitReview as true when valid with rating', () => {
       component['reviewText'].set('A'.repeat(3));
       component['userRating'].set(4);
       expect(component.canSubmitReview()).toBeTrue();
