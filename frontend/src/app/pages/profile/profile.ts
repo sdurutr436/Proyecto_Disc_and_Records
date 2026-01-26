@@ -103,7 +103,7 @@ export default class ProfileComponent implements OnInit {
   // Datos del usuario
   userProfile = signal({
     name: 'Usuario Mock',
-    avatarUrl: 'https://picsum.photos/seed/user/200',
+    avatarUrl: 'assets/profile-placeholder.svg',
     memberSince: '2023-01-15'
   });
 
@@ -214,7 +214,7 @@ export default class ProfileComponent implements OnInit {
       // Modo mock - simular datos
       this.userProfile.set({
         name: `Usuario ${userId}`,
-        avatarUrl: `https://picsum.photos/seed/user${userId}/200`,
+        avatarUrl: 'assets/profile-placeholder.svg',
         memberSince: '2023-01-15'
       });
       setTimeout(() => this.isLoading.set(false), 300);
@@ -228,7 +228,7 @@ export default class ProfileComponent implements OnInit {
         next: (user) => {
           this.userProfile.set({
             name: user.nombreUsuario,
-            avatarUrl: user.avatar || 'https://picsum.photos/seed/user/200',
+            avatarUrl: user.avatar || 'assets/profile-placeholder.svg',
             memberSince: user.fechaRegistro
           });
 
@@ -306,7 +306,7 @@ export default class ProfileComponent implements OnInit {
       this.viewingUserId.set(user.id);
       this.userProfile.set({
         name: user.username,
-        avatarUrl: user.avatarUrl || 'https://picsum.photos/seed/user/200',
+        avatarUrl: user.avatarUrl || 'assets/profile-placeholder.svg',
         memberSince: '2023-01-15' // TODO: obtener fecha de registro desde backend
       });
 

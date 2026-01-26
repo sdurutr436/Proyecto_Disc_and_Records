@@ -350,6 +350,7 @@ export class AuthService {
           nombreUsuario: string;
           mail: string;
           role: string;
+          avatar?: string;  // Avatar puede venir del backend
         }>(url)
       );
 
@@ -359,6 +360,7 @@ export class AuthService {
         username: backendResponse.nombreUsuario,
         email: backendResponse.mail,
         role: this.mapBackendRole(backendResponse.role),
+        avatarUrl: backendResponse.avatar,  // Mapear avatar desde backend
         preferences: {
           language: 'es' as const,
           notifications: true,
@@ -479,6 +481,7 @@ export class AuthService {
           nombreUsuario: string;
           mail: string;
           role: string;
+          avatar?: string;  // Avatar puede venir del backend
         }>(url, backendPayload)
       );
 
@@ -492,6 +495,7 @@ export class AuthService {
           username: backendResponse.nombreUsuario,
           email: backendResponse.mail,
           role: this.mapBackendRole(backendResponse.role),
+          avatarUrl: backendResponse.avatar,  // Mapear avatar desde backend
           preferences: {
             language: 'es',
             notifications: true,
@@ -536,6 +540,7 @@ export class AuthService {
           nombreUsuario: string;
           mail: string;
           role: string;
+          avatar?: string;  // Avatar puede venir del backend
         }>(url, backendPayload)
       );
 
@@ -549,6 +554,7 @@ export class AuthService {
           username: backendResponse.nombreUsuario,
           email: backendResponse.mail,
           role: this.mapBackendRole(backendResponse.role),
+          avatarUrl: backendResponse.avatar,  // Mapear avatar desde backend
           preferences: {
             language: 'es',
             notifications: true,

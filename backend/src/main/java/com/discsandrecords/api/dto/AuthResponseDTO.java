@@ -14,6 +14,7 @@ package com.discsandrecords.api.dto;
  * - nombreUsuario: Nombre de usuario para mostrar en UI
  * - mail: Email del usuario
  * - role: Rol asignado al usuario
+ * - avatar: Avatar del usuario en formato Base64 (opcional)
  *
  * USO EN CLIENTE:
  * El cliente debe:
@@ -29,12 +30,13 @@ public record AuthResponseDTO(
     Long id,
     String nombreUsuario,
     String mail,
-    String role
+    String role,
+    String avatar
 ) {
     /**
      * Constructor con tipo "Bearer" por defecto
      */
-    public AuthResponseDTO(String token, Long id, String nombreUsuario, String mail, String role) {
-        this(token, "Bearer", id, nombreUsuario, mail, role);
+    public AuthResponseDTO(String token, Long id, String nombreUsuario, String mail, String role, String avatar) {
+        this(token, "Bearer", id, nombreUsuario, mail, role, avatar);
     }
 }

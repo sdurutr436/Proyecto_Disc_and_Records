@@ -122,7 +122,8 @@ public class AuthService {
                 guardado.getId(),
                 guardado.getNombreUsuario(),
                 guardado.getMail(),
-                guardado.getRole().name()
+                guardado.getRole().name(),
+                guardado.getAvatar()
         );
     }
 
@@ -179,7 +180,8 @@ public class AuthService {
                 usuario.getId(),
                 usuario.getNombreUsuario(),
                 usuario.getMail(),
-                usuario.getRole().name()
+                usuario.getRole().name(),
+                usuario.getAvatar()
         );
     }
 
@@ -214,7 +216,8 @@ public class AuthService {
                 usuario.getId(),
                 usuario.getNombreUsuario(),
                 usuario.getMail(),
-                usuario.getRole().name()
+                usuario.getRole().name(),
+                usuario.getAvatar()
         );
     }
 }

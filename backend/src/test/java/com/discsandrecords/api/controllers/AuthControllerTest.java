@@ -83,7 +83,8 @@ class AuthControllerTest {
                 1L,
                 "testuser",
                 "test@example.com",
-                "ROLE_USER"
+                "ROLE_USER",
+                null  // Avatar null para tests
         );
     }
 
