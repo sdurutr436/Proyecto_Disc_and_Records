@@ -183,17 +183,28 @@
             <div class="review-form">
               <h3 class="review-form__title">{{ hasUserReview() ? 'Edita tu reseña' : 'Escribe tu reseña' }}</h3>
 
+              <!-- Selector de puntuación integrado en el formulario -->
+              <div class="review-form__rating">
+                <label class="review-form__rating-label">Tu puntuación (opcional):</label>
+                <app-rating
+                  [rating]="userRating()"
+                  [interactive]="true"
+                  size="medium"
+                  (ratingChange)="setRating($event)"
+                />
+              </div>
+
               <app-form-textarea
                 [(ngModel)]="reviewText"
-                placeholder="Comparte tu opinión (mínimo 50 caracteres)..."
+                placeholder="Comparte tu opinión (mínimo 3 caracteres)..."
                 [rows]="5"
               ></app-form-textarea>
 
               <div class="review-form__footer">
                 <span class="review-form__counter">
                   {{ reviewText().length }} caracteres
-                  @if (reviewText().length < 50) {
-                    <span class="review-form__counter--warning">(mínimo 50)</span>
+                  @if (reviewText().length < 3) {
+                    <span class="review-form__counter--warning">(mínimo 3)</span>
                   }
                 </span>
 
@@ -282,15 +293,6 @@
                         </div>
                       </div>
                       <p class="review-card__content">{{ review.content }}</p>
-                      <div class="review-card__footer">
-                        <button
-                          type="button"
-                          class="review-card__like-btn"
-                          (click)="likeReview(review.id)"
-                        >
-                          ♥ {{ review.likes }}
-                        </button>
-                      </div>
                     </div>
                   }
                 </div>

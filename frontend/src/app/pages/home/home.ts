@@ -85,6 +85,28 @@ export class Home implements OnInit {
     return this.appState.isAuthenticated();
   }
 
+  // Nombre del usuario actual
+  get currentUserName(): string {
+    const user = this.appState.currentUser();
+    return user?.username || 'Usuario';
+  }
+
+  // Frase motivacional aleatoria para usuarios autenticados
+  private readonly motivationalPhrases: string[] = [
+    'Escucha, reseña, repite',
+    'Tu próximo álbum favorito te espera',
+    'Hora de reseñar nuevos álbumes',
+    'La música te está esperando',
+    'Continua dandole a like a tus canciones favoritas',
+    'Tu biblioteca musical sigue creciendo',
+    'A darle play a tus favoritos'
+  ];
+
+  get motivationalPhrase(): string {
+    const index = Math.floor(Math.random() * this.motivationalPhrases.length);
+    return this.motivationalPhrases[index];
+  }
+
   /**
    * Obtiene el hero actual desde el servicio
    */

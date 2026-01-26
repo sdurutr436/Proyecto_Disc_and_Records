@@ -41,21 +41,29 @@
 
     <!-- Contenido del hero -->
     <div class="home__hero-content">
-      <!-- Eslogan principal -->
-      <h1 class="home__slogan animate-fade-in-up">
-        Puntúa todos tus álbumes favoritos
-        <span class="home__slogan-highlight">en un solo lugar</span>
-      </h1>
+      @if (isAuthenticated) {
+        <!-- Usuario autenticado - Saludo personalizado -->
+        <h1 class="home__slogan animate-fade-in-up">
+          ¡Hola, {{ currentUserName }}!
+          <span class="home__slogan-highlight">{{ motivationalPhrase }}</span>
+        </h1>
+      } @else {
+        <!-- Usuario no autenticado - CTA de registro -->
+        <h1 class="home__slogan animate-fade-in-up">
+          Puntúa todos tus álbumes favoritos
+          <span class="home__slogan-highlight">en un solo lugar</span>
+        </h1>
 
-      <!-- Botón de llamada a la acción -->
-      <app-button
-        variant="primary"
-        size="lg"
-        (clicked)="openRegisterModal()"
-        class="home__cta-button animate-fade-in-up"
-      >
-        COMIENZA AQUÍ
-      </app-button>
+        <!-- Botón de llamada a la acción -->
+        <app-button
+          variant="primary"
+          size="lg"
+          (clicked)="openRegisterModal()"
+          class="home__cta-button animate-fade-in-up"
+        >
+          COMIENZA AQUÍ
+        </app-button>
+      }
     </div>
   </section>
 

@@ -182,7 +182,26 @@ describe('RegisterForm', () => {
         'Password1%',
         'Password1^',
         'Password1&',
-        'Password1*'
+        'Password1*',
+        'Password1-',
+        'Password1_',
+        'Password1=',
+        'Password1+',
+        'Password1[',
+        'Password1]',
+        'Password1{',
+        'Password1}',
+        'Password1|',
+        'Password1;',
+        'Password1:',
+        'Password1,',
+        'Password1.',
+        'Password1/',
+        'Password1<',
+        'Password1>',
+        'Password1?',
+        'Password1`',
+        'Password1~'
       ];
 
       validPasswords.forEach(password => {

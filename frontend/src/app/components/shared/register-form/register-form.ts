@@ -113,9 +113,10 @@ export class RegisterForm {
             /**
              * Patrón de contraseña fuerte
              * (?=.*[A-Z]) - Lookahead: contiene al menos una mayúscula
-             * (?=.*[!@#$%^&*]) - Lookahead: contiene al menos un carácter especial
+             * (?=.*[!@#$%^&*()\-_=+\[\]{}|;:'",.<>?/`~]) - Lookahead: contiene al menos un carácter especial
+             * Lista ampliada: ! @ # $ % ^ & * ( ) - _ = + [ ] { } | ; : ' " , . < > ? / ` ~
              */
-            Validators.pattern(/^(?=.*[A-Z])(?=.*[!@#$%^&*])/)
+            Validators.pattern(/^(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+\[\]{}|;:'",.<>?\/`~])/)
           ]
         ],
         confirmPassword: [

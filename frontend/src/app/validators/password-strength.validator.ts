@@ -29,7 +29,8 @@ export function passwordStrength(): ValidatorFn {
     const hasUpperCase = /[A-Z]/.test(value);
     const hasLowerCase = /[a-z]/.test(value);
     const hasNumber = /\d/.test(value);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+    // Lista ampliada de caracteres especiales: ! @ # $ % ^ & * ( ) - _ = + [ ] { } | ; : ' " , . < > ? / ` ~
+    const hasSpecialChar = /[!@#$%^&*()\-_=+\[\]{}|;:'",.<>?\/`~]/.test(value);
     const minLength = value.length >= 12;
 
     const errors: ValidationErrors = {};
@@ -55,7 +56,7 @@ export function getPasswordErrorMessage(error: string): string {
     'noUppercase': 'Debe contener al menos una mayúscula (A-Z)',
     'noLowercase': 'Debe contener al menos una minúscula (a-z)',
     'noNumber': 'Debe contener al menos un número (0-9)',
-    'noSpecial': 'Debe contener al menos un carácter especial (!@#$%^&*)',
+    'noSpecial': 'Debe contener al menos un carácter especial (!@#$%^&*()-_=+[]{}|;:,./<>?`~)',
     'minLength': 'Debe tener al menos 12 caracteres'
   };
   return messages[error] || 'Error en contraseña';

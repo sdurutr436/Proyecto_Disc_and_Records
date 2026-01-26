@@ -106,6 +106,10 @@ export class FormInput {
       return `Máximo ${errors['maxlength'].requiredLength} caracteres`;
     }
     if (errors['pattern']) {
+      // Mensaje específico para campos de contraseña
+      if (this.type === 'password') {
+        return 'Debe incluir una mayúscula (A-Z) y un carácter especial';
+      }
       return 'Formato inválido';
     }
     if (errors['passwordStrength']) {
