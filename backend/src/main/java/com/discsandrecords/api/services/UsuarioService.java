@@ -197,11 +197,25 @@ public class UsuarioService implements UserDetailsService {
         return toResponseDTO(actualizado);
     }
 
+    /**
+     * Elimina un usuario y todos sus datos relacionados
+     * 
+     * @param id ID del usuario a eliminar
+     * @throws ResourceNotFoundException si el usuario no existe
+     */
+    @Transactional
     public void eliminar(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario", "id", id));
 
-        // TODO: Considerar qué hacer con las reseñas del usuario (soft delete, anonimizar, etc.)
+        // Eliminar primero todos los datos relacionados (orden importante por foreign keys)
+        // 1. Eliminar reseñas/puntuaciones de canciones del usuario
+        usuarioCancionRepository.deleteAll(usuarioCancionRepository.findByUsuarioId(id));
+        
+        // 2. Eliminar reseñas/puntuaciones de álbumes del usuario
+        usuarioAlbumRepository.deleteAll(usuarioAlbumRepository.findByUsuarioId(id));
+        
+        // 3. Finalmente eliminar el usuario
         usuarioRepository.delete(usuario);
     }
 
