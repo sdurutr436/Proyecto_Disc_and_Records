@@ -112,7 +112,7 @@ Las alertas que se presentan son de elementos escondidos.
 | 2 | Contenido generado desde CSS | 1.3.1 (F87) | TAWDIS | Verificado - elementos decorativos con aria-hidden="true" correctamente implementados |
 | 3 | Posicionamiento absoluto | 1.3.2 (C27) | TAWDIS | Verificado - no afecta el orden de navegación ni la secuencia lógica de lectura |
 | 4 | Imágenes sin descripciones adecuadas | 1.1.1 (H45) | TAWDIS | Verificado - 53 imágenes revisadas con alt descriptivos en formato "título por artista" |
-| 5 | Error de idioma declarado | 3.5.1 | TAWDIS | Pendiente de resolución |
+| 5 | Error de idioma declarado | 3.5.1 | TAWDIS | Añadido atributo lang="es" al elemento html raíz |
 
 ### Detalle de cada error:
 
@@ -297,5 +297,17 @@ Las alertas que se presentan son de elementos escondidos.
 
 **Criterio WCAG:** 3.5.1 Idioma de la página (Nivel A)
 
-**Estado:** Pendiente de revisión y corrección. Se requiere verificar el atributo lang en el elemento html raíz y asegurar que coincida con el idioma del contenido de la página.
+**Código antes:**
+
+```html
+<html>
+```
+
+**Código después:**
+
+```html
+<html lang="es">
+```
+
+**Explicación:** Se agregó el atributo lang="es" al elemento html raíz para indicar que todo el contenido está en español. Esto permite que los lectores de pantalla apliquen la pronunciación correcta del idioma y que los navegadores procesen el contenido apropiadamente.
 
