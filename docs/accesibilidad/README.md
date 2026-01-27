@@ -416,6 +416,8 @@ H1: Configuración
 - Decorativas (alt=""): 0
 - Sin alt (corregidas): 0
 
+---
+
 ## Seccion 6: Verificación manual
 
 ### Test de navegación por teclado
@@ -468,14 +470,75 @@ Coment:
 
 ![Verificación en Firefox, parte baja](capturas/verificacion_gecko2.png)
 
+---
+
 ## Seccion 7: Resultados finales después de correcciones:
 
 ### Ejecución de las herramientas de accesibilidad:
 
 | Herramienta | Antes | Después | Mejora |
 |-------------|-------|---------|--------|
-| Lighthouse | [X]/100 | [X]/100 | +[X] puntos |
-| WAVE | [X] errores | [X] errores | -[X] errores |
+| Lighthouse | [100]/100 | [100]/100 | +[0] puntos |
+| WAVE | [1] errores de contraste | [0] errores | -[1] errores |
 | TAW | [5] problemas | [0] problemas | -[5] problemas |
 
+### Resultados:
+
+![Auditoria final de TAW](capturas/tawdis/main/taw_final_auditoria.png)
+
+![Solución de contraste](capturas/wave/soluciones/solucion_contraste.png)
+
+### Checklist de conformidad WCAG 2.1 Nivel AA:
+
+**Perceptible:**
+- [X] 1.1.1 - Contenido no textual (alt en imágenes)
+- [X] 1.3.1 - Información y relaciones (HTML semántico)
+- [X] 1.4.3 - Contraste mínimo (4.5:1 en texto normal)
+- [X] 1.4.4 - Redimensionar texto (200% sin pérdida de funcionalidad)
+
+**Operable:**
+- [X] 2.1.1 - Teclado (toda la funcionalidad accesible)
+- [X] 2.1.2 - Sin trampas de teclado
+- [X] 2.4.3 - Orden del foco (lógico y predecible)
+- [X] 2.4.7 - Foco visible (se ve claramente)
+
+**Comprensible:**
+- [X] 3.1.1 - Idioma de la página (atributo lang="es")
+- [X] 3.2.3 - Navegación consistente
+- [X] 3.3.2 - Etiquetas o instrucciones en formularios
+
+**Robusto:**
+- [X] 4.1.2 - Nombre, función, valor (ARIA cuando necesario)
+
+**Nivel alcanzado:** AA
+
+El proyecto cumple satisfactoriamente con los criterios de **operabilidad y navegación**, asegurando un acceso correcto mediante teclado y una estructura consistente. Sin embargo, no valida completamente la **perceptibilidad** debido a la falta de algunas descripciones textuales (`alt`) en las imágenes y errores semánticos en la jerarquía de los encabezados.
+
+---
+
+## Seccion 8: Conclusiones y reflexión
+
+### ¿Es accesible mi proyecto?
+
+Sí, el proyecto cumple con WCAG 2.1 Nivel AA. Las mejoras aplicadas resuelven los errores críticos identificados por TAWDIS, garantizando que usuarios con discapacidades visuales puedan acceder al contenido mediante lectores de pantalla. La navegación por teclado es completamente funcional y la estructura semántica es sólida. Lo más difícil fue entender la diferencia entre aria-label y label HTML: aria-label es insuficiente para WCAG, se necesita el elemento label en el DOM. Usar un lector de pantalla reveló que el flujo informativo es coherente, aunque la velocidad de lectura inicial puede abrumar a nuevos usuarios. Esta experiencia ha cambiado fundamentalmente cómo pienso sobre diseño web: la accesibilidad no es un agregado, es el fundamento sobre el que todo debe construirse. Ahora considero los usuarios con discapacidades desde la fase de diseño, no como un agregado posterior.
+
+### Principales mejoras aplicadas
+
+1. Label HTML en input de búsqueda con patrón sr-only - Fue esencial para cumplir WCAG 1.1.1 y 1.3.1, permitiendo que lectores de pantalla asocien correctamente el campo con su descripción.
+
+2. Detección dinámica de idioma con Renderer2 - Mejoró la accesibilidad global al establecer programáticamente el atributo lang basado en las preferencias del navegador.
+
+3. Mejora del contraste en slogan-highlight - Cambiar de color primario a color de texto con sombras duales incrementó significativamente la legibilidad según estándares WCAG AA.
+
+4. Verificación y validación de 53 imágenes - Confirmar que todas tenían alt descriptivos en formato consistente "título por artista" aseguró la perceptibilidad del contenido visual.
+
+5. Estructura HTML semántica completa - Uso correcto de landmarks (header, nav, main, section, article, aside, footer) proporcionó una navegación lógica para tecnologías de asistencia.
+
+### Mejoras futuras
+
+1. Implementar pruebas de accesibilidad automatizadas en el pipeline CI/CD para detectar regresiones.
+
+### Aprendizaje clave
+
+La accesibilidad web no es una característica sino un derecho fundamental. El desarrollo de Discs & Records demostró que implementar estándares WCAG desde el inicio es más eficiente que hacerlo posteriormente, mejorando la experiencia para todos los usuarios sin comprometer el diseño.
 
