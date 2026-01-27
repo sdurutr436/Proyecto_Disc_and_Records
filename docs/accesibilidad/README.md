@@ -303,11 +303,154 @@ Las alertas que se presentan son de elementos escondidos.
 <html>
 ```
 
-**Código después:**
+**Código después (opción 1 - estático):**
 
 ```html
 <html lang="es">
 ```
 
-**Explicación:** Se agregó el atributo lang="es" al elemento html raíz para indicar que todo el contenido está en español. Esto permite que los lectores de pantalla apliquen la pronunciación correcta del idioma y que los navegadores procesen el contenido apropiadamente.
+**Código después (opción 2 - dinámico/programático):**
+
+```typescript
+// app.ts
+import { Component, OnInit, inject, Renderer2 } from '@angular/core';
+import { PreferencesService } from './services/preferences';
+
+export class App implements OnInit {
+  private renderer = inject(Renderer2);
+  private preferencesService = inject(PreferencesService);
+
+  ngOnInit(): void {
+    // Detectar idioma desde preferencias del usuario o navegador
+    const userLanguage = this.preferencesService.getLanguage() || 
+                         navigator.language.split('-')[0] || 
+                         'es';
+    
+    // Establecer el atributo lang en el elemento html de forma programática
+    this.renderer.setAttribute(document.documentElement, 'lang', userLanguage);
+  }
+}
+```
+
+**Explicación:** Se agregó el atributo lang="es" al elemento html raíz para indicar que el contenido está en español. La solución programática permite que el idioma se determine dinámicamente basado en las preferencias del usuario o el idioma del navegador, mejorando la accesibilidad global. Los lectores de pantalla aplican la pronunciación correcta del idioma y los navegadores procesan el contenido apropiadamente.
+
+---
+
+## Seccion 5: Análisis de estructura semántica:
+
+### Landmarks utilizados:
+
+- [x] `<header>` - Cabecera del sitio
+  - Componente header global (logo, navegación, botones de autenticación)
+  - Headers en páginas internas (settings, profile, info, roadmap)
+
+- [x] `<nav>` - Menú de navegación
+  - Navegación de búsqueda en search results
+  - Tabs de navegación en search results
+  - Redes sociales y enlaces en footer
+
+- [x] `<main>` - Contenido principal
+  - Página Home
+  - Página Settings
+  - Página Search Results
+  - Página Profile (columna de contenido)
+
+- [x] `<article>` - Cards tipo polaroid como elemento visual principal
+  - Componente card (envuelve toda la tarjeta)
+  - Cards en carrusel de trending albums
+  - Cards en search results
+  - Cards en perfil de usuario (álbumes y reseñas)
+
+- [x] `<section>` - Delimita áreas y agrupa contenido
+  - Hero section en Home (imagen de fondo)
+  - Secciones de carrusel en Home (trending, reseñados, personalizados)
+  - Dentro de cards para dividir imagen, contenido e información
+  - Secciones de perfil para información del usuario
+  - Secciones en Settings (perfil, seguridad, preferencias)
+  - Sección de búsqueda en Home
+
+- [x] `<aside>` - Barras laterales de información complementaria
+  - Sidebar en Detail page (información del álbum)
+  - Sidebar en Profile page (información del usuario)
+  - Sidebar en Style Guide (navegación de componentes)
+
+- [x] `<footer>` - Pie de página
+  - Layout global (links, logo y redes sociales)
+
+### Jerarquía de encabezados:
+
+**Página Home (principal):**
+
+H1: Puntúa todos tus álbumes favoritos en un solo lugar (o saludo personalizado si está autenticado)
+  H2: ÚLTIMOS ÁLBUMES EN TENDENCIA
+  H2: ÚLTIMOS ÁLBUMES RESEÑADOS
+  H2: MIS ÚLTIMOS ÁLBUMES RESEÑADOS (solo si está autenticado)
+
+**Página Detail (álbum):**
+
+H1: Nombre del álbum
+  H2: Información del álbum
+  H2: Lista de canciones
+  H2: Reseñas
+
+**Página Profile (perfil de usuario):**
+
+H1: Mi Perfil
+  H2: Álbumes favoritos
+  H2: Últimas reseñas
+  H2: Estadísticas
+
+**Página Settings:**
+
+H1: Configuración
+  H2: Cuenta
+  H2: Seguridad
+  H2: Preferencias
+
+**Nota:** La escala tipográfica utiliza una proporción 1.25 (Major Third) con h1 de 4.25rem para impacto visual, h2 de 2.625rem para secciones y h3 de 1.625rem para subsecciones. Esto asegura una jerarquía clara y accesible según WCAG 2.1.
+
+### Análisis de imágenes:
+
+- Total de imágenes: 53
+- Con texto alternativo: 53
+- Decorativas (alt=""): 0
+- Sin alt (corregidas): 0
+
+## Seccion 6: Verificación manual
+
+### Test de navegación por teclado
+
+- [X] Puedo llegar a todos los enlaces y botones con Tab
+- [X] El orden de navegación con Tab es lógico (no salta caóticamente)
+- [X] Veo claramente qué elemento tiene el focus (borde, sombra, color)
+- [X] Puedo usar mi componente multimedia solo con teclado: Si excepto que los botones de los carruseles no se iluminan/usan ya que el tabulador ya recorre los distintos elementos y se van visualizando (el carrusel corre a medida que se va pasando)
+- [X] No hay "trampas" de teclado donde quedo bloqueado
+- [X] Los menús/modals se pueden cerrar con Esc (si aplica)
+
+**Problemas encontrados:** Los botones de desplazamiento de los carruseles no se usan con teclado.
+
+**Soluciones aplicadas:** No es necesaria solución ya que la tabulación sigue el orden para poder recorrerlo sin la necesidad de usar los botones.
+
+### Test con lector de pantalla
+
+Herramienta a usar: NVDA
+
+**Resultados obtenidos:**
+
+| Aspecto evaluado | Resultado | Observación |
+|------------------|-----------|-------------|
+| ¿Se entiende la estructura sin ver la pantalla? | ✅ / ⚠️ / ❌ | [Comentario breve] |
+| ¿Los landmarks se anuncian correctamente? | ✅ / ⚠️ / ❌ | [Comentario breve] |
+| ¿Las imágenes tienen descripciones adecuadas? | ✅ / ⚠️ / ❌ | [Comentario breve] |
+| ¿Los enlaces tienen textos descriptivos? | ✅ / ⚠️ / ❌ | [Comentario breve] |
+| ¿El componente multimedia es accesible? | ✅ / ⚠️ / ❌ | [Comentario breve] |
+
+**Principales problemas detectados:**
+
+**Mejoras aplicadas:**
+
+### Verificación crossbrowser:
+
+Navegadores usados: Comet (Basa)
+
 
