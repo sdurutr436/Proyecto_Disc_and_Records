@@ -1,79 +1,312 @@
 <div class="settings-profile">
-  <!-- Mensajes de estado con componentes Alert -->
-  @if (successMessage()) {
-    <app-alert
-      type="success"
-      [message]="successMessage()!"
-      [dismissible]="true"
-      (dismissed)="successMessage.set(null)"
-    />
-  }
-  @if (errorMessage()) {
-    <app-alert
-      type="error"
-      [message]="errorMessage()!"
-      [dismissible]="true"
-      (dismissed)="errorMessage.set(null)"
-    />
-  }
-
   <header class="settings-profile__header">
-    <h2 class="settings-profile__title">Información del Perfil</h2>
-    <p class="settings-profile__subtitle">Personaliza cómo te ven los demás usuarios</p>
+    <h2 class="settings-profile__title">Gestión de Perfil</h2>
   </header>
 
-  <!-- Foto de perfil -->
-  <section class="settings-profile__section">
-    <h3 class="settings-profile__section-title">Foto de Perfil</h3>
-    <div class="settings-profile__avatar">
-      <div class="settings-profile__avatar-preview">
-        <img [src]="currentAvatar()" alt="Avatar actual" class="settings-profile__avatar-image" />
+  <!-- Cuadrícula 2x2 -->
+  <div class="settings-profile__grid">
+
+    <!-- ====================================== -->
+    <!-- CARD 1: CAMBIAR DATOS (Username y Email) -->
+    <!-- ====================================== -->
+    <section class="settings-profile__card" role="region" aria-labelledby="datos-title">
+      <h3 id="datos-title" class="settings-profile__section-title">
+        <lucide-icon [img]="User" [size]="20" aria-hidden="true"></lucide-icon>
+        Información Personal
+      </h3>
+      <p class="settings-profile__section-description">Actualiza tu nombre de usuario y correo electrónico</p>
+
+      <form [formGroup]="dataForm" class="settings-profile__form">
+        <!-- Nombre de usuario -->
+        <div class="settings-profile__field-group">
+          <app-form-input
+            [control]="dataForm.controls.username"
+            label="Nombre de Usuario"
+            type="text"
+            placeholder="usuario123"
+            [required]="true"
+            hint="Solo letras, números y guiones bajos. Entre 3 y 50 caracteres."
+          />
+          <div class="settings-profile__button-container">
+            <app-button
+              variant="primary"
+              type="button"
+              [disabled]="dataForm.controls.username.invalid || dataForm.controls.username.pristine || isLoading()"
+              (click)="onUpdateUsername()"
+              ariaLabel="Guardar nombre de usuario"
+            >
+              Guardar Usuario
+            </app-button>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="settings-profile__field-group">
+          <app-form-input
+            [control]="dataForm.controls.email"
+            label="Correo Electrónico"
+            type="email"
+            placeholder="usuario@ejemplo.com"
+            [required]="true"
+            hint="Debe ser un email válido y no estar registrado"
+          />
+          <div class="settings-profile__button-container">
+            <app-button
+              variant="primary"
+              type="button"
+              [disabled]="dataForm.controls.email.invalid || dataForm.controls.email.pristine || isLoading()"
+              (click)="onUpdateEmail()"
+              ariaLabel="Guardar email"
+            >
+              <lucide-icon [img]="Mail" [size]="16" aria-hidden="true"></lucide-icon>
+              Guardar Email
+            </app-button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- ====================================== -->
+    <!-- CARD 2: CAMBIAR CONTRASEÑA             -->
+    <!-- ====================================== -->
+    <section class="settings-profile__card" role="region" aria-labelledby="password-title">
+      <h3 id="password-title" class="settings-profile__section-title">
+        <lucide-icon [img]="Lock" [size]="20" aria-hidden="true"></lucide-icon>
+        Cambiar Contraseña
+      </h3>
+      <p class="settings-profile__section-description">Actualiza tu contraseña de acceso</p>
+
+      <form [formGroup]="passwordForm" class="settings-profile__form">
+        <app-form-input
+          [control]="passwordForm.controls.currentPassword"
+          label="Contraseña Actual"
+          type="password"
+          placeholder="Tu contraseña actual"
+          [required]="true"
+          hint="Ingresa tu contraseña actual para verificar tu identidad"
+        />
+
+        <app-form-input
+          [control]="passwordForm.controls.newPassword"
+          label="Nueva Contraseña"
+          type="password"
+          placeholder="Nueva contraseña"
+          [required]="true"
+          hint="Mínimo 6 caracteres. Debe ser diferente a la actual."
+        />
+
+        <app-form-input
+          [control]="passwordForm.controls.confirmPassword"
+          label="Confirmar Nueva Contraseña"
+          type="password"
+          placeholder="Repite la nueva contraseña"
+          [required]="true"
+          hint="Debe coincidir con la nueva contraseña"
+        />
+
+        <div class="settings-profile__button-container">
+          <app-button
+            variant="primary"
+            type="button"
+            [disabled]="passwordForm.invalid || isLoading()"
+            (click)="onChangePassword()"
+            ariaLabel="Cambiar contraseña"
+          >
+            <lucide-icon [img]="Lock" [size]="16" aria-hidden="true"></lucide-icon>
+            Cambiar Contraseña
+          </app-button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ====================================== -->
+    <!-- CARD 3: FOTO DE PERFIL                  -->
+    <!-- ====================================== -->
+    <section class="settings-profile__card" role="region" aria-labelledby="avatar-title">
+      <h3 id="avatar-title" class="settings-profile__section-title">
+        <lucide-icon [img]="Image" [size]="20" aria-hidden="true"></lucide-icon>
+        Foto de Perfil
+      </h3>
+      <p class="settings-profile__section-description">Personaliza tu avatar visible para otros usuarios</p>
+
+      <div class="settings-profile__avatar-container">
+        <!-- Card con preview del avatar -->
+        <app-card
+          [imageUrl]="previewAvatarUrl() || currentAvatar()"
+          [imageAlt]="'Avatar de perfil'"
+          [imageShape]="'circle'"
+          [imageSize]="'large'"
+          [cardType]="'profile'"
+          [variant]="'normal'"
+          [hoverEffect]="'none'"
+          [layout]="'vertical'"
+          class="settings-profile__avatar-card"
+        >
+          @if (previewAvatarUrl()) {
+            <div class="settings-profile__preview-badge">
+              Vista Previa
+            </div>
+          }
+        </app-card>
+
+        <!-- Input file oculto -->
+        <input
+          type="file"
+          id="avatar-file-input"
+          accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+          (change)="onAvatarFileSelected($event)"
+          class="settings-profile__avatar-input"
+          aria-label="Seleccionar archivo de imagen"
+        />
+
+        <!-- Controles -->
+        <div class="settings-profile__avatar-controls">
+          <div class="settings-profile__button-group">
+            <!-- Botón: Elegir archivo (trigger del input oculto) -->
+            <app-button
+              variant="secondary"
+              type="button"
+              [disabled]="isLoading()"
+              (click)="triggerFileInput()"
+              ariaLabel="Elegir imagen de perfil"
+            >
+              <lucide-icon [img]="Image" [size]="16" aria-hidden="true"></lucide-icon>
+              Elegir Imagen
+            </app-button>
+
+            <!-- Botón: Guardar (solo si hay preview) -->
+            @if (previewAvatarUrl()) {
+              <app-button
+                variant="primary"
+                type="button"
+                [disabled]="isLoading()"
+                (click)="onSaveAvatar()"
+                ariaLabel="Guardar nueva foto de perfil"
+              >
+                <lucide-icon [img]="Image" [size]="16" aria-hidden="true"></lucide-icon>
+                Guardar Foto
+              </app-button>
+            }
+
+            <!-- Botón: Eliminar foto actual -->
+            <app-button
+              variant="danger"
+              type="button"
+              [disabled]="isLoading() || currentAvatar() === 'assets/profile-placeholder.svg'"
+              (click)="onDeleteAvatar()"
+              ariaLabel="Eliminar foto de perfil"
+            >
+              <lucide-icon [img]="Trash2" [size]="16" aria-hidden="true"></lucide-icon>
+              Borrar Foto
+            </app-button>
+          </div>
+
+          <p class="settings-profile__avatar-hint">
+            Formatos: JPG, PNG, GIF, WebP. Tamaño máximo: 2MB.
+          </p>
+        </div>
       </div>
-      <div class="settings-profile__avatar-info">
-        <label for="avatar-upload" class="settings-profile__avatar-label">
+    </section>
+
+    <!-- ====================================== -->
+    <!-- CARD 4: BORRAR USUARIO                  -->
+    <!-- ====================================== -->
+    <section class="settings-profile__card settings-profile__card--danger" role="region" aria-labelledby="delete-title">
+      <h3 id="delete-title" class="settings-profile__section-title">
+        <lucide-icon [img]="Trash2" [size]="20" aria-hidden="true"></lucide-icon>
+        Eliminar Cuenta
+      </h3>
+
+      <!-- Mensaje de advertencia permanente -->
+      <div class="settings-profile__warning-container">
+        <app-alert
+          type="warning"
+          [dismissible]="false"
+        >
+          <div class="settings-profile__warning-content">
+            <lucide-icon [img]="AlertTriangle" [size]="24" aria-hidden="true"></lucide-icon>
+            <div>
+              <strong>ADVERTENCIA: Esta acción es irreversible.</strong>
+              <p>Al eliminar tu cuenta, perderás permanentemente todos tus datos, favoritos, listas y configuraciones.</p>
+            </div>
+          </div>
+        </app-alert>
+      </div>
+
+      <p class="settings-profile__section-description">
+        Si decides continuar, tu cuenta y toda la información asociada será eliminada de forma permanente.
+      </p>
+
+      <div class="settings-profile__button-container">
+        <app-button
+          variant="danger"
+          type="button"
+          [disabled]="isLoading()"
+          (click)="openDeleteModal()"
+          ariaLabel="Eliminar cuenta permanentemente"
+        >
+          <lucide-icon [img]="Trash2" [size]="16" aria-hidden="true"></lucide-icon>
+          Eliminar Mi Cuenta
+        </app-button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ====================================== -->
+  <!-- MODAL: Confirmación de eliminación     -->
+  <!-- ====================================== -->
+  @if (showDeleteModal()) {
+    <app-modal
+      title="Confirmar Eliminación de Cuenta"
+      [isOpen]="showDeleteModal()"
+      (closeModal)="closeDeleteModal()"
+    >
+      <div class="settings-profile__delete-modal">
+        <app-alert
+          type="error"
+          [dismissible]="false"
+        >
+          <div class="settings-profile__modal-alert">
+            <lucide-icon [img]="AlertTriangle" [size]="20" aria-hidden="true"></lucide-icon>
+            <span>Esta acción NO se puede deshacer. Todos tus datos serán eliminados permanentemente.</span>
+          </div>
+        </app-alert>
+
+        <p class="settings-profile__delete-instructions">
+          Para confirmar la eliminación, escribe <strong>"eliminar"</strong> en el campo de abajo:
+        </p>
+
+        <input
+          type="text"
+          [(ngModel)]="deleteConfirmationText"
+          placeholder="Escribe 'eliminar' para confirmar"
+          class="settings-profile__delete-input"
+          aria-label="Campo de confirmación de eliminación"
+        />
+
+        <div class="settings-profile__modal-actions">
           <app-button
             variant="secondary"
             type="button"
-            [disabled]="isLoading()"
+            (click)="closeDeleteModal()"
+            ariaLabel="Cancelar eliminación"
           >
-            Cambiar Foto
+            Cancelar
           </app-button>
-        </label>
-        <input
-          id="avatar-upload"
-          type="file"
-          accept="image/*"
-          (change)="onAvatarChange($event)"
-          class="settings-profile__avatar-input"
-        />
-        <p class="settings-profile__hint">JPG, PNG o GIF. Máximo 2MB.</p>
-      </div>
-    </div>
-  </section>
 
-  <!-- Nombre de usuario -->
-  <section class="settings-profile__section">
-    <h3 class="settings-profile__section-title">Nombre de Usuario</h3>
-    <form [formGroup]="profileForm" class="settings-profile__form">
-      <app-form-input
-        [control]="profileForm.controls.username"
-        label="Usuario"
-        type="text"
-        placeholder="Ingresa tu nombre de usuario"
-        [required]="true"
-        hint="Solo letras, números y guiones bajos. Mínimo 3 caracteres."
-      />
-
-      <div class="settings-profile__actions">
-        <app-button
-          variant="primary"
-          type="button"
-          [disabled]="profileForm.controls.username.invalid || isLoading()"
-          (click)="onSubmit()"
-        >
-          Guardar Cambios
-        </app-button>
+          <app-button
+            variant="danger"
+            type="button"
+            [disabled]="!canDeleteAccount() || isLoading()"
+            (click)="onDeleteAccount()"
+            ariaLabel="Confirmar eliminación de cuenta"
+          >
+            <lucide-icon [img]="Trash2" [size]="16" aria-hidden="true"></lucide-icon>
+            Eliminar Cuenta
+          </app-button>
+        </div>
       </div>
-    </form>
-  </section>
+    </app-modal>
+  }
 </div>

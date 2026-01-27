@@ -22,8 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.discsandrecords.api.dto.ChangePasswordDTO;
 import com.discsandrecords.api.dto.CreateUsuarioDTO;
 import com.discsandrecords.api.dto.PageResponseDTO;
+import com.discsandrecords.api.dto.UpdateEmailDTO;
+import com.discsandrecords.api.dto.UpdateUsernameDTO;
 import com.discsandrecords.api.dto.UpdateUsuarioDTO;
 import com.discsandrecords.api.dto.UsuarioEstadisticasDTO;
 import com.discsandrecords.api.dto.UsuarioResponseDTO;
@@ -186,13 +189,13 @@ public class UsuarioController {
 
     /**
      * Eliminar la propia cuenta del usuario autenticado
-     * 
+     *
      * ENDPOINT: DELETE /api/usuarios/me
-     * 
+     *
      * VALIDACIONES:
      * - Usuario debe estar autenticado
      * - Solo puede eliminar su propia cuenta
-     * 
+     *
      * RESPUESTA:
      * - 204 No Content: Cuenta eliminada exitosamente
      * - 401 Unauthorized: No autenticado
@@ -207,6 +210,80 @@ public class UsuarioController {
     public ResponseEntity<Void> eliminarCuentaPropia(@AuthenticationPrincipal Usuario usuarioActual) {
         usuarioService.eliminar(usuarioActual.getId());
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Actualizar nombre de usuario del usuario autenticado
+     *
+     * ENDPOINT: PUT /api/usuarios/me/username
+     */
+    @PutMapping("/me/username")
+    @Operation(summary = "Actualizar mi nombre de usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Nombre actualizado"),
+            @ApiResponse(responseCode = "400", description = "Nombre inválido o ya existe"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UsuarioResponseDTO> actualizarNombreUsuario(
+            @AuthenticationPrincipal Usuario usuarioActual,
+            @RequestBody @Valid UpdateUsernameDTO dto) {
+        return ResponseEntity.ok(usuarioService.actualizarNombreUsuario(usuarioActual.getId(), dto.nombreUsuario()));
+    }
+
+    /**
+     * Actualizar email del usuario autenticado
+     *
+     * ENDPOINT: PUT /api/usuarios/me/email
+     */
+    @PutMapping("/me/email")
+    @Operation(summary = "Actualizar mi email")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Email actualizado"),
+            @ApiResponse(responseCode = "400", description = "Email inválido o ya existe"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UsuarioResponseDTO> actualizarEmail(
+            @AuthenticationPrincipal Usuario usuarioActual,
+            @RequestBody @Valid UpdateEmailDTO dto) {
+        return ResponseEntity.ok(usuarioService.actualizarEmail(usuarioActual.getId(), dto.mail()));
+    }
+
+    /**
+     * Cambiar contraseña del usuario autenticado
+     *
+     * ENDPOINT: PUT /api/usuarios/me/password
+     */
+    @PutMapping("/me/password")
+    @Operation(summary = "Cambiar mi contraseña")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Contraseña actualizada"),
+            @ApiResponse(responseCode = "400", description = "Contraseña actual incorrecta o nueva contraseña inválida"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> cambiarContrasena(
+            @AuthenticationPrincipal Usuario usuarioActual,
+            @RequestBody @Valid ChangePasswordDTO dto) {
+        usuarioService.cambiarContrasena(usuarioActual.getId(), dto.contrasenaActual(), dto.contrasenaNueva());
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Eliminar avatar del usuario autenticado
+     *
+     * ENDPOINT: DELETE /api/usuarios/me/avatar
+     */
+    @DeleteMapping("/me/avatar")
+    @Operation(summary = "Eliminar mi avatar")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Avatar eliminado"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UsuarioResponseDTO> eliminarAvatar(@AuthenticationPrincipal Usuario usuarioActual) {
+        return ResponseEntity.ok(usuarioService.actualizarAvatar(usuarioActual.getId(), null));
     }
 
     // ==========================================

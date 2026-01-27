@@ -1,145 +1,374 @@
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { LucideAngularModule, User, Mail, Lock, Image, Trash2, AlertTriangle } from 'lucide-angular';
 import { Alert } from '../../../components/shared/alert/alert';
 import { Button } from '../../../components/shared/button/button';
 import { FormInput } from '../../../components/shared/form-input/form-input';
+import { Modal } from '../../../components/shared/modal/modal';
+import { Card } from '../../../components/shared/card/card';
 import { CanComponentDeactivate } from '../../../guards/unsaved-changes.guard';
 import { AppStateService } from '../../../services/app-state';
+import { AuthService } from '../../../services/auth';
+import { NotificationStreamService } from '../../../services/notification-stream';
 import { API_CONFIG, API_ENDPOINTS } from '../../../config/api.config';
 
 @Component({
   selector: 'app-settings-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, Alert, Button, FormInput],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, LucideAngularModule, Alert, Button, FormInput, Modal, Card],
   templateUrl: './profile.html',
   styleUrl: './profile.scss'
 })
 export default class SettingsProfileComponent implements CanComponentDeactivate, OnInit {
   private readonly appState = inject(AppStateService);
   private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
+  private readonly notificationStream = inject(NotificationStreamService);
+  private readonly router = inject(Router);
 
+  // Estados generales
   isLoading = signal(false);
-  successMessage = signal<string | null>(null);
-  errorMessage = signal<string | null>(null);
 
-  // Foto de perfil actual
+  // Iconos Lucide
+  readonly User = User;
+  readonly Mail = Mail;
+  readonly Lock = Lock;
+  readonly Image = Image;
+  readonly Trash2 = Trash2;
+  readonly AlertTriangle = AlertTriangle;
+
+  // Foto de perfil
   currentAvatar = signal('assets/profile-placeholder.svg');
+  selectedAvatarFile = signal<File | null>(null);
+  previewAvatarUrl = signal<string | null>(null);
 
-  // Formulario de perfil
-  profileForm = new FormGroup({
+  // Modal de confirmación para eliminar cuenta
+  showDeleteModal = signal(false);
+  deleteConfirmationText = signal('');
+  canDeleteAccount = computed(() => this.deleteConfirmationText().trim().toLowerCase() === 'eliminar');
+
+  // Formulario de datos (username y email)
+  dataForm = new FormGroup({
     username: new FormControl('', {
       nonNullable: true,
       validators: [
         Validators.required,
         Validators.minLength(3),
-        Validators.maxLength(20),
+        Validators.maxLength(50),
         Validators.pattern(/^[a-zA-Z0-9_]+$/)
       ]
+    }),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email]
+    })
+  });
+
+  // Formulario de contraseña
+  passwordForm = new FormGroup({
+    currentPassword: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
+    newPassword: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(6), Validators.maxLength(100)]
+    }),
+    confirmPassword: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required]
     })
   });
 
   ngOnInit(): void {
     const user = this.appState.currentUser();
     if (user) {
-      this.profileForm.patchValue({ username: user.username });
-      this.currentAvatar.set(user.avatarUrl || 'assets/profile-placeholder.svg');
-      this.profileForm.markAsPristine();
-    }
-  }
-
-  /**
-   * Maneja el cambio de foto de perfil
-   */
-  onAvatarChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-
-      // Validar tamaño (max 200KB para el backend)
-      if (file.size > 200 * 1024) {
-        this.errorMessage.set('La imagen no puede superar los 200KB');
-        setTimeout(() => this.errorMessage.set(null), 3000);
-        return;
-      }
-
-      // Validar tipo
-      if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
-        this.errorMessage.set('Solo se permiten imágenes JPG, PNG, GIF o WebP');
-        setTimeout(() => this.errorMessage.set(null), 3000);
-        return;
-      }
-
-      // Subir al backend
-      const formData = new FormData();
-      formData.append('file', file);
-
-      this.isLoading.set(true);
-
-      this.http.post<{ avatar: string }>(
-        `${API_CONFIG.baseUrl}${API_ENDPOINTS.usuarios.uploadAvatar}`,
-        formData
-      ).subscribe({
-        next: (response) => {
-          // El backend devuelve el avatar en base64
-          const avatarUrl = response.avatar || `data:${file.type};base64,${response.avatar}`;
-          this.currentAvatar.set(avatarUrl);
-          this.appState.updateUser({ avatarUrl });
-          this.successMessage.set('Foto de perfil actualizada correctamente');
-          setTimeout(() => this.successMessage.set(null), 3000);
-          this.isLoading.set(false);
-        },
-        error: (error) => {
-          console.error('Error subiendo avatar:', error);
-          // Fallback: guardar solo localmente si falla el backend
-          const reader = new FileReader();
-          reader.onload = (e: ProgressEvent<FileReader>) => {
-            if (e.target?.result) {
-              const avatarBase64 = e.target.result as string;
-              this.currentAvatar.set(avatarBase64);
-              this.appState.updateUser({ avatarUrl: avatarBase64 });
-              this.successMessage.set('Foto actualizada (solo localmente)');
-              setTimeout(() => this.successMessage.set(null), 3000);
-            }
-          };
-          reader.readAsDataURL(file);
-          this.isLoading.set(false);
-        }
+      this.dataForm.patchValue({
+        username: user.username,
+        email: user.email
       });
+      this.currentAvatar.set(user.avatarUrl || 'assets/profile-placeholder.svg');
+      this.dataForm.markAsPristine();
     }
   }
 
   /**
-   * Guarda los cambios del perfil
+   * Actualiza el nombre de usuario
    */
-  onSubmit(): void {
-    if (this.profileForm.invalid) {
-      this.errorMessage.set('Por favor, corrige los errores del formulario');
-      setTimeout(() => this.errorMessage.set(null), 3000);
+  async onUpdateUsername(): Promise<void> {
+    if (this.dataForm.controls.username.invalid) {
+      this.notificationStream.error('Validación', 'Por favor, ingresa un nombre de usuario válido');
       return;
     }
 
     this.isLoading.set(true);
 
-    // Simular llamada a API
-    setTimeout(() => {
-      this.isLoading.set(false);
-      this.profileForm.markAsPristine();
-      this.successMessage.set('Perfil actualizado correctamente');
-      setTimeout(() => this.successMessage.set(null), 3000);
+    try {
+      const response = await this.http.put<{ id: number; nombreUsuario: string; mail: string; avatarUrl: string }>(
+        `${API_CONFIG.baseUrl}/usuarios/me/username`,
+        { nombreUsuario: this.dataForm.value.username }
+      ).toPromise();
 
-      console.log('Perfil guardado:', {
-        username: this.profileForm.value.username,
-        avatar: this.currentAvatar()
-      });
-    }, 1000);
+      if (response) {
+        this.appState.updateUser({ username: response.nombreUsuario });
+        this.dataForm.controls.username.markAsPristine();
+        this.notificationStream.success('Éxito', 'Nombre de usuario actualizado correctamente');
+      }
+    } catch (error: any) {
+      console.error('Error actualizando nombre de usuario:', error);
+      if (error.status === 409 || error.error?.message?.includes('duplicado')) {
+        this.notificationStream.warning('Advertencia', 'Este nombre de usuario ya está en uso');
+      } else {
+        this.notificationStream.error('Error', 'No se pudo actualizar el nombre de usuario');
+      }
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
+   * Actualiza el email
+   */
+  async onUpdateEmail(): Promise<void> {
+    if (this.dataForm.controls.email.invalid) {
+      this.notificationStream.error('Validación', 'Por favor, ingresa un email válido');
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    try {
+      const response = await this.http.put<{ id: number; nombreUsuario: string; mail: string; avatarUrl: string }>(
+        `${API_CONFIG.baseUrl}/usuarios/me/email`,
+        { mail: this.dataForm.value.email }
+      ).toPromise();
+
+      if (response) {
+        this.appState.updateUser({ email: response.mail });
+        this.dataForm.controls.email.markAsPristine();
+        this.notificationStream.success('Éxito', 'Email actualizado correctamente');
+      }
+    } catch (error: any) {
+      console.error('Error actualizando email:', error);
+      if (error.status === 409 || error.error?.message?.includes('duplicado')) {
+        this.notificationStream.warning('Advertencia', 'Este email ya está registrado');
+      } else {
+        this.notificationStream.error('Error', 'No se pudo actualizar el email');
+      }
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
+   * Cambia la contraseña con validaciones correctas:
+   * - Verifica contraseña actual
+   * - Valida que nueva === confirmar
+   * - Si nueva === actual, muestra INFO (no ERROR)
+   */
+  async onChangePassword(): Promise<void> {
+    const { currentPassword, newPassword, confirmPassword } = this.passwordForm.value;
+
+    // Validar que los campos no estén vacíos
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      this.notificationStream.error('Validación', 'Todos los campos son obligatorios');
+      return;
+    }
+
+    // Validar que nueva === confirmar
+    if (newPassword !== confirmPassword) {
+      this.notificationStream.error('Validación', 'Las contraseñas nuevas no coinciden');
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    try {
+      await this.http.put<void>(
+        `${API_CONFIG.baseUrl}/usuarios/me/password`,
+        {
+          contrasenaActual: currentPassword,
+          contrasenaNueva: newPassword
+        }
+      ).toPromise();
+
+      this.passwordForm.reset();
+      this.notificationStream.success('Éxito', 'Contraseña actualizada correctamente');
+    } catch (error: any) {
+      console.error('Error cambiando contraseña:', error);
+
+      // Manejo consistente de errores
+      if (error.status === 401 || error.error?.message?.includes('incorrecta')) {
+        this.notificationStream.error('Error', 'La contraseña actual es incorrecta');
+      } else if (error.status === 400 && error.error?.message?.includes('diferente')) {
+        // Si nueva === actual, mostrar INFO (no ERROR)
+        this.notificationStream.info('Información', 'La nueva contraseña debe ser diferente a la actual');
+      } else {
+        this.notificationStream.error('Error', 'No se pudo cambiar la contraseña');
+      }
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
+   * Selecciona un archivo de avatar y muestra preview
+   */
+  onAvatarFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+
+      // Validar tamaño (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        this.notificationStream.error('Validación', 'La imagen no puede superar los 2MB');
+        return;
+      }
+
+      // Validar tipo
+      if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
+        this.notificationStream.error('Validación', 'Solo se permiten imágenes JPG, PNG, GIF o WebP');
+        return;
+      }
+
+      // Guardar archivo y crear preview
+      this.selectedAvatarFile.set(file);
+
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (e.target?.result) {
+          this.previewAvatarUrl.set(e.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  /**
+   * Activa el input file oculto
+   */
+  triggerFileInput(): void {
+    const fileInput = document.getElementById('avatar-file-input') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  /**
+   * Guarda el avatar seleccionado
+   */
+  async onSaveAvatar(): Promise<void> {
+    const file = this.selectedAvatarFile();
+    if (!file) {
+      this.notificationStream.warning('Advertencia', 'Por favor, selecciona una imagen primero');
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await this.http.post<{ avatar: string }>(
+        `${API_CONFIG.baseUrl}${API_ENDPOINTS.usuarios.uploadAvatar}`,
+        formData
+      ).toPromise();
+
+      if (response) {
+        const avatarUrl = response.avatar.startsWith('data:') ? response.avatar : `data:image/jpeg;base64,${response.avatar}`;
+        this.currentAvatar.set(avatarUrl);
+        this.appState.updateUser({ avatarUrl });
+        this.selectedAvatarFile.set(null);
+        this.previewAvatarUrl.set(null);
+        this.notificationStream.success('Éxito', 'Foto de perfil actualizada correctamente');
+      }
+    } catch (error: any) {
+      console.error('Error subiendo avatar:', error);
+      this.notificationStream.error('Error', 'No se pudo actualizar la foto de perfil');
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
+   * Elimina el avatar actual
+   */
+  async onDeleteAvatar(): Promise<void> {
+    this.isLoading.set(true);
+
+    try {
+      await this.http.delete<void>(
+        `${API_CONFIG.baseUrl}/usuarios/me/avatar`
+      ).toPromise();
+
+      this.currentAvatar.set('assets/profile-placeholder.svg');
+      this.appState.updateUser({ avatarUrl: 'assets/profile-placeholder.svg' });
+      this.selectedAvatarFile.set(null);
+      this.previewAvatarUrl.set(null);
+      this.notificationStream.success('Éxito', 'Foto de perfil eliminada correctamente');
+    } catch (error: any) {
+      console.error('Error eliminando avatar:', error);
+      this.notificationStream.error('Error', 'No se pudo eliminar la foto de perfil');
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
+   * Abre el modal de confirmación para eliminar cuenta
+   */
+  openDeleteModal(): void {
+    this.showDeleteModal.set(true);
+    this.deleteConfirmationText.set('');
+  }
+
+  /**
+   * Cierra el modal de confirmación
+   */
+  closeDeleteModal(): void {
+    this.showDeleteModal.set(false);
+    this.deleteConfirmationText.set('');
+  }
+
+  /**
+   * Elimina la cuenta del usuario después de doble confirmación
+   */
+  async onDeleteAccount(): Promise<void> {
+    if (!this.canDeleteAccount()) {
+      this.notificationStream.error('Validación', 'Por favor, escribe "eliminar" para confirmar');
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    try {
+      await this.http.delete<void>(
+        `${API_CONFIG.baseUrl}/usuarios/me`
+      ).toPromise();
+
+      this.notificationStream.success('Éxito', 'Cuenta eliminada correctamente');
+      this.closeDeleteModal();
+
+      // Cerrar sesión y redirigir
+      setTimeout(() => {
+        this.authService.logout();
+        this.router.navigate(['/']);
+      }, 1500);
+    } catch (error: any) {
+      console.error('Error eliminando cuenta:', error);
+      this.notificationStream.error('Error', 'No se pudo eliminar la cuenta');
+      this.isLoading.set(false);
+    }
   }
 
   canDeactivate(): boolean {
-    if (!this.profileForm.dirty) {
+    if (!this.dataForm.dirty && !this.passwordForm.dirty && !this.selectedAvatarFile()) {
       return true;
     }
-    return confirm('Deseas salir sin guardar los cambios en tu perfil?');
+    return confirm('¿Deseas salir sin guardar los cambios?');
   }
 }

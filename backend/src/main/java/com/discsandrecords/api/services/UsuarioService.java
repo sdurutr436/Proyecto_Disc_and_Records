@@ -221,6 +221,62 @@ public class UsuarioService implements UserDetailsService {
         return toResponseDTO(actualizado);
     }
 
+    /**
+     * Actualiza solo el nombre de usuario
+     */
+    public UsuarioResponseDTO actualizarNombreUsuario(Long usuarioId, String nuevoNombre) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "id", usuarioId));
+
+        // Validar que el nombre no esté en uso
+        if (usuarioRepository.existsByNombreUsuario(nuevoNombre)) {
+            throw new DuplicateResourceException("Usuario", "nombreUsuario", nuevoNombre);
+        }
+
+        usuario.setNombreUsuario(nuevoNombre);
+        Usuario actualizado = usuarioRepository.save(usuario);
+        return toResponseDTO(actualizado);
+    }
+
+    /**
+     * Actualiza solo el email del usuario
+     */
+    public UsuarioResponseDTO actualizarEmail(Long usuarioId, String nuevoEmail) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "id", usuarioId));
+
+        // Validar que el email no esté en uso
+        if (usuarioRepository.existsByMail(nuevoEmail)) {
+            throw new DuplicateResourceException("Usuario", "mail", nuevoEmail);
+        }
+
+        usuario.setMail(nuevoEmail);
+        Usuario actualizado = usuarioRepository.save(usuario);
+        return toResponseDTO(actualizado);
+    }
+
+    /**
+     * Cambia la contraseña del usuario
+     */
+    public void cambiarContrasena(Long usuarioId, String contrasenaActual, String contrasenaNueva) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "id", usuarioId));
+
+        // Verificar que la contraseña actual sea correcta
+        if (!passwordEncoder.matches(contrasenaActual, usuario.getContrasena())) {
+            throw new BadCredentialsException("La contraseña actual es incorrecta");
+        }
+
+        // Verificar que la nueva contraseña sea diferente
+        if (passwordEncoder.matches(contrasenaNueva, usuario.getContrasena())) {
+            throw new IllegalArgumentException("La nueva contraseña debe ser diferente a la actual");
+        }
+
+        // Actualizar contraseña
+        usuario.setContrasena(passwordEncoder.encode(contrasenaNueva));
+        usuarioRepository.save(usuario);
+    }
+
     // ==========================================
     // ESTADÍSTICAS DE USUARIO
     // ==========================================

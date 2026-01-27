@@ -139,7 +139,7 @@ function handleErrorByStatus(
 
       if (isLoginEndpoint) {
         // Silenciar: el AuthService maneja el error
-        return throwError(() => error);
+        return;
       }
 
       message = '🔒 Tu sesión ha expirado. Por favor, inicia sesión nuevamente.';
