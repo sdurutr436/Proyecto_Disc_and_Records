@@ -135,9 +135,13 @@
 
   &__slogan-highlight {
     display: block;
-    color: var(--color-primary);
+    color: var(--text-primary);
     font-family: $fuente-secundaria;
-    text-shadow: 0.125rem 0.125rem 0 var(--shadow-color);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow:
+      0.1875rem 0.1875rem 0px var(--color-primary),
+      0.375rem 0.375rem 0px var(--color-secondary);
 
     // BASE MÓVIL
     font-size: 1.75rem;

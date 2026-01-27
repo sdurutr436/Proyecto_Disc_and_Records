@@ -83,7 +83,7 @@ Representa el máximo grado de accesibilidad con requisitos muy estrictos destin
 | Lighthouse Móvil | 100/100 | ![Lighthouse inicial](capturas/lighthouse/main/lighthouse_inicial_main_movil.png) |
 | Lighthouse Desktop | 100/100 | ![Lighthouse inicial desktop](capturas/lighthouse/main/lighthouse_inicial_main_desktop.png) |
 | WAVE | 0 errores graves, 1 error contraste, 3 alertas | ![WAVE inicial general](capturas/wave/main/wave_inicial_main_desktop.png) |
-| TAW | 1 problemas | ![TAWDIS inicial general](capturas/tawdis/main/taw_base_main.png) |
+| TAW | 5 problemas | ![TAWDIS inicial general](capturas/tawdis/main/taw_base_main.png) |
 
 #### Errores más graves:
 
@@ -451,6 +451,31 @@ Herramienta a usar: NVDA
 
 ### Verificación crossbrowser:
 
-Navegadores usados: Comet (Basa)
+| Navegador | Versión | Layout correcto | Multimedia funciona | Observaciones |
+|-----------|---------|-----------------|---------------------|---------------|
+| Comet | [1.6] | Si | Si | Sin problemas observables de carga |
+| Firefox | [147] | Si | Si | Sin problemas observables de carga |
+
+### Capturas:
+
+Coment:
+
+![Verificación en Comet](capturas/verificacion_chromium.png)
+
+![Verificación en Comet, parte baja](capturas/verificacion_chromium2.png)
+
+![Verificación en Firefox](capturas/verificacion_gecko.png)
+
+![Verificación en Firefox, parte baja](capturas/verificacion_gecko2.png)
+
+## Seccion 7: Resultados finales después de correcciones:
+
+### Ejecución de las herramientas de accesibilidad:
+
+| Herramienta | Antes | Después | Mejora |
+|-------------|-------|---------|--------|
+| Lighthouse | [X]/100 | [X]/100 | +[X] puntos |
+| WAVE | [X] errores | [X] errores | -[X] errores |
+| TAW | [5] problemas | [0] problemas | -[5] problemas |
 
 
