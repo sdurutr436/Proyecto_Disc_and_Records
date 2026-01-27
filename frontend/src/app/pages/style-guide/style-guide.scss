@@ -1166,6 +1166,117 @@ app-breadcrumbs {
 }
 
 /* ========================================
+   GALERÍA DE ICONOS - Icon Gallery
+   ======================================== */
+.icon-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: $espaciado-m;
+  margin-bottom: $espaciado-l;
+
+  @include mixins.respond-to('tablet') {
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: $espaciado-s;
+  }
+
+  @include mixins.respond-to('mobile') {
+    grid-template-columns: 1fr;
+  }
+}
+
+.icon-card {
+  background-color: var(--bg-primary);
+  border: $borde-brutal-medium;
+  border-radius: $radio-s;
+  padding: $espaciado-m;
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-s;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: $sombra-brutal-s;
+    transform: translateY(-2px);
+  }
+
+  &__preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 4rem;
+    background-color: var(--bg-secondary);
+    border-radius: $radio-xs;
+    color: var(--text-primary);
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-xs;
+  }
+
+  &__name {
+    font-weight: 600;
+    font-size: $tamanio-fuente-parrafo;
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+  }
+
+  &__description {
+    font-size: $tamanio-fuente-texto-pequeno-m;
+    color: var(--text-secondary);
+  }
+
+  &__usage {
+    font-size: $tamanio-fuente-texto-pequeno-xs;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  &__code {
+    font-size: $tamanio-fuente-texto-pequeno-xs;
+    padding: $espaciado-xs;
+    background-color: var(--bg-secondary);
+    border: 0.0625rem solid var(--border-color);
+    border-radius: $radio-xs;
+    color: var(--color-primary);
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+    margin-top: auto;
+  }
+}
+
+.icon-usage-note {
+  background-color: var(--bg-secondary);
+  border: $borde-brutal-thin;
+  border-radius: $radio-s;
+  padding: $espaciado-m;
+  margin-top: $espaciado-m;
+
+  strong {
+    display: block;
+    margin-bottom: $espaciado-s;
+    color: var(--text-primary);
+  }
+
+  pre {
+    margin: 0;
+    background-color: var(--bg-primary);
+    padding: $espaciado-s;
+    border-radius: $radio-xs;
+    overflow-x: auto;
+
+    code {
+      font-size: $tamanio-fuente-texto-pequeno-m;
+      font-family: 'Courier New', monospace;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+  }
+}
+
+/* ========================================
    SOMBRAS - Shadow Demo
    ======================================== */
 .shadow-demo {

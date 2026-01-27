@@ -15,6 +15,7 @@ import { Review, Album, AlbumEnLista, mapResenaToLegacy, UsuarioResponse } from 
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { API_CONFIG } from '../../config/api.config';
+import { LucideAngularModule, Edit } from 'lucide-angular';
 import {
   calculateGenreStats,
   paginateReviews,
@@ -133,7 +134,7 @@ export default class ProfileComponent implements OnInit {
     }
     return [
       {
-        label: '✏️ Editar Perfil',
+        label: 'Editar Perfil',
         variant: 'primary',
         callback: () => this.editProfile()
       }

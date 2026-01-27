@@ -13,7 +13,10 @@
     <!-- ============================================ -->
     <section class="roadmap__content">
       <div class="roadmap__empty">
-        <div class="roadmap__empty-icon">🚀</div>
+        <div class="roadmap__empty-icon">
+          <lucide-icon [img]="Rocket" [size]="48" *ngIf="Rocket; else fallbackRocket"></lucide-icon>
+          <ng-template #fallbackRocket>🚀</ng-template>
+        </div>
         <h2 class="roadmap__empty-title">Próximamente</h2>
         <p class="roadmap__empty-text">
           Estamos preparando grandes novedades para ti.

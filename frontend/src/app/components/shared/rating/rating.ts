@@ -1,14 +1,18 @@
 import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, Star } from 'lucide-angular';
 
 @Component({
   selector: 'app-rating',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './rating.html',
   styleUrls: ['./rating.scss'],
 })
 export class RatingComponent {
+  // Lucide icons
+  readonly Star = Star;
+
   /**
    * Valor de rating (0-5)
    */

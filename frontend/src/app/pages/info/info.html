@@ -25,7 +25,10 @@
       <!-- TAB: API DE DESARROLLO -->
       @if (activeTab() === 'api') {
         <article class="info__panel">
-          <div class="info__panel-icon">🔧</div>
+          <div class="info__panel-icon">
+            <lucide-icon [img]="Wrench" [size]="32" *ngIf="Wrench; else fallbackWrench"></lucide-icon>
+            <ng-template #fallbackWrench>🔧</ng-template>
+          </div>
           <h2 class="info__panel-title">API de Desarrollo</h2>
           <div class="info__panel-content">
             <p>
@@ -43,7 +46,10 @@
       <!-- TAB: SOBRE NOSOTROS -->
       @if (activeTab() === 'about') {
         <article class="info__panel">
-          <div class="info__panel-icon">👥</div>
+          <div class="info__panel-icon">
+            <lucide-icon [img]="Users" [size]="32" *ngIf="Users; else fallbackUsers"></lucide-icon>
+            <ng-template #fallbackUsers>👥</ng-template>
+          </div>
           <h2 class="info__panel-title">Sobre Nosotros</h2>
           <div class="info__panel-content">
             <p>
@@ -67,7 +73,10 @@
       <!-- TAB: CONTACTO -->
       @if (activeTab() === 'contact') {
         <article class="info__panel">
-          <div class="info__panel-icon">📧</div>
+          <div class="info__panel-icon">
+            <lucide-icon [img]="Mail" [size]="32" *ngIf="Mail; else fallbackMail"></lucide-icon>
+            <ng-template #fallbackMail>📧</ng-template>
+          </div>
           <h2 class="info__panel-title">Contacto</h2>
           <div class="info__panel-content">
             <p>
@@ -76,21 +85,30 @@
             </p>
             <div class="info__contact-methods">
               <div class="info__contact-item">
-                <span class="info__contact-icon">📧</span>
+                <span class="info__contact-icon">
+                  <lucide-icon [img]="Mail" [size]="20" *ngIf="Mail; else fallbackMailSmall"></lucide-icon>
+                  <ng-template #fallbackMailSmall>📧</ng-template>
+                </span>
                 <div>
                   <strong>Email</strong>
                   <p>contacto&#64;discsandrecords.com</p>
                 </div>
               </div>
               <div class="info__contact-item">
-                <span class="info__contact-icon">🐦</span>
+                <span class="info__contact-icon">
+                  <lucide-icon [img]="Twitter" [size]="20" *ngIf="Twitter; else fallbackTwitter"></lucide-icon>
+                  <ng-template #fallbackTwitter>🐦</ng-template>
+                </span>
                 <div>
                   <strong>Twitter</strong>
                   <p>&#64;DiscsAndRecords</p>
                 </div>
               </div>
               <div class="info__contact-item">
-                <span class="info__contact-icon">📸</span>
+                <span class="info__contact-icon">
+                  <lucide-icon [img]="Instagram" [size]="20" *ngIf="Instagram; else fallbackInstagram"></lucide-icon>
+                  <ng-template #fallbackInstagram>📸</ng-template>
+                </span>
                 <div>
                   <strong>Instagram</strong>
                   <p>&#64;discsandrecords</p>
@@ -104,7 +122,10 @@
       <!-- TAB: PRIVACIDAD -->
       @if (activeTab() === 'privacy') {
         <article class="info__panel">
-          <div class="info__panel-icon">🔒</div>
+          <div class="info__panel-icon">
+            <lucide-icon [img]="Lock" [size]="32" *ngIf="Lock; else fallbackLock"></lucide-icon>
+            <ng-template #fallbackLock>🔒</ng-template>
+          </div>
           <h2 class="info__panel-title">Política de Privacidad</h2>
           <div class="info__panel-content">
             <p>

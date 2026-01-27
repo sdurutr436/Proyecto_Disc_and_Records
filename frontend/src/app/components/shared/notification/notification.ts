@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, signal, ElementRef, AfterViewInit, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-angular';
 
 /**
  * Notification Component - Componente de Notificación/Toast
@@ -51,7 +52,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-notification',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './notification.html',
   styleUrl: './notification.scss'
 })
@@ -75,6 +76,13 @@ export class Notification implements OnInit, OnDestroy, AfterViewInit {
 
   /** Posición en la pantalla */
   @Input() position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'top-right';
+
+  // Iconos Lucide
+  readonly CheckCircle = CheckCircle;
+  readonly XCircle = XCircle;
+  readonly AlertTriangle = AlertTriangle;
+  readonly Info = Info;
+  readonly X = X;
 
   /** Si debe cerrarse automáticamente */
   @Input() autoDismiss: boolean = true;
@@ -318,10 +326,23 @@ export class Notification implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
+   * COMPUTED: Icono Lucide por defecto según tipo
+   */
+  get lucideIcon(): any {
+    switch (this.type) {
+      case 'success': return this.CheckCircle;
+      case 'error': return this.XCircle;
+      case 'warning': return this.AlertTriangle;
+      case 'info': return this.Info;
+      default: return this.Info;
+    }
+  }
+
+  /**
    * COMPUTED: Icono por defecto según tipo
    * Si no se proporciona icono personalizado, usa estos
    *
-   * @returns Emoji/símbolo para mostrar
+   * @returns Emoji/símbolo para mostrar (fallback)
    */
   get defaultIcon(): string {
     // Si hay icono personalizado, usarlo
@@ -329,7 +350,7 @@ export class Notification implements OnInit, OnDestroy, AfterViewInit {
       return this.icon;
     }
 
-    // Iconos por defecto según el tipo
+    // Iconos por defecto según el tipo (fallback emoji)
     switch (this.type) {
       case 'success':
         return '✓'; // Check mark

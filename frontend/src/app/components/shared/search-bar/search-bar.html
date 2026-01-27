@@ -30,7 +30,8 @@
         (click)="clearSearch()"
         aria-label="Limpiar búsqueda"
       >
-        ✕
+        <lucide-icon [img]="X" [size]="16" *ngIf="X; else fallbackX"></lucide-icon>
+        <ng-template #fallbackX>✕</ng-template>
       </button>
     }
 

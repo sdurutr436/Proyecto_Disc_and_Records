@@ -15,7 +15,8 @@
       (click)="onStarClick(star)"
       (mouseenter)="onStarHover(star)"
     >
-      ★
+      <lucide-icon [img]="Star" [size]="16" *ngIf="Star; else fallbackStar"></lucide-icon>
+      <ng-template #fallbackStar>★</ng-template>
     </button>
   }
   @if (showValue()) {

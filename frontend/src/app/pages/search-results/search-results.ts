@@ -23,7 +23,7 @@ import { DeezerService, DeezerAlbum, DeezerArtist } from '../../services/deezer.
 import { MockDeezerService } from '../../services/mock-deezer.service';
 import { DeezerRateLimitService } from '../../services/deezer-rate-limit.service';
 import { AlbumNavigationService } from '../../services/album-navigation.service';
-import { LucideAngularModule } from 'lucide-angular';
+import { LucideAngularModule, Disc, Mic } from 'lucide-angular';
 
 // Tipos de filtro disponibles
 type FilterType = 'all' | 'albums';
@@ -85,6 +85,10 @@ export default class SearchResultsComponent implements OnInit {
 
   /** Servicio de navegación de álbumes (Hidratación Anticipada) */
   private albumNavigationService = inject(AlbumNavigationService);
+
+  // Lucide icons
+  readonly Disc = Disc;
+  readonly Mic = Mic;
 
   // ==========================================================================
   // ESTADO DE LA PÁGINA
@@ -586,9 +590,16 @@ export default class SearchResultsComponent implements OnInit {
   // ==========================================================================
 
   /**
-   * Obtiene el icono según el tipo
+   * Obtiene el icono Lucide según el tipo
    */
-  getResultIcon(type: string): string {
+  getResultIcon(type: string): any {
+    return type === 'album' ? this.Disc : this.Mic;
+  }
+
+  /**
+   * Obtiene el fallback emoji según el tipo
+   */
+  getResultIconFallback(type: string): string {
     return type === 'album' ? '💿' : '🎤';
   }
 

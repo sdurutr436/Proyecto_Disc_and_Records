@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LucideAngularModule, Rocket } from 'lucide-angular';
 
 /**
  * RoadmapComponent - Página de Próximamente/Roadmap
@@ -10,9 +11,12 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-roadmap',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './roadmap.html',
   styleUrls: ['./roadmap.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export default class RoadmapComponent {}
+export default class RoadmapComponent {
+  // Lucide icons
+  readonly Rocket = Rocket;
+}

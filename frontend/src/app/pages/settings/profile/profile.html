@@ -222,14 +222,9 @@
         <app-alert
           type="warning"
           [dismissible]="false"
+          title="ADVERTENCIA: Esta acción es irreversible."
+          message="Al eliminar tu cuenta, perderás permanentemente todos tus datos, favoritos, listas y configuraciones."
         >
-          <div class="settings-profile__warning-content">
-            <lucide-icon [img]="AlertTriangle" [size]="24" aria-hidden="true"></lucide-icon>
-            <div>
-              <strong>ADVERTENCIA: Esta acción es irreversible.</strong>
-              <p>Al eliminar tu cuenta, perderás permanentemente todos tus datos, favoritos, listas y configuraciones.</p>
-            </div>
-          </div>
         </app-alert>
       </div>
 
@@ -266,11 +261,9 @@
         <app-alert
           type="error"
           [dismissible]="false"
+          title="Esta acción NO se puede deshacer."
+          message="Todos tus datos serán eliminados permanentemente."
         >
-          <div class="settings-profile__modal-alert">
-            <lucide-icon [img]="AlertTriangle" [size]="20" aria-hidden="true"></lucide-icon>
-            <span>Esta acción NO se puede deshacer. Todos tus datos serán eliminados permanentemente.</span>
-          </div>
         </app-alert>
 
         <p class="settings-profile__delete-instructions">

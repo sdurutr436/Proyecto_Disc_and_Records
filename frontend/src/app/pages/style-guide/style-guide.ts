@@ -27,6 +27,16 @@ import { ProgressBar } from '../../components/shared/progress-bar/progress-bar';
 import { NotificationService } from '../../services/notification';
 import { LoadingService } from '../../services/loading';
 import { StyleGuideNavigationService, StyleGuideSection } from '../../services/style-guide-navigation';
+import {
+  LucideAngularModule,
+  Plus, Minus, UserPlus, Edit, Check, X,
+  CheckCircle, XCircle, AlertTriangle, Info,
+  User, Mail, Lock, Image, Trash2,
+  Star, Disc, Mic, Wrench, Users, Twitter, Instagram, Rocket,
+  Heart, Search, Settings, Home, Menu, Eye, Download, Upload,
+  Play, Pause, SkipForward, SkipBack, Volume2,
+  Calendar, Clock, TrendingUp, Filter, Share2, Bookmark
+} from 'lucide-angular';
 
 @Component({
   selector: 'app-style-guide',
@@ -56,7 +66,8 @@ import { StyleGuideNavigationService, StyleGuideSection } from '../../services/s
     Tabs,
     Tooltip,
     Spinner,
-    ProgressBar
+    ProgressBar,
+    LucideAngularModule
   ],
   templateUrl: './style-guide.html',
   styleUrl: './style-guide.scss',
@@ -66,6 +77,41 @@ export class StyleGuide {
   private notificationService = inject(NotificationService);
   private loadingService = inject(LoadingService);
   private styleGuideNav = inject(StyleGuideNavigationService);
+
+  // Galería de iconos Lucide disponibles
+  lucideIcons = [
+    { name: 'CheckCircle', icon: CheckCircle, description: 'Estado exitoso', usage: 'Confirmaciones, éxito' },
+    { name: 'XCircle', icon: XCircle, description: 'Estado error', usage: 'Errores, cancelar' },
+    { name: 'AlertTriangle', icon: AlertTriangle, description: 'Advertencia', usage: 'Alertas, precaución' },
+    { name: 'Info', icon: Info, description: 'Información', usage: 'Detalles, ayuda' },
+    { name: 'User', icon: User, description: 'Usuario', usage: 'Perfil, cuenta' },
+    { name: 'Mail', icon: Mail, description: 'Email', usage: 'Correo, contacto' },
+    { name: 'Lock', icon: Lock, description: 'Seguridad', usage: 'Contraseña, privacidad' },
+    { name: 'Star', icon: Star, description: 'Valoración', usage: 'Rating, favoritos' },
+    { name: 'Heart', icon: Heart, description: 'Me gusta', usage: 'Favoritos, likes' },
+    { name: 'Disc', icon: Disc, description: 'Álbum', usage: 'Música, álbumes' },
+    { name: 'Mic', icon: Mic, description: 'Artista', usage: 'Cantante, performer' },
+    { name: 'Search', icon: Search, description: 'Buscar', usage: 'Búsqueda' },
+    { name: 'Plus', icon: Plus, description: 'Añadir', usage: 'Agregar elemento' },
+    { name: 'X', icon: X, description: 'Cerrar', usage: 'Cerrar modal, eliminar' },
+    { name: 'Edit', icon: Edit, description: 'Editar', usage: 'Modificar datos' },
+    { name: 'Trash2', icon: Trash2, description: 'Eliminar', usage: 'Borrar elemento' },
+    { name: 'Check', icon: Check, description: 'Confirmar', usage: 'Aceptar, validar' },
+    { name: 'Settings', icon: Settings, description: 'Configuración', usage: 'Ajustes' },
+    { name: 'Home', icon: Home, description: 'Inicio', usage: 'Página principal' },
+    { name: 'Users', icon: Users, description: 'Usuarios', usage: 'Comunidad, equipo' },
+    { name: 'Wrench', icon: Wrench, description: 'Herramientas', usage: 'API, desarrollo' },
+    { name: 'Rocket', icon: Rocket, description: 'Próximamente', usage: 'Futuro, roadmap' },
+    { name: 'Play', icon: Play, description: 'Reproducir', usage: 'Player de audio' },
+    { name: 'Pause', icon: Pause, description: 'Pausar', usage: 'Player de audio' },
+    { name: 'Volume2', icon: Volume2, description: 'Volumen', usage: 'Control de audio' },
+    { name: 'Share2', icon: Share2, description: 'Compartir', usage: 'Redes sociales' },
+    { name: 'Download', icon: Download, description: 'Descargar', usage: 'Exportar' },
+    { name: 'Calendar', icon: Calendar, description: 'Fecha', usage: 'Eventos, calendario' },
+    { name: 'TrendingUp', icon: TrendingUp, description: 'Tendencias', usage: 'Estadísticas' },
+    { name: 'Filter', icon: Filter, description: 'Filtrar', usage: 'Búsqueda avanzada' },
+    { name: 'Bookmark', icon: Bookmark, description: 'Guardar', usage: 'Favoritos, listas' }
+  ];
 
   // FormControls para demostración de inputs
   demoInputControl = new FormControl('');
@@ -186,8 +232,8 @@ export class StyleGuide {
   profileActions: CardAction[] = [
     { label: 'Agregar a mi lista', icon: '+', variant: 'primary', callback: () => console.log('Agregado') },
     { label: 'Eliminar de mi lista', icon: '−', variant: 'secondary', callback: () => console.log('Eliminado') },
-    { label: 'Enviar solicitud de amistad', icon: '👤+', variant: 'accent', callback: () => console.log('Solicitud enviada') },
-    { label: 'Editar mi perfil', icon: '✏️', variant: 'contrast', callback: () => console.log('Editando perfil') }
+    { label: 'Enviar solicitud de amistad', icon: '+', variant: 'accent', callback: () => console.log('Solicitud enviada') },
+    { label: 'Editar mi perfil', icon: '', variant: 'contrast', callback: () => console.log('Editando perfil') }
   ];
 
   userGenres: string[] = ['Rock 35%', 'Jazz 25%', 'Funk 20%', 'Soul 15%', 'Disco 5%'];

@@ -73,9 +73,13 @@
                 (clicked)="toggleUserList()"
               >
                 @if (isInUserList()) {
-                  ✓ En mi lista
+                  <lucide-icon [img]="Check" [size]="16" *ngIf="Check; else fallbackCheck"></lucide-icon>
+                  <ng-template #fallbackCheck>✓</ng-template>
+                  En mi lista
                 } @else {
-                  + Añadir a mi lista
+                  <lucide-icon [img]="Plus" [size]="16" *ngIf="Plus; else fallbackPlus"></lucide-icon>
+                  <ng-template #fallbackPlus>+</ng-template>
+                  Añadir a mi lista
                 }
               </app-button>
             </div>

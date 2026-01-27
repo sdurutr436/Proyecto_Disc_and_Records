@@ -1,5 +1,8 @@
 <div *ngIf="isVisible" [class]="alertClasses" role="alert">
-  <div class="alert__icon">{{ defaultIcon }}</div>
+  <div class="alert__icon">
+    <lucide-icon [img]="lucideIcon" [size]="20" *ngIf="lucideIcon else fallbackIcon"></lucide-icon>
+    <ng-template #fallbackIcon>{{ defaultIcon }}</ng-template>
+  </div>
 
   <div class="alert__content">
     <h3 *ngIf="title" class="alert__title">{{ title }}</h3>
@@ -13,6 +16,7 @@
     (click)="onDismiss()"
     aria-label="Cerrar alerta"
   >
-    ✕
+    <lucide-icon [img]="XCircle" [size]="16" *ngIf="XCircle; else fallbackClose"></lucide-icon>
+    <ng-template #fallbackClose>✕</ng-template>
   </button>
 </div>

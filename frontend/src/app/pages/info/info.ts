@@ -2,6 +2,7 @@ import { Component, signal, inject, OnInit, ChangeDetectionStrategy } from '@ang
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Tabs, Tab } from '../../components/shared/tabs/tabs';
+import { LucideAngularModule, Wrench, Users, Mail, Twitter, Instagram, Lock } from 'lucide-angular';
 
 type InfoTab = 'api' | 'about' | 'contact' | 'privacy';
 
@@ -17,7 +18,7 @@ type InfoTab = 'api' | 'about' | 'contact' | 'privacy';
 @Component({
   selector: 'app-info',
   standalone: true,
-  imports: [CommonModule, Tabs],
+  imports: [CommonModule, Tabs, LucideAngularModule],
   templateUrl: './info.html',
   styleUrls: ['./info.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,15 +27,23 @@ export default class InfoComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
+  // Lucide icons
+  readonly Wrench = Wrench;
+  readonly Users = Users;
+  readonly Mail = Mail;
+  readonly Twitter = Twitter;
+  readonly Instagram = Instagram;
+  readonly Lock = Lock;
+
   /** Tab activo */
   activeTab = signal<InfoTab>('about');
 
   /** Configuración de tabs */
   tabs: Tab[] = [
-    { id: 'api', label: '🔧 API de Desarrollo' },
-    { id: 'about', label: '👥 Sobre Nosotros' },
-    { id: 'contact', label: '📧 Contacto' },
-    { id: 'privacy', label: '🔒 Privacidad' }
+    { id: 'api', label: 'API de Desarrollo' },
+    { id: 'about', label: 'Sobre Nosotros' },
+    { id: 'contact', label: 'Contacto' },
+    { id: 'privacy', label: 'Privacidad' }
   ];
 
   ngOnInit(): void {

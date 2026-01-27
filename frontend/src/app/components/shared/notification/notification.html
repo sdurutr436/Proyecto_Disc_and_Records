@@ -1,5 +1,8 @@
 <div [class]="notificationClasses" [ngStyle]="stackStyles" role="alert" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
-  <div class="notification__icon">{{ defaultIcon }}</div>
+  <div class="notification__icon">
+    <lucide-icon [img]="lucideIcon" [size]="20" *ngIf="lucideIcon; else fallbackIcon"></lucide-icon>
+    <ng-template #fallbackIcon>{{ defaultIcon }}</ng-template>
+  </div>
 
   <div class="notification__content">
     @if (title) {
@@ -16,7 +19,8 @@
     (click)="onDismiss()"
     aria-label="Cerrar notificación"
   >
-    ✕
+    <lucide-icon [img]="X" [size]="16" *ngIf="X; else fallbackClose"></lucide-icon>
+    <ng-template #fallbackClose>✕</ng-template>
   </button>
 
   @if (autoDismiss && duration > 0) {

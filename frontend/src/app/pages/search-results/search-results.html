@@ -51,7 +51,13 @@
                 class="search-results__card"
               >
                 <div class="search-results__badge">
-                  {{ getResultIcon(result.type) }} {{ getResultTypeLabel(result.type) }}
+                  <lucide-icon
+                    [img]="getResultIcon(result.type)"
+                    [size]="16"
+                    *ngIf="getResultIcon(result.type); else fallbackIcon"
+                  ></lucide-icon>
+                  <ng-template #fallbackIcon>{{ getResultIconFallback(result.type) }}</ng-template>
+                  {{ getResultTypeLabel(result.type) }}
                 </div>
               </app-card>
             </article>

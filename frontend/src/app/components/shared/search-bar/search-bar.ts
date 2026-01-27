@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs';
 import { AlbumStateService } from '../../../services/album-state.service';
 import { Spinner } from '../spinner/spinner';
+import { LucideAngularModule, X } from 'lucide-angular';
 
 /**
  * SearchBar - Barra de búsqueda con debounce y búsqueda en tiempo real
@@ -22,12 +23,15 @@ import { Spinner } from '../spinner/spinner';
 @Component({
   selector: 'app-search-bar',
   standalone: true,
-  imports: [FormsModule, Spinner],
+  imports: [FormsModule, Spinner, LucideAngularModule],
   templateUrl: './search-bar.html',
   styleUrl: './search-bar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchBar implements OnInit, OnDestroy {
+  // Lucide icons
+  readonly X = X;
+
   /** Evento emitido cuando se realiza una búsqueda */
   @Output() onSearch = new EventEmitter<string>();
 

@@ -2,6 +2,7 @@ import { Component, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { FormInput } from '../form-input/form-input';
+import { LucideAngularModule, CheckCircle } from 'lucide-angular';
 
 /**
  * ForgotPasswordForm Component
@@ -27,11 +28,14 @@ import { FormInput } from '../form-input/form-input';
  */
 @Component({
   selector: 'app-forgot-password-form',
-  imports: [CommonModule, ReactiveFormsModule, FormInput],
+  imports: [CommonModule, ReactiveFormsModule, FormInput, LucideAngularModule],
   templateUrl: './forgot-password-form.html',
   styleUrl: './forgot-password-form.scss',
 })
 export class ForgotPasswordForm {
+  // Lucide icons
+  readonly CheckCircle = CheckCircle;
+
   /**
    * FormGroup - Contenedor del formulario de recuperación
    */

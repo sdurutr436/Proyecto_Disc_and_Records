@@ -20,6 +20,7 @@ import { ReviewStateService } from '../../services/review-state.service';
 import { AppStateService } from '../../services/app-state';
 import { NotificationStreamService } from '../../services/notification-stream';
 import { environment } from '../../../environments/environment';
+import { LucideAngularModule, Check, Plus } from 'lucide-angular';
 
 // Type para el item unificado (puede ser Album, Artist o Song)
 type DetailItem = Album | Artist | Song;
@@ -52,7 +53,8 @@ interface UserReview {
     RatingComponent,
     Badge,
     Tabs,
-    InfiniteScrollComponent
+    InfiniteScrollComponent,
+    LucideAngularModule
   ],
   templateUrl: './detail.html',
   styleUrl: './detail.scss'
@@ -73,6 +75,10 @@ export class DetailComponent implements OnInit, OnDestroy {
   private reviewStateService = inject(ReviewStateService);
   private appState = inject(AppStateService);
   private notifications = inject(NotificationStreamService);
+
+  // Lucide icons
+  readonly Check = Check;
+  readonly Plus = Plus;
 
   // ========================================
   // SIGNALS - Estado principal
