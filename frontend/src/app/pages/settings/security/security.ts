@@ -6,6 +6,7 @@ import { Badge } from '../../../components/shared/badge/badge';
 import { Button } from '../../../components/shared/button/button';
 import { Modal } from '../../../components/shared/modal/modal';
 import { CanComponentDeactivate } from '../../../guards/unsaved-changes.guard';
+import { AuthService } from '../../../services/auth';
 
 @Component({
   selector: 'app-settings-security',
@@ -16,6 +17,7 @@ import { CanComponentDeactivate } from '../../../guards/unsaved-changes.guard';
 })
 export default class SettingsSecurityComponent implements CanComponentDeactivate {
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   isLoading = signal(false);
   showDeleteModal = signal(false);
@@ -35,16 +37,26 @@ export default class SettingsSecurityComponent implements CanComponentDeactivate
   /**
    * Confirma la eliminación de cuenta
    */
-  confirmDeleteAccount(): void {
+  async confirmDeleteAccount(): Promise<void> {
     this.showDeleteModal.set(false);
     this.isLoading.set(true);
 
-    // Simular llamada a API
-    setTimeout(() => {
+    try {
+      const result = await this.authService.deleteAccount();
+
+      if (result.success) {
+        // Redirigir a home después de eliminar cuenta
+        setTimeout(() => {
+          this.isLoading.set(false);
+          this.router.navigate(['/']);
+        }, 1000);
+      } else {
+        this.isLoading.set(false);
+      }
+    } catch (error) {
+      console.error('Error eliminando cuenta:', error);
       this.isLoading.set(false);
-      console.log('Cuenta eliminada');
-      this.router.navigate(['/']);
-    }, 1500);
+    }
   }
 
   /**

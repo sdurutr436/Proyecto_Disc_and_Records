@@ -258,6 +258,9 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Scroll al inicio de la página
+    window.scrollTo({ top: 0, behavior: 'auto' });
+
     // ✅ DATOS YA PRECARGADOS POR RESOLVER
     // Los datos vienen del resolver configurado en app.routes.ts
     const resolvedData = this.route.snapshot.data;

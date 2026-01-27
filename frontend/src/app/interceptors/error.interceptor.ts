@@ -132,6 +132,16 @@ function handleErrorByStatus(
 
     case 401:
       // Unauthorized - no autenticado
+
+      // Si es el endpoint de login fallando, NO mostrar toast ni cerrar sesión
+      // El AuthService ya maneja el error y muestra su propio mensaje
+      const isLoginEndpoint = error.url && error.url.includes('/api/auth/login');
+
+      if (isLoginEndpoint) {
+        // Silenciar: el AuthService maneja el error
+        return throwError(() => error);
+      }
+
       message = '🔒 Tu sesión ha expirado. Por favor, inicia sesión nuevamente.';
 
       // Cerrar sesión automáticamente

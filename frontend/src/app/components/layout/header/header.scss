@@ -215,6 +215,11 @@
     max-width: 50%;
     z-index: vars.$z-dropdown;
     border-radius: vars.$radio-s;
+
+    /* Mejorar respuesta táctil en móviles */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
   }
 
   .header__btn--left {

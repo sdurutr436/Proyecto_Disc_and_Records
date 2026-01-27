@@ -185,6 +185,9 @@ export default class ProfileComponent implements OnInit {
   hasFilteredAlbums = computed(() => this.filteredAlbums().length > 0);
 
   ngOnInit(): void {
+    // Scroll al inicio de la página
+    window.scrollTo({ top: 0, behavior: 'auto' });
+
     // Detectar si es perfil público (ruta /user/:id)
     const routeData = this.route.snapshot.data;
     const isPublic = routeData['isPublicProfile'] === true;

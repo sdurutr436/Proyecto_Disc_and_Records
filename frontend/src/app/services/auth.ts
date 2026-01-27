@@ -683,4 +683,44 @@ export class AuthService {
       message: 'Credenciales mock inválidas. Prueba: admin@mock.dev / admin123'
     };
   }
+
+  /**
+   * Eliminar la cuenta del usuario autenticado
+   *
+   * @returns Promesa con el resultado de la operación
+   */
+  async deleteAccount(): Promise<{ success: boolean; message: string }> {
+    const url = `${API_CONFIG.baseUrl}/usuarios/me`;
+
+    try {
+      await firstValueFrom(this.http.delete(url));
+
+      // Limpiar sesión local
+      this.clearAuthToken();
+      this.appState.logout();
+
+      this.notificationStream.success(
+        'Cuenta eliminada',
+        'Tu cuenta ha sido eliminada exitosamente'
+      );
+
+      return {
+        success: true,
+        message: 'Cuenta eliminada exitosamente'
+      };
+    } catch (error: any) {
+      console.error('Error eliminando cuenta:', error);
+
+      const errorMessage = error?.error?.message || 'No se pudo eliminar la cuenta';
+      this.notificationStream.error(
+        'Error',
+        errorMessage
+      );
+
+      return {
+        success: false,
+        message: errorMessage
+      };
+    }
+  }
 }

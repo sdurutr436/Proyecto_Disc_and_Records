@@ -184,6 +184,31 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Eliminar la propia cuenta del usuario autenticado
+     * 
+     * ENDPOINT: DELETE /api/usuarios/me
+     * 
+     * VALIDACIONES:
+     * - Usuario debe estar autenticado
+     * - Solo puede eliminar su propia cuenta
+     * 
+     * RESPUESTA:
+     * - 204 No Content: Cuenta eliminada exitosamente
+     * - 401 Unauthorized: No autenticado
+     */
+    @DeleteMapping("/me")
+    @Operation(summary = "Eliminar mi propia cuenta")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Cuenta eliminada exitosamente"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> eliminarCuentaPropia(@AuthenticationPrincipal Usuario usuarioActual) {
+        usuarioService.eliminar(usuarioActual.getId());
+        return ResponseEntity.noContent().build();
+    }
+
     // ==========================================
     // ENDPOINT AVATAR UPLOAD
     // ==========================================
