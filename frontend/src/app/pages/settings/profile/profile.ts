@@ -96,11 +96,19 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
 
   /**
    * Computed: Verifica si hay error de coincidencia de contraseñas
+   * SÚPER DINÁMICO - Se actualiza AL INSTANTE
    */
   hasPasswordMismatch = computed(() => {
     const form = this.passwordForm;
-    const confirmTouched = form.controls.confirmPassword.touched;
-    return form.hasError('passwordMismatch') && confirmTouched;
+    const newPassword = form.controls.newPassword.value;
+    const confirmPassword = form.controls.confirmPassword.value;
+
+    // Si ambos campos tienen contenido Y no coinciden = ALARMA INMEDIATA
+    if (newPassword && confirmPassword && newPassword.length > 0 && confirmPassword.length > 0) {
+      return newPassword !== confirmPassword;
+    }
+
+    return false;
   });
 
   ngOnInit(): void {
@@ -113,6 +121,18 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
       this.currentAvatar.set(user.avatarUrl || 'assets/profile-placeholder.svg');
       this.dataForm.markAsPristine();
     }
+
+    // 🚨 LISTENERS SÚPER DINÁMICOS PARA VALIDACIÓN INSTANTÁNEA 🚨
+    // Escuchar cambios en AMBOS campos de contraseña para validación inmediata
+    this.passwordForm.controls.newPassword.valueChanges.subscribe(() => {
+      // Forzar revalidación inmediata
+      this.passwordForm.controls.confirmPassword.updateValueAndValidity({ emitEvent: false });
+    });
+
+    this.passwordForm.controls.confirmPassword.valueChanges.subscribe(() => {
+      // Forzar revalidación inmediata
+      this.passwordForm.controls.newPassword.updateValueAndValidity({ emitEvent: false });
+    });
   }
 
   /**

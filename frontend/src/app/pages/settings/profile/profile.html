@@ -106,9 +106,13 @@
 
         <!-- Error de coincidencia de contraseñas -->
         @if (hasPasswordMismatch()) {
-          <div class="settings-profile__form-error" role="alert">
-            <lucide-icon [img]="AlertTriangle" [size]="16" aria-hidden="true"></lucide-icon>
-            Las contraseñas no coinciden
+          <div class="settings-profile__password-mismatch-alert" role="alert" aria-live="assertive">
+            <div class="settings-profile__password-mismatch-content">
+              <lucide-icon [img]="AlertTriangle" [size]="18" aria-hidden="true"></lucide-icon>
+              <span class="settings-profile__password-mismatch-text">
+                Las nuevas contraseñas no coinciden entre si.
+              </span>
+            </div>
           </div>
         }
 
@@ -124,6 +128,12 @@
             Cambiar Contraseña
           </app-button>
         </div>
+
+        <!-- Texto de leyenda -->
+        <p class="settings-profile__form-legend">
+          <lucide-icon [img]="AlertTriangle" [size]="14" aria-hidden="true"></lucide-icon>
+          Las contraseñas deben tener al menos 6 caracteres y ser diferentes entre sí.
+        </p>
       </form>
     </section>
 

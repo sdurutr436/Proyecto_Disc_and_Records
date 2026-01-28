@@ -1,52 +1,72 @@
 /* --- Variables de colores de fondo --- */
 
 /* Modo light */
-$color-fondo-light: #FBFAF2;
-$color-fondo-light-secundario: #E7D8AB;  // Beige crema 70s
+$color-fondo-light: hsl(58, 36%, 97%);
+$color-fondo-light-secundario: hsl(47, 56%, 79%);  // Beige crema 70s
 
 /* Modo oscuro */
-$color-fondo-oscuro: #01131B;  // Azul noche profundo
-$color-fondo-oscuro-secundario: #013946;
+$color-fondo-oscuro: hsl(204, 93%, 5%);  // Azul noche profundo
+$color-fondo-oscuro-secundario: hsl(198, 97%, 14%);
 
 /* --- Variables de colores de texto --- */
-$color-letra-blanca: #FBFAF2;
-$color-letra-oscura: #01131B;
-$color-letra-desactivado: rgba(1, 19, 27, 0.5);
+$color-letra-blanca: hsl(58, 36%, 97%);
+$color-letra-oscura: hsl(204, 93%, 5%);
+$color-letra-desactivado: hsla(204, 93%, 5%, 0.5);
 
 /* Modo light */
-$color-letra-principal-light: #01131B;
+$color-letra-principal-light: hsl(204, 93%, 5%);
 
 /* Modo oscuro */
-$color-letra-principal-dark: #FBFAF2;
+$color-letra-principal-dark: hsl(58, 36%, 97%);
 
 /* --- Variables de colores principales --- */
 
 /* Paleta 70s - Modo light (cálidos: naranjas y tierras) */
-$color-primario-light: #ED9C05;    // Naranja dorado - acción principal
-$color-secundario-light: #CA6703;  // Naranja quemado
-$color-contraste-light: #BB3F03;   // Naranja rojizo
-$color-acentuado-light: #9D2227;   // Rojo vino/burdeos
+$color-primario-light: hsl(38, 93%, 48%);    // Naranja dorado - acción principal
+$color-secundario-light: hsl(30, 97%, 40%);  // Naranja quemado
+$color-contraste-light: hsl(12, 97%, 37%);   // Naranja rojizo
+$color-acentuado-light: hsl(357, 63%, 38%);   // Rojo vino/burdeos
 
 /* Paleta 70s - Modo oscuro (fríos: teales y verdes) */
-$color-primario-dark: #93CFBB;     // Verde menta
-$color-secundario-dark: #0A9295;   // Teal vibrante
-$color-contraste-dark: #015F72;    // Teal profundo
-$color-acentuado-dark: #01131B;    // Azul noche
+$color-primario-dark: hsl(157, 35%, 69%);     // Verde menta
+$color-secundario-dark: hsl(181, 90%, 32%);   // Teal vibrante
+$color-contraste-dark: hsl(194, 98%, 23%);    // Teal profundo
+$color-acentuado-dark: hsl(204, 93%, 5%);    // Azul noche
 
 /* Colores de las franjas arcoíris 70s (para gradientes y decoración) */
-$color-franja-1: #93CFBB;  // Verde menta (arriba)
-$color-franja-2: #0A9295;  // Teal
-$color-franja-3: #ED9C05;  // Naranja dorado
-$color-franja-4: #CA6703;  // Naranja quemado
-$color-franja-5: #BB3F03;  // Naranja rojizo
-$color-franja-6: #9D2227;  // Rojo vino (abajo)
+$color-franja-1: hsl(157, 35%, 69%);  // Verde menta (arriba)
+$color-franja-2: hsl(181, 90%, 32%);  // Teal
+$color-franja-3: hsl(38, 93%, 48%);  // Naranja dorado
+$color-franja-4: hsl(23, 95%, 40%);  // Naranja quemado
+$color-franja-5: hsl(12, 97%, 37%);  // Naranja rojizo
+$color-franja-6: hsl(357, 63%, 38%);  // Rojo vino (abajo)
 
 /* --- Variables de colores de estado y apoyo --- */
-$color-error: #E04A4A;
-$color-advertencia-light: #FFC047;
-$color-advertencia-dark: #FEF84A;
-$color-exito: #AAD661;
-$color-informacion: #0A9295;  // Teal de la paleta 70s
+$color-error: hsl(0, 72%, 58%);
+$color-advertencia-light: hsl(43, 100%, 64%);
+$color-advertencia-dark: hsl(57, 99%, 64%);
+$color-exito: hsl(77, 58%, 61%);
+$color-informacion: hsl(181, 90%, 32%);  // Teal de la paleta 70s
+
+/* --- Variables de escala de grises --- */
+// Grises puros (sin tinte de color)
+$color-negro: hsl(0, 0%, 0%);           // Negro puro
+$color-blanco: hsl(0, 0%, 100%);        // Blanco puro
+$color-gris-muy-oscuro: hsl(0, 0%, 10%);     // #1A1A1A
+$color-gris-oscuro: hsl(0, 0%, 18%);         // #2D2D2D
+$color-gris-medio-oscuro: hsl(0, 0%, 29%);   // #4A4A4A
+$color-gris-medio-oscuro-plus: hsl(0, 0%, 39%); // #646464
+$color-gris-medio: hsl(0, 0%, 48%);          // #7A7A7A
+$color-gris-medio-claro: hsl(0, 0%, 62%);    // #9E9E9E
+$color-gris-claro: hsl(0, 0%, 72%);          // #B8B8B8
+$color-gris-muy-claro: hsl(0, 0%, 83%);      // #D4D4D4
+$color-gris-super-claro: hsl(0, 0%, 96%);    // #F5F5F5
+
+// Variantes con transparencia (para sombras y overlays)
+$color-negro-transparente-15: hsla(0, 0%, 0%, 0.15);   // Para sombras suaves
+$color-negro-transparente-20: hsla(0, 0%, 0%, 0.2);    // Para sombras medias
+$color-negro-transparente-30: hsla(0, 0%, 0%, 0.3);    // Para overlays
+$color-blanco-transparente-30: hsla(0, 0%, 100%, 0.3); // Para brillos
 
 /* --- Variables de escala tipográfica --- */
 
@@ -218,8 +238,8 @@ $sombra-brutal-success-xs: 0.125rem 0.125rem 0 $color-exito;
 $sombra-brutal-warning: 0.25rem 0.25rem 0 $color-advertencia-light;
 
 /* Sombras retro suaves - para cards y elementos flotantes */
-$sombra-retro-suave: 0.25rem 0.25rem 0 rgba(1, 19, 27, 0.15);
-$sombra-retro-media: 0.375rem 0.375rem 0 rgba(1, 19, 27, 0.2);
+$sombra-retro-suave: 0.25rem 0.25rem 0 $color-negro-transparente-15;
+$sombra-retro-media: 0.375rem 0.375rem 0 $color-negro-transparente-20;
 
 /* ========================================
    SOMBRAS NEON (ESTADOS Y APOYO)
@@ -228,26 +248,26 @@ $sombra-retro-media: 0.375rem 0.375rem 0 rgba(1, 19, 27, 0.2);
 
 /* Sombras neon de error - rojo alarma */
 $sombra-neon-error: 0 0 0.625rem $color-error, 0 0 1.25rem $color-error;
-$sombra-neon-error-suave: 0 0 0.5rem rgba(224, 74, 74, 0.5);
-$sombra-neon-error-intensa: 0 0 0.9375rem $color-error, 0 0 1.875rem $color-error, 0 0 2.8125rem rgba(224, 74, 74, 0.3);
+$sombra-neon-error-suave: 0 0 0.5rem hsla(0, 72%, 58%, 0.5);
+$sombra-neon-error-intensa: 0 0 0.9375rem $color-error, 0 0 1.875rem $color-error, 0 0 2.8125rem hsla(0, 72%, 58%, 0.3);
 
 /* Sombras neon de advertencia (light) - amarillo disco */
 $sombra-neon-advertencia-light: 0 0 0.625rem $color-advertencia-light, 0 0 1.25rem $color-advertencia-light;
-$sombra-neon-advertencia-light-suave: 0 0 0.5rem rgba(255, 192, 71, 0.5);
+$sombra-neon-advertencia-light-suave: 0 0 0.5rem hsla(43, 100%, 64%, 0.5);
 
 /* Sombras neon de advertencia (dark) - amarillo neón */
 $sombra-neon-advertencia-dark: 0 0 0.625rem $color-advertencia-dark, 0 0 1.25rem $color-advertencia-dark;
-$sombra-neon-advertencia-dark-suave: 0 0 0.5rem rgba(254, 248, 74, 0.5);
+$sombra-neon-advertencia-dark-suave: 0 0 0.5rem hsla(57, 99%, 64%, 0.5);
 
 /* Sombras neon de éxito - verde lima disco */
 $sombra-neon-exito: 0 0 0.625rem $color-exito, 0 0 1.25rem $color-exito;
-$sombra-neon-exito-suave: 0 0 0.5rem rgba(170, 214, 97, 0.5);
-$sombra-neon-exito-intensa: 0 0 0.9375rem $color-exito, 0 0 1.875rem $color-exito, 0 0 2.8125rem rgba(170, 214, 97, 0.3);
+$sombra-neon-exito-suave: 0 0 0.5rem hsla(77, 58%, 61%, 0.5);
+$sombra-neon-exito-intensa: 0 0 0.9375rem $color-exito, 0 0 1.875rem $color-exito, 0 0 2.8125rem hsla(77, 58%, 61%, 0.3);
 
 /* Sombras neon de información - teal 70s */
 $sombra-neon-informacion: 0 0 0.625rem $color-informacion, 0 0 1.25rem $color-informacion;
-$sombra-neon-informacion-suave: 0 0 0.5rem rgba(10, 146, 149, 0.5);
-$sombra-neon-informacion-intensa: 0 0 0.9375rem $color-informacion, 0 0 1.875rem $color-informacion, 0 0 2.8125rem rgba(10, 146, 149, 0.3);
+$sombra-neon-informacion-suave: 0 0 0.5rem hsla(181, 90%, 32%, 0.5);
+$sombra-neon-informacion-intensa: 0 0 0.9375rem $color-informacion, 0 0 1.875rem $color-informacion, 0 0 2.8125rem hsla(181, 90%, 32%, 0.3);
 
 /* Sombras neon naranja 70s - para destacados especiales */
 $sombra-neon-naranja: 0 0 0.625rem $color-primario-light, 0 0 1.25rem $color-primario-light;

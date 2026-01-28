@@ -12,7 +12,7 @@
   &__title {
     font-size: vars.$tamanio-fuente-h3;
     font-weight: bold;
-    color: vars.$color-letra-principal-light;
+    color: var(--text-primary);
     margin: 0;
   }
 
@@ -29,14 +29,14 @@
 
   // Cards compactas
   &__card {
-    background-color: vars.$color-fondo-light;
-    border: 3px solid vars.$color-letra-oscura;
+    background-color: var(--bg-primary);
+    border: 3px solid var(--border-color);
     border-radius: 0.5rem;
     padding: vars.$espaciado-m;
     box-shadow: vars.$sombra-brutal-s;
 
     &--danger {
-      border-color: vars.$color-error;
+      border-color: var(--color-error);
     }
   }
 
@@ -46,18 +46,17 @@
     gap: vars.$espaciado-xs;
     font-size: vars.$tamanio-fuente-h4;
     font-weight: bold;
-    color: vars.$color-letra-principal-light;
+    color: var(--text-primary);
     margin-bottom: vars.$espaciado-s;
 
     lucide-icon {
-      color: vars.$color-primario-light;
+      color: var(--color-primary);
     }
   }
 
   &__section-description {
     font-size: vars.$tamanio-fuente-texto-pequeno-m;
-    color: vars.$color-letra-oscura;
-    opacity: 0.7;
+    color: var(--text-secondary);
     margin-bottom: vars.$espaciado-s;
     line-height: vars.$altura-linea-parrafo;
   }
@@ -73,13 +72,29 @@
     display: flex;
     align-items: center;
     gap: vars.$espaciado-xs;
-    color: vars.$color-error;
+    color: var(--color-error);
     font-size: vars.$tamanio-fuente-texto-pequeno-s;
     font-weight: 500;
     padding: vars.$espaciado-xs vars.$espaciado-s;
-    background-color: rgba(vars.$color-error, 0.1);
-    border: 2px solid vars.$color-error;
+    background-color: hsla(0, 72%, 58%, 0.1);
+    border: 2px solid var(--color-error);
     border-radius: 0.25rem;
+  }
+
+  &__form-legend {
+    display: flex;
+    align-items: center;
+    gap: vars.$espaciado-xs;
+    color: var(--text-secondary);
+    font-size: vars.$tamanio-fuente-texto-pequeno-xs;
+    font-style: italic;
+    margin-top: vars.$espaciado-s;
+    padding: vars.$espaciado-xs 0;
+
+    lucide-icon {
+      color: var(--color-info);
+      opacity: 0.7;
+    }
   }
 
   &__field-group {
@@ -113,13 +128,13 @@
     position: absolute;
     top: vars.$espaciado-xs;
     right: vars.$espaciado-xs;
-    background-color: vars.$color-primario-light;
-    color: vars.$color-letra-blanca;
+    background-color: var(--color-primary);
+    color: var(--text-white);
     padding: vars.$espaciado-xs vars.$espaciado-s;
     border-radius: 0.25rem;
     font-size: vars.$tamanio-fuente-texto-pequeno-xs;
     font-weight: bold;
-    border: 2px solid vars.$color-letra-oscura;
+    border: 2px solid var(--border-color);
     box-shadow: vars.$sombra-brutal-xs;
     z-index: 10;
   }
@@ -145,7 +160,7 @@
 
   &__avatar-hint {
     font-size: vars.$tamanio-fuente-texto-pequeno-xs;
-    color: vars.$color-letra-oscura;
+    color: var(--text-secondary);
     opacity: 0.7;
     text-align: center;
     margin-top: vars.$espaciado-xs;
@@ -163,7 +178,7 @@
 
     lucide-icon {
       flex-shrink: 0;
-      color: vars.$color-advertencia-light;
+      color: var(--color-warning);
     }
 
     div {
@@ -174,14 +189,14 @@
       display: block;
       margin-bottom: vars.$espaciado-xs;
       font-size: vars.$tamanio-fuente-texto-pequeno-m;
-      color: vars.$color-letra-principal-light;
+      color: var(--text-primary);
     }
 
     p {
       margin: 0;
       font-size: vars.$tamanio-fuente-texto-pequeno-s;
       line-height: 1.4;
-      color: vars.$color-letra-oscura;
+      color: var(--text-secondary);
       opacity: 0.8;
     }
   }
@@ -205,12 +220,12 @@
 
   &__delete-instructions {
     font-size: vars.$tamanio-fuente-parrafo;
-    color: vars.$color-letra-oscura;
+    color: var(--text-secondary);
     opacity: 0.8;
     line-height: vars.$altura-linea-parrafo;
 
     strong {
-      color: vars.$color-letra-principal-light;
+      color: var(--text-primary);
       font-weight: bold;
     }
   }
@@ -219,21 +234,21 @@
     width: 100%;
     padding: vars.$espaciado-s;
     font-size: vars.$tamanio-fuente-parrafo;
-    border: 3px solid vars.$color-letra-oscura;
+    border: 3px solid var(--border-color);
     border-radius: 0.25rem;
-    background-color: vars.$color-fondo-light;
-    color: vars.$color-letra-principal-light;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     font-family: vars.$fuente-principal;
     transition: all 0.2s ease;
 
     &:focus {
       outline: none;
-      border-color: vars.$color-primario-light;
+      border-color: var(--color-primary);
       box-shadow: vars.$sombra-brutal-primario-light;
     }
 
     &::placeholder {
-      color: vars.$color-letra-desactivado;
+      color: var(--text-placeholder);
     }
   }
 
@@ -242,6 +257,88 @@
     gap: vars.$espaciado-m;
     justify-content: flex-end;
     margin-top: vars.$espaciado-s;
+  }
+
+  // ALERTA SÚPER DINÁMICA DE CONTRASEÑAS NO COINCIDENTES
+  &__password-mismatch-alert {
+    background: linear-gradient(135deg, var(--color-error) 0%, hsl(0, 80%, 60%) 100%);
+    border: 3px solid var(--color-error);
+    border-radius: 0.5rem;
+    padding: vars.$espaciado-s;
+    margin: vars.$espaciado-xs 0;
+    box-shadow:
+      vars.$sombra-brutal-error,
+      0 0 20px hsla(0, 100%, 50%, 0.3);
+
+    // Animación de pulso para máxima visibilidad
+    animation: password-mismatch-pulse 1.5s ease-in-out infinite;
+
+    // Efecto de resplandor adicional
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, var(--color-error), transparent, var(--color-error));
+      border-radius: inherit;
+      z-index: -1;
+      animation: password-mismatch-glow 2s linear infinite;
+    }
+  }
+
+  &__password-mismatch-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: vars.$espaciado-xs;
+    color: white;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  &__password-mismatch-text {
+    font-size: vars.$tamanio-fuente-texto-pequeno-m;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+
+    // Efecto de texto brillante
+    background: linear-gradient(45deg, #fff, #ffcccc, #fff);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: password-mismatch-text-shine 1s ease-in-out infinite alternate;
+  }
+
+  // 🚨 ANIMACIONES DE ALERTA MÁXIMA 🚨
+  @keyframes password-mismatch-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.02);
+      opacity: 0.95;
+      box-shadow:
+        vars.$sombra-brutal-error,
+        0 0 30px hsla(0, 100%, 50%, 0.5);
+    }
+  }
+
+  @keyframes password-mismatch-glow {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.3; }
+  }
+
+  @keyframes password-mismatch-text-shine {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
   }
 
   // Responsive

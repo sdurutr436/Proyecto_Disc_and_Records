@@ -12,9 +12,9 @@
   --bg-secondary: #{$color-fondo-light-secundario}; // #E7D8AB
 
   /* --- Colores de texto --- */
-  --text-primary: #{$color-letra-principal-light};   // #01131B
-  --text-secondary: #{$color-letra-desactivado};     // rgba(1, 19, 27, 0.5)
-  --text-placeholder: rgba(1, 19, 27, 0.6);          // Placeholder más visible en modo claro
+  --text-primary: #{$color-letra-principal-light};   // hsl(204, 93%, 5%)
+  --text-secondary: #{$color-letra-desactivado};     // hsla(204, 93%, 5%, 0.5)
+  --text-placeholder: hsla(204, 93%, 5%, 0.6);          // Placeholder más visible en modo claro
   --text-white: #{$color-letra-blanca};              // #FBFAF2
   --text-dark: #{$color-letra-oscura};               // #01131B
 
@@ -119,49 +119,49 @@
 
 [data-theme="grayscale"] {
   /* --- Colores de fondo - escala de grises oscura --- */
-  --bg-primary: #1A1A1A;                             // Gris muy oscuro (casi negro)
-  --bg-secondary: #2D2D2D;                           // Gris oscuro
+  --bg-primary: #{$color-gris-muy-oscuro};                    // hsl(0, 0%, 10%)
+  --bg-secondary: #{$color-gris-oscuro};                      // hsl(0, 0%, 18%)
 
   /* --- Colores de texto - alto contraste en escala de grises --- */
-  --text-primary: #F5F5F5;                           // Gris muy claro (casi blanco)
-  --text-secondary: rgba(245, 245, 245, 0.7);        // Gris claro con transparencia
-  --text-placeholder: rgba(245, 245, 245, 0.85);     // Placeholder visible
-  --text-white: #F5F5F5;                             // Gris muy claro
-  --text-dark: #1A1A1A;                              // Gris muy oscuro
+  --text-primary: #{$color-gris-super-claro};                 // hsl(0, 0%, 96%)
+  --text-secondary: hsla(0, 0%, 96%, 0.7);                    // Gris claro con transparencia
+  --text-placeholder: hsla(0, 0%, 96%, 0.85);                 // Placeholder visible
+  --text-white: #{$color-gris-super-claro};                   // hsl(0, 0%, 96%)
+  --text-dark: #{$color-gris-muy-oscuro};                     // hsl(0, 0%, 10%)
 
   /* --- Colores principales - tonos grises con diferentes intensidades --- */
-  --color-primary: #B8B8B8;                          // Gris medio-claro (acción principal)
-  --color-secondary: #9E9E9E;                        // Gris medio
-  --color-contrast: #7A7A7A;                         // Gris medio-oscuro
-  --color-accent: #646464;                           // Gris oscuro para acentos
+  --color-primary: #{$color-gris-claro};                      // hsl(0, 0%, 72%) (acción principal)
+  --color-secondary: #{$color-gris-medio-claro};              // hsl(0, 0%, 62%)
+  --color-contrast: #{$color-gris-medio};                     // hsl(0, 0%, 48%)
+  --color-accent: #{$color-gris-medio-oscuro-plus};           // hsl(0, 0%, 39%)
 
   /* --- Colores de borde y sombra - grises claros --- */
-  --border-color: #D4D4D4;                           // Gris claro para bordes
-  --shadow-color: #D4D4D4;                           // Gris claro para box-shadow
+  --border-color: #{$color-gris-muy-claro};                   // hsl(0, 0%, 83%)
+  --shadow-color: #{$color-gris-muy-claro};                   // hsl(0, 0%, 83%)
 
   /* --- Colores de header/footer/nav - oscuros en escala de grises --- */
-  --header-bg: #2D2D2D;                              // Gris oscuro
-  --nav-bg: #1A1A1A;                                 // Gris muy oscuro
+  --header-bg: #{$color-gris-oscuro};                         // hsl(0, 0%, 18%)
+  --nav-bg: #{$color-gris-muy-oscuro};                        // hsl(0, 0%, 10%)
 
   /* --- Colores de estado (escala de grises) --- */
-  --color-error: #D4D4D4;                            // Gris claro (sin color de error)
-  --color-warning: #B8B8B8;                          // Gris medio-claro
-  --color-success: #9E9E9E;                          // Gris medio
-  --color-info: #7A7A7A;                             // Gris medio-oscuro
+  --color-error: #{$color-gris-muy-claro};                    // hsl(0, 0%, 83%) (sin color de error)
+  --color-warning: #{$color-gris-claro};                      // hsl(0, 0%, 72%)
+  --color-success: #{$color-gris-medio-claro};                // hsl(0, 0%, 62%)
+  --color-info: #{$color-gris-medio};                         // hsl(0, 0%, 48%)
 
   /* --- Colores de franjas (en escala de grises) --- */
-  --color-stripe-1: #B8B8B8;                         // Gris claro
-  --color-stripe-2: #9E9E9E;                         // Gris medio-claro
-  --color-stripe-3: #7A7A7A;                         // Gris medio
-  --color-stripe-4: #646464;                         // Gris medio-oscuro
-  --color-stripe-5: #4A4A4A;                         // Gris oscuro
-  --color-stripe-6: #2D2D2D;                         // Gris muy oscuro
+  --color-stripe-1: #{$color-gris-claro};                     // hsl(0, 0%, 72%)
+  --color-stripe-2: #{$color-gris-medio-claro};               // hsl(0, 0%, 62%)
+  --color-stripe-3: #{$color-gris-medio};                     // hsl(0, 0%, 48%)
+  --color-stripe-4: #{$color-gris-medio-oscuro-plus};         // hsl(0, 0%, 39%)
+  --color-stripe-5: #{$color-gris-medio-oscuro};              // hsl(0, 0%, 29%)
+  --color-stripe-6: #{$color-gris-oscuro};                    // hsl(0, 0%, 18%)
 
   /* --- Colores de sombras vinilo (escala de grises) --- */
-  --vinyl-shadow-layer-1: #B8B8B8;                   // Gris claro
-  --vinyl-shadow-layer-2: #9E9E9E;                   // Gris medio-claro
-  --vinyl-shadow-layer-3: #7A7A7A;                   // Gris medio
-  --vinyl-shadow-layer-4: #646464;                   // Gris medio-oscuro
+  --vinyl-shadow-layer-1: #{$color-gris-claro};               // hsl(0, 0%, 72%)
+  --vinyl-shadow-layer-2: #{$color-gris-medio-claro};         // hsl(0, 0%, 62%)
+  --vinyl-shadow-layer-3: #{$color-gris-medio};               // hsl(0, 0%, 48%)
+  --vinyl-shadow-layer-4: #{$color-gris-medio-oscuro-plus};   // hsl(0, 0%, 39%)
 
   /* --- Filtro para imágenes hero: fuerza B/N --- */
   --filter-hero: grayscale(100%) brightness(0.8) contrast(1.1);

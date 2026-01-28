@@ -553,7 +553,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, $bg-opacity);
+  background-color: hsla(0, 0%, 0%, $bg-opacity);
   @include flex-center;
   z-index: $z-index;
 }

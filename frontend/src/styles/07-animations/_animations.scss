@@ -101,7 +101,7 @@
   &:hover {
     will-change: transform;
     transform: translateY(-0.25rem);
-    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0.5rem 1.5rem $color-negro-transparente-15;
   }
 
   &:active {
@@ -112,7 +112,7 @@
   &--lg {
     &:hover {
       transform: translateY(-0.5rem);
-      box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0.75rem 2rem $color-negro-transparente-20;
     }
   }
 }
@@ -180,7 +180,7 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.3) 50%,
+      $color-blanco-transparente-30 50%,
       transparent 100%
     );
     animation: shimmer 1.5s infinite;
