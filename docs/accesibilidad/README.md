@@ -442,14 +442,93 @@ Herramienta a usar: NVDA
 | Aspecto evaluado | Resultado | Observación |
 |------------------|-----------|-------------|
 | ¿Se entiende la estructura sin ver la pantalla? | ✅ | La pantalla tiene un eslogan que indica de que va la página. Además de invitar al usuario a comenzar su desarrollo en la aplicación. A medida que continua el usuario la barra de búsqueda contiene que puede buscar y los carruseles proporcionan de forma atrayente algunos de los álbumes disponibles en ese momento. |
-| ¿Los landmarks se anuncian correctamente? | ✅ / ⚠️ / ❌ | [Comentario breve] |
-| ¿Las imágenes tienen descripciones adecuadas? | ✅ / ⚠️ / ❌ | [Comentario breve] |
-| ¿Los enlaces tienen textos descriptivos? | ✅ / ⚠️ / ❌ | [Comentario breve] |
-| ¿El componente multimedia es accesible? | ✅ / ⚠️ / ❌ | [Comentario breve] |
+| ¿Los landmarks se anuncian correctamente? | ✅ | Los landmarks (header, nav, main, search, region) se anuncian correctamente. Los carruseles tienen role="region" con aria-labelledby apropiado y sección de búsqueda con role="search". |
+| ¿Las imágenes tienen descripciones adecuadas? | ✅ | Todas las imágenes de álbumes tienen alt descriptivo en formato "título por artista". Las imágenes decorativas están correctamente marcadas con aria-hidden="true". |
+| ¿Los enlaces tienen textos descriptivos? | ✅ | Los enlaces de títulos y artistas son descriptivos. Las cards tienen aria-label con información completa del álbum y role="listitem" para contexto. |
+| ¿El componente multimedia es accesible? | ✅ | Los carruseles tienen estructura semántica completa con role="list" y role="listitem". Navegación por teclado funcional y botones con etiquetas ARIA descriptivas y contextuales. |
 
 **Principales problemas detectados:**
 
+1. **Carruseles no se anunciaban como regiones navegables**:
+   - Los carruseles carecían de `role="region"` y etiquetas ARIA apropiadas
+   - NVDA no identificaba los carruseles como áreas de contenido estructuradas
+   - Las cards dentro de los carruseles no tenían contexto de lista
+
+2. **Cards sin información semántica suficiente**:
+   - Las cards de álbumes no tenían `role="listitem"` ni `aria-label` descriptivo
+   - NVDA leía solo el contenido textual sin proporcionar contexto del álbum completo
+   - Faltaba información sobre la relación título-artista
+
+3. **Estados de carga no se anunciaban dinámicamente**:
+   - Los spinners y mensajes "Cargando álbumes..." no tenían `aria-live`
+   - NVDA no informaba automáticamente sobre cambios en el estado de carga
+   - Los usuarios no sabían cuándo el contenido había terminado de cargar
+
+4. **Botones de navegación con etiquetas genéricas**:
+   - Los botones de carrusel tenían aria-label genérico "Ver items anteriores/siguientes"
+   - No especificaban el contexto del carrusel específico
+   - Faltaban instrucciones de navegación alternativa por teclado
+
+5. **Falta de landmark específico para búsqueda**:
+   - La sección de búsqueda no tenía `role="search"`
+   - NVDA no la identificaba como función de búsqueda principal
+
 **Mejoras aplicadas:**
+
+1. **Estructura ARIA completa en carruseles**:
+   ```html
+   <div role="region" [attr.aria-labelledby]="'carousel-title-' + titleId">
+     <div role="list" aria-label="Lista de álbumes">
+   ```
+   - Cada carrusel es una región navegable con título asociado
+   - El track tiene `role="list"` para estructura semántica clara
+   - NVDA anuncia: "Región: Últimos álbumes en tendencia, lista con X elementos"
+
+2. **Cards con contexto completo**:
+   ```html
+   <article role="listitem" [attr.aria-label]="title + ' por ' + subtitle">
+   ```
+   - Cada card tiene `role="listitem"` y etiqueta descriptiva completa
+   - NVDA lee: "Elemento de lista: Challengers por Trent Reznor and Atticus Ross"
+   - Información consolidada accesible sin navegación adicional
+
+3. **Estados dinámicos con aria-live**:
+   ```html
+   <div aria-live="polite" role="status">
+     <p>Cargando álbumes...</p>
+   </div>
+   ```
+   - Cambios de estado se anuncian automáticamente
+   - `aria-live="polite"` evita interrumpir la lectura actual
+   - NVDA informa proactivamente sobre el progreso de carga
+
+4. **Botones de navegación contextuales**:
+   ```html
+   <button [attr.aria-label]="'Mostrar álbumes siguientes en ' + title"
+           aria-describedby="carousel-navigation-help">
+   ```
+   - Etiquetas específicas por carrusel: "Mostrar álbumes siguientes en Últimos álbumes en tendencia"
+   - Texto de ayuda oculto con instrucciones de navegación por teclado
+   - NVDA proporciona contexto completo para cada acción
+
+5. **Landmark de búsqueda específico**:
+   ```html
+   <section role="search" aria-label="Buscar álbumes y artistas">
+   ```
+   - NVDA identifica la función de búsqueda como landmark principal
+   - Navegación rápida por landmarks (tecla F) incluye la búsqueda
+   - Contexto claro sobre qué se puede buscar
+
+6. **Texto de ayuda contextual**:
+   ```html
+   <div class="sr-only" id="carousel-navigation-help">
+     Use las flechas del teclado o los botones para navegar por los álbumes.
+     Presione Tab para acceder a cada álbum individualmente.
+   </div>
+   ```
+   - Instrucciones específicas accesibles solo para lectores de pantalla
+   - Vinculado a botones de navegación mediante `aria-describedby`
+   - Guía clara sobre métodos de navegación alternativos
 
 ### Verificación crossbrowser:
 
