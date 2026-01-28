@@ -77,6 +77,12 @@ public class Album {
     private String sello;
 
     /**
+     * Género musical (metadata de Deezer).
+     */
+    @Column(length = 50)
+    private String genero;
+
+    /**
      * Indica si el álbum fue importado desde Deezer.
      */
     public boolean isImportadoDeDeezer() {

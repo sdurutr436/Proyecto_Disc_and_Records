@@ -215,7 +215,9 @@ public class AlbumService {
                 album.getAnioSalida(),
                 album.getPortadaUrl(),
                 album.getPuntuacionMedia(),
-                artistaDTO
+                artistaDTO,
+                album.getDeezerId(), // Incluir deezerId para cargar metadata adicional
+                album.getGenero() // Incluir género
         );
     }
 }

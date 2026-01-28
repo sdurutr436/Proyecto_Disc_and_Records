@@ -176,7 +176,9 @@ public class ArtistaService {
                 album.getAnioSalida(),
                 album.getPortadaUrl(),
                 album.getPuntuacionMedia(),
-                artistaDTO
+                artistaDTO,
+                album.getDeezerId(),
+                album.getGenero()
         );
     }
 

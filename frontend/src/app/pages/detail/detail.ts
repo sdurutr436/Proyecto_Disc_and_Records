@@ -526,8 +526,19 @@ export class DetailComponent implements OnInit, OnDestroy {
    * Obtiene tracks reales desde Deezer API
    */
   loadAlbumDetails(albumId: string): void {
+    const album = this.item() as Album;
+    const deezerIdToUse = album.deezerId || albumId;
+
+    // Solo intentar cargar si tenemos un deezerId
+    if (!deezerIdToUse) {
+      console.warn('No hay deezerId disponible para cargar tracks');
+      this.trackList.set(this.mockTracks);
+      this.reviews.set(this.mockReviews);
+      return;
+    }
+
     // Cargar tracks reales desde Deezer
-    this.deezerService.getAlbumById(albumId).subscribe({
+    this.deezerService.getAlbumById(deezerIdToUse).subscribe({
       next: (album) => {
         if (album?.tracks?.data) {
           // Convertir DeezerTrack[] a Track[]

@@ -33,6 +33,8 @@ export interface AlbumResponse {
   portadaUrl: string | null;
   puntuacionMedia: number | null;
   artista: ArtistaResponse;
+  deezerId?: string | null; // ID de Deezer para cargar metadata adicional
+  genero?: string | null; // Género musical (metadata de Deezer)
 }
 
 /**
@@ -275,6 +277,7 @@ export interface Album {
   description: string;
   averageRating: number;
   totalReviews: number;
+  deezerId?: string | null; // ID de Deezer para cargar tracks
 }
 
 /**
@@ -381,13 +384,14 @@ export function mapAlbumResponseToLegacy(album: AlbumResponse): Album {
     artistId: String(album.artista.id),
     coverUrl: album.portadaUrl || 'assets/album-placeholder.svg',
     releaseYear: album.anioSalida,
-    genre: '', // No disponible en DTO actual
+    genre: album.genero || '', // Género desde el backend
     tracks: 0, // No disponible en DTO actual
     duration: '', // No disponible en DTO actual
     label: '', // No disponible en DTO actual
     description: '', // No disponible en DTO actual
     averageRating: album.puntuacionMedia ?? 0,
-    totalReviews: 0 // No disponible en DTO actual
+    totalReviews: 0, // No disponible en DTO actual
+    deezerId: album.deezerId // Preservar deezerId para cargar tracks
   };
 }
 

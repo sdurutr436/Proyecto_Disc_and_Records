@@ -310,7 +310,8 @@ export class AlbumService extends BaseHttpService {
       label: deezerAlbum.label || '',
       description: '',
       averageRating: 0, // Se obtiene de /api/albumes/{id}/stats
-      totalReviews: 0   // Se obtiene de /api/albumes/{id}/stats
+      totalReviews: 0,   // Se obtiene de /api/albumes/{id}/stats
+      deezerId: String(deezerAlbum.id) // Preservar ID de Deezer
     };
   }
 

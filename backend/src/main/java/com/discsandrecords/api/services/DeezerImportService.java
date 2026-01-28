@@ -343,6 +343,20 @@ public class DeezerImportService {
         Integer duracion = data.path("duration").asInt(0);
         String sello = truncar(data.path("label").asText(null), MAX_SELLO_LENGTH);
         
+        // Género (obtener del genres.data[0].name o genre_id)
+        String genero = null;
+        JsonNode genresNode = data.path("genres").path("data");
+        if (genresNode.isArray() && genresNode.size() > 0) {
+            genero = genresNode.get(0).path("name").asText(null);
+        }
+        if (genero == null || genero.isBlank()) {
+            int genreId = data.path("genre_id").asInt(-1);
+            if (genreId > 0) {
+                genero = mapearGeneroDeezer(genreId);
+            }
+        }
+        genero = truncar(genero, 50);
+        
         return Album.builder()
                 .deezerId(deezerId)
                 .tituloAlbum(titulo)
@@ -353,6 +367,7 @@ public class DeezerImportService {
                 .numTracks(numTracks > 0 ? numTracks : null)
                 .duracionTotal(duracion > 0 ? duracion : null)
                 .sello(sello)
+                .genero(genero)
                 .puntuacionMedia(null) // Se calcula desde reseñas locales
                 .build();
     }
@@ -395,6 +410,36 @@ public class DeezerImportService {
         
         log.debug("Truncando valor de {} a {} caracteres", valor.length(), maxLength);
         return valor.substring(0, maxLength);
+    }
+
+    /**
+     * Mapea ID de género de Deezer a nombre en español.
+     */
+    private String mapearGeneroDeezer(int genreId) {
+        return switch (genreId) {
+            case 132 -> "Pop";
+            case 116 -> "Rap/Hip Hop";
+            case 152 -> "Rock";
+            case 113 -> "Dance";
+            case 165 -> "R&B";
+            case 85 -> "Alternativo";
+            case 106 -> "Electro";
+            case 466 -> "Folk";
+            case 98 -> "Indie";
+            case 129 -> "Jazz";
+            case 173 -> "Reggae";
+            case 144 -> "Reggaeton";
+            case 2 -> "Techno";
+            case 52 -> "Pop Rock";
+            case 464 -> "Métal";
+            case 169 -> "Soul & Funk";
+            case 89 -> "Blues";
+            case 71 -> "Cantautor";
+            case 95 -> "Clásica";
+            case 16 -> "Gospel";
+            case 197 -> "Latina";
+            default -> "Otro";
+        };
     }
 
     /**
@@ -467,7 +512,9 @@ public class DeezerImportService {
                 album.getAnioSalida(),
                 album.getPortadaUrl(),
                 album.getPuntuacionMedia(),
-                artistaDTO
+                artistaDTO,
+                album.getDeezerId(),
+                album.getGenero()
         );
     }
 

@@ -102,9 +102,11 @@ export class Home implements OnInit {
     'A darle play a tus favoritos'
   ];
 
-  get motivationalPhrase(): string {
+  motivationalPhrase = signal<string>('');
+
+  private initMotivationalPhrase(): void {
     const index = Math.floor(Math.random() * this.motivationalPhrases.length);
-    return this.motivationalPhrases[index];
+    this.motivationalPhrase.set(this.motivationalPhrases[index]);
   }
 
   /**
@@ -131,6 +133,7 @@ export class Home implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initMotivationalPhrase();
     this.loadAlbums();
     this.loadMyReviewedAlbums();
   }

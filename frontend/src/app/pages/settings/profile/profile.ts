@@ -284,6 +284,13 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
         this.appState.updateUser({ avatarUrl });
         this.selectedAvatarFile.set(null);
         this.previewAvatarUrl.set(null);
+
+        // Resetear el input file para permitir nueva selección
+        const fileInput = document.getElementById('avatar-file-input') as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = '';
+        }
+
         this.notificationStream.success('Éxito', 'Foto de perfil actualizada correctamente');
 
         // Forzar actualización de UI en toda la app
@@ -312,6 +319,13 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
       this.appState.updateUser({ avatarUrl: 'assets/profile-placeholder.svg' });
       this.selectedAvatarFile.set(null);
       this.previewAvatarUrl.set(null);
+
+      // Resetear el input file para permitir nueva selección
+      const fileInput = document.getElementById('avatar-file-input') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
+
       this.notificationStream.success('Éxito', 'Foto de perfil eliminada correctamente');
 
       // Forzar actualización de UI en toda la app

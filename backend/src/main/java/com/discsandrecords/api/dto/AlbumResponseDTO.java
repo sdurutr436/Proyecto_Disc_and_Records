@@ -8,5 +8,7 @@ public record AlbumResponseDTO(
     Integer anioSalida,
     String portadaUrl,
     BigDecimal puntuacionMedia,
-    ArtistaResponseDTO artista
+    ArtistaResponseDTO artista,
+    String deezerId, // ID original de Deezer para cargar metadata adicional
+    String genero // Género musical (metadata de Deezer)
 ) {}
