@@ -85,7 +85,9 @@ class AlbumControllerTest {
                 1969,
                 "https://example.com/abbey-road.jpg",
                 new BigDecimal("4.75"),
-                artistaResponse
+                artistaResponse,
+                "302127",
+                "Rock"
         );
         createAlbumDTO = new CreateAlbumDTO(
                 "Abbey Road",
@@ -304,7 +306,7 @@ class AlbumControllerTest {
         @DisplayName("ADMIN puede actualizar álbum - Retorna 200")
         void actualizar_ComoAdmin_Retorna200() throws Exception {
             AlbumResponseDTO actualizado = new AlbumResponseDTO(
-                    1L, "Abbey Road (Remaster)", 1969, null, new BigDecimal("4.80"), artistaResponse
+                    1L, "Abbey Road (Remaster)", 1969, null, new BigDecimal("4.80"), artistaResponse, "302127", "Rock"
             );
             when(albumService.actualizar(eq(1L), any(CreateAlbumDTO.class))).thenReturn(actualizado);
 
