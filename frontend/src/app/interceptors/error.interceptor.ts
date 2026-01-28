@@ -136,8 +136,11 @@ function handleErrorByStatus(
       // Si es el endpoint de login fallando, NO mostrar toast ni cerrar sesión
       // El AuthService ya maneja el error y muestra su propio mensaje
       const isLoginEndpoint = error.url && error.url.includes('/api/auth/login');
+      // Si es el endpoint de /api/auth/me (restoreSession), silenciar también
+      // ya que el AuthService maneja la sesión expirada limpiando el token
+      const isAuthMeEndpoint = error.url && error.url.includes('/api/auth/me');
 
-      if (isLoginEndpoint) {
+      if (isLoginEndpoint || isAuthMeEndpoint) {
         // Silenciar: el AuthService maneja el error
         return;
       }
@@ -158,6 +161,10 @@ function handleErrorByStatus(
 
     case 403:
       // Forbidden - sin permisos
+      // Silenciar errores 403 de /api/auth/me (sesión expirada manejada por AuthService)
+      if (error.url && error.url.includes('/api/auth/me')) {
+        return; // AuthService.restoreSession() maneja esto silenciosamente
+      }
       message = '🚫 No tienes permisos para realizar esta acción.';
       break;
 

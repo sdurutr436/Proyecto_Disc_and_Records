@@ -104,6 +104,14 @@
           hint="Debe coincidir con la nueva contraseña"
         />
 
+        <!-- Error de coincidencia de contraseñas -->
+        @if (hasPasswordMismatch()) {
+          <div class="settings-profile__form-error" role="alert">
+            <lucide-icon [img]="AlertTriangle" [size]="16" aria-hidden="true"></lucide-icon>
+            Las contraseñas no coinciden
+          </div>
+        }
+
         <div class="settings-profile__button-container">
           <app-button
             variant="primary"

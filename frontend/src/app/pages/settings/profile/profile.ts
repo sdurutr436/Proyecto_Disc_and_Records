@@ -1,6 +1,6 @@
 import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LucideAngularModule, User, Mail, Lock, Image, Trash2, AlertTriangle } from 'lucide-angular';
@@ -81,6 +81,26 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
       nonNullable: true,
       validators: [Validators.required]
     })
+  }, { validators: this.passwordMatchValidator });
+
+  /**
+   * Validador de coincidencia de contraseñas
+   */
+  private passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
+    const newPassword = group.get('newPassword')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+    // Solo validar si ambos campos tienen valor
+    if (!newPassword || !confirmPassword) return null;
+    return newPassword === confirmPassword ? null : { passwordMismatch: true };
+  }
+
+  /**
+   * Computed: Verifica si hay error de coincidencia de contraseñas
+   */
+  hasPasswordMismatch = computed(() => {
+    const form = this.passwordForm;
+    const confirmTouched = form.controls.confirmPassword.touched;
+    return form.hasError('passwordMismatch') && confirmTouched;
   });
 
   ngOnInit(): void {
@@ -166,7 +186,7 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
   /**
    * Cambia la contraseña con validaciones correctas:
    * - Verifica contraseña actual
-   * - Valida que nueva === confirmar
+   * - Valida que nueva === confirmar (en el formulario)
    * - Si nueva === actual, muestra INFO (no ERROR)
    */
   async onChangePassword(): Promise<void> {
@@ -178,9 +198,10 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
       return;
     }
 
-    // Validar que nueva === confirmar
-    if (newPassword !== confirmPassword) {
-      this.notificationStream.error('Validación', 'Las contraseñas nuevas no coinciden');
+    // La validación de coincidencia ahora se hace en el formulario (passwordMismatch)
+    // Pero por seguridad, también lo verificamos aquí
+    if (this.passwordForm.hasError('passwordMismatch')) {
+      // No mostramos toast porque el error ya se ve en el formulario
       return;
     }
 

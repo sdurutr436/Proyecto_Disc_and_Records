@@ -83,7 +83,7 @@ Representa el máximo grado de accesibilidad con requisitos muy estrictos destin
 | Lighthouse Móvil | 100/100 | ![Lighthouse inicial](capturas/lighthouse/main/lighthouse_inicial_main_movil.png) |
 | Lighthouse Desktop | 100/100 | ![Lighthouse inicial desktop](capturas/lighthouse/main/lighthouse_inicial_main_desktop.png) |
 | WAVE | 0 errores graves, 1 error contraste, 3 alertas | ![WAVE inicial general](capturas/wave/main/wave_inicial_main_desktop.png) |
-| TAW | 5 problemas | ![TAWDIS inicial general](capturas/tawdis/main/taw_base_main.png) |
+| TAW | 5 problemas | ![TAWDIS inicial general](capturas/tawdis/main/taw_base_auditoria.png) |
 
 #### Errores más graves:
 

@@ -45,7 +45,7 @@
         <!-- Usuario autenticado - Saludo personalizado -->
         <h1 class="home__slogan animate-fade-in-up">
           ¡Hola, {{ currentUserName }}!
-          <span class="home__slogan-highlight">{{ motivationalPhrase }}</span>
+          <span class="home__slogan-highlight">{{ motivationalPhrase() }}</span>
         </h1>
       } @else {
         <!-- Usuario no autenticado - CTA de registro -->

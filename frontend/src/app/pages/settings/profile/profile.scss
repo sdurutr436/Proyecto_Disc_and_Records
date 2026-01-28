@@ -69,6 +69,19 @@
     gap: vars.$espaciado-s;
   }
 
+  &__form-error {
+    display: flex;
+    align-items: center;
+    gap: vars.$espaciado-xs;
+    color: vars.$color-error;
+    font-size: vars.$tamanio-fuente-texto-pequeno-s;
+    font-weight: 500;
+    padding: vars.$espaciado-xs vars.$espaciado-s;
+    background-color: rgba(vars.$color-error, 0.1);
+    border: 2px solid vars.$color-error;
+    border-radius: 0.25rem;
+  }
+
   &__field-group {
     display: flex;
     flex-direction: column;
