@@ -410,6 +410,43 @@ export class DeezerService {
   // ==========================================================================
 
   /**
+   * Mapa de géneros de Deezer (IDs más comunes)
+   * Fuente: https://api.deezer.com/genre
+   */
+  private static readonly GENRE_MAP: Record<number, string> = {
+    0: 'Todos',
+    132: 'Pop',
+    116: 'Rap/Hip Hop',
+    152: 'Rock',
+    113: 'Dance',
+    165: 'R&B',
+    85: 'Alternativo',
+    106: 'Electro',
+    466: 'Folk',
+    144: 'Reggae',
+    129: 'Jazz',
+    98: 'Clásica',
+    173: 'Films/Juegos',
+    464: 'Metal',
+    169: 'Soul & Funk',
+    2: 'Africana',
+    16: 'Asiática',
+    95: 'Brasileña',
+    84: 'Blues',
+    153: 'Infantil',
+    75: 'Latina',
+    81: 'India'
+  };
+
+  /**
+   * Convierte un genre_id a nombre de género
+   */
+  static getGenreName(genreId?: number): string {
+    if (!genreId) return 'Desconocido';
+    return DeezerService.GENRE_MAP[genreId] || 'Otro';
+  }
+
+  /**
    * Obtiene todos los géneros disponibles
    */
   getGenres(): Observable<{ id: number; name: string; picture: string }[]> {

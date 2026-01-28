@@ -59,10 +59,11 @@
   &__sidebar {
     height: fit-content;
 
-    // DESKTOP: Sticky
+    // DESKTOP: Sticky con offset para evitar solapamiento con nav
     @include mixins.respond-from('desktop') {
       position: sticky;
-      top: vars.$espaciado-s;
+      // El nav tiene ~60px + padding, así que usamos 80px para estar seguros
+      top: 80px;
     }
   }
 

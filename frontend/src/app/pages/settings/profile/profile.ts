@@ -285,6 +285,9 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
         this.selectedAvatarFile.set(null);
         this.previewAvatarUrl.set(null);
         this.notificationStream.success('Éxito', 'Foto de perfil actualizada correctamente');
+
+        // Forzar actualización de UI en toda la app
+        window.dispatchEvent(new Event('storage'));
       }
     } catch (error: any) {
       console.error('Error subiendo avatar:', error);
@@ -310,6 +313,9 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
       this.selectedAvatarFile.set(null);
       this.previewAvatarUrl.set(null);
       this.notificationStream.success('Éxito', 'Foto de perfil eliminada correctamente');
+
+      // Forzar actualización de UI en toda la app
+      window.dispatchEvent(new Event('storage'));
     } catch (error: any) {
       console.error('Error eliminando avatar:', error);
       this.notificationStream.error('Error', 'No se pudo eliminar la foto de perfil');
@@ -353,11 +359,13 @@ export default class SettingsProfileComponent implements CanComponentDeactivate,
       this.notificationStream.success('Éxito', 'Cuenta eliminada correctamente');
       this.closeDeleteModal();
 
-      // Cerrar sesión y redirigir
+      // Limpiar completamente la sesión antes de redirigir
+      this.authService.logout();
+
+      // Redirigir inmediatamente después de logout
       setTimeout(() => {
-        this.authService.logout();
         this.router.navigate(['/']);
-      }, 1500);
+      }, 500);
     } catch (error: any) {
       console.error('Error eliminando cuenta:', error);
       this.notificationStream.error('Error', 'No se pudo eliminar la cuenta');

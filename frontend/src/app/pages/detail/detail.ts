@@ -15,6 +15,7 @@ import { Album, Artist, Song, Track, Review, ResenaAlbumResponse, mapResenaToLeg
 import { AlbumService } from '../../services/album.service';
 import { ArtistService } from '../../services/artist.service';
 import { SongService } from '../../services/song.service';
+import { DeezerService, DeezerTrack } from '../../services/deezer.service';
 import { ListaAlbumService } from '../../services/lista-album.service';
 import { ReviewStateService } from '../../services/review-state.service';
 import { AppStateService } from '../../services/app-state';
@@ -75,6 +76,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   private reviewStateService = inject(ReviewStateService);
   private appState = inject(AppStateService);
   private notifications = inject(NotificationStreamService);
+  private deezerService = inject(DeezerService);
 
   // Lucide icons
   readonly Check = Check;
@@ -520,11 +522,32 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Carga detalles adicionales de un álbum (tracks y reviews) - Usa datos mock
+   * Carga detalles adicionales de un álbum (tracks y reviews)
+   * Obtiene tracks reales desde Deezer API
    */
   loadAlbumDetails(albumId: string): void {
-    // Usar datos mock para tracks
-    this.trackList.set(this.mockTracks);
+    // Cargar tracks reales desde Deezer
+    this.deezerService.getAlbumById(albumId).subscribe({
+      next: (album) => {
+        if (album?.tracks?.data) {
+          // Convertir DeezerTrack[] a Track[]
+          const tracks: Track[] = album.tracks.data.map((track: DeezerTrack) => ({
+            id: String(track.id),
+            number: track.track_position || 0,
+            title: track.title,
+            duration: this.formatDuration(track.duration)
+          }));
+          this.trackList.set(tracks);
+        } else {
+          // Si no hay tracks, usar mock como fallback
+          this.trackList.set(this.mockTracks);
+        }
+      },
+      error: () => {
+        // En caso de error, usar mock como fallback
+        this.trackList.set(this.mockTracks);
+      }
+    });
 
     // Usar datos mock para reviews
     this.reviews.set(this.mockReviews);
@@ -548,6 +571,15 @@ export class DetailComponent implements OnInit, OnDestroy {
   // MÉTODO LEGACY - Ya no se usa, datos vienen del resolver
   loadItemData(itemId: string): void {
     console.warn('loadItemData() is deprecated. Data should come from resolver.');
+  }
+
+  /**
+   * Convierte duración de segundos a formato mm:ss
+   */
+  private formatDuration(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
   }
 
   generateTracklistHTML(tracks: Track[]): string {
@@ -842,6 +874,11 @@ export class DetailComponent implements OnInit, OnDestroy {
             rating: this.userRating()
           };
           this.userReview.set(newUserReview);
+
+          // Resetear estado de reseñas para forzar recarga completa
+          this.displayedReviews.set([]);
+          this.reviewsPage = 0;
+          this.hasMoreReviews.set(true);
 
           // Recargar reseñas y estadísticas
           this.loadMoreReviews();

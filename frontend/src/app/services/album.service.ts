@@ -290,6 +290,13 @@ export class AlbumService extends BaseHttpService {
    */
   private mapDeezerAlbumToAlbum(deezerAlbum: DeezerAlbum): Album {
     const source = this.useMock ? this.mockDeezer : this.deezer;
+
+    // Intentar obtener género de genres.data, si no existe, usar genre_id
+    let genre = deezerAlbum.genres?.data?.[0]?.name || '';
+    if (!genre && deezerAlbum.genre_id) {
+      genre = DeezerService.getGenreName(deezerAlbum.genre_id);
+    }
+
     return {
       id: String(deezerAlbum.id),
       title: deezerAlbum.title,
@@ -297,7 +304,7 @@ export class AlbumService extends BaseHttpService {
       artistId: String(deezerAlbum.artist?.id || ''),
       coverUrl: source.getBestAlbumCover(deezerAlbum),
       releaseYear: source.extractYear(deezerAlbum.release_date),
-      genre: deezerAlbum.genres?.data?.[0]?.name || '',
+      genre: genre,
       tracks: deezerAlbum.nb_tracks || 0,
       duration: '',
       label: deezerAlbum.label || '',

@@ -47,10 +47,9 @@
   &__sidebar {
     height: fit-content;
 
-    // DESKTOP: Sticky
     @include mixins.respond-from('desktop') {
       position: sticky;
-      top: vars.$espaciado-s;
+      top: 5rem;
     }
   }
 

@@ -133,15 +133,19 @@
               } @else {
                 <!-- Estado vacío -->
                 <div class="profile__empty-state">
-                  <p class="profile__empty-title">Aún no has escrito ninguna reseña</p>
-                  <p class="profile__empty-subtitle">Comienza a compartir tus opiniones sobre álbumes</p>
-                  <app-button
-                    variant="primary"
-                    size="md"
-                    (clicked)="viewAlbum(101)"
-                  >
-                    Explorar álbumes
-                  </app-button>
+                  @if (isOwnProfile()) {
+                    <p class="profile__empty-title">Aún no has escrito ninguna reseña</p>
+                    <p class="profile__empty-subtitle">Comienza a compartir tus opiniones sobre álbumes</p>
+                    <app-button
+                      variant="primary"
+                      size="md"
+                      (clicked)="viewAlbum(101)"
+                    >
+                      Explorar álbumes
+                    </app-button>
+                  } @else {
+                    <p class="profile__empty-title">{{ userProfile().name }} no ha escrito aún una reseña</p>
+                  }
                 </div>
               }
             </div>
@@ -171,6 +175,7 @@
                       [title]="album.title"
                       [subtitle]="album.artist"
                       [imageUrl]="album.coverUrl"
+                      [badges]="album.genre ? [album.genre] : []"
                       cardType="polaroid"
                       variant="vinilo"
                       hoverEffect="lift"
@@ -192,17 +197,21 @@
                 } @else {
                   <!-- Sin álbumes -->
                   <div class="profile__empty-state">
-                    <p class="profile__empty-title">Aún no has añadido álbumes a tu lista</p>
-                    <p class="profile__empty-subtitle">
-                      Explora y añade álbumes a tu colección personal
-                    </p>
-                    <app-button
-                      variant="primary"
-                      size="md"
-                      (clicked)="viewAlbum(101)"
-                    >
-                      Explorar álbumes
-                    </app-button>
+                    @if (isOwnProfile()) {
+                      <p class="profile__empty-title">Aún no has añadido álbumes a tu lista</p>
+                      <p class="profile__empty-subtitle">
+                        Explora y añade álbumes a tu colección personal
+                      </p>
+                      <app-button
+                        variant="primary"
+                        size="md"
+                        (clicked)="viewAlbum(101)"
+                      >
+                        Explorar álbumes
+                      </app-button>
+                    } @else {
+                      <p class="profile__empty-title">{{ userProfile().name }} no tiene álbumes en su lista</p>
+                    }
                   </div>
                 }
               }
