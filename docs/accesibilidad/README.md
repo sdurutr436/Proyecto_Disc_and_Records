@@ -41,20 +41,25 @@ Representa el máximo grado de accesibilidad con requisitos muy estrictos destin
 
 ## Seccion 2: Componentes multimedia implementados
 
-**Tipo de componente:** Carrusel horizontal.
+**Tipo de componente:** Carrusel horizontal con estructura semántica accesible.
 
-**Descripción del componente:** Carrusel de álbumes musicales con cards tipo polaroid con imagen en la mitad superior para identificación visual, que representan dependiendo del contexto del carrusel, álbumes en tendencia o reseñados recientemente.
+**Descripción del componente:** Carrusel de álbumes musicales con cards tipo polaroid que representan álbumes en tendencia o reseñados recientemente, implementado con roles ARIA y HTML5 semántico para accesibilidad total.
 
 **Características de accesibilidad implementadas:**
-- Tabulación en orden lógico a través de los títulos y artistas de los álbumes. Posibilidad de entrar haciendo uso del botón Enter.
 
-- Etiquetas ARIA descriptivas, con títulos semánticos proporcionando contexto sobre el tipo de carrusel.
+- **Estructura ARIA:** `role="region"` en el carrusel, `role="list"` en el track, `role="listitem"` en cada card. NVDA anuncia: "Región: Últimos álbumes en tendencia, lista con X elementos".
 
-- Estados visibles claros cuando se está haciendo _focus_ en un elemento.
+- **Etiquetas descriptivas:** `aria-label` contextual en cada card: "[Título] por [Artista]". Botones de navegación con etiquetas específicas: "Mostrar álbumes siguientes en [Nombre del carrusel]".
 
-- Estructura semántica, cada card es un article con imagen, titulo y enlace, y las imágenes tienen _alt_ descriptivo; y el contenedor del carrusel también con un h2 descriptivo.
+- **Anuncios dinámicos:** `aria-live="polite"` y `role="status"` en estados de carga para que NVDA anuncie automáticamente cambios.
 
-- Diseño responsivo con _touch targets_, scroll nativo en móviles y adaptación del número de elementos según el _viewport_.
+- **Navegación por teclado:** Tabulación lógica completa sin depender de botones de desplazamiento. Texto de ayuda (sr-only) con instrucciones claras.
+
+- **Estructura visual:** Cada card es un `<article>` con imagen, título y enlace. Imágenes con `alt` descriptivo en formato "título por artista".
+
+- **Diseño responsivo:** Touch targets de mínimo 44x44px, scroll nativo en móviles, adaptación según viewport.
+
+**Cumplimiento:** ✅ WCAG 2.1 Nivel AA - Criterios 2.1.1 (Teclado), 2.4.3 (Orden del foco), 4.1.2 (Nombre, función, valor)
 
 ---
 
@@ -74,7 +79,7 @@ Representa el máximo grado de accesibilidad con requisitos muy estrictos destin
 
 #### Capturas iniciales de auditoria 
 
-![TAWDIS inicial general](capturas/tawdis/main/tawdis_inicial_main.png)
+![TAWDIS inicial general](capturas/tawdis/main/taw_base_auditoria.png)
 
 #### Tabla informativa
 
@@ -116,7 +121,7 @@ Las alertas que se presentan son de elementos escondidos.
 
 ### Detalle de cada error:
 
-#### Error 1: Control de formulario sin etiquetar
+**Error 1: Control de formulario sin etiquetar**
 
 **Problema:** El input de búsqueda en el search-bar solo contaba con aria-label, lo que es insuficiente para cumplir WCAG 2.1 Nivel A. Los lectores de pantalla necesitan un elemento label HTML correctamente asociado mediante atributos for/id.
 
@@ -178,7 +183,7 @@ Las alertas que se presentan son de elementos escondidos.
 
 ---
 
-#### Error 2: Contenido generado desde CSS
+**Error 2: Contenido generado desde CSS**
 
 **Problema:** TAWDIS detectó 2 instancias de elementos con pseudo-elemento ::before que generaban contenido mediante CSS. Cuando el contenido transmite información significativa, puede no ser accesible para tecnologías de asistencia.
 
@@ -219,7 +224,7 @@ Las alertas que se presentan son de elementos escondidos.
 
 ---
 
-#### Error 3: Posicionamiento absoluto
+**Error 3: Posicionamiento absoluto**
 
 **Problema:** TAWDIS detectó 4 instancias de position: absolute que podrían interrumpir el orden de lectura lógico de la página, afectando la navegación con teclado y lectores de pantalla.
 
@@ -247,7 +252,7 @@ Las alertas que se presentan son de elementos escondidos.
 
 ---
 
-#### Error 4: Imágenes sin descripciones adecuadas
+**Error 4: Imágenes sin descripciones adecuadas**
 
 **Problema:** TAWDIS marcó 53 imágenes como "Desconocido", requiriendo revisión manual para verificar que sus textos alternativos fueran descriptivos y significativos.
 
@@ -289,7 +294,7 @@ Las alertas que se presentan son de elementos escondidos.
 
 ---
 
-#### Error 5: Error de idioma declarado frente al idioma real
+**Error 5: Error de idioma declarado frente al idioma real**
 
 **Problema:** TAWDIS detectó un conflicto entre el idioma declarado en el atributo lang del elemento HTML y el idioma real del contenido de la página.
 
