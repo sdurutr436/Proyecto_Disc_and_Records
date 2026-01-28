@@ -38,6 +38,11 @@ export class Carousel implements AfterViewInit, OnDestroy {
   @Input() rows: number = 1;
 
   /**
+   * ID único para el carrusel, usado para accesibilidad
+   */
+  titleId: string = Math.random().toString(36).substr(2, 9);
+
+  /**
    * MEJORA 1.1: ViewChild con ElementRef tipado
    * Referencia al contenedor de slides del carousel
    * Se accede en ngAfterViewInit cuando el DOM está disponible

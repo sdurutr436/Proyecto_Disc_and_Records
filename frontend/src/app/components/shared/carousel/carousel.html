@@ -1,18 +1,22 @@
-<div class="carousel" [class.carousel--multi-row]="rows > 1">
+<div class="carousel" [class.carousel--multi-row]="rows > 1"
+     role="region"
+     [attr.aria-labelledby]="title ? 'carousel-title-' + titleId : null"
+     [attr.aria-label]="!title ? 'Carrusel de álbumes' : null">
   <!-- Título del carrusel -->
   @if (title) {
-    <h2 class="carousel__title">{{ title }}</h2>
+    <h2 class="carousel__title" [id]="'carousel-title-' + titleId">{{ title }}</h2>
   }
 
   <!-- Contenedor del carrusel con navegación -->
-  <div class="carousel__container">
+  <div class="carousel__container" role="group" aria-label="Navegación del carrusel">
     <!-- Botón anterior -->
     @if (canScrollLeft) {
       <button
         type="button"
         class="carousel__nav carousel__nav--prev"
         (click)="scrollLeft()"
-        aria-label="Ver items anteriores"
+        [attr.aria-label]="'Mostrar álbumes anteriores en ' + (title || 'carrusel')"
+        aria-describedby="carousel-navigation-help"
       >
         ‹
       </button>
@@ -23,6 +27,8 @@
       class="carousel__track"
       [class.carousel__track--rows-2]="rows === 2"
       #carouselTrack
+      role="list"
+      aria-label="Lista de álbumes"
     >
       <ng-content></ng-content>
     </div>
@@ -33,10 +39,16 @@
         type="button"
         class="carousel__nav carousel__nav--next"
         (click)="scrollRight()"
-        aria-label="Ver items siguientes"
+        [attr.aria-label]="'Mostrar álbumes siguientes en ' + (title || 'carrusel')"
+        aria-describedby="carousel-navigation-help"
       >
         ›
       </button>
     }
+
+    <!-- Texto de ayuda oculto visualmente -->
+    <div id="carousel-navigation-help" class="sr-only">
+      Use las flechas del teclado o los botones para navegar por los álbumes. Presione Tab para acceder a cada álbum individualmente.
+    </div>
   </div>
 </div>

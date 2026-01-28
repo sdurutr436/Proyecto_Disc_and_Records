@@ -441,7 +441,7 @@ Herramienta a usar: NVDA
 
 | Aspecto evaluado | Resultado | Observación |
 |------------------|-----------|-------------|
-| ¿Se entiende la estructura sin ver la pantalla? | ✅ / ⚠️ / ❌ | [Comentario breve] |
+| ¿Se entiende la estructura sin ver la pantalla? | ✅ | La pantalla tiene un eslogan que indica de que va la página. Además de invitar al usuario a comenzar su desarrollo en la aplicación. A medida que continua el usuario la barra de búsqueda contiene que puede buscar y los carruseles proporcionan de forma atrayente algunos de los álbumes disponibles en ese momento. |
 | ¿Los landmarks se anuncian correctamente? | ✅ / ⚠️ / ❌ | [Comentario breve] |
 | ¿Las imágenes tienen descripciones adecuadas? | ✅ / ⚠️ / ❌ | [Comentario breve] |
 | ¿Los enlaces tienen textos descriptivos? | ✅ / ⚠️ / ❌ | [Comentario breve] |

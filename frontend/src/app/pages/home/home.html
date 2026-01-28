@@ -70,7 +70,7 @@
   <!-- ============================================ -->
   <!-- SECCIÓN DE BÚSQUEDA                          -->
   <!-- ============================================ -->
-  <section class="home__search">
+  <section class="home__search" role="search" aria-label="Buscar álbumes y artistas">
     <app-search-bar
       (onSearch)="handleSearch($event)"
     ></app-search-bar>
@@ -79,14 +79,14 @@
   <!-- ============================================ -->
   <!-- CARRUSEL: ÁLBUMES EN TENDENCIA               -->
   <!-- ============================================ -->
-  <section class="home__section">
+  <section class="home__section" aria-labelledby="trending-title">
     @if (isLoading()) {
       <!-- Estado de carga para el carrusel -->
-      <div class="home__carousel-loading">
-        <h2 class="home__carousel-title">ÚLTIMOS ÁLBUMES EN TENDENCIA</h2>
+      <div class="home__carousel-loading" aria-live="polite" aria-label="Cargando álbumes en tendencia">
+        <h2 id="trending-title" class="home__carousel-title">ÚLTIMOS ÁLBUMES EN TENDENCIA</h2>
         <div class="home__spinner-container">
-          <app-spinner mode="inline" size="lg"></app-spinner>
-          <p class="home__loading-text">Cargando álbumes...</p>
+          <app-spinner mode="inline" size="lg" aria-hidden="true"></app-spinner>
+          <p class="home__loading-text" role="status">Cargando álbumes...</p>
         </div>
       </div>
     } @else {
@@ -120,14 +120,14 @@
   <!-- ============================================ -->
   <!-- CARRUSEL: ÁLBUMES RESEÑADOS                  -->
   <!-- ============================================ -->
-  <section class="home__section">
+  <section class="home__section" aria-labelledby="reviewed-title">
     @if (isLoading()) {
       <!-- Estado de carga para el carrusel -->
-      <div class="home__carousel-loading">
-        <h2 class="home__carousel-title">ÚLTIMOS ÁLBUMES RESEÑADOS</h2>
+      <div class="home__carousel-loading" aria-live="polite" aria-label="Cargando álbumes reseñados">
+        <h2 id="reviewed-title" class="home__carousel-title">ÚLTIMOS ÁLBUMES RESEÑADOS</h2>
         <div class="home__spinner-container">
-          <app-spinner mode="inline" size="lg"></app-spinner>
-          <p class="home__loading-text">Cargando álbumes...</p>
+          <app-spinner mode="inline" size="lg" aria-hidden="true"></app-spinner>
+          <p class="home__loading-text" role="status">Cargando álbumes...</p>
         </div>
       </div>
     } @else {
@@ -162,7 +162,7 @@
   <!-- CARRUSEL: MIS ÚLTIMOS RESEÑADOS (Solo auth)  -->
   <!-- ============================================ -->
   @if (isAuthenticated && myReviewedAlbums().length > 0) {
-    <section class="home__section home__section--personal">
+    <section class="home__section home__section--personal" aria-labelledby="my-reviews-title">
       <app-carousel title="MIS ÚLTIMOS ÁLBUMES RESEÑADOS">
         @for (album of myReviewedAlbums(); track album.id) {
           <app-card

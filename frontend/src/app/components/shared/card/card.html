@@ -1,4 +1,4 @@
-<article [class]="cardClasses">
+<article [class]="cardClasses" role="listitem" [attr.aria-label]="(title || 'Álbum') + (subtitle ? ' por ' + subtitle : '')">
   <!-- Variante Profile: Imagen + Título en columna izquierda -->
   @if (cardType === 'profile') {
     <!-- Columna izquierda: imagen con título debajo -->
