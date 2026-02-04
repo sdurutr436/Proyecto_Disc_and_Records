@@ -15,7 +15,7 @@
 .header__top {
   width: 100%;
   background-color: var(--header-bg);
-  padding: vars.$espaciado-xxl 0;
+  padding: vars.$espaciado-m 0;
   position: relative;
   z-index: 1;
   overflow: hidden;
@@ -23,7 +23,7 @@
 
 .header__top-container {
   @include mix.container-centered;
-  padding: 0 vars.$espaciado-m;
+  padding: 0.25rem vars.$espaciado-xs;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,15 +31,19 @@
   position: relative;
 }
 
-/* --- Wrapper del logo (posicionado absoluto como en footer) --- */
+/* --- Wrapper del logo (contenedor pequeño, logo se desborda) --- */
 .header__logo-wrapper {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 8.75rem;
+  height: 8.75rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin: 0;
+  order: 2;
   background: transparent;
   border: none;
   padding: 0;
@@ -47,11 +51,11 @@
   transition: transform 0.3s ease;
 
   &:hover {
-    transform: translateX(-50%) scale(1.05);
+    transform: scale(1.05);
   }
 
   &:active {
-    transform: translateX(-50%) scale(0.98);
+    transform: scale(0.98);
   }
 
   &:focus-visible {
@@ -99,6 +103,7 @@
   display: block;
   height: 16rem;
   width: auto;
+  max-width: none; // Sobrescribir reset global para permitir desbordamiento
   position: relative;
   transition: transform vars.$transicion-rapida;
 
@@ -107,15 +112,9 @@
   }
 }
 
-/* --- Contenedor de botones (izquierda y derecha con espacio para el logo) --- */
+/* --- Contenedor de botones --- */
 .header__buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  gap: 6rem; // Espacio reducido para el logo de 16rem
-  position: relative;
-  z-index: 1;
+  display: contents;
 }
 
 /* --- Botones superiores --- */
@@ -144,11 +143,14 @@
 }
 
 .header__btn--left {
+  order: 1;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
 .header__btn--right {
+  order: 3;
+  z-index: 0;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
@@ -165,23 +167,16 @@
   }
 
   .header__logo-wrapper {
-    // En móvil, sacamos el logo del absolute y lo ponemos en el flujo
-    position: relative;
-    left: auto;
-    transform: none;
+    width: 5rem;
+    height: 5rem;
     order: 1;
-
-    &:hover {
-      transform: scale(1.05);
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
+    overflow: visible;
   }
 
   .header__logo {
-    height: 6rem;
+    height: 10rem;
+    width: auto;
+    aspect-ratio: 1 / 1;
   }
 
   /* --- Franjas verticales en móvil --- */
@@ -263,10 +258,13 @@
   .header__logo-wrapper {
     width: 4rem;
     height: 4rem;
+    overflow: visible;
   }
 
   .header__logo {
     height: 8rem;
+    width: auto;
+    aspect-ratio: 1 / 1;
   }
 
   .header__btn {
