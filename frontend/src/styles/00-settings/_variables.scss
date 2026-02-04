@@ -48,6 +48,34 @@ $color-advertencia-dark: hsl(57, 99%, 64%);
 $color-exito: hsl(77, 58%, 61%);
 $color-informacion: hsl(181, 90%, 32%);  // Teal de la paleta 70s
 
+/* --- Variables de DARK MODE (tema azul oscuro) --- */
+$color-fondo-dark-primario: hsl(200, 58%, 10%);      // #0B1F2A
+$color-fondo-dark-secundario: hsl(202, 64%, 23%);    // #154360
+$color-texto-dark-primario: hsl(210, 50%, 97%);      // #F8F9FA
+$color-texto-dark-secundario: hsla(210, 50%, 97%, 0.7);
+$color-texto-dark-placeholder: hsla(210, 50%, 97%, 0.85);
+$color-texto-dark-oscuro: hsl(200, 58%, 10%);        // #0B1F2A
+
+$color-primario-dark-alt: hsl(188, 77%, 41%);        // #17A2B8
+$color-secundario-dark-alt: hsl(160, 74%, 46%);      // #20C997
+$color-contraste-dark-alt: hsl(157, 35%, 69%);       // #93CFBB
+$color-acentuado-dark-alt: hsl(109, 58%, 40%);       // #28A745
+
+$color-borde-dark: hsl(0, 0%, 91%);                  // #E8E8E8
+$color-sombra-dark: hsl(0, 0%, 91%);                 // #E8E8E8
+
+$color-header-dark: hsl(202, 64%, 23%);              // #154360
+$color-nav-dark: hsl(200, 58%, 10%);                 // #0B1F2A
+
+$color-error-dark: hsl(0, 100%, 71%);                // #FF6B6B
+$color-warning-dark: hsl(48, 100%, 62%);             // #FFD93D
+$color-success-dark: hsl(133, 50%, 62%);             // #6BCF7F
+$color-informacion-dark: hsl(191, 100%, 42%);        // #00B4D8
+
+/* --- Variables de GRAYSCALE MODE (monocromático) --- */
+$filtro-hero-dark: brightness(0.8) contrast(1.2);
+$filtro-hero-grayscale: grayscale(100%) brightness(0.8) contrast(1.1);
+
 /* --- Variables de escala de grises --- */
 // Grises puros (sin tinte de color)
 $color-negro: hsl(0, 0%, 0%);           // Negro puro

@@ -63,35 +63,35 @@
 
 [data-theme="dark"] {
   /* --- Colores de fondo - tonos azules oscuros pero no extremos --- */
-  --bg-primary: #0B1F2A;                             // Azul oscuro pero más legible
-  --bg-secondary: #154360;                           // Azul océano con más luminosidad
+  --bg-primary: #{$color-fondo-dark-primario};
+  --bg-secondary: #{$color-fondo-dark-secundario};
 
   /* --- Colores de texto - alto contraste --- */
-  --text-primary: #F8F9FA;                           // Casi blanco para mejor legibilidad
-  --text-secondary: rgba(248, 249, 250, 0.7);        // Blanco con transparencia
-  --text-placeholder: rgba(248, 249, 250, 0.85);     // Placeholder más visible
-  --text-white: #{$color-letra-blanca};              // #FBFAF2 (no cambia)
-  --text-dark: #0B1F2A;                              // Azul oscuro (para fondos claros)
+  --text-primary: #{$color-texto-dark-primario};
+  --text-secondary: #{$color-texto-dark-secundario};
+  --text-placeholder: #{$color-texto-dark-placeholder};
+  --text-white: #{$color-letra-blanca};
+  --text-dark: #{$color-texto-dark-oscuro};
 
   /* --- Colores principales - tonos más saturados y brillantes --- */
-  --color-primary: #17A2B8;                          // Teal más visible
-  --color-secondary: #20C997;                        // Verde aqua brillante
-  --color-contrast: #93CFBB;                         // Verde menta (más visible)
-  --color-accent: #28A745;                           // Verde brillante para acentos
+  --color-primary: #{$color-primario-dark-alt};
+  --color-secondary: #{$color-secundario-dark-alt};
+  --color-contrast: #{$color-contraste-dark-alt};
+  --color-accent: #{$color-acentuado-dark-alt};
 
   /* --- Colores de borde y sombra - blanco para mejor contraste --- */
-  --border-color: #E8E8E8;                           // Gris claro/blanco para bordes
-  --shadow-color: #E8E8E8;                           // Gris claro para box-shadow
+  --border-color: #{$color-borde-dark};
+  --shadow-color: #{$color-sombra-dark};
 
   /* --- Colores de header/footer/nav - oscuros en dark mode --- */
-  --header-bg: #154360;                              // Azul océano (oscuro)
-  --nav-bg: #0B1F2A;                                 // Azul más oscuro
+  --header-bg: #{$color-header-dark};
+  --nav-bg: #{$color-nav-dark};
 
   /* --- Colores de estado (ajustados para dark) --- */
-  --color-error: #FF6B6B;                            // Rojo más brillante
-  --color-warning: #FFD93D;                          // Amarillo dorado (más legible)
-  --color-success: #6BCF7F;                          // Verde más brillante
-  --color-info: #00B4D8;                             // Cyan para información
+  --color-error: #{$color-error-dark};
+  --color-warning: #{$color-warning-dark};
+  --color-success: #{$color-success-dark};
+  --color-info: #{$color-informacion-dark};
 
   /* --- Colores de franjas (no cambian) --- */
   --color-stripe-1: #{$color-franja-1};
@@ -102,13 +102,13 @@
   --color-stripe-6: #{$color-franja-6};
 
   /* --- Colores de sombras vinilo (dark mode - tonos fríos) --- */
-  --vinyl-shadow-layer-1: #{$color-primario-dark};   // #93CFBB (verde menta)
-  --vinyl-shadow-layer-2: #{$color-secundario-dark}; // #0A9295 (teal vibrante)
-  --vinyl-shadow-layer-3: #{$color-contraste-dark};  // #015F72 (teal profundo)
-  --vinyl-shadow-layer-4: #{$color-acentuado-dark};  // #01131B (azul noche)
+  --vinyl-shadow-layer-1: #{$color-primario-dark};
+  --vinyl-shadow-layer-2: #{$color-secundario-dark};
+  --vinyl-shadow-layer-3: #{$color-contraste-dark};
+  --vinyl-shadow-layer-4: #{$color-acentuado-dark};
 
   /* --- Filtro para imágenes hero --- */
-  --filter-hero: brightness(0.8) contrast(1.2);      // Oscurece imágenes para mejor contraste
+  --filter-hero: #{$filtro-hero-dark};
 }
 
 /* ========================================
@@ -164,6 +164,6 @@
   --vinyl-shadow-layer-4: #{$color-gris-medio-oscuro-plus};   // hsl(0, 0%, 39%)
 
   /* --- Filtro para imágenes hero: fuerza B/N --- */
-  --filter-hero: grayscale(100%) brightness(0.8) contrast(1.1);
+  --filter-hero: #{$filtro-hero-grayscale};
 }
 
