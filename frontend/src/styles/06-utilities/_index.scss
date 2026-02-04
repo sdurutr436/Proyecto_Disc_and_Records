@@ -2,7 +2,7 @@
 // 06-UTILITIES - Clases de Utilidad
 // ========================================
 // Clases de utilidad de alta especificidad.
-// Evitamos !important usando doble especificidad [class][class]
+// Usamos doble especificidad [class][class] para ganar prioridad.
 // Esta es la última capa de ITCSS.
 // ========================================
 
@@ -105,7 +105,7 @@
   @extend .visually-hidden;
 }
 
-// Doble clase para mayor especificidad sin !important
+// Doble clase para mayor especificidad
 .u-hidden.u-hidden {
   display: none;
 }

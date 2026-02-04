@@ -450,7 +450,7 @@ app-carousel {
   min-width: 0;
 
   // Cards DENTRO del carrusel - mantienen su tamaño fijo
-  // Usando selector con mayor especificidad en lugar de !important
+  // Usando selector con mayor especificidad
   .carousel__track > app-card.carousel__track > app-card {
     display: block;
     flex: 0 0 $ancho-maximo-card-polaroid;
