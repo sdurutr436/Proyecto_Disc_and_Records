@@ -5,6 +5,8 @@
 // Solo animan transform y opacity para mejor rendimiento.
 // Usar will-change: transform en hover para optimización GPU.
 
+@use '../00-settings/variables' as *;
+
 // ========================================
 // KEYFRAMES
 // ========================================

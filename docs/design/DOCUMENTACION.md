@@ -233,7 +233,7 @@ frontend/src/styles/
 ├── 07-animations/
 │   └── _keyframes.scss      # Definiciones de animaciones
 │
-└── styles.scss              # Archivo principal - importa todo en orden ITCSS
+└── main.scss                # Archivo principal - importa todo en orden ITCSS
 ```
 
 ### ¿Por qué este orden?
@@ -766,7 +766,7 @@ Para este proyecto, uso una **estrategia híbrida**:
 
 | Tipo de estilos | Estrategia | Justificación |
 |-----------------|------------|---------------|
-| **Variables, reset, grid** | `styles.scss` (global) | Deben estar disponibles en toda la app |
+| **Variables, reset, grid** | `main.scss` (global) | Deben estar disponibles en toda la app |
 | **Estilos de componentes** | `ViewEncapsulation.Emulated` (default) | Cada componente gestiona sus propios estilos |
 | **Componentes de layout** | Evaluar `ViewEncapsulation.None` | Si necesitan afectar a componentes hijos |
 

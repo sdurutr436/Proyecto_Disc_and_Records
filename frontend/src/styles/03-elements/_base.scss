@@ -1,126 +1,81 @@
-@use '../00-settings/_variables' as vars;
+// ========================================
+// 03-ELEMENTS - Estilos Base de Elementos HTML
+// ========================================
+// Estilos para elementos HTML puros (sin clases).
+// Selectores: html, body, h1-h6, p, a, etc.
+// Establece la tipografía y apariencia base.
+// ========================================
 
-/* ========================================
-   ESTILOS BASE DE ELEMENTOS HTML
-   Sin clases - aplicados directamente a tags
-   ======================================== */
+@use '../00-settings/variables' as vars;
+@use '../01-tools/mixins' as mix;
 
-/* --- Tipografía base --- */
-html {
-  font-size: 16px; // Base para rem
-  scroll-behavior: smooth;
-  /* NOTA: NO usar overflow-x:hidden aquí porque ROMPE position:sticky */
-}
-
+// ========================================
+// BODY
+// ========================================
 body {
   font-family: vars.$fuente-principal;
   font-size: vars.$tamanio-fuente-parrafo;
   line-height: vars.$altura-linea-parrafo;
-  color: var(--text-primary);
   background-color: var(--bg-primary);
-  overflow-x: hidden; // Previene scroll horizontal global (seguro aquí)
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  @include mix.theme-transition;
 }
 
-/* --- Reglas globales para prevenir desborde --- */
-*, *::before, *::after {
-  box-sizing: border-box; // Asegurar box-sizing consistente
+// ========================================
+// TRANSICIONES DE TEMA GLOBALES
+// ========================================
+// Elementos que deben transicionar suavemente
+// cuando cambia el tema (light/dark/grayscale)
+h1, h2, h3, h4, h5, h6,
+p, span, label,
+nav, header, footer, main, section, article, aside,
+div, ul, li,
+button, input, textarea, select,
+a, svg {
+  transition:
+    background-color vars.$transicion-base,
+    color vars.$transicion-base,
+    border-color vars.$transicion-base,
+    fill vars.$transicion-base,
+    stroke vars.$transicion-base;
 }
 
-img, video, iframe, embed, object {
-  max-width: 100%;
-  height: auto;
+// ========================================
+// TIPOGRAFÍA - ENCABEZADOS
+// ========================================
+h1, h2, h3, h4, h5, h6 {
+  font-family: vars.$fuente-principal;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
-/* --- Contenedores principales no excedan viewport --- */
-/* NOTA: NO usar overflow-x: hidden en nav ni main porque ROMPE position: sticky */
-section, article, aside, header, footer {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-/* main y nav NO deben tener overflow para permitir sticky */
-main, nav {
-  max-width: 100%;
-}
-
-/* --- Encabezados --- */
 h1 {
   font-size: vars.$tamanio-fuente-h1;
   line-height: vars.$altura-linea-h1;
-  font-weight: 700;
-  margin-bottom: vars.$espaciado-m;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-
-  @media (max-width: vars.$breakpoint-tablet) {
-    font-size: vars.$tamanio-fuente-h2;
-    line-height: vars.$altura-linea-h2;
-  }
-
-  @media (max-width: vars.$breakpoint-mobile-sm) {
-    font-size: vars.$tamanio-fuente-h3;
-    line-height: vars.$altura-linea-h3;
-    margin-bottom: vars.$espaciado-s;
-  }
 }
 
 h2 {
   font-size: vars.$tamanio-fuente-h2;
   line-height: vars.$altura-linea-h2;
-  font-weight: 600;
-  margin-bottom: vars.$espaciado-s;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-
-  @media (max-width: vars.$breakpoint-tablet) {
-    font-size: vars.$tamanio-fuente-h3;
-    line-height: vars.$altura-linea-h3;
-  }
-
-  @media (max-width: vars.$breakpoint-mobile-sm) {
-    font-size: vars.$tamanio-fuente-h4;
-    line-height: vars.$altura-linea-h4;
-  }
 }
 
 h3 {
   font-size: vars.$tamanio-fuente-h3;
   line-height: vars.$altura-linea-h3;
-  font-weight: 600;
-  margin-bottom: vars.$espaciado-s;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-
-  @media (max-width: vars.$breakpoint-tablet) {
-    font-size: vars.$tamanio-fuente-h4;
-    line-height: vars.$altura-linea-h4;
-  }
-
-  @media (max-width: vars.$breakpoint-mobile-sm) {
-    font-size: vars.$tamanio-fuente-h5;
-    line-height: vars.$altura-linea-h5;
-  }
 }
 
-h4, h5, h6 {
+h4 {
   font-size: vars.$tamanio-fuente-h4;
   line-height: vars.$altura-linea-h4;
-  font-weight: 500;
-  margin-bottom: vars.$espaciado-xs;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 }
 
-/* --- Párrafos y texto --- */
+// ========================================
+// TIPOGRAFÍA - PÁRRAFOS Y TEXTO
+// ========================================
 p {
   margin-bottom: vars.$espaciado-s;
-
-  @media (max-width: vars.$breakpoint-mobile-sm) {
-    font-size: vars.$tamanio-fuente-texto-pequeno-s;
-    line-height: vars.$altura-linea-texto-pequeno-s;
-  }
 }
 
 small {
@@ -136,7 +91,9 @@ em, i {
   font-style: italic;
 }
 
-/* --- Enlaces --- */
+// ========================================
+// ENLACES
+// ========================================
 a {
   color: var(--color-primary);
   text-decoration: none;
@@ -144,7 +101,6 @@ a {
 
   &:hover {
     color: var(--color-secondary);
-    text-decoration: underline;
   }
 
   &:focus-visible {
@@ -153,123 +109,42 @@ a {
   }
 }
 
-/* --- Botones base --- */
-button {
-  font-family: vars.$fuente-principal;
-  font-size: vars.$tamanio-fuente-parrafo;
-  font-weight: 600;
-  cursor: pointer;
-  border: vars.$borde-brutal-medium;
-  border-radius: vars.$radio-s;
-  padding: vars.$espaciado-xs vars.$espaciado-s;
-  background-color: var(--color-primary);
-  color: var(--text-dark);
-  box-shadow: vars.$sombra-brutal-s;
-  transition: all vars.$transicion-rapida;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-
-  &:hover {
-    box-shadow: vars.$sombra-brutal-hover;
-    transform: translate(0.125rem, 0.125rem);
-  }
-
-  &:active {
-    box-shadow: vars.$sombra-brutal-active;
-    transform: translate(0.25rem, 0.25rem);
-  }
-
-  &:focus-visible {
-    outline: 0.1875rem solid var(--color-accent);
-    outline-offset: 0.125rem;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
-  }
+// ========================================
+// CONTENEDORES - PREVENCIÓN DE DESBORDE
+// ========================================
+section, article, aside, header, footer {
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
-/* --- Inputs y formularios --- */
-input, textarea, select {
-  font-family: vars.$fuente-principal;
-  font-size: vars.$tamanio-fuente-parrafo;
-  padding: vars.$espaciado-xs vars.$espaciado-s;
-  border: vars.$borde-brutal-medium;
-  border-color: var(--border-color);
-  border-radius: vars.$radio-s;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  box-shadow: vars.$sombra-brutal-s;
-  transition: all vars.$transicion-rapida;
-  width: 100%;
-
-  &::placeholder {
-    color: var(--text-secondary);
-  }
-
-  &:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: vars.$sombra-brutal-primario-light;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background-color: var(--bg-secondary);
-  }
+// main y nav NO tienen overflow para permitir sticky
+main, nav {
+  max-width: 100%;
 }
 
-textarea {
-  min-height: 7.5rem;
-  resize: vertical;
-}
-
-/* --- Listas --- */
-ul, ol {
-  margin-bottom: vars.$espaciado-s;
-  padding-left: vars.$espaciado-m;
-}
-
-li {
-  margin-bottom: vars.$espaciado-xs;
-}
-
-/* --- Imágenes --- */
-img {
-  border-radius: vars.$radio-s;
-}
-
-figure {
-  margin-bottom: vars.$espaciado-m;
-}
-
-figcaption {
-  font-size: vars.$tamanio-fuente-texto-pequeno-s;
-  color: vars.$color-letra-desactivado;
-  margin-top: vars.$espaciado-xs;
-}
-
-/* --- Separadores --- */
+// ========================================
+// SEPARADORES
+// ========================================
 hr {
   border: none;
   border-top: vars.$borde-brutal-thin;
   margin: vars.$espaciado-l 0;
 }
 
-/* --- Citas --- */
+// ========================================
+// CITAS
+// ========================================
 blockquote {
   border-left: 0.25rem solid var(--color-primary);
   padding-left: vars.$espaciado-s;
   margin: vars.$espaciado-m 0;
   font-style: italic;
-  color: vars.$color-letra-desactivado;
+  color: var(--text-secondary);
 }
 
-/* --- Código --- */
+// ========================================
+// CÓDIGO
+// ========================================
 code {
   font-family: 'Fira Code', 'Courier New', monospace;
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
@@ -296,39 +171,34 @@ pre {
   }
 }
 
-/* --- Tablas --- */
-table {
-  width: 100%;
-  border-collapse: collapse;
+// ========================================
+// FIGURAS E IMÁGENES
+// ========================================
+img {
+  border-radius: vars.$radio-s;
+}
+
+figure {
   margin-bottom: vars.$espaciado-m;
-  border: vars.$borde-brutal-medium;
-  box-shadow: vars.$sombra-brutal-s;
 }
 
-th, td {
-  padding: vars.$espaciado-xs vars.$espaciado-s;
-  text-align: left;
-  border-bottom: vars.$borde-brutal-thin;
+figcaption {
+  font-size: vars.$tamanio-fuente-texto-pequeno-s;
+  color: var(--text-secondary);
+  margin-top: vars.$espaciado-xs;
 }
 
-th {
-  background-color: var(--color-primary);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-tr:nth-child(even) {
-  background-color: var(--bg-secondary);
-}
-
-/* --- Focus visible global (accesibilidad) --- */
+// ========================================
+// FOCUS VISIBLE GLOBAL (Accesibilidad)
+// ========================================
 :focus-visible {
   outline: 0.1875rem solid var(--color-primary);
   outline-offset: 0.125rem;
 }
 
-/* --- Selección de texto --- */
+// ========================================
+// SELECCIÓN DE TEXTO
+// ========================================
 ::selection {
   background-color: var(--color-primary);
   color: var(--text-dark);

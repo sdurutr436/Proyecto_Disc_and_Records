@@ -450,26 +450,31 @@ app-carousel {
   min-width: 0;
 
   // Cards DENTRO del carrusel - mantienen su tamaño fijo
-  // El carrusel ya define flex: 0 0 200px para sus hijos
-  .carousel__track > app-card {
+  // Usando selector con mayor especificidad en lugar de !important
+  .carousel__track > app-card.carousel__track > app-card {
     display: block;
-    flex: 0 0 $ancho-maximo-card-polaroid !important;
-    width: $ancho-maximo-card-polaroid !important;
-    min-width: $ancho-maximo-card-polaroid !important;
-    max-width: $ancho-maximo-card-polaroid !important;
+    flex: 0 0 $ancho-maximo-card-polaroid;
+    width: $ancho-maximo-card-polaroid;
+    min-width: $ancho-maximo-card-polaroid;
+    max-width: $ancho-maximo-card-polaroid;
+  }
 
-    @include mixins.respond-to('tablet') {
-      flex: 0 0 calc($ancho-maximo-card-polaroid * 0.77) !important;
-      width: calc($ancho-maximo-card-polaroid * 0.77) !important;
-      min-width: calc($ancho-maximo-card-polaroid * 0.77) !important;
-      max-width: calc($ancho-maximo-card-polaroid * 0.77) !important;
+  // Responsive con selectores de alta especificidad
+  @include mixins.respond-to('tablet') {
+    .carousel__track > app-card.carousel__track > app-card {
+      flex: 0 0 calc($ancho-maximo-card-polaroid * 0.77);
+      width: calc($ancho-maximo-card-polaroid * 0.77);
+      min-width: calc($ancho-maximo-card-polaroid * 0.77);
+      max-width: calc($ancho-maximo-card-polaroid * 0.77);
     }
+  }
 
-    @include mixins.respond-to('mobile') {
-      flex: 0 0 calc($ancho-maximo-card-polaroid * 0.68) !important;
-      width: calc($ancho-maximo-card-polaroid * 0.68) !important;
-      min-width: calc($ancho-maximo-card-polaroid * 0.68) !important;
-      max-width: calc($ancho-maximo-card-polaroid * 0.68) !important;
+  @include mixins.respond-to('mobile') {
+    .carousel__track > app-card.carousel__track > app-card {
+      flex: 0 0 calc($ancho-maximo-card-polaroid * 0.68);
+      width: calc($ancho-maximo-card-polaroid * 0.68);
+      min-width: calc($ancho-maximo-card-polaroid * 0.68);
+      max-width: calc($ancho-maximo-card-polaroid * 0.68);
     }
   }
 }

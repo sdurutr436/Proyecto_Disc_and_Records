@@ -119,7 +119,7 @@
 /* --- Indeterminado (animación continua) --- */
 .progress-bar--indeterminate {
   .progress-bar__fill {
-    width: 30% !important;
+    width: 30%;
     animation: indeterminate 1.5s ease-in-out infinite;
   }
 }

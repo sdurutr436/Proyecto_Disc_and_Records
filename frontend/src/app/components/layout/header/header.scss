@@ -15,7 +15,7 @@
 .header__top {
   width: 100%;
   background-color: var(--header-bg);
-  padding: vars.$espaciado-m 0;
+  padding: vars.$espaciado-xxl 0;
   position: relative;
   z-index: 1;
   overflow: hidden;
@@ -23,24 +23,23 @@
 
 .header__top-container {
   @include mix.container-centered;
-  padding: 0.25rem vars.$espaciado-xs;
-  @include mix.flex-row(0);
+  padding: 0 vars.$espaciado-m;
+  display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0;
   position: relative;
 }
 
-/* --- Wrapper del logo (para posicionar barras detrás) --- */
+/* --- Wrapper del logo (posicionado absoluto como en footer) --- */
 .header__logo-wrapper {
-  position: relative;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 2;
-  @include mix.flex-center;
-  width: 8.75rem;
-  height: 8.75rem;
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin: 0;
-  order: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   padding: 0;
@@ -48,16 +47,17 @@
   transition: transform 0.3s ease;
 
   &:hover {
-    transform: scale(1.05);
+    transform: translateX(-50%) scale(1.05);
   }
 
   &:active {
-    transform: scale(0.98);
+    transform: translateX(-50%) scale(0.98);
   }
 
-  &:focus {
-    outline: 0.125rem solid var(--color-primary);
+  &:focus-visible {
+    outline: 0.1875rem solid var(--color-accent);
     outline-offset: 0.25rem;
+    border-radius: vars.$radio-m;
   }
 }
 
@@ -100,17 +100,22 @@
   height: 16rem;
   width: auto;
   position: relative;
-  z-index: 2;
-  transition: transform 0.3s ease;
+  transition: transform vars.$transicion-rapida;
 
   &:hover {
     transform: rotate(25deg);
   }
 }
 
-/* --- Contenedor de botones --- */
+/* --- Contenedor de botones (izquierda y derecha con espacio para el logo) --- */
 .header__buttons {
-  display: contents;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 6rem; // Espacio reducido para el logo de 16rem
+  position: relative;
+  z-index: 1;
 }
 
 /* --- Botones superiores --- */
@@ -120,6 +125,7 @@
   font-weight: 800;
   padding: vars.$espaciado-s vars.$espaciado-xl;
   border: vars.$borde-brutal-medium;
+  border-color: var(--border-color);
   border-radius: vars.$radio-pildora;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
@@ -130,7 +136,7 @@
   position: relative;
   z-index: 2;
   white-space: nowrap;
-  min-width: 20rem;
+  min-width: 22rem;
   margin: 0;
 
   @include mix.brutal-interaction;
@@ -138,16 +144,11 @@
 }
 
 .header__btn--left {
-  order: 1;
-  margin-right: 0.375rem;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
 .header__btn--right {
-  order: 3;
-  margin-left: 0.375rem;
-  z-index: 0;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
@@ -164,13 +165,23 @@
   }
 
   .header__logo-wrapper {
-    width: 5rem;
-    height: 5rem;
+    // En móvil, sacamos el logo del absolute y lo ponemos en el flujo
+    position: relative;
+    left: auto;
+    transform: none;
     order: 1;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
   }
 
   .header__logo {
-    height: 10rem;
+    height: 6rem;
   }
 
   /* --- Franjas verticales en móvil --- */
@@ -223,17 +234,14 @@
   }
 
   .header__btn--left {
-    order: 1;
     border-right: none;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-top-left-radius: vars.$radio-pildora;
     border-bottom-left-radius: vars.$radio-pildora;
-    margin-right: 0;
   }
 
   .header__btn--right {
-    order: 2;
     border-left: none;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;

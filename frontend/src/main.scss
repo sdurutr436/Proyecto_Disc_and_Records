@@ -1,0 +1,95 @@
+// ========================================
+// MAIN.SCSS - Archivo Principal ITCSS
+// ========================================
+// Punto de entrada principal de estilos.
+// Organizado siguiendo la arquitectura ITCSS (Inverted Triangle CSS)
+// con especificidad creciente de arriba hacia abajo.
+//
+// ITCSS = Inverted Triangle CSS
+// - De lo más genérico a lo más específico
+// - De baja especificidad a alta especificidad
+// - Sin conflictos de especificidad
+// ========================================
+
+// ========================================
+// 1. SETTINGS
+// ========================================
+// Variables de configuración.
+// NO genera output CSS, solo definiciones.
+// - Variables SCSS ($color, $spacing, etc.)
+// - CSS Custom Properties (--color-primary, etc.)
+// ========================================
+@use 'styles/00-settings/variables' as *;
+@use 'styles/00-settings/css-variables';
+
+// ========================================
+// 2. TOOLS
+// ========================================
+// Mixins y funciones reutilizables.
+// NO genera output CSS, solo herramientas.
+// - Mixins de responsive (@include respond-from)
+// - Mixins de componentes (@include brutal-box)
+// - Funciones SCSS
+// ========================================
+@use 'styles/01-tools/mixins' as mix;
+
+// ========================================
+// 3. GENERIC
+// ========================================
+// Reset/normalize y reglas de muy baja especificidad.
+// Selectores: *, html, body
+// Primera capa que genera CSS real.
+// ========================================
+@use 'styles/02-generic/reset';
+
+// ========================================
+// 4. ELEMENTS
+// ========================================
+// Estilos base para elementos HTML sin clases.
+// Selectores: h1, p, a, button, input, table, etc.
+// Establece el estilo tipográfico base.
+// ========================================
+@use 'styles/03-elements/base';
+
+// ========================================
+// 5. OBJECTS / LAYOUT
+// ========================================
+// Patrones estructurales sin decoración visual.
+// Selectores de clase: .grid, .container, .media
+// Layouts reutilizables y agnósticos de diseño.
+// ========================================
+@use 'styles/04-layout/grid';
+
+// ========================================
+// 6. COMPONENTS
+// ========================================
+// Componentes UI específicos con decoración.
+// En Angular: cada componente tiene su .scss encapsulado
+// que importa variables y mixins según necesite.
+//
+// Los componentes Angular (card, button, modal, etc.)
+// NO se importan aquí porque usan ViewEncapsulation.
+// Solo se importarían estilos de componentes globales.
+// ========================================
+// @use 'styles/05-components/index'; // Reservado para componentes globales
+
+// ========================================
+// 7. UTILITIES
+// ========================================
+// Clases de utilidad de alta especificidad.
+// Usamos doble selector [class][class] para especificidad alta.
+// - Helpers de texto (.u-text-center)
+// - Helpers de visibilidad (.visually-hidden)
+// - Helpers de espaciado (.u-mt-0)
+// - Helpers de color (.text-primary, .bg-surface)
+// ========================================
+@use 'styles/06-utilities/index' as utilities;
+
+// ========================================
+// 8. ANIMATIONS
+// ========================================
+// Keyframes y clases de animación.
+// - @keyframes para animaciones reutilizables
+// - Clases utilitarias de animación
+// ========================================
+@use 'styles/07-animations/animations';
