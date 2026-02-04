@@ -17,18 +17,25 @@
           type="image/webp"
         />
         <source
-          media="(max-width: 767px)"
+          media="(min-width: 480px) and (max-width: 767px)"
           [srcset]="currentHero.srcMedium"
           type="image/webp"
         />
         <source
-          media="(max-width: 1199px)"
+          media="(min-width: 768px) and (max-width: 1199px)"
           [srcset]="currentHero.srcLarge"
+          type="image/webp"
+        />
+        <source
+          media="(min-width: 1200px)"
+          [srcset]="currentHero.srcExtraLarge"
           type="image/webp"
         />
         <img
           class="home__hero-image"
-          [src]="currentHero.srcExtraLarge"
+          [src]="currentHero.srcSmall"
+          [srcset]="currentHero.srcSmall + ' 480w, ' + currentHero.srcMedium + ' 768w, ' + currentHero.srcLarge + ' 1200w, ' + currentHero.srcExtraLarge + ' 1920w'"
+          sizes="100vw"
           [alt]="currentHero.alt"
           width="1200"
           height="800"
