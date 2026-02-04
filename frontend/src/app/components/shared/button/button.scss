@@ -16,6 +16,19 @@
   padding: vars.$espaciado-s vars.$espaciado-l;
   font-size: vars.$tamanio-fuente-texto-pequeno-s;
   min-height: vars.$altura-minima-touch-m;
+
+  // Layout flex para alinear iconos con texto
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+
+  // SVGs directos (no lucide)
+  > svg {
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
+  }
 }
 
 /* ========================================

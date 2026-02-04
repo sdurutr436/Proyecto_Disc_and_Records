@@ -1,27 +1,74 @@
-/* Reset CSS agresivo */
-*, *::before, *::after {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+// ========================================
+// 02-GENERIC - Reset CSS
+// ========================================
+// Reset/normalización CSS.
+// Especificidad muy baja: *, html, body
+// Prepara una base consistente entre navegadores.
+// ========================================
+
+/* Box-sizing global */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-html, body {
-	width: 100%;
-	/* NOTA: Usar min-height en lugar de height para no romper sticky */
-	min-height: 100%;
+/* Dimensiones base del documento */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  width: 100%;
+  min-height: 100%;
+  /* NOTA: NO usar overflow-x:hidden aquí - ROMPE position:sticky */
 }
 
-ul, ol {
-	list-style: none;
+body {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden; // Seguro aquí en body
 }
 
+/* Reset de listas */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Reset de enlaces */
 a {
-	text-decoration: none;
-	color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
-img, picture, video, canvas, svg {
-	display: block;
-	max-width: 100%;
-	height: auto;
+/* Medios responsivos */
+img,
+picture,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* SVG: comportamiento por defecto inline para iconos
+   Los SVG decorativos/imágenes grandes pueden usar .svg--block */
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Excepción: SVGs dentro de lucide-icon deben ser inline para alinearse con texto */
+lucide-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+  }
 }
