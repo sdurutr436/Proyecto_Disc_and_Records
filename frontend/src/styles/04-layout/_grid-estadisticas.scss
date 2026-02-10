@@ -1,9 +1,11 @@
-@use '../../../styles/00-settings/variables' as *;
-@use '../../../styles/01-tools/mixins' as *;
+@use '../00-settings/css-variables' as *;
+@use '../00-settings/variables' as *;
+@use '../01-tools/mixins' as *;
+@use './grid' as *;
 
 .estadisticas {
   min-height: 60vh;
-  padding: $espaciado-l $espaciado-s;
+  padding: $espaciado-l;
 
   &__container {
     max-width: 900px;
@@ -22,7 +24,7 @@
     width: 4rem;
     height: 4rem;
     margin: 0 auto $espaciado-s;
-    background: var(--color-primary);
+    background: var(--color-practica2);
     color: var(--bg-primary);
     border-radius: $radio-m;
     border: $borde-brutal-medium;
@@ -46,18 +48,7 @@
     grid-template-columns: 1fr;
     gap: $espaciado-s;
 
-    @include respond-from('mobile-l') {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    @include respond-from('tablet') {
-      grid-template-columns: repeat(3, 1fr);
-    }
   }
-
-  // ============================
-  // ESTADOS
-  // ============================
 
   &__loading {
     display: flex;

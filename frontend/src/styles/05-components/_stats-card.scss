@@ -1,5 +1,5 @@
-@use '../../../../styles/00-settings/variables' as *;
-@use '../../../../styles/01-tools/mixins' as *;
+@use '../00-settings/variables' as *;
+@use '../01-tools/mixins' as *;
 
 :host {
   @include host-block;
@@ -11,13 +11,8 @@
   border-radius: $radio-m;
   padding: $espaciado-m;
   text-align: center;
-  box-shadow: $sombra-brutal-xs;
+  box-shadow: $sombra-vinilo-l;
   transition: transform $transicion-rapida, box-shadow $transicion-rapida;
-
-  &:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: $sombra-brutal-s;
-  }
 
   &__icon {
     display: flex;
@@ -26,7 +21,7 @@
     width: 3rem;
     height: 3rem;
     margin: 0 auto $espaciado-xs;
-    background: var(--color-primary);
+    background: var(--color-practica1);
     color: var(--bg-primary);
     border-radius: $radio-s;
     border: $borde-brutal-thin;

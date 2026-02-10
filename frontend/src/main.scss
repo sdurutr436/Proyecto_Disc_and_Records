@@ -13,8 +13,10 @@
 
 // 5. LAYOUT: Estructura y sistema de grid (.grid, .container) sin decoración visual.
 @use 'styles/04-layout/grid';
+@use 'styles/04-layout/grid-estadisticas';
 
 // 6. COMPONENTS: Reservado. En Angular usamos estilos encapsulados por componente.
+@use 'styles/05-components/stats-card';
 // @use 'styles/05-components/index';
 
 // 7. UTILITIES: Clases de ayuda de alta especificidad para ajustes finales.

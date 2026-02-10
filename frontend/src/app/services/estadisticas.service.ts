@@ -7,8 +7,7 @@ import { EstadisticasPlataforma } from '../models/data.models';
 @Injectable({ providedIn: 'root' })
 export class EstadisticasService extends BaseHttpService {
 
-  // getEstadisticas(): Observable<EstadisticasPlataforma> {
-  //   return this.get<EstadisticasPlataforma>(API_ENDPOINTS.estadisticas.getAll);
-  // }
-  
+  getEstadisticas(): Observable<EstadisticasPlataforma> {
+    return this.get<EstadisticasPlataforma>(API_ENDPOINTS.estadisticas.getAll);
+  }
 }

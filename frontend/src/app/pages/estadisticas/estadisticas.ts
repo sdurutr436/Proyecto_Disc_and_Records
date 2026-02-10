@@ -11,7 +11,6 @@ import { EstadisticasPlataforma } from '../../models/data.models';
   standalone: true,
   imports: [StatCard, Spinner, LucideAngularModule],
   templateUrl: './estadisticas.html',
-  styleUrls: ['./estadisticas.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export default class EstadisticasComponent implements OnInit {

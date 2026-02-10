@@ -107,6 +107,10 @@ export const API_ENDPOINTS = {
     forgotPassword: '/auth/forgot-password', // TODO: Implementar en backend
   },
 
+  estadisticas: {
+    getAll: '/estadisticas',
+  },
+
   /**
    * Endpoints de usuarios
    * Controller: UsuarioController

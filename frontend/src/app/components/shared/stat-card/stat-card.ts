@@ -5,8 +5,7 @@ import { LucideAngularModule } from 'lucide-angular';
   selector: 'app-stat-card',
   standalone: true,
   imports: [LucideAngularModule],
-  templateUrl: './stat-card.html',
-  styleUrls: ['./stat-card.scss'],
+  templateUrl: './stat-card.html'
 })
 
 
