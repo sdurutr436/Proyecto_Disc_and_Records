@@ -5,7 +5,7 @@
 
 .estadisticas {
   min-height: 60vh;
-  padding: $espaciado-l;
+  padding: $espaciado-l $espaciado-s;
 
   &__container {
     max-width: 900px;
@@ -24,7 +24,7 @@
     width: 4rem;
     height: 4rem;
     margin: 0 auto $espaciado-s;
-    background: var(--color-practica2);
+    background: var(--color-primary);
     color: var(--bg-primary);
     border-radius: $radio-m;
     border: $borde-brutal-medium;
@@ -48,11 +48,13 @@
     grid-template-columns: 1fr;
     gap: $espaciado-s;
 
+    @include respond-from('mobile-l') {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-from('tablet') {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
-  &__loading {
-    display: flex;
-    justify-content: center;
-    padding: $espaciado-xxl 0;
-  }
 }

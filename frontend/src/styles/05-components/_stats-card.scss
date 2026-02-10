@@ -11,8 +11,13 @@
   border-radius: $radio-m;
   padding: $espaciado-m;
   text-align: center;
-  box-shadow: $sombra-vinilo-l;
+  box-shadow: $sombra-brutal-xs;
   transition: transform $transicion-rapida, box-shadow $transicion-rapida;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: $sombra-brutal-s;
+  }
 
   &__icon {
     display: flex;
@@ -21,11 +26,10 @@
     width: 3rem;
     height: 3rem;
     margin: 0 auto $espaciado-xs;
-    background: var(--color-practica1);
+    background: var(--color-primary);
     color: var(--bg-primary);
     border-radius: $radio-s;
     border: $borde-brutal-thin;
-    box-shadow: $sombra-brutal-xs;
   }
 
   &__valor {
@@ -40,7 +44,7 @@
   &__etiqueta {
     font-size: $tamanio-fuente-texto-pequeno-s;
     font-weight: 500;
-    color: var(--color-practica1);
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }

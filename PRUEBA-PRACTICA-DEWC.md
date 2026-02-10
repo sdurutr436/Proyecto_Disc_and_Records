@@ -23,7 +23,7 @@ Lazy Loading: Se valorará positivamente la carga perezosa del módulo/component
   },
 ```
 
-Se hace con lo de loadComponent: ()
+Se hace con loadComponent: ()
 
 ## 2. Arquitectura de Componentes (RA6 + RA4)
 
@@ -31,53 +31,9 @@ Solo se ha creado 1 componente. Una card distinta a la card que ya existe que re
 
 Se ha creado vacio un servicio para conectar esta página al backend. Todo para que no de problemas de desarrollo durante la maquetación en interfaces web.
 
-# 2) Diseño de interfaces web:
+## 3. Documentación
 
-1. Arquitectura de Estilos y Preprocesadores
-  - Evolución cromatica: 2 nuevas variables de color (solo en modo claro) definidas:
-
-    ```bash
-      /* COLORES NUEVOS PRÁCTICA */
-      $color-light-practica: hsl(25, 100%, 49%);
-      $color-light-practica2: hsl(7, 100%, 50%);
-    ```
-
-  - Integración ITCSS:
-    - Variables ubicadas en _variables.scss e invocadas en _css-variables.scss
-
-      ```bash
-        /* COLORES NUEVOS PRÁCTICA */
-        --color-practica1: #{$color-light-practica};
-        --color-practica2: #{$color-light-practica2};
-      ```
-
-    - Parciales generados:
-      - En la capa layout he generado 1 parcial nuevo:
-        - `_grid-estadisticas` para la posición de los elementos dentro de estadísticas.
-      - Y en la de components:
-        - `_stats-card` para los estilos de la nueva card que presenta las estadísticas.
-    
-2. Metodología y Naming
-  - BEM: Se ha seguido la estructura de la metodologia BEM con anidación hasta un primer nivel nada más.
-
-3. Layout y responsive design:
-
-4. Semántica:
-  - Se ha seguido la siguiente semántica para el componente de `stats-card`:
-    <article>
-      <div>
-        <lucide-icon>
-      <p>
-      <h3>
-
-    La card en si es un ``article`` para contener elementos heterogéneos, y en el interior tengo un div que contiene los estilos del icono de lucie (sin el div, se rompe el borde que trae lucide, al contenerlo en un div, puedo darle fondo del mismo color que el contenedor div para que eso no pase).
-
-    Parrafo y h3 quedan a la misma altura que el `div` para contenerse en el interior del `article`.
-
-  - Se ha seguido la siguiente semántica para la página de estadísticas:
-
-    Todo se encuentra contenido en una sección de estadísticas. Para amoldar el resto de componentes (un header simple HTML puro para iniciar el contenido y presentarlo), 
-
+El componente que se ha creado es ``stats-card``, pequeña carta de información que reune datos de un endpoint desde la base de datos. Funciona con datos mock ya que en la rama de prueba-práctica, la base de datos no está conectada. Todos los cambios los hice para que funcionasen en el despliegue con la base de datos en digital ocean, por lo que el consumo de datos no se va a ver en local, no van a funcionar aunque estén implementados. Tras la práctica, mergearé los cambios para rezar que se visualicen en producción a la primera ya que los datos mocks están hardcoded en la parte frontend y no hay ningún archivo de seeding que pueble una base de datos mock.
 
 # Documentación externa consultada:
 
