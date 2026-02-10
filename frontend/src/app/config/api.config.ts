@@ -21,29 +21,9 @@
  * Determina la URL base del backend según el entorno
  */
 function getBaseUrl(): string {
-  if (typeof window === 'undefined') {
-    return '/api'; // SSR fallback
-  }
-
-  const hostname = window.location.hostname;
-  const port = window.location.port;
-
-  // Desarrollo local con ng serve (puerto 4200)
-  if (port === '4200') {
+  if (typeof window !== 'undefined' && window.location.port === '4200') {
     return 'http://localhost:8080/api';
   }
-
-  // Docker local (localhost puerto 80) - usa el backend en puerto 8080
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:8080/api';
-  }
-
-  // DigitalOcean producción - usa la URL del backend de DigitalOcean
-  if (hostname.includes('ondigitalocean.app')) {
-    return 'https://discs-n-records-ksgvk.ondigitalocean.app/api';
-  }
-
-  // Fallback: mismo origen con /api
   return '/api';
 }
 
@@ -51,13 +31,6 @@ function getBaseUrl(): string {
  * Configuración base de la API
  */
 export const API_CONFIG = {
-  /**
-   * URL base del backend
-   * Detecta automáticamente el entorno:
-   * - localhost:4200 (ng serve): http://localhost:8080/api
-   * - localhost:80 (Docker): http://localhost:8080/api
-   * - DigitalOcean: https://discs-n-records-ksgvk.ondigitalocean.app/api
-   */
   baseUrl: getBaseUrl(),
 
   /**

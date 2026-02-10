@@ -150,6 +150,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/canciones/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/generos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/resenas/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/estadisticas/**").permitAll()
 
                         // Usuarios: solo lectura pública (perfil público)
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/**").permitAll()
