@@ -49,6 +49,10 @@ export class Main {
     }
   }
 
+  navigateToPrueba() {
+    this.router.navigate(['/prueba']);
+  }
+
   /**
    * Navegar a la búsqueda de todos los álbumes
    */

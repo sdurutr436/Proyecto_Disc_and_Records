@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './button.html',
   styleUrl: './button.scss',
 })
+
 export class Button implements OnInit, OnDestroy {
   private loadingService = inject(LoadingService);
   private subscription?: Subscription;

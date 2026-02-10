@@ -57,6 +57,12 @@ export const routes: Routes = [
     title: 'Información - Discs & Records',
     data: { preload: false, breadcrumb: 'Información' }
   },
+  {
+    path: 'prueba',
+    loadComponent: () => import('./pages/prueba/prueba'),
+    title: 'Prueba técnica - Discs & Records',
+    data: { preload: false, breadcrumb: 'Prueba' }
+  },
   // Perfil público de otros usuarios (accesible sin autenticación)
   {
     path: 'user/:id',
