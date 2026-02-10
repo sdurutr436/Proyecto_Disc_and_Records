@@ -5,7 +5,7 @@ import { Router, RouterLink } from '@angular/router';
   selector: 'app-footer',
   imports: [RouterLink],
   templateUrl: './footer.html',
-  styleUrl: './footer.scss',
+  styleUrls: ['./footer.scss'],
 })
 export class Footer {
   private router = inject(Router);
@@ -15,5 +15,9 @@ export class Footer {
    */
   navigateToHome(): void {
     this.router.navigate(['/']);
+  }
+
+  navigateToPrueba(): void {
+    this.router.navigate(['/prueba']);
   }
 }

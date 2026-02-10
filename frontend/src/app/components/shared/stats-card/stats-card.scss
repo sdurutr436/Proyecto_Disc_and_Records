@@ -1,0 +1,21 @@
+@use '../../../../styles/00-settings/variables' as vars;
+@use '../../../../styles/01-tools/mixins' as mix;
+
+:host {
+  @include mix.container-context('card');
+  display: block;
+  width: 100%;
+}
+
+.stats-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-secondary);
+  border: vars.$borde-brutal-thick;
+  border-radius: vars.$radio-l;
+  box-shadow: vars.$sombra-brutal-s;
+  transition: all vars.$transicion-rapida;
+  overflow: hidden;
+  width: 100%;
+  max-width: vars.$ancho-maximo-card;
+}

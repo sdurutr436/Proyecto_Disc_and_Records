@@ -27,3 +27,14 @@ Se hace con lo de loadComponent: ()
 
 ## 2. Arquitectura de Componentes (RA6 + RA4)
 
+
+
+# Documentación externa consultada:
+
+## Frontend:
+
+Angular 17: https://v17.angular.io/guide/standalone-components
+Angular 21: https://angular.dev/guide/components
+Angular 20: https://v20.angular.dev/overview
+
+HECHO POR SERGIO DURÁN UTRERA
