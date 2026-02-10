@@ -476,3 +476,15 @@ export interface EstadoAlbumUsuario {
   fechaAgregada: string | null;
 }
 
+/**
+ * Respuesta del backend para estadísticas de la plataforma
+ * Mapea: EstadisticasPlataformaDTO.java
+ */
+export interface EstadisticasPlataforma {
+  totalAlbumes: number;
+  totalArtistas: number;
+  totalCanciones: number;
+  totalGeneros: number;
+  totalUsuarios: number;
+  totalResenas: number;
+}

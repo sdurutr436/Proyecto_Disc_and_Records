@@ -1,0 +1,38 @@
+<section class="estadisticas">
+  <div class="estadisticas__container">
+    <!-- ============================================ -->
+    <!-- HEADER                                      -->
+    <!-- ============================================ -->
+    <header class="estadisticas__header">
+      <div class="estadisticas__header-icon">
+        <lucide-icon [img]="BarChart3" [size]="36"></lucide-icon>
+      </div>
+      <h1 class="estadisticas__title">Estadísticas</h1>
+      <p class="estadisticas__subtitle">Datos generales de la plataforma</p>
+    </header>
+
+    @if (isLoading()) {
+      <div class="estadisticas__loading">
+        <app-spinner mode="inline"></app-spinner>
+      </div>
+    } @else if (datos(); as stats) {
+      <div class="estadisticas__grid">
+        <app-stat-card
+          [valor]="stats.totalAlbumes"
+          etiqueta="Álbumes"
+          [icono]="Disc3"
+        />
+        <app-stat-card
+          [valor]="stats.totalUsuarios"
+          etiqueta="Usuarios"
+          [icono]="Users"
+        />
+        <app-stat-card
+          [valor]="stats.totalResenas"
+          etiqueta="Reseñas"
+          [icono]="MessageSquare"
+        />
+      </div>
+    }
+  </div>
+</section>

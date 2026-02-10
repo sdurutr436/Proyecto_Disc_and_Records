@@ -1,0 +1,67 @@
+@use '../../../styles/00-settings/variables' as *;
+@use '../../../styles/01-tools/mixins' as *;
+
+.estadisticas {
+  min-height: 60vh;
+  padding: $espaciado-l $espaciado-s;
+
+  &__container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: $espaciado-xl;
+  }
+
+  &__header-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto $espaciado-s;
+    background: var(--color-primary);
+    color: var(--bg-primary);
+    border-radius: $radio-m;
+    border: $borde-brutal-medium;
+    box-shadow: $sombra-brutal-xs;
+  }
+
+  &__title {
+    font-size: $tamanio-fuente-h2;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: $espaciado-xs;
+  }
+
+  &__subtitle {
+    font-size: $tamanio-fuente-parrafo;
+    color: var(--text-secondary);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $espaciado-s;
+
+    @include respond-from('mobile-l') {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-from('tablet') {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  // ============================
+  // ESTADOS
+  // ============================
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    padding: $espaciado-xxl 0;
+  }
+}

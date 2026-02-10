@@ -59,7 +59,7 @@ export const routes: Routes = [
   },
   {
     path: 'prueba',
-    loadComponent: () => import('./pages/prueba/prueba'),
+    loadComponent: () => import('./pages/estadisticas/estadisticas'),
     title: 'Prueba técnica - Discs & Records',
     data: { preload: false, breadcrumb: 'Prueba' }
   },

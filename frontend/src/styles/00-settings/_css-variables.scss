@@ -24,6 +24,10 @@
   --color-contrast: #{$color-contraste-light};       // #BB3F03
   --color-accent: #{$color-acentuado-light};         // #9D2227
 
+  /* COLORES NUEVOS PRÁCTICA */
+  --color-practica1: #{$color-light-practica};
+  --color-practica2: #{$color-light-practica2};
+
   /* --- Colores de borde y sombra --- */
   --border-color: #{$color-letra-oscura};            // #01131B
   --shadow-color: #{$color-letra-oscura};            // #01131B (para box-shadow)

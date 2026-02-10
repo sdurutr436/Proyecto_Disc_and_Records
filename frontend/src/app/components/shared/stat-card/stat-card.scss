@@ -1,21 +1,51 @@
-@use '../../../../styles/00-settings/variables' as vars;
-@use '../../../../styles/01-tools/mixins' as mix;
+@use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/mixins' as *;
 
 :host {
-  @include mix.container-context('card');
-  display: block;
-  width: 100%;
+  @include host-block;
 }
 
-.stats-card {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--bg-secondary);
-  border: vars.$borde-brutal-thick;
-  border-radius: vars.$radio-l;
-  box-shadow: vars.$sombra-brutal-s;
-  transition: all vars.$transicion-rapida;
-  overflow: hidden;
-  width: 100%;
-  max-width: vars.$ancho-maximo-card;
+.stat-card {
+  background: var(--bg-primary);
+  border: $borde-brutal-medium;
+  border-radius: $radio-m;
+  padding: $espaciado-m;
+  text-align: center;
+  box-shadow: $sombra-brutal-xs;
+  transition: transform $transicion-rapida, box-shadow $transicion-rapida;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: $sombra-brutal-s;
+  }
+
+  &__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto $espaciado-xs;
+    background: var(--color-primary);
+    color: var(--bg-primary);
+    border-radius: $radio-s;
+    border: $borde-brutal-thin;
+  }
+
+  &__valor {
+    font-family: $fuente-secundaria;
+    font-size: $tamanio-fuente-h2;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+    margin-bottom: $espaciado-xs;
+  }
+
+  &__etiqueta {
+    font-size: $tamanio-fuente-texto-pequeno-s;
+    font-weight: 500;
+    color: var(--color-practica1);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 }

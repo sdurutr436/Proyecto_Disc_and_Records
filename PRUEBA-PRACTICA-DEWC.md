@@ -27,7 +27,9 @@ Se hace con lo de loadComponent: ()
 
 ## 2. Arquitectura de Componentes (RA6 + RA4)
 
+Solo se ha creado 1 componente. Una card distinta a la card que ya existe que recoge desde el backend la información de la base de datos. Esta card es información estadística de la página web. Se recogen en las cards la información sobre los usuarios, las reseñas totales que hay, los usuarios y álbumes que se han integrado en la base de datos. Tiene sistema fallback integrado si fallase la conexión con el servidor para mostrar datos de mock.
 
+Se ha creado vacio un servicio para conectar esta página al backend. Todo para que no de problemas de desarrollo durante la maquetación en interfaces web.
 
 # Documentación externa consultada:
 
