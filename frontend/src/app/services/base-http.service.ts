@@ -89,12 +89,14 @@ export abstract class BaseHttpService {
    * @returns URL completa (ej: 'http://localhost:8080/api/albums')
    */
   protected buildUrl(endpoint: string): string {
-    // Si el endpoint ya es una URL completa, devolverla tal cual
     if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
       return endpoint;
     }
 
-    // Si el endpoint no empieza con /, añadirlo
+    if (this.baseUrl !== '/' && endpoint.startsWith(this.baseUrl)) {
+      return endpoint;
+    }
+
     const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
     return `${this.baseUrl}${normalizedEndpoint}`;

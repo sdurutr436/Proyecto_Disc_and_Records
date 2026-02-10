@@ -1,6 +1,7 @@
 package com.discsandrecords.api.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,7 @@ public class EstadisticasController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Obtener estadísticas generales de la plataforma")
     @ApiResponse(responseCode = "200", description = "Estadísticas obtenidas correctamente")
     public ResponseEntity<EstadisticasPlataformaDTO> obtenerEstadisticas() {
