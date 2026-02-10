@@ -17,7 +17,7 @@ export class Footer {
     this.router.navigate(['/']);
   }
 
-  navigateToPrueba(): void {
-    this.router.navigate(['/prueba']);
+  navigateToEstadisticas(): void {
+    this.router.navigate(['/estadisticas']);
   }
 }

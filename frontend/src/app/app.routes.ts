@@ -58,10 +58,10 @@ export const routes: Routes = [
     data: { preload: false, breadcrumb: 'Información' }
   },
   {
-    path: 'prueba',
+    path: 'estadisticas',
     loadComponent: () => import('./pages/estadisticas/estadisticas'),
-    title: 'Prueba técnica - Discs & Records',
-    data: { preload: false, breadcrumb: 'Prueba' }
+    title: 'Estadísticas - Discs & Records',
+    data: { preload: false, breadcrumb: 'Estadísticas' }
   },
   // Perfil público de otros usuarios (accesible sin autenticación)
   {

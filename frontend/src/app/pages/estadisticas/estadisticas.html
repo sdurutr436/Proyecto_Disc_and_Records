@@ -13,7 +13,7 @@
         <app-spinner mode="inline"></app-spinner>
       </div>
     } @else if (datos(); as stats) {
-      <div class="estadisticas__grid">
+      <section class="estadisticas__grid">
         <app-stat-card
           [valor]="stats.totalAlbumes"
           etiqueta="Álbumes"
@@ -29,7 +29,7 @@
           etiqueta="Reseñas"
           [icono]="MessageSquare"
         />
-      </div>
+      </section>
     }
   </div>
 </section>

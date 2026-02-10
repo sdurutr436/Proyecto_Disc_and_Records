@@ -58,10 +58,25 @@ Se ha creado vacio un servicio para conectar esta página al backend. Todo para 
         - `_stats-card` para los estilos de la nueva card que presenta las estadísticas.
     
 2. Metodología y Naming
-  - BEM: La nomenclatura 
+  - BEM: Se ha seguido la estructura de la metodologia BEM con anidación hasta un primer nivel nada más.
 
-    
+3. Layout y responsive design:
 
+4. Semántica:
+  - Se ha seguido la siguiente semántica para el componente de `stats-card`:
+    <article>
+      <div>
+        <lucide-icon>
+      <p>
+      <h3>
+
+    La card en si es un ``article`` para contener elementos heterogéneos, y en el interior tengo un div que contiene los estilos del icono de lucie (sin el div, se rompe el borde que trae lucide, al contenerlo en un div, puedo darle fondo del mismo color que el contenedor div para que eso no pase).
+
+    Parrafo y h3 quedan a la misma altura que el `div` para contenerse en el interior del `article`.
+
+  - Se ha seguido la siguiente semántica para la página de estadísticas:
+
+    Todo se encuentra contenido en una sección de estadísticas. Para amoldar el resto de componentes (un header simple HTML puro para iniciar el contenido y presentarlo), 
 
 
 # Documentación externa consultada:

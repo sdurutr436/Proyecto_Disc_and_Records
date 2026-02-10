@@ -49,8 +49,9 @@ export class Main {
     }
   }
 
-  navigateToPrueba() {
-    this.router.navigate(['/prueba']);
+  navigateToEstadisticas() {
+    this.closeMenu();
+    this.router.navigate(['/estadisticas']);
   }
 
   /**
