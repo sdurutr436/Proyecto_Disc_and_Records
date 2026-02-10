@@ -1,10 +1,7 @@
-import { Component, signal, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { StatCard } from '../../components/shared/stat-card/stat-card';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Tabs, Tab } from '../../components/shared/tabs/tabs';
-import { LucideAngularModule, Wrench, Users, Mail, Twitter, Instagram, Lock } from 'lucide-angular';
-
-type InfoTab = 'api' | 'about' | 'contact' | 'privacy';
+import { LucideAngularModule } from 'lucide-angular';
 
 /**
  * InfoComponent - Página de Información General
@@ -15,59 +12,16 @@ type InfoTab = 'api' | 'about' | 'contact' | 'privacy';
  * - Contacto
  * - Privacidad
  */
+
 @Component({
-  selector: 'app-info',
+  selector: 'app-prueba',
   standalone: true,
-  imports: [CommonModule, Tabs, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, StatCard],
   templateUrl: './prueba.html',
   styleUrls: ['./prueba.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export default class InfoComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
 
-  // Lucide icons
-  readonly Wrench = Wrench;
-  readonly Users = Users;
-  readonly Mail = Mail;
-  readonly Twitter = Twitter;
-  readonly Instagram = Instagram;
-  readonly Lock = Lock;
+export default class PruebaComponent  {
 
-  /** Tab activo */
-  activeTab = signal<InfoTab>('about');
-
-  /** Configuración de tabs */
-  tabs: Tab[] = [
-    { id: 'api', label: 'API de Desarrollo' },
-    { id: 'about', label: 'Sobre Nosotros' },
-    { id: 'contact', label: 'Contacto' },
-    { id: 'privacy', label: 'Privacidad' }
-  ];
-
-  ngOnInit(): void {
-    // Leer tab de los query params
-    this.route.queryParams.subscribe(params => {
-      const tab = params['tab'] as InfoTab;
-      if (tab && ['api', 'about', 'contact', 'privacy'].includes(tab)) {
-        this.activeTab.set(tab);
-      }
-    });
-  }
-
-  /**
-   * Cambiar tab activo
-   */
-  onTabChange(tabId: string | number): void {
-    const tab = tabId as InfoTab;
-    this.activeTab.set(tab);
-
-    // Actualizar URL sin recargar
-    this.router.navigate([], {
-      queryParams: { tab },
-      queryParamsHandling: 'merge',
-      replaceUrl: true
-    });
-  }
 }

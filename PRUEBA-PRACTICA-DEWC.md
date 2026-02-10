@@ -36,5 +36,6 @@ Se hace con lo de loadComponent: ()
 Angular 17: https://v17.angular.io/guide/standalone-components
 Angular 21: https://angular.dev/guide/components
 Angular 20: https://v20.angular.dev/overview
+Lucide libreria: https://lucide.dev/icons/
 
 HECHO POR SERGIO DURÁN UTRERA
