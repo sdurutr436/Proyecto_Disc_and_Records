@@ -16,7 +16,7 @@
         class="carousel__nav carousel__nav--prev"
         (click)="scrollLeft()"
         [attr.aria-label]="'Mostrar álbumes anteriores en ' + (title || 'carrusel')"
-        aria-describedby="carousel-navigation-help"
+        [attr.aria-describedby]="titleId + '-nav-help'"
       >
         ‹
       </button>
@@ -40,14 +40,14 @@
         class="carousel__nav carousel__nav--next"
         (click)="scrollRight()"
         [attr.aria-label]="'Mostrar álbumes siguientes en ' + (title || 'carrusel')"
-        aria-describedby="carousel-navigation-help"
+        [attr.aria-describedby]="titleId + '-nav-help'"
       >
         ›
       </button>
     }
 
     <!-- Texto de ayuda oculto visualmente -->
-    <div id="carousel-navigation-help" class="sr-only">
+    <div [id]="titleId + '-nav-help'" class="sr-only">
       Use las flechas del teclado o los botones para navegar por los álbumes. Presione Tab para acceder a cada álbum individualmente.
     </div>
   </div>

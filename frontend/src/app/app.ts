@@ -17,9 +17,8 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     // Establecer el idioma de la página de forma programática para accesibilidad
-    // Detecta el idioma desde el navegador o usa español como predeterminado
-    const userLanguage = navigator.language.split('-')[0] || 'es';
-    this.renderer.setAttribute(document.documentElement, 'lang', userLanguage);
+    // El contenido de la aplicación es siempre en español (WCAG 3.1.1 - H57)
+    this.renderer.setAttribute(document.documentElement, 'lang', 'es');
 
     // NOTA: La restauración de sesión se maneja automáticamente en authInitGuard
     // No es necesario llamarla aquí para evitar llamadas duplicadas

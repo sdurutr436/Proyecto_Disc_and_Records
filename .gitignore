@@ -114,4 +114,4 @@ hs_err_pid*
 *.swo
 *~
 .temp/
-.sql
+*.sql
