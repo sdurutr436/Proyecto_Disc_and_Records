@@ -38,9 +38,11 @@ export class Carousel implements AfterViewInit, OnDestroy {
   @Input() rows: number = 1;
 
   /**
-   * ID único para el carrusel, usado para accesibilidad
+   * ID único para el carrusel, usado para accesibilidad.
+   * Se puede pasar externamente para que coincida con aria-labelledby
+   * de la sección padre. Si no se proporciona, se genera uno aleatorio.
    */
-  titleId: string = Math.random().toString(36).substr(2, 9);
+  @Input() titleId: string = Math.random().toString(36).substr(2, 9);
 
   /**
    * MEJORA 1.1: ViewChild con ElementRef tipado

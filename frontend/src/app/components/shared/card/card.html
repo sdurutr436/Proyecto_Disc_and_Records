@@ -12,6 +12,7 @@
             width="200"
             height="200"
             [priority]="priority"
+            [attr.aria-describedby]="cardId"
           />
         } @else if (placeholderIcon) {
           <span class="card__placeholder card__placeholder--svg" [innerHTML]="safePlaceholderIcon"></span>
@@ -19,7 +20,7 @@
           <span class="card__placeholder"><lucide-icon name="music" [size]="32"></lucide-icon></span>
         }
       </div>
-      <div class="card__text">
+      <div class="card__text" [id]="cardId">
         @if (title) {
           <h3 class="card__title">{{ title }}</h3>
         }
@@ -69,6 +70,7 @@
           width="200"
           height="200"
           [priority]="priority"
+          [attr.aria-describedby]="cardId"
         />
       } @else if (placeholderIcon) {
         <span class="card__placeholder card__placeholder--svg" [innerHTML]="safePlaceholderIcon"></span>
@@ -78,7 +80,7 @@
     </section>
 
     <section class="card__content">
-      <div class="card__text">
+      <div class="card__text" [id]="cardId">
         @if (title && titleLink) {
           <a [href]="titleLink" class="card__title card__title--link">
             {{ title }}

@@ -59,6 +59,12 @@ export class Card {
   @Input() titleLink: string = '';
   @Input() subtitleLink: string = '';
 
+  /**
+   * ID único para cada card, usado para accesibilidad (aria-describedby)
+   * Vincula la imagen con su descripción textual (H45 WCAG)
+   */
+  cardId: string = 'card-desc-' + Math.random().toString(36).substr(2, 9);
+
   get cardClasses(): string {
     const classes = ['card'];
 

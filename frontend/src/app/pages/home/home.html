@@ -37,6 +37,7 @@
           [srcset]="currentHero.srcSmall + ' 480w, ' + currentHero.srcMedium + ' 768w, ' + currentHero.srcLarge + ' 1200w, ' + currentHero.srcExtraLarge + ' 1920w'"
           sizes="100vw"
           [alt]="currentHero.alt"
+          aria-describedby="hero-description"
           width="1200"
           height="800"
           loading="eager"
@@ -45,6 +46,9 @@
         />
       </picture>
     </div>
+    <span id="hero-description" hidden>
+      Imagen decorativa de fondo que muestra la silueta de un artista músical. Forma parte del diseño visual de la página de inicio de Discs &amp; Records.
+    </span>
 
     <!-- Contenido del hero -->
     <div class="home__hero-content">
@@ -97,7 +101,7 @@
         </div>
       </div>
     } @else {
-      <app-carousel title="ÚLTIMOS ÁLBUMES EN TENDENCIA">
+      <app-carousel title="ÚLTIMOS ÁLBUMES EN TENDENCIA" titleId="trending-title">
         @for (album of trendingAlbums(); track album.id) {
           <app-card
             [title]="album.title"
@@ -138,7 +142,7 @@
         </div>
       </div>
     } @else {
-      <app-carousel title="ÚLTIMOS ÁLBUMES RESEÑADOS">
+      <app-carousel title="ÚLTIMOS ÁLBUMES RESEÑADOS" titleId="reviewed-title">
         @for (album of recentReviews(); track album.id) {
           <app-card
             [title]="album.title"
@@ -170,7 +174,7 @@
   <!-- ============================================ -->
   @if (isAuthenticated && myReviewedAlbums().length > 0) {
     <section class="home__section home__section--personal" aria-labelledby="my-reviews-title">
-      <app-carousel title="MIS ÚLTIMOS ÁLBUMES RESEÑADOS">
+      <app-carousel title="MIS ÚLTIMOS ÁLBUMES RESEÑADOS" titleId="my-reviews-title">
         @for (album of myReviewedAlbums(); track album.id) {
           <app-card
             [title]="album.title"
